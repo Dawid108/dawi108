@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+    </head>
+    <body>
+        <script>
+            alert("2 Lekcja z JS");
+            let x = "Żwirek";
+            let y = "Muchomorek";
+            document.write("<br>" + x + " i " + y + "<br><br>");
+
+            let imie = prompt("Podaj swoje imię");
+            alert("Witaj " + imie);
+            document.write("Witaj " + imie + "<br><br>");
+            
+            let v = prompt("Podaj prędkość w km/h, a zamienię ją na m/s");
+            let v2 = v * 1000 / 3600;
+            alert(v2 + " m/s");
+            document.write(v + " km/h = " + v2 + " m/s" + "<br><br>");
+
+            let S = prompt("Podaj średnie spalanie samochdu na 100km");
+            let B = prompt("Podaj wielkość baku");
+            alert("Dystans jaki może przejechać samochód wynosi: " + (B * 100) / S);
+            document.write("Średnie spalanie samochodu na 100km: " + S + " l" + "<br>");
+            document.write("Wielkość baku: " + B + " l" + "<br>");
+            document.write("Dystans jaki może przejechać samochód wynosi: " + (B * 100) / S + " km");
+        </script>
+    </body>
+</html>
