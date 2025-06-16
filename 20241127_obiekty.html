@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Obiekty</title>
+        <style>
+            table{
+                border-collapse: collapse;
+                margin: 20px;
+                text-align: left;
+            }
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+            th{
+                background-color: f4f4f4;
+                text-align: center;
+            }
+            td{
+                text-align: center;
+            }
+            #kontener {
+                width: 50px;
+                height: 50px;
+                border: 1px solid black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                margin: 20px;
+            }
+        </style>
+    </head>
+    <body>
+        <center><h1>Obiekty</h1></center>
+        <div id="kontener">Sklep</div>
+        <script>
+            function losowyKolor(){
+                return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+            }
+            const kontener = document.getElementById("kontener");
+            kontener.addEventListener("click", () => {
+                kontener.style.backgroundColor = losowyKolor();
+            });
+            kontener.addEventListener("mouseenter", () => {
+                kontener.style.fontSize = "2em";
+            });
+            kontener.addEventListener("mouseleave", () => {
+                kontener.style.fontSize = "1em";
+            });
+            
+            const obiekt1 = {
+                nazwa: "Jabłko",
+                waga: 1.2,
+                cena: 3.5
+            };
+            const obiekt2 = {
+                nazwa: "Banan",
+                waga: 1.5,
+                cena: 4
+            };
+            console.log(`Produkt 1 to: ${obiekt1.nazwa}`);
+            console.log(`Produkt 2 to: ${obiekt2.nazwa}`);
+
+            const lacznaWaga = obiekt1.waga + obiekt2.waga;
+            console.log(`Oba produkty w sumie ważą: ${lacznaWaga.toFixed(1)}kg`);
+
+            const drozszyObiekt = obiekt1.cena > obiekt2.cena ? 1 : 2;
+            console.log(`Droższy produkt to: ${drozszyObiekt}`);
+
+            document.write(`
+                <table>
+                    <tr>
+                        <th>Lp.</th>
+                        <th>Nazwa</th>
+                        <th>Waga</th>
+                        <th>Cena</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>${obiekt1.nazwa}</td>
+                        <td>${obiekt1.waga.toFixed(1)}</td>
+                        <td>${obiekt1.cena.toFixed(2)}</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>${obiekt2.nazwa}</td>
+                        <td>${obiekt2.waga.toFixed(1)}</td>
+                        <td>${obiekt2.cena.toFixed(2)}</td>
+                    </tr>
+                </table>
+            `);
+            document.write(`Oba produkty w sumie ważą: ${lacznaWaga.toFixed(1)} kg`);
+            document.write("<br>");
+            document.write(`Droższy produkt to: ${drozszyObiekt}`);
+
+            /*function getRandomColor(){
+                const letters = "0123456789ABCDEF";
+                let color = "#";
+                for (let i = 0; i < 6; i++){
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+            document.body.addEventListener("click", () => {
+                const randomColor = getRandomColor();
+                document.body.style.backgroundColor = randomColor;
+            });
+            */
+        </script>
+    </body>
+</html>
