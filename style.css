@@ -1,0 +1,125 @@
+body{
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 1px;
+    padding: 1px;
+}
+.container {
+    width: 90%;
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.button {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    user-select: none;
+    text-align: center;
+    font-size: 14px;
+}
+.button:hover {
+    background-color: #0056b3;
+}
+.table-container {
+    display: none;
+    margin-top: 20px;
+}
+.table-wrapper{
+    overflow-x: auto;
+}
+table{
+    margin: auto;
+    border-collapse: collapse;
+}
+td, th{
+    border: 1px solid black;
+    padding: 8px;
+    text-align: center;
+}
+a{
+    text-decoration: none;
+    color: black;
+}
+a:hover{
+    color: blue;
+    cursor: pointer;
+}
+.navbar {
+    display: flex;
+    justify-content: center;
+    background-color: #fff;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+.nav-link {
+    text-decoration: none;
+    color: #606770;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    transition: background-color 0.3s, color 0.3s;
+    border-bottom: 3px solid transparent; 
+    cursor: pointer;
+}
+.nav-link:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: #1d1f23;
+}
+.nav-link.active {
+    color: #1877F2;
+    border-bottom: 3px solid #1877F2;
+}
+img{
+    width: 300px;    
+}
+body.dark-mode {
+    background-color: #121212;
+    color: white;
+}
+body.dark-mode .container {
+    background-color: #1e1e1e;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+body.dark-mode a {
+    color: #90caf9;
+}
+body.dark-mode a:hover {
+    color: #42a5f5;
+}
+body.dark-mode .navbar {
+    background-color: #1e1e1e;
+}
+body.dark-mode .nav-link {
+    color: #ccc;
+}
+body.dark-mode .nav-link.active {
+    color: #90caf9;
+    border-bottom: 3px solid #90caf9;
+}
+body.dark-mode table, body.dark-mode td, body.dark-mode th {
+    border: 1px solid #555;
+}
+body.dark-mode td, body.dark-mode th {
+    background-color: #1e1e1e;
+    color: white;
+}
