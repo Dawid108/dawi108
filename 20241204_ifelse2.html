@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Instrukcja warunkowa</title>
+    </head>
+    <body>
+        <h1>Instrukcja Warunkowa</h1>
+        <script>
+            alert("3 lekcja z JS");
+            let wiek = prompt("Podaj swój wiek");
+            if (wiek >=18 ){
+                document.write("Masz " + wiek + " lat, a więc zdognie z prawem jesteś dorosły.");
+            }
+            else{
+                document.write("Masz " + wiek + " lat, a więc zdognie z prawem nie jesteś dorosły.");
+            }
+            document.write("<br><br>")
+            let rod = prompt("Czy masz rodzeństwo?");
+            if (rod == "tak"){
+                document.write("Czyli masz się z kim bawić.");
+            }
+            else {
+                document.write("Jesteś jedynakiem.");
+            }
+            document.write("<br><br>")
+            let a = prompt("Podaj a");
+            let b = prompt("Podaj b");
+            document.write("a = " + a + ", b = " + b + "<br>");
+            if (a+b > a-b){
+                document.write("Suma jest większa od różnicy.");
+            }
+            else{
+                document.write("Suma jest mniejsza od różnicy");
+            }
+        </script>
+    </body>
+</html>
