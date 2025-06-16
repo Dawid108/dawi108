@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width-device-width, initial-scale=1.0">
+        <title>Zdarzenia JS</title>
+        <style>
+            #kontener {
+                width: 50px;
+                height: 50px;
+                border: 1px solid black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+            }
+            .wyroznione {
+                margin-top: 20px;
+                font-weight: bold;
+            }
+            #artukul{
+                display: block;
+                margin: 20px 0;
+                width: 150px;
+                padding: 5px;
+            }
+            #liczba{
+                margin-top: 10px;
+                font-size: 18px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="kontener">Dawid GG</div>
+        <p class="wyroznione">Krotoszyn</p>
+        <input type="text" id="artykul" placeholder="Wpisz coś">
+        <div id="liczba"></div>
+        <script>
+            function losowyKolor(){
+                return '#${Math.floor(Math.random() * 16777215).toString(16)}';
+            }
+            const kontener = document.getElementById("kontener");
+            kontener.addEventListener("click", () => {
+                kontener.style.backgroundColor = losowyKolor();
+            });
+            kontener.addEventListener("mouseenter", () => {
+                kontener.style.fontSize = "2em";
+            });
+            kontener.addEventListener("mouseleave", () => {
+                kontener.style.fontSize = "1em";
+            });
+            const wyroznione = document.querySelector(".wyroznione");
+            wyroznione.addEventListener("dblclick", () => {
+                wyroznione.textContent = "Powiat Krotoszyński";
+            });
+            wyroznione.addEventListener("mouseenter", () => {
+                console.log(wyroznione.textContent);
+            });
+            const artykul = document.getElementById("artykul");
+            const liczba = document.getElementById("liczba");
+
+            artukul.addEventListener("keydown", (event) => {
+                artukul.style.width = '${artykul.offsetWidth + 1}px';
+                if (!isNaN(event.key) && event.key !== ""){
+                    liczba.textContent += event.key;
+                }
+            });
+        </script>
+    </body>
+</html>
