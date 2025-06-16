@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Instrukcja warunkowa 2</title>
+</head>
+
+<body>
+    <h1>Instrukcja Warunkowa 2</h1>
+    <script>
+        let x = prompt("Podaj liczbę");
+        document.write("x = " + x + "<br>");
+        if (x == 0) {
+            document.write(x + " jest zerem");
+        }
+        else {
+            if (x > 0) {
+                document.write("Liczba jest dodatnia.");
+            }
+            else {
+                document.write("Liczba jest ujemna.");
+            }
+        }
+        document.write("<br><br>");
+        document.write("Wczytujemy 3 liczby i wyświetlamy największą z liczb.");
+        document.write("<br>");
+        let a = prompt("Podaj a");
+        let b = prompt("Podaj b");
+        let c = prompt("Podaj c");
+        document.write("a = " + a + ", b = " + b + ", c = " + c + "<br>");
+        if (a > b) {
+            if (a > c) {
+                document.write("a wynosi: " + a + " i jest największa");
+            }
+            else {
+                document.write("c wynosi: " + c + " i jest największa");
+            }
+        }
+        else {
+            if (b > c) {
+                document.write("b wynosi: " + b + " i jest największa");
+            }
+            else {
+                document.write("c wynosi: " + c + " i jest największa");
+            }
+        }
+        document.write("<br><br>");
+        document.write("Sprawdzamy dwie liczby i sprawdzamy czy są podzielne<br>");
+        let k = prompt("Podaj k");
+        let l = prompt("Podaj l");
+        document.write("k = " + k + ", l = " + l + "<br>");
+        if (k >= l) {
+            if (k % l == 0) {
+                document.write("Obie te liczby są podzielne");
+            }
+            else {
+                document.write("Obie te liczby nie są podzielne");
+            }
+        }
+        else {
+            if (l % k == 0) {
+                document.write("Obie te liczby są podzielne");
+            }
+            else {
+                document.write("Obie te liczby nie są podzielne");
+            }
+        }
+        document.write("<br><br>");
+        document.write("Wczytujemy wiek i dajemy informacje osobie czy może byc posłem, senatorem, prezydentem");
+        document.write("<br>");
+        let d = prompt("Podaj swój wiek: ");
+        if (d >= 35) {
+            document.write("Możesz być prezydentem, senatorem i posłem.");
+        }
+        else {
+            if (d >= 30) {
+                document.write("Możesz być senatorem i posłem.");
+            }
+            else {
+                if (d >= 21) {
+                    document.write("Możesz być posłem.");
+                }
+                else {
+                   document.write("Nie możesz być nikim.");
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
