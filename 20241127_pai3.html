@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width-device-width, initial-scale=1.0">
+        <title>Zdarzenia JS</title>
+        <style>
+            #kontener {
+                width: 50px;
+                height: 50px;
+                border: 1px solid black;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-align: center;
+                margin: 20px;
+            }
+            .wyroznione {
+                margin-top: 20px;
+                font-weight: bold;
+            }
+            #artykul{
+                display: block;
+                margin: 20px 0;
+                width: 150px;
+                padding: 5px;
+            }
+            #liczba{
+                margin-top: 10px;
+                font-size: 18px;
+                font-weight: bold;
+            }
+            .done{
+            background: green;
+            color: white;
+            }
+        </style>
+        <script>
+            document.addEventListener("DOMContentLoaded", function(event) {
+                function klikme() {
+                    console.log('Klik!');
+                }
+                const element = document.querySelector('#but');
+                element.onclick = klikme;
+                element.onmouseover = function() {
+                    console.log('Najechano przycisk!');
+                }
+            });
+            document.addEventListener("DOMContentLoaded", function(event) {
+                const p = document.querySelectorAll('p');
+                for (let i=0; i<p.length; i++) {
+                    p[i].onclick = function() {
+                        this.classList.add('done');
+                    }
+                }
+            });
+            function klikme() {
+                console.log('Klik!');
+            }
+        
+            document.addEventListener("DOMContentLoaded", function(event) {
+                const element = document.querySelector('.par');
+                // 2 zdarzenia dla jednego kliknięcia
+                element.addEventListener('click', klikme);
+                element.addEventListener('click', function() {
+                    this.style.color = 'red';
+                });
+            });
+            document.addEventListener("DOMContentLoaded", function() {
+                const textF = document.querySelector('#inputin');
+                textF.addEventListener('keyup', function(e) {
+                    //console.log('Naciśnięto przycisk: ' + e.key);
+                    document.querySelector('#printit').innerText += e.key;
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <center><h1>Zdarzenia</h1></center>
+        <div id="kontener">Dawid GG</div>
+        <p class="wyroznione">Krotoszyn</p>
+        <input type="text" id="artykul" placeholder="Wpisz coś">
+        <div id="liczba"></div>
+        <script>
+            function losowyKolor(){
+                return `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0')}`;
+            }
+            const kontener = document.getElementById("kontener");
+            kontener.addEventListener("click", () => {
+                kontener.style.backgroundColor = losowyKolor();
+            });
+            kontener.addEventListener("mouseenter", () => {
+                kontener.style.fontSize = "2em";
+            });
+            kontener.addEventListener("mouseleave", () => {
+                kontener.style.fontSize = "1em";
+            });
+            const wyroznione = document.querySelector(".wyroznione");
+            wyroznione.addEventListener("dblclick", () => {
+                wyroznione.textContent = "Powiat Krotoszyński";
+            });
+            wyroznione.addEventListener("mouseenter", () => {
+                console.log(wyroznione.textContent);
+            });
+            const artykul = document.getElementById("artykul");
+            const liczba = document.getElementById("liczba");
+
+            artykul.addEventListener("keydown", (event) => {
+                const newWidth = artykul.offsetWidth + 1;
+                artykul.style.width = `${newWidth}px`;
+                if (!isNaN(event.key) && event.key.trim() !== "") {
+                    liczba.textContent += event.key;
+                }
+            });
+                
+            
+        </script>
+        <a href="#" onclick="alert('Barcelona 3:0 Brest')">Klik!</a><br><br>
+        <button id='but'>Zoba zoba</button>
+        <p>jeden</p>
+        <p>dwa</p>
+        <p>trzy</p>     
+        <p class='par'>jeden</p>     
+        <input type='text' id='inputin'/>
+        <p id='printit'></p>
+    </body>
+</html>
