@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tekst</title>
+        <style>
+            h1{
+                font-size: 70px;
+            }
+            header, footer{
+                background-color: #333;
+                color: white;
+                text-align: center;
+                margin: 0px;
+                padding: 0px;
+            }
+            .container{
+                max-width: 800px;
+                margin: 10px auto;
+                font-size: 12pt;
+                line-height: 1.5;
+                text-align: justify;
+            }
+            button{
+                display: block;
+                margin: 20px auto;
+                padding: 10px 20px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Tekst</h1>
+        </header>
+        <div class="container">
+            <p id="text">Litwo, ojczyzno moja ty jesteś jak zdrowie ile cię trzeba cenić ten tylko się dowie...aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa<br>aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb<br>bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbccccccccccccccccc<br>ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccdddddddddddddd<br>ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddde<br>eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeef<br>ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffgggggggg<br>gggggggggggggggggggggggggggggggggggggggggggggggggggggghhhhhhhhhhhhhhhhhhhhhhhhh<br>hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii<br>iiiiiijjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj<br>jjjjjjjjjkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkklllllllllll<br>llllllllllllllllllllllllllllllllllllllllllllllllllllmmmmmmmmmmmmmmmmmmmmm<br>mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmnnnnnnnnnnnnnnnnnnnnnnnnnnnn<br>nnnnnnnnnnnnnnnnnnnnnnnnnnnnnooooooooooooooooooooooooooooooooooooooooo<br>oooooooooooooooooooooooppppppppppppppppppppppppppppppppppppppppp<br>ppppppppppppppppppqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq<br>rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrssssssssss<br>ssssssssssssssssssssssssssssssssssssssssssssssssstttttttttttttttttttttttttt<br>ttttttttttttttttttttttuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww<br>wwwwwwwwwwwwwwwwxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyvvvvvvvvvvvvvvvvvvvvvv<br>vvvvvvvvvvvvvzzzzzzzzzzzzzzzzzzzzzzzzzqwertyuiopsdfghjklzxcvbnm123456789</p>
+            <button onclick="removeVowels()">Usuń samogłoski</button>
+            <button onclick="location.reload();">Odświerz tekst</button>
+        </div>
+        <footer>
+            Dawid
+        </footer>
+        <script>
+            function removeVowels(){
+                let textElement = document.getElementById("text");
+                let text = textElement.innerText;
+                textElement.innerText = text.replace(/[aeiouAEIOUąęóĄĘÓ]/g, "*");
+            }
+        </script>
+    </body>
+</html>
