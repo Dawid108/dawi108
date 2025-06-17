@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <title>for 4</title>
+    </head>
+    <body>
+        <h1>For 4</h1>
+        <script>
+            /*
+            1
+            22
+            333
+            4444
+            55555
+            */
+            for(let i=1; i<=5; i=i+1){
+                for(let j=1; j<=i; j=j+1){
+                    document.write(i);
+                }
+                document.write("<br>");
+            }
+            document.write("<br>");
+            /*
+            005000
+            555555
+            005000
+            005000
+            005000
+            */
+            for(let i=1; i<=5; i=i+1){
+                for(let j=1; j<=6; j=j+1){
+                    if (i==2 || j==3){
+                        document.write(5);
+                    }
+                    else{
+                        document.write(0);
+                    }
+                }
+                document.write("<br>");
+            }
+            document.write("<br>");
+            /*
+            50000
+            05000
+            00500
+            00050
+            00005
+            */
+            for(let i=1; i<=5; i=i+1){
+                for(let j=1; j<=5; j=j+1){
+                    if (i==j){
+                        document.write(5);
+                    }
+                    else{
+                        document.write(0);
+                    }
+                }
+                document.write("<br>");
+            }
+        </script>
+    </body>
+</html>
