@@ -2,78 +2,112 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8">
-  <title>Kostka do Gry</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kostka do gry</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f4f4f4;
       margin: 0;
-      padding: 40px;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom right, #e0f7fa, #80deea);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
     }
 
     .container {
-      display: inline-block;
+      background-color: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 400px;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      color: #00796b;
     }
 
     .dice {
-      width: 100px;
-      height: 100px;
-      margin: 20px auto;
-      background-color: white;
-      border: 3px solid #333;
-      border-radius: 12px;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      max-width: 220px;
+      margin: 0 auto 20px;
+      background-color: #fff;
+      border: 3px solid #00796b;
+      border-radius: 16px;
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
-      gap: 5px;
+      gap: 6px;
       padding: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
       transition: transform 0.3s ease-in-out;
     }
 
     .rolling {
-      animation: roll 0.6s linear;
+      animation: roll 0.6s ease-in-out;
     }
 
     @keyframes roll {
-      0% { transform: rotate(0deg); }
-      25% { transform: rotate(90deg); }
-      50% { transform: rotate(180deg); }
-      75% { transform: rotate(270deg); }
-      100% { transform: rotate(360deg); }
+      0% { transform: rotate(0deg) scale(1); }
+      25% { transform: rotate(90deg) scale(1.05); }
+      50% { transform: rotate(180deg) scale(0.95); }
+      75% { transform: rotate(270deg) scale(1.05); }
+      100% { transform: rotate(360deg) scale(1); }
     }
 
     .dot {
-      width: 16px;
-      height: 16px;
-      background-color: black;
+      width: 28%;
+      height: 28%;
+      background-color: #000;
       border-radius: 50%;
       margin: auto;
     }
 
     button {
-      padding: 10px 20px;
-      font-size: 16px;
-      border: none;
-      background-color: #333;
+      background-color: #00796b;
       color: white;
-      border-radius: 8px;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 1em;
       cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
-      background-color: #555;
+      background-color: #004d40;
+    }
+
+    @media (max-width: 400px) {
+      h1 {
+        font-size: 1.5em;
+      }
+
+      .dice {
+        max-width: 180px;
+      }
+
+      button {
+        font-size: 0.95em;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Kostka do gry</h1>
-    <div class="dice" id="dice">
-      <!-- Kropki zostaną dodane automatycznie -->
-    </div>
-    <button onclick="rollDice()">Rzuć kostką</button>
+    <div class="dice" id="dice"></div>
+    <button onclick="rollDice()">🎲 Rzuć kostką</button>
   </div>
 
   <script>
@@ -104,11 +138,8 @@
 
     function rollDice() {
       const dice = document.getElementById("dice");
-
-      // Dodaj animację
       dice.classList.add("rolling");
 
-      // Usuń animację po zakończeniu (600ms)
       setTimeout(() => {
         dice.classList.remove("rolling");
         const number = Math.floor(Math.random() * 6) + 1;
@@ -116,10 +147,9 @@
       }, 600);
     }
 
-    // Rzut na start
     window.onload = () => {
-      const number = Math.floor(Math.random() * 6) + 1;
-      drawDice(number);
+      const startNumber = Math.floor(Math.random() * 6) + 1;
+      drawDice(startNumber);
     };
   </script>
 </body>
