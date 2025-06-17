@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width>, initial-scale=1.0">
+    <title>Tablice 3</title>
+</head>
+<body>
+    <h1>Tablice Dwuwymiarowe 2</h1>
+    <script>
+        let pieski = [
+            ["Zenek", "pitbul", 36, 9],
+            ["Edzio", "owczarek", 68, 13],
+            ["Hultaj", "jamnik", 12, 4],
+            ["Duży g", "bernardyn", 87, 10]
+        ];
+        document.write("Po scaleniu piesków otrzymamy jednego o masie ");
+        let suma = 0;
+        for(let i=0; i<=3; i++){
+            suma = suma + pieski[i][2];
+        }
+        document.write(suma + " kg.<br>");
+
+        document.write("Łączna długość ogona wynosi: ");
+        suma = 0;
+        for(let i=0; i<=3; i++){
+            suma = suma + pieski[i][3];
+        }
+        document.write(suma + " cm.<br>");
+    </script>
+</body>
+</html>
