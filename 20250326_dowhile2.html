@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Do While 2</title>
+</head>
+<body>
+	<script>
+	/* Program oblicza kwadrat liczby podanej z klawiatury, a następnie pyta sie cz liczyć go dla innej liczby.
+	Jeśli odpowiemy tak liczy dalej. Przy innej odpowiedzi kończy się.*/
+	
+	let liczba;
+	let odpowiedz;
+	let wynik;
+	do{
+	liczba = Number(prompt("Podaj liczbę"));
+	wynik = liczba * liczba;
+	alert("kwadrat " + liczba + " to " + wynik);
+	odpowiedz = prompt("Czy chcesz podac kolejną liczbę? (tak/nie)");
+	}while(odpowiedz== "tak");
+</script>
+</body>
+</html>
