@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Do While</title>
+</head>
+<body>
+	<script>
+	let liczba;
+	do {
+		let liczba = Number(prompt("Podaj liczbę dodatnią"));
+		if (liczba <=0){
+			alert("Podałeś złą liczbę. Spróbuj jeszcze raz.");
+		}
+		else { 
+			alert("Podałeś dobrą liczbę. Przechodzisz dalej.");
+		}
+	}while(liczba <=0)
+</script>
+</body>
+</html>
