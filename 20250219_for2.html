@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>For 2</title>
+    </head>
+    <body>
+        <h1>For 2</h1>
+        <p>
+            Antek wpłacił na jednoroczna lokatę pewna kwotę.
+            Lokata jest kapitalizowana miesięcznie, a jej oprocentowanie w skali roku wynosi 5%.
+            Wyświetl miesięczne zyski Antka, numer miesiąca i aktualną kwotę lokaty.
+        </p>
+        <script>
+            let kwota = Number(prompt("Podaj ile wpłacisz na lokatę"));
+            let zysk = 0;
+            let oprocentowanie = 0.05 / 12;
+            for (let i=1; i<=12; i=i+1){
+                zysk = kwota * oprocentowanie;
+                kwota = kwota + zysk;
+                document.write("<table><tr><td>" + i + "</td><td>" + zysk.toFixed(2) + "</td><td>" + kwota.toFixed(2) + "</td></tr></table>");
+            }
+        </script>
+    </body>
+</html>
