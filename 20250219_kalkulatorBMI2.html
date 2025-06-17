@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <title>Kalkulator BMI</title>
+        <meta charset="UTF-8">
+        <style>
+            body{
+                text-align: center;
+            }
+            header{
+                height: 50px;
+                text-align: center;
+            }
+            section{
+                height: 430px;
+                text-align: center;
+            }
+            footer{
+                height: 30px;
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Kalkulator BMI</h1>
+        </header>
+        <section>
+            <h2>Oblicz swoje BMI</h2>
+            <label for="weight">Waga (kg):</label>
+            <input type="number" id="weight" placeholder="kg">
+            <br><br>
+            <label for="heightcm">Wzrost (cm):</label>
+            <input type="number" id="heightcm" placeholder="cm">
+            <br><br>
+            <button onclick="calculateBMI()">Oblicz</button>
+            <h3>Ostatnie wyniki BMI:</h3>
+            <table id="resultsTable" border="1">
+                <thead>
+                    <tr><th>Lp.</th><th>BMI</th></tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </section>
+        <script>
+            let bmiResults = [];
+            function calculateBMI(){
+                let weight = parseFloat(document.getElementById('weight').value);
+                let heightcm = parseFloat(document.getElementById('heightcm').value);
+                let heightm = heightcm / 100;
+                if (weight > 1 && heightcm > 1 && weight < 636 && heightcm < 273){
+                    let bmi = weight / (heightm * heightm);
+                    bmi = bmi.toFixed(4);
+                    bmiResults.unshift(bmi);
+                    if (bmiResults.length > 5){
+                        bmiResults.pop();
+                    }
+                    upadteResultsTable();
+                    
+                    document.write("<center><h2>Twoje BMI wynosi: " + bmi + "</h2></center>");
+                    document.write('<br><br><center><button onclick="location.reload();">Wróć do obliczania</button></center>');
+                }
+                else{
+                    document.write("<center><h2>Podaj poprawne wartości</h2></center>");
+                    document.write('<br><br><center><button onclick="location.reload();">Wróć do obliczania</button></center>');
+                }
+            }
+
+            function upadteResultsTable(){
+                let tableBody = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
+                tableBody.innerHTML = '';
+                
+                bmiResults.forEach((bmi, index) => {
+                    let row = tableBody.insertRow();
+                    let cell1 = row.insertCell(0);
+                    let cell2 = row.insertCell(1);
+                    cell1.textContent = index + 1;
+                    cell2.textContent = bmi;
+                });
+            }
+        </script>
+        <footer>
+            <p>Dawid i Wiktor</p>
+        </footer>
+    </body>
+</html>
