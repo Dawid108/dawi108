@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <title>Tekst</title>
+        <style>
+            h1{
+                font-size: 70px;
+            }
+            header, footer{
+                background-color: #333;
+                color: white;
+                text-align: center;
+                margin: 0px;
+                padding: 0px;
+            }
+            .container{
+                width: 210mm;
+                height: 297mm;
+                background: white;
+                border: 1px solid #ccc;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                margin: 20px auto;
+                padding: 20mm;
+                display: flex;
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: center;
+                font-family: Arial, sans-serif;
+            }
+            button{
+                display: block;
+                margin: 20px auto;
+                padding: 10px 20px;
+                font-size: 14px;
+                cursor: pointer;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Tekst</h1>
+        </header>
+        <div>
+            <button onclick="removeVowels()">Usuń samogłoski</button>
+            <button onclick="location.reload();">Przywróć tekst</button>
+        </div>
+        <div class="container">
+            <p id="text">Hiszpańskie media po meczu Barcelona - Atletico Madryt w Pucharze Króla. "Gigantyczny spektakl"
+                Eurosport
+                
+                Najbardziej wymagające piłkarskie podniebienia zaspokojone. Mecz Barcelona - Atletico w półfinale Pucharu Króla zachwycił. Hiszpanie cmokają, pieją i używają przeróżnych określeń do nazwania tego, co wydarzyło się we wtorkowy wieczór.
+                
+                Trening FC Barcelona przed meczem z Atletico w półfinale Pucharu Króla. Lamine Yamal nieobecny
+                
+                Źródło wideo: Eurosport
+                
+                Osiem goli, pierwszy już na początku, a ostatni w doliczonym czasie gry. Pełno zwrotów akcji, multum emocji. Barcelona po sześciu minutach przegrywała już 0:2. Straty odrobiła, więcej – wyszła nawet na dwubramkowe prowadzenia. Pomógł w tym m.in. Robert Lewandowski, który na boisku pojawił się na nieco ponad 20 minut przed końcem.
+                Atletico się nie poddało. Wynik w doliczonym czasie gry ustalił (4:4) wicekról strzelców z poprzedniego sezonu, norweski napastnik Alexander Sorloth. Półfinałowy mecz Pucharu Króla nie rozczarował.
+                RELACJA Z MECZU BARCELONA - ATLETICO >>>
+                Duże osłabienie Realu przed meczem w Pucharze KrólaDuże osłabienie Realu przed meczem w Pucharze Króla
+                Puchar Króla
+                Duże osłabienie Realu przed meczem w Pucharze Króla
+                godzinę temu
+                
+                "Marca": mecz z innej epoki
+                "To był mecz z innej epoki. Świetne spotkanie, w którym obie drużyny wyrównały pomimo dwubramkowej straty. Barcelona i Atletico zachwyciły znakomitym półfinałem, po którym... wszystko pozostało bez zmian. Osiem goli dało nam świetny mecz z wieloma zwrotami akcji, ale nie przesądza to o niczym. Wszystko rozstrzygnie się na Metropolitano. Wydawało się, że wynik jest przesądzony w 80. minucie, kiedy drużyna Flicka prowadziła 4:2" - dziennik "Marca" na swojej stronie nie krył zachwytu nad poziomem piłkarskim spotkania.
+                picture
+                Wojciech Szczęsny czterokrotnie wyjmował piłkę z siatki
+                
+                Przyklasnął tej opinii inny madrycki dziennik sportowy "AS".
+                "Gigantyczny spektakl. Rewanż zapowiada się pasjonująco" - napisano.
+                "Szaleństwo na Montjuic bez szczęśliwego zakończenia. Barca i Atletico rozegrały niezapomniany mecz z ośmioma golami i remisem w doliczonym czasie gry. O awansie do finału zdecyduje spotkanie na stadionie Metropolitano" - to już barceloński "Sport".
+                
+                Robert Lewandowski z golem w półfinale Pucharu Króla z Atletico
+                Robert Lewandowski z golem w półfinale Pucharu Króla z Atletico
+                Foto: Getty Images
+                Real Sociedad albo Real Madryt
+                Drugą parę półfinałową tworzą drużyny Real Sociedad San Sebastian i Real Madryt, które zagrają w środę. Rewanże odbędą się na początku kwietnia.
+                Finał Pucharu Króla zaplanowano na 26 kwietnia w Sewilli.</p>
+        </div>
+        <footer>
+            Dawid
+        </footer>
+        <script>
+            function removeVowels(){
+                let textElement = document.getElementById("text");
+                let text = textElement.innerText;
+                textElement.innerText = text.replace(/[aeiouAEIOUąęóĄĘÓ]/g, "*");
+            }
+        </script>
+    </body>
+</html>
