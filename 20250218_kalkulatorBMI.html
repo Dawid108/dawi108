@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <title>Kalkulator BMI</title>
+        <meta charset="UTF-8">
+        <style>
+            body{
+                text-align: center;
+            }
+            header{
+                text-align: center;
+            }
+            section{
+                text-align: center;
+            }
+            footer{
+                text-align: center;
+            }
+        </style>
+    </head>
+    <body>
+        <section>
+            <h2>Oblicz swoje BMI</h2>
+            <label for="weight">Waga (kg):</label>
+            <input type="number" id="weight" placeholder="kg">
+            <br><br>
+            <label for="height">Wzrost (cm):</label>
+            <input type="number" id="height" placeholder="m" step="0.01">
+            <br><br>
+            <button onclick="calculateBMI()">Oblicz</button>
+        </section>
+        <script>
+            function calculateBMI(){
+                let weight = parseFloat(document.getElementById('weight').value);
+                let height = parseFloat(document.getElementById('height').value);
+                if (weight > 0 && height > 0){
+                    let bmi = weight / (height * height);
+                    document.write("Twoje BMI wynosi: " + bmi);
+                }
+                else{
+                    document.write("Podaj poprawne wartości");
+                }
+            }
+        </script>
+    </body>
+</html>
