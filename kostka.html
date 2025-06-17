@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Kostka do Gry</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 40px;
+    }
+
+    .container {
+      display: inline-block;
+    }
+
+    .dice {
+      width: 100px;
+      height: 100px;
+      margin: 20px auto;
+      background-color: white;
+      border: 3px solid #333;
+      border-radius: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 5px;
+      padding: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .rolling {
+      animation: roll 0.6s linear;
+    }
+
+    @keyframes roll {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(90deg); }
+      50% { transform: rotate(180deg); }
+      75% { transform: rotate(270deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .dot {
+      width: 16px;
+      height: 16px;
+      background-color: black;
+      border-radius: 50%;
+      margin: auto;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kostka do gry</h1>
+    <div class="dice" id="dice">
+      <!-- Kropki zostaną dodane automatycznie -->
+    </div>
+    <button onclick="rollDice()">Rzuć kostką</button>
+  </div>
+
+  <script>
+    const dotPatterns = {
+      1: [4],
+      2: [0, 8],
+      3: [0, 4, 8],
+      4: [0, 2, 6, 8],
+      5: [0, 2, 4, 6, 8],
+      6: [0, 2, 3, 5, 6, 8]
+    };
+
+    function drawDice(number) {
+      const dice = document.getElementById("dice");
+      dice.innerHTML = "";
+      const positions = dotPatterns[number];
+
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        if (positions.includes(i)) {
+          const dot = document.createElement("div");
+          dot.classList.add("dot");
+          cell.appendChild(dot);
+        }
+        dice.appendChild(cell);
+      }
+    }
+
+    function rollDice() {
+      const dice = document.getElementById("dice");
+
+      // Dodaj animację
+      dice.classList.add("rolling");
+
+      // Usuń animację po zakończeniu (600ms)
+      setTimeout(() => {
+        dice.classList.remove("rolling");
+        const number = Math.floor(Math.random() * 6) + 1;
+        drawDice(number);
+      }, 600);
+    }
+
+    // Rzut na start
+    window.onload = () => {
+      const number = Math.floor(Math.random() * 6) + 1;
+      drawDice(number);
+    };
+  </script>
+</body>
+</html>
