@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pływający Kosmiczny Śmieć</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #000; /* Kosmos */
+            font-family: 'Press Start 2P', cursive; /* Sugerowana czcionka pixel-artowa */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: white;
+            flex-direction: column;
+        }
+
+        #gameCanvas {
+            background-color: #1a0033; /* Ciemniejszy kosmos */
+            border: 2px solid #555;
+            display: block;
+            cursor: pointer;
+        }
+
+        #score {
+            position: absolute;
+            top: 10px;
+            width: 100%;
+            text-align: center;
+            font-size: 1.5em;
+            color: #ffcc00; /* Kolor żółty dla wyniku */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+            user-select: none;
+            z-index: 5; /* Upewnij się, że jest nad canvasem */
+        }
+
+        #gameOverScreen {
+            display: none; /* Domyślnie ukryty */
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8); /* Nieco ciemniejsze tło */
+            color: white;
+            font-size: 1.5em;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 10;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            height: 100%; /* Rozciągnij na całą wysokość */
+            width: 100%; /* Rozciągnij na całą szerokość */
+            box-sizing: border-box;
+            text-align: center; /* Wyśrodkowanie tekstu */
+        }
+
+        #gameOverScreen h2 {
+            margin-bottom: 10px;
+            font-size: 2em;
+            color: #ffcc00;
+        }
+
+        #restartButton {
+            background-color: #4CAF50; /* Zielony */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        #restartButton:hover {
+            background-color: #45a049;
+        }
+
+        @media (max-width: 600px) {
+            #score {
+                font-size: 1.2em;
+            }
+            #gameOverScreen {
+                font-size: 1.2em;
+            }
+            #gameOverScreen h2 {
+                font-size: 1.5em;
+            }
+            #restartButton {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="gameCanvas"></canvas>
+    <div id="score">Wynik: 0</div>
+    <div id="gameOverScreen">
+        <h2>Pływający Kosmiczny Śmieć</h2>
+        <p id="initialMessage">Kliknij lub dotknij, aby wystartować!</p>
+        <p id="finalScoreText" style="display: none;">Twój wynik: <span id="finalScore">0</span></p>
+        <p id="highScoreText" style="display: none;">Twój rekord: <span id="highScore">0</span></p>
+        <button id="restartButton">Rozpocznij grę</button>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreDisplay = document.getElementById('score');
+        const gameOverScreen = document.getElementById('gameOverScreen');
+        const initialMessage = document.getElementById('initialMessage');
+        const finalScoreText = document.getElementById('finalScoreText');
+        const finalScoreDisplay = document.getElementById('finalScore');
+        const highScoreText = document.getElementById('highScoreText');
+        const highScoreDisplay = document.getElementById('highScore');
+        const restartButton = document.getElementById('restartButton');
+
+        // Ustawienia gry
+        let gameRunning = false;
+        let score = 0;
+        const gravity = 0.3; // Zmniejszona grawitacja dla wolniejszego opadania
+        const jumpStrength = -6; // Dopasowanie siły skoku do nowej grawitacji
+        const obstacleSpeed = 3;
+        const obstacleGap = 150; // Przerwa między górną a dolną asteroidą
+        const obstacleWidth = 30;
+        const minObstacleHeight = 50;
+        let maxObstacleHeight; // Będzie ustawione po resizeCanvas
+
+        const spawnInterval = 1500; // Czas (ms) między generowaniem nowych przeszkód
+
+        // Statek kosmiczny
+        const ship = {
+            x: 50,
+            y: 0, // Inicjalizuj na 0, zostanie ustawione w startGame
+            width: 40,
+            height: 30,
+            velocityY: 0
+        };
+
+        // Przeszkody (asteroidy)
+        let obstacles = [];
+        let lastObstacleSpawnTime = 0;
+        let highScore = localStorage.getItem('kosmicznySmiecHighScore') ? parseInt(localStorage.getItem('kosmicznySmiecHighScore')) : 0;
+
+        // Funkcje rysowania
+        function drawShip() {
+            ctx.fillStyle = '#ffcc00'; // Kolor statku (żółty)
+            ctx.fillRect(ship.x, ship.y, ship.width, ship.height);
+        }
+
+        function drawObstacles() {
+            ctx.fillStyle = '#888'; // Kolor asteroid (szary)
+            obstacles.forEach(obs => {
+                ctx.fillRect(obs.x, 0, obs.width, obs.heightTop);
+                ctx.fillRect(obs.x, obs.heightTop + obstacleGap, obs.width, obs.heightBottom);
+            });
+        }
+
+        function drawScore() {
+            scoreDisplay.textContent = `Wynik: ${score}`;
+        }
+
+        // Funkcje logiki gry
+        function updateShip() {
+            ship.velocityY += gravity;
+            ship.y += ship.velocityY;
+
+            if (ship.y + ship.height > canvas.height) {
+                ship.y = canvas.height - ship.height;
+                ship.velocityY = 0;
+                gameOver();
+            }
+            if (ship.y < 0) {
+                ship.y = 0;
+                ship.velocityY = 0;
+            }
+        }
+
+        function updateObstacles(currentTime) {
+            if (currentTime - lastObstacleSpawnTime > spawnInterval) {
+                const heightTop = Math.floor(Math.random() * (maxObstacleHeight - minObstacleHeight + 1)) + minObstacleHeight;
+                const heightBottom = canvas.height - heightTop - obstacleGap;
+
+                obstacles.push({
+                    x: canvas.width,
+                    heightTop: heightTop,
+                    heightBottom: heightBottom,
+                    width: obstacleWidth,
+                    passed: false
+                });
+                lastObstacleSpawnTime = currentTime;
+            }
+
+            obstacles.forEach(obs => {
+                obs.x -= obstacleSpeed;
+
+                if (obs.x + obs.width < ship.x && !obs.passed) {
+                    score++;
+                    obs.passed = true;
+                    drawScore();
+                }
+            });
+
+            obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
+        }
+
+        function checkCollisions() {
+            obstacles.forEach(obs => {
+                if (ship.x < obs.x + obs.width &&
+                    ship.x + ship.width > obs.x &&
+                    ship.y < obs.heightTop) {
+                    gameOver();
+                }
+                if (ship.x < obs.x + obs.width &&
+                    ship.x + ship.width > obs.x &&
+                    ship.y + ship.height > obs.heightTop + obstacleGap) {
+                    gameOver();
+                }
+            });
+        }
+
+        function gameLoop(currentTime) {
+            if (!gameRunning) return;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            updateShip();
+            updateObstacles(currentTime);
+            checkCollisions();
+
+            drawShip();
+            drawObstacles();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function startGame() {
+            // Resetowanie stanu gry
+            score = 0;
+            ship.y = canvas.height / 2; // Statek zaczyna na środku
+            ship.velocityY = 0;
+            obstacles = [];
+            lastObstacleSpawnTime = performance.now(); // Użyj performance.now() dla dokładniejszego czasu
+
+            // Ukryj ekran końca gry/startowy i pokaż wynik
+            gameOverScreen.style.display = 'none';
+            scoreDisplay.style.display = 'block';
+
+            gameRunning = true; // Rozpocznij grę
+            drawScore();
+            requestAnimationFrame(gameLoop); // Rozpocznij pętlę gry
+        }
+
+        function gameOver() {
+            gameRunning = false; // Zakończ grę
+            scoreDisplay.style.display = 'none'; // Ukryj wynik
+
+            // Aktualizacja rekordu
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('kosmicznySmiecHighScore', highScore);
+            }
+
+            // Wyświetlenie ekranu końca gry z wynikami
+            gameOverScreen.querySelector('h2').textContent = "Koniec Gry!";
+            initialMessage.style.display = 'none'; // Ukryj wiadomość początkową
+            finalScoreText.style.display = 'block'; // Pokaż wynik końcowy
+            highScoreText.style.display = 'block'; // Pokaż rekord
+            restartButton.textContent = "Zagraj ponownie";
+
+            finalScoreDisplay.textContent = score;
+            highScoreDisplay.textContent = highScore;
+            gameOverScreen.style.display = 'flex'; // Pokaż ekran końca gry
+        }
+
+        // Obsługa zdarzeń
+        // Obsługa kliknięcia/dotyku na canvasie
+        canvas.addEventListener('click', () => {
+            if (gameRunning) { // Jeśli gra działa, to jest skok
+                ship.velocityY = jumpStrength;
+            } else { // Jeśli gra nie działa (ekran startowy/końca gry)
+                // Upewnij się, że gameOverScreen jest widoczny i gra nie działa, zanim ją wystartujesz
+                if (gameOverScreen.style.display === 'flex') {
+                    startGame();
+                }
+            }
+        });
+
+        // Obsługa spacji na komputerze
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault(); // Zapobieganie przewijaniu strony spacją
+                if (gameRunning) {
+                    ship.velocityY = jumpStrength;
+                } else {
+                    if (gameOverScreen.style.display === 'flex') {
+                        startGame();
+                    }
+                }
+            }
+        });
+
+        // Obsługa kliknięcia przycisku "Zagraj ponownie"
+        restartButton.addEventListener('click', startGame);
+
+        // Ustawienie rozmiaru canvas na początku i przy zmianie rozmiaru okna
+        function resizeCanvas() {
+            canvas.width = window.innerWidth > 600 ? 400 : window.innerWidth * 0.9;
+            canvas.height = window.innerHeight > 800 ? 600 : window.innerHeight * 0.7;
+
+            // Zaktualizuj maxObstacleHeight po zmianie rozmiaru canvas
+            maxObstacleHeight = canvas.height - obstacleGap - minObstacleHeight;
+            if (maxObstacleHeight < minObstacleHeight) { // Zabezpieczenie przed zbyt małym canvasem
+                maxObstacleHeight = minObstacleHeight;
+            }
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Funkcja inicjująca ekran startowy przy pierwszym załadowaniu strony
+        function showStartScreen() {
+            resizeCanvas(); // Ustaw rozmiar canvasa przed wyświetleniem ekranu startowego
+            scoreDisplay.style.display = 'none'; // Ukryj wynik na ekranie startowym
+            gameOverScreen.style.display = 'flex'; // Pokaż ekran startowy
+            gameOverScreen.querySelector('h2').textContent = "Pływający Kosmiczny Śmieć";
+            initialMessage.style.display = 'block'; // Pokaż wiadomość początkową
+            finalScoreText.style.display = 'none'; // Ukryj wynik końcowy
+            highScoreText.style.display = 'none'; // Ukryj rekord
+            restartButton.textContent = "Rozpocznij grę";
+        }
+
+        // Wywołaj funkcję showStartScreen, gdy strona zostanie w pełni załadowana
+        window.onload = showStartScreen;
+    </script>
+</body>
+</html>
