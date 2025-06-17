@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Do While</title>
+</head>
+<body>
+	<script>
+	/*Program prosi najpierw o ustawienie hasła, a następnie prosi o jego podanie.
+	Jeśli podamy złe hasło otrzymujemy komunikat złe hasło i prosbę o ponowne podanie hasła.*/
+	
+	let haslo = prompt("Podaj hasło");
+	let haslo2;
+	do{
+		haslo2 = prompt("Podaj hasło");
+		if(haslo2 != haslo){
+			alert("złe hasło");
+		}
+	}while (haslo2 != haslo);
+</script>
+</body>
+</html>
