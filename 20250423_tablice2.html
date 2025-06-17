@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablice 2</title>
+    <style>
+        *{
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <script>
+        let lotto = [10, 28, 22, 49, 30, 8];
+        let suma = 0;
+        let iloczyn = 1;
+        for (let i=0; i<6; i++){
+            suma = suma + lotto[i];
+            iloczyn = iloczyn * lotto[i];
+        }
+        document.write("suma: " + suma + "<br>iloczyn: " + iloczyn);
+        document.write("<br><br>");
+
+        document.write("<b>Poszukiwanie największego elementu w tablicy</b>");
+        let max = lotto[0];
+        let gdzie = 0;
+        for (let j=1; j<6; j++){
+            if(lotto[j] > max){
+                max = lotto[j];
+                gdzie = j;
+            }
+        }
+        document.write("<br>Największy element tablicy to: " + max + ".<br>Znajduje się on na " + (gdzie + 1) + " miejscu w tablicy.");
+    </script>
+</body>
+</html>
