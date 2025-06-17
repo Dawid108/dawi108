@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <title>Instrukcja FOR</title>
+    </head>
+    <body>
+        <h3>Instrukcja FOR - cyfry</h3>
+        <script>
+            for(let i=0; i<=9; i=i+1){
+                document.write(i + ", ");
+            }
+        </script>
+        <h3>Instrukcja FOR - cyfry w odwrotnej kolejności</h3>
+        <script>
+            for(let i=9; i>=0; i=i-1){
+                document.write(i + ", ");
+            }
+        </script>
+        <h3>Liczby przyste od 2 do 100</h3>
+        <script>
+            for(let i=2; i<=100; i=i+2){
+                document.write(i + ", ");
+            }
+        </script>
+        <h3>Pełne dziesiątki od 100 do 10</h3>
+        <script>
+            for(let i=100; i>=10; i=i-10){
+                document.write(i + ", ");
+            }
+        </script>
+        <h3>oszczędności Jacka</h3>
+        <p>Jacek w styczniu dostał 10 zł kieszonkowego i obietnicę, że co miesiąc bedzie ono rosło o 5 zł. 
+            Ile nazbiera w ciagu roku. Wyswietl nr miesiąca, kwote kieszonkowego i aktualna sumę.</p>
+        <script>
+            let kieszonkowe = 10;
+            let suma=10;
+            for(let miesiac = 1; miesiac<=12; miesiac=miesiac+1){
+                document.write(miesiac + " " + kieszonkowe + " " + suma + "<br>");
+                kieszonkowe=kieszonkowe + 5;
+                suma = suma + kieszonkowe;
+            }
+        </script>
+    </body>
+</html>
