@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablice 1</title>
+</head>
+<body>
+    <h1><center>Tablice</center></h1>
+    <script>
+        let planety = ["merkury", "wenus", "ziemia", "mars", "jowisz", "saturn", "uran", "neptun"];
+        // merkury = 0, wenus = 1, ziemia = 2 itd
+        document.write("Planeta na której jest najwyższa w Układzie Słonecznym góra to: " + planety[3] + "<br"); //Mars
+        document.write("Oto wszystkie planety: ");
+        document.write("<ol>");
+        for (let i=0; i<planety.length; i=i+1){
+            document.write("<li>" + planety[i] + "</li>");
+        }
+        document.write("</ol>");
+        document.write("Oto planety najdalsze od Słońca: ");
+        document.write(planety.reverse().join(", ") + ".<br>");
+        document.write("<br>");
+        
+        let tecza = new Array();
+        tecza[0] = "czerwony";
+        tecza[1] = "pomarańczowy";
+        tecza[2] = "żółty";
+        tecza[3] = "zielony";
+        tecza[4] = "niebieski";
+        tecza[5] = "indygo";
+        tecza[6] = "fioletowy";
+        document.write("Oto kolory tęczy: <br>" + tecza.join("<br>"));
+    </script>
+</body>
+</html>
