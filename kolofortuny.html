@@ -8,7 +8,7 @@
       font-family: Arial, sans-serif;
       text-align: center;
       margin: 0;
-      padding: 0;
+      padding: 10px;
       background-color: #f0f0f0;
     }
 
@@ -48,12 +48,36 @@
       margin: 15px 0;
     }
 
-    button {
+    .inne-button {
       margin: 5px;
       padding: 10px 20px;
       font-size: 16px;
       cursor: pointer;
+      background-color: #4CAF50;
     }
+
+    .fancy-button {
+        background-color: #4CAF50;        /* Zielony kolor */
+        border: none;                     /* Bez ramki */
+        padding: 12px 24px;               /* Wewnętrzny margines */
+        margin: 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        font-family: 'Segoe UI', sans-serif;
+        border-radius: 8px;              /* Zaokrąglenie rogów */
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Cień */
+        cursor: pointer;                 /* Rączka przy najechaniu */
+        transition: all 0.3s ease;       /* Płynna animacja */
+    }
+
+    .fancy-button:hover {
+        background-color: #45a049;       /* Ciemniejszy zielony po najechaniu */
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        transform: scale(1.05);          /* Lekkie powiększenie */
+    }
+
 
     #items {
       margin-top: 10px;
@@ -70,17 +94,17 @@
   <h1>Koło Fortuny</h1>
 
   <div class="wheel-container">
-    <canvas id="wheel" width="500" height="500"></canvas>
+    <canvas id="wheel" width="640" height="640"></canvas>
     <div class="arrow"></div>
   </div>
 
   <p id="result">Wylosowano:</p>
 
   <div class="buttons">
-    <button id="spinBtn">Zakreć</button>
-    <button id="addItemBtn">Dodaj następne</button>
-    <button id="removeLastBtn">Usuń ostatnie</button>
-    <button id="resetBtn">Usuń wszystko</button>
+    <button id="spinBtn" class="fancy-button">Zakreć</button><br>
+    <button id="addItemBtn" class="inne-button">Dodaj następne</button>
+    <button id="removeLastBtn" class="inne-button">Usuń ostatnie</button>
+    <button id="resetBtn" class="inne-button">Usuń wszystko</button>
   </div>
 
   <div id="items"></div>
@@ -133,14 +157,14 @@
         const color = getRandomColor(i);
 
         ctx.beginPath();
-        ctx.moveTo(250, 250);
-        ctx.arc(250, 250, 250, startAngle, endAngle);
+        ctx.moveTo(320, 320);
+        ctx.arc(320, 320, 320, startAngle, endAngle);
         ctx.fillStyle = color;
         ctx.fill();
         ctx.stroke();
 
         ctx.save();
-        ctx.translate(250, 250);
+        ctx.translate(320, 320);
         ctx.rotate(startAngle + arcSize / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#000";
