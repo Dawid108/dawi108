@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Switch</title>
+    </head>
+    <body>
+        <h1>Switch</h1>
+        <script>
+            let ocena = Number(prompt("Podaj ocenę z ostatniego sprawdzianu"));
+            switch(ocena){
+                case 1: document.write("Bardzo duzo pracy przed Tobą"); break;
+                case 2: document.write("Jeszcze dużo pracy przed Tobą"); break;
+                case 3: document.write("Ostatecznie moze byc"); break;
+                case 4: document.write("Jest nieźle"); break;
+                case 5: document.write("Bardzo ładnie"); break;
+                case 6: document.write("Brawo! Super!"); break;
+                default: document.write("Nie ma takiej oceny");
+            }
+            document.write("<br><br><h4><b>Do końca dnia zostały Ci następujace przedmioty</b></h4>");
+
+            let nrlekcji = Number(prompt("Podaj numer lekcji, a powiem jakie lekcje zostały Ci do końca dnia"));
+            switch(nrlekcji){
+                case 1: document.write("Pracownia programowania aplikacji desktopowych<br>");
+                case 2: document.write("Projektowania oprogramowania<br>");
+                case 3: document.write("Programowanie aplikacji desktopowych<br>");
+                case 4: document.write("Język polski<br>");
+                case 5: document.write("Pracownia projektowania i administrowania baz danych<br>");
+                case 6: document.write("Pracownia programowania aplikacji internetowych<br>");
+                case 7: document.write("Pracownia projektowania i administrowania baz danych<br>");
+                case 8: document.write("Pracownia projektowania oprogramowania<br>");
+                case 9: document.write("Programowanie aplikacji internetowych<br>"); break;
+                default: document.write("Nie ma takiej lekcji!<br>");
+            }
+        </script>
+    </body>
+</html>
