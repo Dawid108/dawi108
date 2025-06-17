@@ -51,7 +51,7 @@
     .inne-button {
       margin: 5px;
       padding: 10px 20px;
-      font-size: 16px;
+      font-size: 20px;
       cursor: pointer;
       background-color: #4CAF50;
     }
@@ -59,14 +59,14 @@
     .fancy-button {
         background-color: #4CAF50;        /* Zielony kolor */
         border: none;                     /* Bez ramki */
-        padding: 12px 24px;               /* Wewnętrzny margines */
+        padding: 30px 40px;               /* Wewnętrzny margines */
         margin: 10px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
-        font-size: 16px;
+        font-size: 30px;
         font-family: 'Segoe UI', sans-serif;
-        border-radius: 8px;              /* Zaokrąglenie rogów */
+        border-radius: 15px;              /* Zaokrąglenie rogów */
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);  /* Cień */
         cursor: pointer;                 /* Rączka przy najechaniu */
         transition: all 0.3s ease;       /* Płynna animacja */
@@ -94,7 +94,7 @@
   <h1>Koło Fortuny</h1>
 
   <div class="wheel-container">
-    <canvas id="wheel" width="640" height="640"></canvas>
+    <canvas id="wheel" width="800" height="800"></canvas>
     <div class="arrow"></div>
   </div>
 
@@ -157,18 +157,18 @@
         const color = getRandomColor(i);
 
         ctx.beginPath();
-        ctx.moveTo(320, 320);
-        ctx.arc(320, 320, 320, startAngle, endAngle);
+        ctx.moveTo(400, 400);
+        ctx.arc(400, 400, 400, startAngle, endAngle);
         ctx.fillStyle = color;
         ctx.fill();
         ctx.stroke();
 
         ctx.save();
-        ctx.translate(320, 320);
+        ctx.translate(400, 400);
         ctx.rotate(startAngle + arcSize / 2);
         ctx.textAlign = "right";
         ctx.fillStyle = "#000";
-        ctx.font = "16px Arial";
+        ctx.font = "32px Arial";
         ctx.fillText(item, 240, 10);
         ctx.restore();
       });
