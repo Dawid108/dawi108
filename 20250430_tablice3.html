@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablice 3</title>
+</head>
+<body>
+    <h1>Tablice Dwuwymiarowe</h1>
+    <script>
+        let rodzina = [
+            ["Ala", "siostra", 22],
+            ["Ola", "babcia", 66],
+            ["Wojtek", "ojciec", 55],
+            ["Kinga", "ciocia", 44]
+        ];
+        document.write("Oto imiona członków rodziny majacych więcej niz 50 lat: ");
+        for(let i=0; i<=3; i=i+1){
+            if (rodzina[i][2]>50){
+                document.write(rodzina[i][0] +  ", ");
+            }
+        }
+        document.write("<br>Oto sumaryczny wiek mojej rodziny: ");
+        let suma = 0;
+        for(let j=0; j<rodzina.length; j=j+1){
+            suma = suma + rodzina[j][2];
+        }
+        document.write(suma + ".<br>");
+
+        document.write("Oto imiona tych członków rodziny, którzy nie są moin tatą: ");
+        for(let k=0; k<rodzina.length; k=k+1){
+            if (rodzina[k][1] != "ojciec"){
+                document.write(rodzina[k][0] +  ", ");
+            }
+        }
+            document.write("<br>");
+            document.write("<br>");
+        
+        document.write("Oto moja rodzina:<br>");
+        for(let i=0; i<=3; i++) {
+            for(let j=0; j<=2; j++){
+                document.write(rodzina[i][j] + " ");
+            }
+            document.write("lat<br>");
+        }
+</script>
+</body>
+</html>
