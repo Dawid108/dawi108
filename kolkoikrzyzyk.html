@@ -158,14 +158,13 @@
                 <div id="winning-line" class="winning-line"></div>
             </div>
             <p id="game-status"></p>
-            <button id="restart-game" style="display: none;">Zagraj ponownie</button>
-        </div>
+            <button id="new-game-btn" style="display: none;">Nowa Gra</button> </div>
     </div>
 
     <script>
         const cells = document.querySelectorAll('.cell');
         const gameStatus = document.getElementById('game-status');
-        const restartGameBtn = document.getElementById('restart-game');
+        const newGameBtn = document.getElementById('new-game-btn'); // Zmieniony ID
         const playVsComputerBtn = document.getElementById('play-vs-computer');
         const playTwoPlayersBtn = document.getElementById('play-two-players');
         const gameModesDiv = document.getElementById('game-modes');
@@ -191,7 +190,7 @@
         };
 
         function handleCellClick(clickedCellEvent) {
-            const clickedCell = clickedCellEvent.target;
+            const clickedCell = clickedCellCellEvent.target;
             const clickedCellIndex = parseInt(clickedCell.dataset.cellIndex);
 
             if (board[clickedCellIndex] !== '' || !gameActive) {
@@ -241,7 +240,7 @@
                 gameStatus.innerHTML = statusMessages.win(currentPlayer);
                 gameActive = false;
                 displayWinningLine(winningCombo, currentPlayer);
-                showRestartButton();
+                showNewGameButton(); // Wywołujemy nową funkcję
                 return;
             }
 
@@ -249,7 +248,7 @@
             if (roundDraw) {
                 gameStatus.innerHTML = statusMessages.draw;
                 gameActive = false;
-                showRestartButton();
+                showNewGameButton(); // Wywołujemy nową funkcję
                 return;
             }
 
@@ -259,13 +258,12 @@
         function displayWinningLine(combo, winner) {
             const [idx1, idx2, idx3] = combo;
             const cell1 = cells[idx1];
-            const cell3 = cells[idx3]; // Używamy pierwszej i ostatniej komórki do określenia linii
+            const cell3 = cells[idx3];
 
             const boardRect = gameBoard.getBoundingClientRect();
             const cell1Rect = cell1.getBoundingClientRect();
             const cell3Rect = cell3.getBoundingClientRect();
 
-            // Obliczamy środki komórek względem planszy gry
             const startX = (cell1Rect.left + cell1Rect.right) / 2 - boardRect.left;
             const startY = (cell1Rect.top + cell1Rect.bottom) / 2 - boardRect.top;
             const endX = (cell3Rect.left + cell3Rect.right) / 2 - boardRect.left;
@@ -275,23 +273,22 @@
             const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
 
             winningLine.style.width = `${length}px`;
-            winningLine.style.height = `5px`; // Stała grubość linii
+            winningLine.style.height = `5px`;
             winningLine.style.backgroundColor = winner === 'X' ? '#007bff' : '#dc3545';
             winningLine.style.transform = `translate(${startX - length / 2 * Math.cos(angle * Math.PI / 180)}px, ${startY - length / 2 * Math.sin(angle * Math.PI / 180)}px) rotate(${angle}deg)`;
-            winningLine.style.left = `${startX}px`; // Ustawiamy początek linii na środek pierwszej komórki
+            winningLine.style.left = `${startX}px`;
             winningLine.style.top = `${startY}px`;
-            winningLine.style.transformOrigin = '0 0'; // Punkt obrotu na początku linii
+            winningLine.style.transformOrigin = '0 0';
 
             winningLine.style.display = 'block';
         }
 
-
-        function showRestartButton() {
-            restartGameBtn.style.display = 'block';
+        function showNewGameButton() { // Zmieniona nazwa funkcji
+            newGameBtn.style.display = 'block';
         }
 
-        function hideRestartButton() {
-            restartGameBtn.style.display = 'none';
+        function hideNewGameButton() { // Zmieniona nazwa funkcji
+            newGameBtn.style.display = 'none';
         }
 
         function hideWinningLine() {
@@ -312,11 +309,11 @@
                 cell.innerHTML = '';
                 cell.classList.remove('x', 'o');
             });
-            hideRestartButton();
+            hideNewGameButton(); // Wywołujemy nową funkcję
             hideWinningLine();
         }
 
-        // Logika dla ruchu komputera (prostota: wybiera pierwsze dostępne puste pole)
+        // Logika dla ruchu komputera
         function handleComputerMove() {
             if (!gameActive) return;
 
@@ -328,8 +325,6 @@
             }
 
             if (availableCells.length > 0) {
-                // Bardziej zaawansowana logika AI byłaby tutaj
-                // Na potrzeby demo, komputer wybiera losowe puste pole
                 const randomIndex = Math.floor(Math.random() * availableCells.length);
                 const cellToPlayIndex = availableCells[randomIndex];
                 const cellToPlay = cells[cellToPlayIndex];
@@ -341,13 +336,13 @@
 
         // Event Listeners
         cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-        restartGameBtn.addEventListener('click', startGame);
+        newGameBtn.addEventListener('click', () => { // Zmieniony ID i dodane odświeżanie strony
+            location.reload(); // Odświeża całą stronę
+        });
 
         playVsComputerBtn.addEventListener('click', () => {
             isVsComputer = true;
             startGame();
-            // Jeśli komputer ma być pierwszy, można dodać warunek, żeby to komputer wykonał pierwszy ruch:
-            // if (currentPlayer === 'O') setTimeout(handleComputerMove, 500);
         });
 
         playTwoPlayersBtn.addEventListener('click', () => {
