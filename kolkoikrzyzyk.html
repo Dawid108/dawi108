@@ -201,6 +201,7 @@
 
             handlePlayerMove(clickedCell, clickedCellIndex);
             checkResult();
+            showNewGameButton();
 
             // Jeśli gramy z komputerem i gra nadal aktywna, oraz ruch należy do "O" (komputera)
             if (gameActive && isVsComputer && currentPlayer === 'O') {
@@ -346,6 +347,7 @@
 
                 handlePlayerMove(cellToPlay, cellToPlayIndex);
                 checkResult();
+                showNewGameButton();
             }
         }
 
