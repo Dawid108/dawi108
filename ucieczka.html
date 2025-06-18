@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avoid the Blocks! - Z Rekordem</title>
+    <title>Avoid the Blocks! - Statystyki</title>
     <style>
         body {
             margin: 0;
@@ -28,17 +28,17 @@
         #scoreDisplay {
             position: absolute;
             top: 20px;
-            left: 20px; /* Przesunięto w lewo, żeby nie zasłaniać */
+            left: 20px;
             font-size: 2em;
             color: #eee;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            z-index: 10; /* Upewnij się, że jest nad innymi elementami */
+            z-index: 10;
         }
 
         #highScoreDisplay {
             position: absolute;
             top: 20px;
-            right: 20px; /* Dodano wyświetlanie rekordu po prawej stronie */
+            right: 20px;
             font-size: 1.2em;
             color: #ccc;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
@@ -63,7 +63,8 @@
         }
 
         #gameOverScreen p {
-            margin: 5px 0;
+            margin: 8px 0; /* Większe odstępy między liniami */
+            font-size: 1.2em; /* Większa czcionka dla statystyk */
         }
 
         #restartButton {
@@ -74,7 +75,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 30px; /* Większy odstęp od statystyk */
             transition: background-color 0.3s ease;
         }
 
@@ -90,18 +91,20 @@
     <div id="gameOverScreen">
         <h2>Koniec Gry!</h2>
         <p>Twój wynik: <span id="finalScore">0</span></p>
-        <p>Rekord: <span id="finalHighScore">0</span></p>
-        <button id="restartButton">Zagraj ponownie</button>
+        <p>Twój rekord: <span id="finalHighScore">0</span></p>
+        <p>Suma punktów: <span id="totalPoints">0</span></p>
+        <button id="restartButton">Nowa Gra</button>
     </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreDisplay = document.getElementById('scoreDisplay');
-        const highScoreDisplay = document.getElementById('highScoreDisplay'); // Nowy element
+        const highScoreDisplay = document.getElementById('highScoreDisplay');
         const gameOverScreen = document.getElementById('gameOverScreen');
         const finalScoreDisplay = document.getElementById('finalScore');
-        const finalHighScoreDisplay = document.getElementById('finalHighScore'); // Nowy element na ekranie końca gry
+        const finalHighScoreDisplay = document.getElementById('finalHighScore');
+        const totalPointsDisplay = document.getElementById('totalPoints'); // Nowy element dla sumy punktów
         const restartButton = document.getElementById('restartButton');
 
         canvas.width = 300;
@@ -124,27 +127,38 @@
         let blocks = [];
         let blockSpawnInterval = 800;
         let lastBlockSpawnTime = 0;
-        const blockFallSpeed = 2; // Możesz zwiększyć tę wartość, aby bloki spadały szybciej
+        const blockFallSpeed = 2;
         let minGapWidth = 90; // Zwiększona minimalna szerokość przerwy
         let maxGapWidth = 180; // Zwiększona maksymalna szerokość przerwy
 
         // Stan gry
         let score = 0;
-        let highScore = 0; // Zmienna do przechowywania rekordu
+        let highScore = 0;
+        let totalPoints = 0; // Nowa zmienna dla sumy punktów
         let gameOver = false;
         let gameRunning = false;
 
         // --- Funkcje związane z Local Storage ---
-        function loadHighScore() {
-            const savedScore = localStorage.getItem('avoidBlocksHighScore');
-            if (savedScore) {
-                highScore = parseInt(savedScore, 10);
+        function loadGameData() {
+            const savedHighScore = localStorage.getItem('avoidBlocksHighScore');
+            if (savedHighScore) {
+                highScore = parseInt(savedHighScore, 10);
             }
-            highScoreDisplay.textContent = `Rekord: ${highScore}`;
+            const savedTotalPoints = localStorage.getItem('avoidBlocksTotalPoints'); // Załaduj sumę punktów
+            if (savedTotalPoints) {
+                totalPoints = parseInt(savedTotalPoints, 10);
+            }
+            updateStatsDisplays(); // Zaktualizuj wyświetlacze po załadowaniu
         }
 
-        function saveHighScore() {
+        function saveGameData() {
             localStorage.setItem('avoidBlocksHighScore', highScore.toString());
+            localStorage.setItem('avoidBlocksTotalPoints', totalPoints.toString()); // Zapisz sumę punktów
+        }
+
+        function updateStatsDisplays() {
+            highScoreDisplay.textContent = `Rekord: ${highScore}`;
+            // totalPointsDisplay.textContent = `Suma punktów: ${totalPoints}`; // To jest potrzebne tylko na ekranie końca gry
         }
 
         // Funkcje rysowania
@@ -203,11 +217,9 @@
             if (currentTime - lastBlockSpawnTime > blockSpawnInterval) {
                 spawnBlock();
                 lastBlockSpawnTime = currentTime;
-                // Stopniowe zwiększanie trudności
                 if (blockSpawnInterval > 300) {
                     blockSpawnInterval -= 5;
                 }
-                // Stopniowe zmniejszanie szerokości przerwy
                 minGapWidth = Math.max(playerSize * 1.5, minGapWidth - 0.5);
                 maxGapWidth = Math.max(playerSize * 2, maxGapWidth - 1);
             }
@@ -276,14 +288,14 @@
             score = 0;
             blocks = [];
             playerX = (canvas.width / 2) - (playerSize / 2);
-            blockSpawnInterval = 800; // Resetuj do początkowej wartości
-            minGapWidth = 90; // Resetuj do początkowej wartości
-            maxGapWidth = 180; // Resetuj do początkowej wartości
+            blockSpawnInterval = 800;
+            minGapWidth = 90;
+            maxGapWidth = 180;
             lastBlockSpawnTime = performance.now();
 
             gameOverScreen.style.display = 'none';
             scoreDisplay.style.display = 'block';
-            highScoreDisplay.style.display = 'block'; // Upewnij się, że rekord jest widoczny
+            highScoreDisplay.style.display = 'block';
 
             update();
         }
@@ -293,17 +305,23 @@
             gameOver = true;
             gameRunning = false;
 
+            // Zaktualizuj sumę punktów
+            totalPoints += score;
+
             // Sprawdź i zapisz nowy rekord
             if (score > highScore) {
                 highScore = score;
-                saveHighScore(); // Zapisz rekord w Local Storage
             }
 
+            saveGameData(); // Zapisz wszystkie dane w Local Storage
+
             finalScoreDisplay.textContent = score;
-            finalHighScoreDisplay.textContent = highScore; // Wyświetl rekord na ekranie końca gry
+            finalHighScoreDisplay.textContent = highScore;
+            totalPointsDisplay.textContent = totalPoints; // Wyświetl sumę punktów
+
             gameOverScreen.style.display = 'flex';
             scoreDisplay.style.display = 'none';
-            highScoreDisplay.style.display = 'none'; // Ukryj rekord na ekranie końca gry (bo jest w głównym panelu)
+            highScoreDisplay.style.display = 'none';
         }
 
         // Event Listenery
@@ -318,17 +336,20 @@
         restartButton.addEventListener('click', startGame);
 
         // --- Inicjalizacja gry ---
-        loadHighScore(); // Załaduj rekord przy starcie
-        // Początkowe wyświetlenie ekranu startowego
+        loadGameData(); // Załaduj wszystkie dane przy starcie
+        // Początkowe wyświetlenie ekranu startowego/końca gry z aktualnymi statystykami
         gameOverScreen.style.display = 'flex';
         scoreDisplay.style.display = 'none';
         highScoreDisplay.style.display = 'block'; // Pokaż rekord na ekranie startowym
-        document.getElementById('finalScore').textContent = 0;
-        document.getElementById('finalHighScore').textContent = highScore; // Wyświetl aktualny rekord
         document.querySelector('#gameOverScreen h2').textContent = "Unikaj Bloków!";
-        document.querySelector('#gameOverScreen p:nth-of-type(1)').innerHTML = "Przesuwaj palcem w lewo/prawo, by sterować."; // Pierwszy paragraf
-        document.querySelector('#gameOverScreen p:nth-of-type(2)').style.display = 'none'; // Ukryj linię z wynikiem, bo jest oddzielnie
-        restartButton.textContent = "Start";
+        document.querySelector('#gameOverScreen p:nth-of-type(1)').innerHTML = "Przesuwaj palcem w lewo/prawo, by sterować.";
+        document.querySelector('#gameOverScreen p:nth-of-type(2)').style.display = 'none'; // Ukryj linię "Twój rekord:", bo jest na górze
+        document.querySelector('#gameOverScreen p:nth-of-type(3)').style.display = 'none'; // Ukryj linię "Suma punktów:", bo jest na górze
+        // Poniższe linie ustawiają początkowe wartości na ekranie startowym
+        finalScoreDisplay.textContent = 0; // Ustaw 0 dla "Twój wynik" na starcie
+        finalHighScoreDisplay.textContent = highScore; // Wyświetl załadowany rekord
+        totalPointsDisplay.textContent = totalPoints; // Wyświetl załadowaną sumę punktów
+        restartButton.textContent = "Start"; // Zmień tekst przycisku na "Start"
     </script>
 </body>
 </html>
