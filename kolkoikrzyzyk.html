@@ -31,7 +31,7 @@
             margin-bottom: 20px;
         }
 
-        #game-modes button, #restart-game {
+        #game-modes button, #new-game-btn { /* Poprawiono: #new-game-btn */
             background-color: #28a745;
             color: white;
             padding: 12px 25px;
@@ -43,7 +43,7 @@
             transition: background-color 0.3s ease;
         }
 
-        #game-modes button:hover, #restart-game:hover {
+        #game-modes button:hover, #new-game-btn:hover { /* Poprawiono: #new-game-btn */
             background-color: #218838;
         }
 
@@ -129,7 +129,7 @@
                 font-size: 2.5em;
             }
 
-            #game-modes button, #restart-game {
+            #game-modes button, #new-game-btn { /* Poprawiono: #new-game-btn */
                 padding: 10px 20px;
                 font-size: 1em;
                 margin: 8px;
@@ -158,13 +158,14 @@
                 <div id="winning-line" class="winning-line"></div>
             </div>
             <p id="game-status"></p>
-            <button id="new-game-btn" style="display: none;">Nowa Gra</button> </div>
+            <button id="new-game-btn" style="display: none;">Nowa Gra</button>
+        </div>
     </div>
 
     <script>
         const cells = document.querySelectorAll('.cell');
         const gameStatus = document.getElementById('game-status');
-        const newGameBtn = document.getElementById('new-game-btn'); // Zmieniony ID
+        const newGameBtn = document.getElementById('new-game-btn');
         const playVsComputerBtn = document.getElementById('play-vs-computer');
         const playTwoPlayersBtn = document.getElementById('play-two-players');
         const gameModesDiv = document.getElementById('game-modes');
@@ -190,7 +191,8 @@
         };
 
         function handleCellClick(clickedCellEvent) {
-            const clickedCell = clickedCellCellEvent.target;
+            // POPRAWKA: zmieniono 'clickedCellCellEvent' na 'clickedCellEvent.target'
+            const clickedCell = clickedCellEvent.target;
             const clickedCellIndex = parseInt(clickedCell.dataset.cellIndex);
 
             if (board[clickedCellIndex] !== '' || !gameActive) {
@@ -200,6 +202,7 @@
             handlePlayerMove(clickedCell, clickedCellIndex);
             checkResult();
 
+            // Jeśli gramy z komputerem i gra nadal aktywna, oraz ruch należy do "O" (komputera)
             if (gameActive && isVsComputer && currentPlayer === 'O') {
                 setTimeout(handleComputerMove, 700); // Małe opóźnienie dla ruchu komputera
             }
@@ -240,7 +243,7 @@
                 gameStatus.innerHTML = statusMessages.win(currentPlayer);
                 gameActive = false;
                 displayWinningLine(winningCombo, currentPlayer);
-                showNewGameButton(); // Wywołujemy nową funkcję
+                showNewGameButton();
                 return;
             }
 
@@ -248,7 +251,7 @@
             if (roundDraw) {
                 gameStatus.innerHTML = statusMessages.draw;
                 gameActive = false;
-                showNewGameButton(); // Wywołujemy nową funkcję
+                showNewGameButton();
                 return;
             }
 
@@ -283,11 +286,11 @@
             winningLine.style.display = 'block';
         }
 
-        function showNewGameButton() { // Zmieniona nazwa funkcji
+        function showNewGameButton() {
             newGameBtn.style.display = 'block';
         }
 
-        function hideNewGameButton() { // Zmieniona nazwa funkcji
+        function hideNewGameButton() {
             newGameBtn.style.display = 'none';
         }
 
@@ -302,15 +305,26 @@
             gameBoardContainer.style.display = 'block';
             gameModesDiv.style.display = 'none';
             board = ['', '', '', '', '', '', '', '', ''];
-            currentPlayer = 'X';
-            gameActive = true;
-            gameStatus.innerHTML = statusMessages.playerTurn(currentPlayer);
+            gameActive = true; // Gra staje się aktywna od razu
             cells.forEach(cell => {
                 cell.innerHTML = '';
                 cell.classList.remove('x', 'o');
             });
-            hideNewGameButton(); // Wywołujemy nową funkcję
+            hideNewGameButton();
             hideWinningLine();
+
+            // Losowe ustalanie kto zaczyna w trybie z komputerem
+            if (isVsComputer) {
+                currentPlayer = Math.random() < 0.5 ? 'X' : 'O'; // 50% szans na X lub O
+                gameStatus.innerHTML = statusMessages.playerTurn(currentPlayer);
+                if (currentPlayer === 'O') {
+                    // Jeśli komputer ma zaczynać, daj mu chwilę i wykonaj ruch
+                    setTimeout(handleComputerMove, 1000);
+                }
+            } else {
+                currentPlayer = 'X'; // W trybie dwóch graczy zawsze zaczyna X
+                gameStatus.innerHTML = statusMessages.playerTurn(currentPlayer);
+            }
         }
 
         // Logika dla ruchu komputera
@@ -325,6 +339,7 @@
             }
 
             if (availableCells.length > 0) {
+                // Na potrzeby demo, komputer wybiera losowe puste pole
                 const randomIndex = Math.floor(Math.random() * availableCells.length);
                 const cellToPlayIndex = availableCells[randomIndex];
                 const cellToPlay = cells[cellToPlayIndex];
@@ -336,7 +351,7 @@
 
         // Event Listeners
         cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-        newGameBtn.addEventListener('click', () => { // Zmieniony ID i dodane odświeżanie strony
+        newGameBtn.addEventListener('click', () => {
             location.reload(); // Odświeża całą stronę
         });
 
