@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Avoid the Blocks!</title>
+    <title>Avoid the Blocks! - Lewo/Prawo</title>
     <style>
         body {
             margin: 0;
@@ -22,7 +22,7 @@
             background-color: #333;
             border: 2px solid #555;
             display: block; /* Usuwa białe marginesy pod canvasem */
-            cursor: pointer;
+            touch-action: none; /* Zapobiega przewijaniu strony na dotyku */
         }
 
         #scoreDisplay {
@@ -83,25 +83,31 @@
         canvas.height = 500; // Wysokość obszaru gry
 
         // Parametry gracza
-        const playerSize = 20;
-        let playerX = (canvas.width / 4) - (playerSize / 2); // Początkowa pozycja po lewej stronie
-        let playerY = canvas.height - playerSize * 2; // Stała pozycja Y gracza
-        const playerSpeedY = 2; // Prędkość automatycznego ruchu w górę (czyli tak naprawdę otoczenia w dół)
+        const playerSize = 30;
+        let playerX = (canvas.width / 2) - (playerSize / 2); // Początkowa pozycja na środku
+        const playerY = canvas.height - playerSize * 3; // Stała pozycja Y gracza, trochę wyżej
         const playerColor = '#4CAF50';
+        let touchStartX = 0; // Początkowa pozycja dotyku
+        let playerVelocityX = 0; // Prędkość gracza w poziomie
+        const playerAcceleration = 0.8; // Przyspieszenie gracza przy przesuwaniu
+        const maxPlayerSpeed = 7; // Maksymalna prędkość gracza
+        const friction = 0.9; // Tarcie spowalniające gracza
 
         // Parametry bloków
-        const blockSize = 30;
+        const blockSize = 30; // Wysokość bloku
+        let blockWidth = 80; // Szerokość pojedynczego bloku
         const blockColor = '#FF6347';
         let blocks = [];
-        let blockSpawnInterval = 1000; // Co ile ms pojawia się nowy blok
+        let blockSpawnInterval = 800; // Co ile ms pojawia się nowy blok
         let lastBlockSpawnTime = 0;
-        let minBlockGap = 100; // Minimalna przerwa między blokami
-        let maxBlockGap = 200; // Maksymalna przerwa między blokami
+        const blockFallSpeed = 2; // Prędkość spadania bloków
+        let minGapWidth = 70; // Minimalna szerokość przerwy
+        let maxGapWidth = 150; // Maksymalna szerokość przerwy
 
         // Stan gry
         let score = 0;
         let gameOver = false;
-        let gameRunning = false; // Dodano, aby kontrolować rozpoczęcie gry
+        let gameRunning = false;
 
         // Funkcje rysowania
         function drawPlayer() {
@@ -123,9 +129,23 @@
             // Czyść canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+            // Aktualizuj pozycję gracza
+            playerX += playerVelocityX;
+            playerVelocityX *= friction; // Zastosuj tarcie
+
+            // Ogranicz gracza do granic canvasa
+            if (playerX < 0) {
+                playerX = 0;
+                playerVelocityX = 0;
+            }
+            if (playerX + playerSize > canvas.width) {
+                playerX = canvas.width - playerSize;
+                playerVelocityX = 0;
+            }
+
             // Ruch bloków w dół
             blocks.forEach(block => {
-                block.y += playerSpeedY;
+                block.y += blockFallSpeed;
             });
 
             // Usuwanie bloków poza ekranem i zwiększanie punktów
@@ -153,12 +173,16 @@
                 spawnBlock();
                 lastBlockSpawnTime = currentTime;
                 // Stopniowe zwiększanie trudności
-                if (blockSpawnInterval > 400) {
+                if (blockSpawnInterval > 300) {
                     blockSpawnInterval -= 5;
                 }
-                minBlockGap = Math.max(50, minBlockGap - 0.5);
-                maxBlockGap = Math.max(100, maxBlockGap - 1);
+                if (blockFallSpeed < 5) { // Ogranicz prędkość spadania
+                   // blockFallSpeed += 0.005; // Stopniowo zwiększaj prędkość spadania
+                }
+                minGapWidth = Math.max(playerSize * 1.5, minGapWidth - 0.5); // Zmniejsz przerwę, ale nie za bardzo
+                maxGapWidth = Math.max(playerSize * 2, maxGapWidth - 1);
             }
+
 
             // Rysowanie
             drawPlayer();
@@ -170,43 +194,55 @@
 
         // Funkcja tworzenia nowego bloku
         function spawnBlock() {
-            // Generuj losową pozycję x dla otworu
-            const gapStart = Math.random() * (canvas.width - maxBlockGap - minBlockGap) + minBlockGap / 2;
-            const gapEnd = gapStart + Math.random() * (maxBlockGap - minBlockGap) + minBlockGap;
+            const gapWidth = Math.random() * (maxGapWidth - minGapWidth) + minGapWidth;
+            const gapX = Math.random() * (canvas.width - gapWidth); // Początek przerwy
 
-            // Lewa część bloku
-            if (gapStart > 0) {
+            // Lewy blok
+            if (gapX > 0) {
                 blocks.push({
                     x: 0,
                     y: -blockSize, // Pojawia się nad ekranem
-                    width: gapStart,
+                    width: gapX,
                     height: blockSize
                 });
             }
 
-            // Prawa część bloku
-            if (gapEnd < canvas.width) {
+            // Prawy blok
+            if (gapX + gapWidth < canvas.width) {
                 blocks.push({
-                    x: gapEnd,
+                    x: gapX + gapWidth,
                     y: -blockSize,
-                    width: canvas.width - gapEnd,
+                    width: canvas.width - (gapX + gapWidth),
                     height: blockSize
                 });
             }
         }
 
-        // Funkcja obsługi kliknięcia/dotknięcia
-        function handleTap() {
+        // --- Obsługa dotyku/myszy ---
+        function handleStart(event) {
+            event.preventDefault(); // Zapobiegaj domyślnemu zachowaniu przeglądarki (np. przewijaniu)
             if (gameOver) return;
             if (!gameRunning) {
                 startGame();
             }
-            // Zmień pozycję gracza z lewej na prawą lub z prawej na lewą
-            if (playerX < canvas.width / 2) {
-                playerX = (canvas.width / 2) + (canvas.width / 4) - (playerSize / 2);
-            } else {
-                playerX = (canvas.width / 4) - (playerSize / 2);
-            }
+            touchStartX = (event.touches ? event.touches[0].clientX : event.clientX);
+        }
+
+        function handleMove(event) {
+            event.preventDefault();
+            if (!gameRunning) return;
+            const currentX = (event.touches ? event.touches[0].clientX : event.clientX);
+            const deltaX = currentX - touchStartX;
+
+            playerVelocityX += deltaX * playerAcceleration / 10; // Mniejsze wartości dla płynniejszego ruchu
+            playerVelocityX = Math.max(-maxPlayerSpeed, Math.min(playerVelocityX, maxPlayerSpeed)); // Ogranicz prędkość
+
+            touchStartX = currentX; // Zaktualizuj początkową pozycję dotyku
+        }
+
+        function handleEnd(event) {
+            event.preventDefault();
+            // Możesz tutaj dodać logikę zwalniania, jeśli nie używasz tarcia
         }
 
         // Funkcja rozpoczęcia gry
@@ -215,10 +251,10 @@
             gameRunning = true;
             score = 0;
             blocks = [];
-            playerX = (canvas.width / 4) - (playerSize / 2);
-            blockSpawnInterval = 1000;
-            minBlockGap = 100;
-            maxBlockGap = 200;
+            playerX = (canvas.width / 2) - (playerSize / 2);
+            blockSpawnInterval = 800;
+            minGapWidth = 70;
+            maxGapWidth = 150;
             lastBlockSpawnTime = performance.now(); // Zresetuj czas spawnowania
 
             gameOverScreen.style.display = 'none';
@@ -237,21 +273,23 @@
         }
 
         // Event Listenery
-        canvas.addEventListener('click', handleTap); // Dla komputerów
-        canvas.addEventListener('touchstart', handleTap); // Dla urządzeń mobilnych
+        canvas.addEventListener('mousedown', handleStart);
+        canvas.addEventListener('mousemove', handleMove);
+        canvas.addEventListener('mouseup', handleEnd);
+
+        canvas.addEventListener('touchstart', handleStart, { passive: false }); // { passive: false } aby użyć preventDefault
+        canvas.addEventListener('touchmove', handleMove, { passive: false });
+        canvas.addEventListener('touchend', handleEnd, { passive: false });
 
         restartButton.addEventListener('click', startGame);
 
-        // Początkowe wyświetlenie ekranu startowego (lub instrukcji)
-        // Możesz zmodyfikować, aby pokazać ekran startowy zamiast od razu game over
+        // Początkowe wyświetlenie ekranu startowego
         gameOverScreen.style.display = 'flex';
         scoreDisplay.style.display = 'none';
-        document.getElementById('finalScore').textContent = 0; // Ustaw początkowy wynik na 0
-        document.querySelector('#gameOverScreen h2').textContent = "Kliknij by zacząć!";
-        document.querySelector('#gameOverScreen p').style.display = 'none';
+        document.getElementById('finalScore').textContent = 0;
+        document.querySelector('#gameOverScreen h2').textContent = "Unikaj Bloków!";
+        document.querySelector('#gameOverScreen p').innerHTML = "Przesuwaj palcem w lewo/prawo, by sterować.";
         restartButton.textContent = "Start";
-
-
     </script>
 </body>
 </html>
