@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kółko i Krzyżyk</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        #game-modes button, #restart-game {
+            background-color: #28a745;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        #game-modes button:hover, #restart-game:hover {
+            background-color: #218838;
+        }
+
+        #game-board-container {
+            margin-top: 20px;
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            width: 300px; /* Adjust for responsiveness */
+            height: 300px; /* Adjust for responsiveness */
+            margin: 20px auto;
+            border: 3px solid #666;
+            border-radius: 8px;
+            position: relative; /* For the winning line */
+        }
+
+        .cell {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3em;
+            font-weight: bold;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            box-sizing: border-box; /* Include padding and border in the element's total width and height */
+        }
+
+        .cell:hover {
+            background-color: #e9e9e9;
+        }
+
+        .cell:nth-child(3n) { border-right: none; }
+        .cell:nth-child(3n + 1) { border-left: none; }
+        .cell:nth-child(n + 7) { border-bottom: none; }
+        .cell:nth-child(-n + 3) { border-top: none; }
+
+        /* Kolory symboli */
+        .cell.x {
+            color: #007bff; /* Niebieski */
+        }
+
+        .cell.o {
+            color: #dc3545; /* Czerwony */
+        }
+
+        #game-status {
+            margin-top: 15px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #007bff; /* Domyślny kolor statusu */
+        }
+
+        /* Styl dla linii wygrywającej */
+        .winning-line {
+            position: absolute;
+            background-color: transparent; /* Kolor będzie ustawiany dynamicznie w JS */
+            z-index: 10;
+            transition: all 0.5s ease-in-out;
+            transform-origin: center center; /* Ważne dla obrotu */
+        }
+
+        /* Responsywność dla mniejszych ekranów */
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            #game-board {
+                width: 270px;
+                height: 270px;
+            }
+
+            .cell {
+                font-size: 2.5em;
+            }
+
+            #game-modes button, #restart-game {
+                padding: 10px 20px;
+                font-size: 1em;
+                margin: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kółko i Krzyżyk</h1>
+        <div id="game-modes">
+            <button id="play-vs-computer">Graj z Komputerem</button>
+            <button id="play-two-players">Graj we Dwójkę</button>
+        </div>
+        <div id="game-board-container" style="display: none;">
+            <div id="game-board">
+                <div class="cell" data-cell-index="0"></div>
+                <div class="cell" data-cell-index="1"></div>
+                <div class="cell" data-cell-index="2"></div>
+                <div class="cell" data-cell-index="3"></div>
+                <div class="cell" data-cell-index="4"></div>
+                <div class="cell" data-cell-index="5"></div>
+                <div class="cell" data-cell-index="6"></div>
+                <div class="cell" data-cell-index="7"></div>
+                <div class="cell" data-cell-index="8"></div>
+                <div id="winning-line" class="winning-line"></div>
+            </div>
+            <p id="game-status"></p>
+            <button id="restart-game" style="display: none;">Zagraj ponownie</button>
+        </div>
+    </div>
+
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        const gameStatus = document.getElementById('game-status');
+        const restartGameBtn = document.getElementById('restart-game');
+        const playVsComputerBtn = document.getElementById('play-vs-computer');
+        const playTwoPlayersBtn = document.getElementById('play-two-players');
+        const gameModesDiv = document.getElementById('game-modes');
+        const gameBoardContainer = document.getElementById('game-board-container');
+        const winningLine = document.getElementById('winning-line');
+
+        let board = ['', '', '', '', '', '', '', '', ''];
+        let currentPlayer = 'X';
+        let gameActive = false;
+        let isVsComputer = false;
+
+        const winningConditions = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rzędy
+            [0, 3, 6], [1, 4, 7], [2, 5, 8], // Kolumny
+            [0, 4, 8], [2, 4, 6]             // Przekątne
+        ];
+
+        // Komunikaty statusu gry
+        const statusMessages = {
+            playerTurn: (player) => `Teraz ruch: ${player}`,
+            draw: 'Remis!',
+            win: (player) => `${player} wygrał!`
+        };
+
+        function handleCellClick(clickedCellEvent) {
+            const clickedCell = clickedCellEvent.target;
+            const clickedCellIndex = parseInt(clickedCell.dataset.cellIndex);
+
+            if (board[clickedCellIndex] !== '' || !gameActive) {
+                return;
+            }
+
+            handlePlayerMove(clickedCell, clickedCellIndex);
+            checkResult();
+
+            if (gameActive && isVsComputer && currentPlayer === 'O') {
+                setTimeout(handleComputerMove, 700); // Małe opóźnienie dla ruchu komputera
+            }
+        }
+
+        function handlePlayerMove(cell, index) {
+            board[index] = currentPlayer;
+            cell.innerHTML = currentPlayer;
+            cell.classList.add(currentPlayer.toLowerCase()); // Dodaj klasę 'x' lub 'o'
+        }
+
+        function changePlayer() {
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            gameStatus.innerHTML = statusMessages.playerTurn(currentPlayer);
+        }
+
+        function checkResult() {
+            let roundWon = false;
+            let winningCombo = null;
+
+            for (let i = 0; i < winningConditions.length; i++) {
+                const winCondition = winningConditions[i];
+                let a = board[winCondition[0]];
+                let b = board[winCondition[1]];
+                let c = board[winCondition[2]];
+
+                if (a === '' || b === '' || c === '') {
+                    continue;
+                }
+                if (a === b && b === c) {
+                    roundWon = true;
+                    winningCombo = winCondition;
+                    break;
+                }
+            }
+
+            if (roundWon) {
+                gameStatus.innerHTML = statusMessages.win(currentPlayer);
+                gameActive = false;
+                displayWinningLine(winningCombo, currentPlayer);
+                showRestartButton();
+                return;
+            }
+
+            let roundDraw = !board.includes('');
+            if (roundDraw) {
+                gameStatus.innerHTML = statusMessages.draw;
+                gameActive = false;
+                showRestartButton();
+                return;
+            }
+
+            changePlayer();
+        }
+
+        function displayWinningLine(combo, winner) {
+            const [idx1, idx2, idx3] = combo;
+            const cell1 = cells[idx1];
+            const cell3 = cells[idx3]; // Używamy pierwszej i ostatniej komórki do określenia linii
+
+            const boardRect = gameBoard.getBoundingClientRect();
+            const cell1Rect = cell1.getBoundingClientRect();
+            const cell3Rect = cell3.getBoundingClientRect();
+
+            // Obliczamy środki komórek względem planszy gry
+            const startX = (cell1Rect.left + cell1Rect.right) / 2 - boardRect.left;
+            const startY = (cell1Rect.top + cell1Rect.bottom) / 2 - boardRect.top;
+            const endX = (cell3Rect.left + cell3Rect.right) / 2 - boardRect.left;
+            const endY = (cell3Rect.top + cell3Rect.bottom) / 2 - boardRect.top;
+
+            const angle = Math.atan2(endY - startY, endX - startX) * 180 / Math.PI;
+            const length = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+
+            winningLine.style.width = `${length}px`;
+            winningLine.style.height = `5px`; // Stała grubość linii
+            winningLine.style.backgroundColor = winner === 'X' ? '#007bff' : '#dc3545';
+            winningLine.style.transform = `translate(${startX - length / 2 * Math.cos(angle * Math.PI / 180)}px, ${startY - length / 2 * Math.sin(angle * Math.PI / 180)}px) rotate(${angle}deg)`;
+            winningLine.style.left = `${startX}px`; // Ustawiamy początek linii na środek pierwszej komórki
+            winningLine.style.top = `${startY}px`;
+            winningLine.style.transformOrigin = '0 0'; // Punkt obrotu na początku linii
+
+            winningLine.style.display = 'block';
+        }
+
+
+        function showRestartButton() {
+            restartGameBtn.style.display = 'block';
+        }
+
+        function hideRestartButton() {
+            restartGameBtn.style.display = 'none';
+        }
+
+        function hideWinningLine() {
+            winningLine.style.display = 'none';
+            winningLine.style.backgroundColor = 'transparent';
+            winningLine.style.width = '0';
+            winningLine.style.transform = 'none';
+        }
+
+        function startGame() {
+            gameBoardContainer.style.display = 'block';
+            gameModesDiv.style.display = 'none';
+            board = ['', '', '', '', '', '', '', '', ''];
+            currentPlayer = 'X';
+            gameActive = true;
+            gameStatus.innerHTML = statusMessages.playerTurn(currentPlayer);
+            cells.forEach(cell => {
+                cell.innerHTML = '';
+                cell.classList.remove('x', 'o');
+            });
+            hideRestartButton();
+            hideWinningLine();
+        }
+
+        // Logika dla ruchu komputera (prostota: wybiera pierwsze dostępne puste pole)
+        function handleComputerMove() {
+            if (!gameActive) return;
+
+            let availableCells = [];
+            for (let i = 0; i < board.length; i++) {
+                if (board[i] === '') {
+                    availableCells.push(i);
+                }
+            }
+
+            if (availableCells.length > 0) {
+                // Bardziej zaawansowana logika AI byłaby tutaj
+                // Na potrzeby demo, komputer wybiera losowe puste pole
+                const randomIndex = Math.floor(Math.random() * availableCells.length);
+                const cellToPlayIndex = availableCells[randomIndex];
+                const cellToPlay = cells[cellToPlayIndex];
+
+                handlePlayerMove(cellToPlay, cellToPlayIndex);
+                checkResult();
+            }
+        }
+
+        // Event Listeners
+        cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+        restartGameBtn.addEventListener('click', startGame);
+
+        playVsComputerBtn.addEventListener('click', () => {
+            isVsComputer = true;
+            startGame();
+            // Jeśli komputer ma być pierwszy, można dodać warunek, żeby to komputer wykonał pierwszy ruch:
+            // if (currentPlayer === 'O') setTimeout(handleComputerMove, 500);
+        });
+
+        playTwoPlayersBtn.addEventListener('click', () => {
+            isVsComputer = false;
+            startGame();
+        });
+
+        // Inicjalizacja: pokaż tylko przyciski wyboru trybu
+        gameBoardContainer.style.display = 'none';
+        gameModesDiv.style.display = 'block';
+    </script>
+</body>
+</html>
