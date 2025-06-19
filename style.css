@@ -16,8 +16,8 @@ body{
 .buttons {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 10px;
+    justify-content: space-between;
+    gap: 15px;
     margin-bottom: 20px;
 }
 .button {
@@ -122,4 +122,33 @@ body.dark-mode table, body.dark-mode td, body.dark-mode th {
 body.dark-mode td, body.dark-mode th {
     background-color: #1e1e1e;
     color: white;
+}
+.app-icon {
+    width: 30%;
+    max-width: 280px; /*Max Szerokość*/
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    padding: 5px 25px 0 25px; /*Margines wewnętrzny*/
+    background-color: #f0f0f0;
+    border-radius: 15px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, background-color 0.2s;
+}
+.app-icon:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.05);
+}
+.app-icon img {
+    width: 140px; /*szerokość i wysokość*/
+    height: 140px;
+    object-fit: contain;
+    margin-bottom: 5px;
+    border-radius: 10px;
+}
+.app-icon span {
+    font-size: 14px; /*rozmiar czcionki*/
+    text-align: center;
 }
