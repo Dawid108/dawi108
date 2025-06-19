@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>dawi_108</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Kalkulator Tempa Biegowego</h1>
+
+        <label for="dystans">Dystans (km):</label>
+        <input type="number" id="dystans" step="0.01" min="0">
+        <br><br>
+        <label for="godziny">Czas - godziny:</label>
+        <input type="number" id="godziny" min="0">
+        <br><br>
+        <label for="minuty">Czas - minuty:</label>
+        <input type="number" id="minuty" min="0" max="59">
+        <br><br>
+        <label for="sekundy">Czas - sekundy:</label>
+        <input type="number" id="sekundy" min="0" max="59">
+        <br><br>
+        <button onclick="obliczTempo()">Oblicz Tempo</button>
+        <br><br>
+        <div id="wynik"></div>
+    </div>
+    <script>
+        function obliczTempo() {
+            // Pobranie danych z formularza
+            const dystans = parseFloat(document.getElementById('dystans').value);
+            const godziny = parseInt(document.getElementById('godziny').value) || 0;
+            const minuty = parseInt(document.getElementById('minuty').value) || 0;
+            const sekundy = parseInt(document.getElementById('sekundy').value) || 0;
+
+            // Sprawdzenie poprawności danych
+            if (isNaN(dystans) || dystans <= 0) {
+            document.getElementById('wynik').innerText = "Wprowadź prawidłowy dystans.";
+            return;
+            }
+
+            const calkowityCzasSekundy = godziny * 3600 + minuty * 60 + sekundy;
+
+            if (calkowityCzasSekundy === 0) {
+            document.getElementById('wynik').innerText = "Czas nie może być zerowy.";
+            return;
+            }
+
+            // Oblicz tempo w sekundach na km
+            const tempoSekundy = calkowityCzasSekundy / dystans;
+
+            const tempoMinuty = Math.floor(tempoSekundy / 60);
+            const tempoResztaSekundy = Math.round(tempoSekundy % 60);
+
+            // Formatowanie zera dla sekund
+            const tempoSekundyFormat = tempoResztaSekundy < 10 ? "0" + tempoResztaSekundy : tempoResztaSekundy;
+
+            document.getElementById('wynik').innerText = `Tempo: ${tempoMinuty}:${tempoSekundyFormat} min/km`;
+        }
+    </script>
+</body>
+</html>
