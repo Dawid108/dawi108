@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zbieranie Jabłek</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #222;
+        }
+
+        #game-container {
+            width: 375px; /* Typowa szerokość telefonu */
+            height: 667px; /* Typowa wysokość telefonu */
+            background-image: url('https://res.cloudinary.com/diljpkw9f/image/upload/v1750449942/drzewo2_ogwwrh.png'); /* Plik tła drzewa */
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            border: 5px solid #5C3A21;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        #worm {
+            width: 60px;
+            height: 60px;
+            background-image: url('https://res.cloudinary.com/diljpkw9f/image/upload/v1750449975/robaczek2_qxernq.png'); /* Plik obrazka robaczka */
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+        }
+
+        .apple {
+            width: 40px;
+            height: 40px;
+            background-image: url('https://res.cloudinary.com/diljpkw9f/image/upload/v1750449956/jabuszko2_mswej5.png'); /* Plik obrazka jabłka */
+            background-size: contain;
+            background-repeat: no-repeat;
+            position: absolute;
+            top: 0;
+            z-index: 5;
+        }
+
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            z-index: 20;
+        }
+
+        .game-overlay h2, .game-overlay h3 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        .game-overlay p {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+
+        .game-overlay button {
+            padding: 15px 30px;
+            font-size: 1.5em;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .game-overlay button:hover {
+            background-color: #45a049;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #score-display, #lives-display {
+            position: absolute;
+            top: 10px;
+            color: white;
+            font-size: 1.2em;
+            padding: 5px 10px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            z-index: 15;
+        }
+
+        #score-display {
+            left: 10px;
+        }
+
+        #lives-display {
+            right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="worm"></div>
+        <div id="start-screen" class="game-overlay">
+            <h2>Zbieranie Jabłek</h2>
+            <p>Zbieraj spadające jabłka robaczkiem!</p>
+            <p>Masz 3 życia. Powodzenia!</p>
+            <button id="start-game-button">Rozpocznij Grę</button>
+        </div>
+        <div id="game-over-screen" class="game-overlay hidden">
+            <h3>Koniec Gry!</h3>
+            <p>Twój wynik: <span id="final-score"></span></p>
+            <p>Twój rekord: <span id="high-score"></span></p>
+            <p>Suma Zebranych Jabłek: <span id="total-apples"></span></p>
+            <button id="restart-game-button">Nowa Gra</button>
+        </div>
+        <div id="score-display">Wynik: 0</div>
+        <div id="lives-display">Życia: 3</div>
+    </div>
+    <script>
+        const gameContainer = document.getElementById('game-container');
+        const worm = document.getElementById('worm');
+        const scoreDisplay = document.getElementById('score-display');
+        const livesDisplay = document.getElementById('lives-display');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const startGameButton = document.getElementById('start-game-button');
+        const restartGameButton = document.getElementById('restart-game-button');
+        const finalScoreSpan = document.getElementById('final-score');
+        const highScoreSpan = document.getElementById('high-score');
+        const totalApplesSpan = document.getElementById('total-apples');
+
+        let score = 0;
+        let lives = 3;
+        let highScore = parseInt(localStorage.getItem('highScore')) || 0;
+        let totalApplesCollected = parseInt(localStorage.getItem('totalApples')) || 0;
+        let gameInterval;
+        let appleFallSpeed = 5; // Początkowa prędkość spadania jabłek
+        const initialAppleFallSpeed = 5; // Zachowaj początkową prędkość
+        const appleFallSpeedIncrease = 1; // O ile zwiększa się prędkość
+        const speedIncreaseInterval = 5000; // Co ile milisekund zwiększa się prędkość (15 sekund)
+        let appleSpawnInterval = 1500; // Co ile ms pojawia się nowe jabłko
+        let appleGenerationInterval;
+        let speedTimer; // Timer do zwiększania prędkości
+        let isGameRunning = false;
+
+        // Ustawienie początkowych wartości w ekranie startowym
+        updateScoresOnScreen();
+
+        function updateScoresOnScreen() {
+            highScoreSpan.textContent = highScore;
+            totalApplesSpan.textContent = totalApplesCollected;
+        }
+
+        function startGame() {
+            score = 0;
+            lives = 3;
+            appleFallSpeed = initialAppleFallSpeed; // Resetuj prędkość na początkową
+            scoreDisplay.textContent = 'Wynik: 0';
+            livesDisplay.textContent = 'Życia: 3';
+            startScreen.classList.add('hidden');
+            gameOverScreen.classList.add('hidden');
+            isGameRunning = true;
+
+            // Usuń wszystkie istniejące jabłka
+            document.querySelectorAll('.apple').forEach(apple => apple.remove());
+
+            // Uruchom generowanie jabłek
+            appleGenerationInterval = setInterval(createApple, appleSpawnInterval);
+
+            // Uruchom timer do zwiększania prędkości
+            speedTimer = setInterval(() => {
+                appleFallSpeed += appleFallSpeedIncrease;
+                console.log('Prędkość jabłek zwiększona do: ' + appleFallSpeed); // Do debugowania
+            }, speedIncreaseInterval);
+
+            // Uruchom pętlę gry
+            gameInterval = requestAnimationFrame(gameLoop);
+        }
+
+        function endGame() {
+            isGameRunning = false;
+            clearInterval(appleGenerationInterval);
+            clearInterval(speedTimer); // Zatrzymaj timer zwiększania prędkości
+            cancelAnimationFrame(gameInterval);
+
+            // Zaktualizuj rekord
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('highScore', highScore);
+            }
+
+            // Wyświetl ekran końca gry
+            finalScoreSpan.textContent = score;
+            updateScoresOnScreen(); // Aktualizuje highScore i totalApples na ekranie końca gry
+            gameOverScreen.classList.remove('hidden');
+        }
+
+        function createApple() {
+            if (!isGameRunning) return;
+
+            const apple = document.createElement('div');
+            apple.classList.add('apple');
+            apple.style.left = Math.random() * (gameContainer.clientWidth - 40) + 'px'; // 40px to szerokość jabłka
+            gameContainer.appendChild(apple);
+
+            let appleTop = 0;
+            const fallInterval = setInterval(() => {
+                if (!isGameRunning) {
+                    clearInterval(fallInterval);
+                    return;
+                }
+
+                // Używamy aktualnej wartości appleFallSpeed
+                appleTop += appleFallSpeed;
+                apple.style.top = appleTop + 'px';
+
+                // Sprawdź kolizję z robaczkiem
+                if (checkCollision(apple, worm)) {
+                    score++;
+                    totalApplesCollected++;
+                    localStorage.setItem('totalApples', totalApplesCollected);
+                    scoreDisplay.textContent = 'Wynik: ' + score;
+                    apple.remove();
+                    clearInterval(fallInterval);
+                } else if (appleTop + apple.clientHeight >= gameContainer.clientHeight) {
+                    // Jabłko spadło na dół
+                    lives--;
+                    livesDisplay.textContent = 'Życia: ' + lives;
+                    apple.remove();
+                    clearInterval(fallInterval);
+
+                    if (lives <= 0) {
+                        endGame();
+                    }
+                }
+            }, 20); // Sprawdzaj co 20ms
+        }
+
+        function checkCollision(element1, element2) {
+            const rect1 = element1.getBoundingClientRect();
+            const rect2 = element2.getBoundingClientRect();
+
+            return !(
+                rect1.bottom < rect2.top ||
+                rect1.top > rect2.bottom ||
+                rect1.right < rect2.left ||
+                rect1.left > rect2.right
+            );
+        }
+
+        // Ruch robaczka za pomocą myszy/dotyku
+        let isDragging = false;
+        gameContainer.addEventListener('mousedown', (e) => {
+            if (!isGameRunning) return;
+            isDragging = true;
+            moveWorm(e.clientX, e.clientY);
+        });
+
+        gameContainer.addEventListener('mousemove', (e) => {
+            if (!isGameRunning || !isDragging) return;
+            moveWorm(e.clientX, e.clientY);
+        });
+
+        gameContainer.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        gameContainer.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+
+        // Obsługa dotyku dla urządzeń mobilnych
+        gameContainer.addEventListener('touchstart', (e) => {
+            if (!isGameRunning) return;
+            isDragging = true;
+            moveWorm(e.touches[0].clientX, e.touches[0].clientY);
+            e.preventDefault(); // Zapobiegnij domyślnemu przewijaniu
+        }, { passive: false });
+
+        gameContainer.addEventListener('touchmove', (e) => {
+            if (!isGameRunning || !isDragging) return;
+            moveWorm(e.touches[0].clientX, e.touches[0].clientY);
+            e.preventDefault();
+        }, { passive: false });
+
+        gameContainer.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        function moveWorm(clientX, clientY) {
+            const gameContainerRect = gameContainer.getBoundingClientRect();
+            const wormWidth = worm.clientWidth;
+            const wormHeight = worm.clientHeight;
+
+            // Oblicz nową pozycję X
+            let newX = clientX - gameContainerRect.left - wormWidth / 2;
+            // Ogranicz ruch X robaczka do szerokości kontenera gry
+            const minLeft = 0;
+            const maxLeft = gameContainerRect.width - wormWidth;
+            newX = Math.max(minLeft, Math.min(newX, maxLeft));
+
+            // Oblicz nową pozycję Y
+            let newY = clientY - gameContainerRect.top - wormHeight / 2;
+            // Ogranicz ruch Y robaczka do dolnej połowy wysokości telefonu
+            const minTop = gameContainerRect.height / 2;
+            const maxTop = gameContainerRect.height - wormHeight;
+            newY = Math.max(minTop, Math.min(newY, maxTop));
+
+
+            worm.style.left = newX + 'px';
+            worm.style.top = newY + 'px';
+        }
+
+        function gameLoop() {
+            if (isGameRunning) {
+                requestAnimationFrame(gameLoop);
+            }
+        }
+
+        startGameButton.addEventListener('click', startGame);
+        restartGameButton.addEventListener('click', startGame);
+
+        // Po załadowaniu strony, pokaż ekran startowy
+        window.onload = () => {
+            startScreen.classList.remove('hidden');
+            gameOverScreen.classList.add('hidden');
+            updateScoresOnScreen();
+        };
+    </script>
+</body>
+</html>
