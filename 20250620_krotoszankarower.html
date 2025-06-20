@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Krotoszanka</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #e6ffe6;
+      color: #003300;
+      text-align: center;
+    }
+
+    h1 {
+      background-color: #339933;
+      color: white;
+      padding: 15px;
+      margin: 0;
+    }
+
+    .progress-info {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    
+    select {
+      margin: 10px;
+      padding: 8px;
+      font-size: 16px;
+    }
+
+    h2.section-title {
+      margin-top: 30px;
+      font-size: 22px;
+      text-decoration: underline;
+    }
+
+    h3.gmina-title {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #226622;
+    }
+
+    .place {
+      background-color: #ccffcc;
+      margin: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .confirmed {
+      border: 2px solid green;
+      background-color: #b3ffb3;
+    }
+
+    img {
+      width: 100%;
+      max-width: 300px;
+      border-radius: 10px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #33cc33;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-size: 16px;
+    }
+
+    .date {
+      margin: 10px 0;
+      font-weight: bold;
+    }
+
+    ul {
+      padding-left: 0;
+      list-style: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>Krotoszyńska Odznaka Krajoznawcza „Krotoszanka”</h1>
+  <div class="progress-info">
+    <div id="badge-progress">Twój postęp: 0/18</div>
+    <div id="visited-count">Odwiedzone obiekty: 0</div>
+    <select id="filter" onchange="applyFilter()">
+        <option value="all">Wszystko</option>
+        <option value="visited">Odwiedzone Miejsca</option>
+        <option value="not-visited">Nieodwiedzone Miejsca</option>
+        <option value="rezerwaty">Rezerwaty Przyrody</option>
+        <option value="krotoszyn">Gmina Krotoszyn</option>
+        <option value="sulmierzyce">Gmina Sulmierzyce</option>
+        <option value="zduny">Gmina Zduny</option>
+        <option value="kobylin">Gmina Kobylin</option>
+        <option value="kozmin">Gmina Koźmin</option>
+        <option value="rozdrazew">Gmina Rozdrażew</option>
+    </select>
+  </div>
+
+  <div id="content"></div>
+
+  <script>
+    const savedData = JSON.parse(localStorage.getItem('confirmedPlaces') || '{}');
+
+    const groups = [
+      {
+        title: "Obiekty Obowiązkowe",
+        category: "obowiazkowe",
+        places: [
+          { id: "r_krotoszyn", name: "Ratusz krotoszyński", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6956853, lon: 17.4373850 },
+          { id: "krotoszanka", name: "Chata „Krotoszanka” przy ul. Koźmińskiej", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6987506, lon: 17.4387264 },
+          { id: "k_rocha", name: "Kościół pw. św. Fabiana i Sebastiana zw. też kościołem św. Rocha", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6981264, lon: 17.4395344 },
+          { id: "m_krotoszyn", name: "Muzeum Regionalne im. Hieronima Ławniczaka w Krotoszynie", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6958028, lon: 17.4350586 },
+          { id: "r_sulmierzyce", name: "Zabytkowy drewniany ratusz w Sulmierzycach", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6063464, lon: 17.5277967 },
+          { id: "r_zduny", name: "Ratusz w Zdunach", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6463983, lon: 17.3784725 },
+          { id: "r_kobylin", name: "Ratusz w Kobylinie", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.7135383, lon: 17.2259039 },
+          { id: "z_kozmin", name: "Zamek i izba muzealna w Koźminie Wielkopolskim", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.8242344, lon: 17.4510558 },
+          { id: "k_rozdrazew", name: "Kościół pw. św. Jana Chrzciciela w Rozdrażewie", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.7815631, lon: 17.5067508 },
+          { id: "punkt_edukacji_lesnej", name: "Punkt edukacji leśnej przy osadzie Dąbrowa k. Roszek", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.7690453, lon: 17.6134683 }
+        ]
+      },
+      {
+        title: "Rezerwaty Przyrody",
+        category: "rezerwaty",
+        places: [
+          { id: "dabrowa_smoszew", name: "Dąbrowa Smoszew", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6544667, lon: 17.5038981 },
+          { id: "miejski_bor", name: "Miejski Bór", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6746056, lon: 17.4567333 },
+          { id: "baszkow", name: "Baszków", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6769958, lon: 17.3373997 },
+          { id: "mszar_bogdaniec", name: "Mszar Bogdaniec", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6769694, lon: 17.3559536 },
+          { id: "buczyna_helenopol", name: "Buczyna Helenopol", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6465014, lon: 17.4495758 },
+          { id: "dabrowa_biadki", name: "Dąbrowa koło Biadek Krotoszyńskich", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6567011, lon: 17.5793178 }
+        ]
+      },
+      {
+        title: "Obiekty Nieobowiązkowe",
+        gminy: [
+          {
+            gmina: "Gmina Krotoszyn",
+            category: "krotoszyn",
+            places: [
+              { id: "k_marii_magdalena", name: "Kościół pw. św. Marii Magdaleny", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.7104750, lon: 17.4309008 },
+              { id: "k_fara", name: "Kościół farny pw. św. Jana Chrzciciela w Krotoszynie", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6948317, lon: 17.4395472 },
+              { id: "k_piotripawel", name: "Kościół pw. św. Piotra i Pawła w Krotoszynie", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6955225, lon: 17.4349417 },
+              { id: "k_bobola", name: "Kościół poewangelicki pw. św. Andrzeja Boboli", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6938844, lon: 17.4285364 },
+              { id: "glaz_chwaliszew", name: "Głaz narzutowy na szlaku do Chwaliszewa", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6710583, lon: 17.4756144 }
+            ]
+          },
+          {
+            gmina: "Gmina Sulmierzyce",
+            category: "sulmierzyce",
+            places: [
+              { id: "k_sulmierzyce", name: "Kościół pw. NMP Wniebowziętej w Sulmierzycach", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6064369, lon: 17.5303531 },
+              { id: "pomnik_sulmierzyce", name: "Pomnik Sebastiana Fabiana Klonowicza w Sulmierzycach", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6060628, lon: 17.5301811 }
+            ]
+          },
+          {
+            gmina: "Gmina Zduny",
+            category: "zduny",
+            places: [
+              { id: "szaniec_borownica", name: "Szaniec powstańczy nad Borownicą", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6433975, lon: 17.4074497 },
+              { id: "m_zduny", name: "Izba muzealna przy ul. Henryka Sienkiewicza 1", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6462864, lon: 17.3770653 },
+              { id: "k_zduny", name: "Kościół pw. św. Jana Chrzciciela w Zdunach", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6486703, lon: 17.3729189 },
+              { id: "pomnik_zduny", name: "Pomnik powstańców na cmentarzu przykościelnym w Zdunach", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6483906, lon: 17.3727850 },
+              { id: "grodzisko_zduny", name: "Grodzisko pierścieniowate przy ul. Kobylińskiej", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.6494556, lon: 17.3745981 }
+            ]
+          },
+          {
+            gmina: "Gmina Kobylin",
+            category: "kobylin",
+            places: [
+              { id: "izba_kobylin", name: "Izba muzealna w Kobylinie", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.7187850, lon: 17.2261250 },
+              { id: "k_kobylin", name: "Kościół paraf. św. Stanisława biskupa w Kobylinie", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.7145411, lon: 17.2278061 },
+              { id: "klasztor_kobylin", name: "Zespół klasztorny oo. Bernardynów w Kobylinie", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.7152108, lon: 17.2318358 }
+            ]
+          },
+          {
+            gmina: "Gmina Koźmin",
+            category: "kozmin",
+            places: [
+              { id: "k_wawrzyniec", name: "kościół pw. św. Wawrzyńca w Koźminie Wielkopolskim", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.8254539, lon: 17.4517753 },
+              { id: "k_trojcy", name: "kościół św. Trójcy w Koźminie Wielkopolskim", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.8358056, lon: 17.4516653 },
+              { id: "r_kozmin", name: "Rynek i ratusz w Koźminie Wielkopolskim", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.8252519, lon: 17.4539994 }
+            ]
+          },
+          {
+            gmina: "Gmina Rozdrażew",
+            category: "rozdrazew",
+            places: [
+              { id: "r_rozdrazew", name: "Rynek z figurą św. Jana Nepomucena w Rozdrażewie", zdj: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750438350/niezdj_z7fjoq.png", lat: 51.7808036, lon: 17.5048242 }
+            ]
+          }
+        ]
+      }
+    ];
+
+    const requirements = {
+      obowiazkowe: 10,
+      rezerwaty: 3,
+      sulmierzyce: 1,
+      zduny: 1,
+      kobylin: 1,
+      kozmin: 1,
+      rozdrazew: 1
+    };
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+      const R = 6371e3;
+      const toRad = deg => deg * Math.PI / 180;
+      const φ1 = toRad(lat1);
+      const φ2 = toRad(lat2);
+      const Δφ = toRad(lat2 - lat1);
+      const Δλ = toRad(lon2 - lon1);
+      const a = Math.sin(Δφ/2)**2 + Math.cos(φ1)*Math.cos(φ2)*Math.sin(Δλ/2)**2;
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return R * c;
+    }
+
+    const content = document.getElementById('content');
+    const confirmed = savedData;
+
+    const confirmedIDs = Object.keys(confirmed);
+
+    let categoryProgress = {
+      obowiazkowe: 0,
+      rezerwaty: 0,
+      sulmierzyce: 0,
+      zduny: 0,
+      kobylin: 0,
+      kozmin: 0,
+      rozdrazew: 0
+    };
+
+    function updateProgress() {
+      let total = 0;
+      for (let cat in requirements) {
+        if (categoryProgress[cat] >= requirements[cat]) {
+          total += requirements[cat];
+        } else {
+          total += categoryProgress[cat];
+        }
+      }
+      document.getElementById('badge-progress').innerText = `Twój postęp: ${total}/18`;
+      document.getElementById('visited-count').innerText = `Odwiedzone obiekty: ${confirmedIDs.length}`;
+    }
+
+    groups.forEach(group => {
+        const section = document.createElement('h2');
+        section.className = 'section-title';
+        section.innerText = group.title;
+        section.setAttribute('data-header-type', 'section');
+        section.setAttribute('data-category', group.category || '');
+        content.appendChild(section);
+
+      if (group.places) {
+        group.places.forEach(p => renderPlace(p, group.category));
+      }
+
+      if (group.gminy) {
+        group.gminy.forEach(gmina => {
+            const gminaTitle = document.createElement('h3');
+            gminaTitle.className = 'gmina-title';
+            gminaTitle.innerText = gmina.gmina;
+            gminaTitle.setAttribute('data-header-type', 'gmina');
+            gminaTitle.setAttribute('data-category', gmina.category || '');
+            content.appendChild(gminaTitle);
+          gmina.places.forEach(p => renderPlace(p, gmina.category));
+        });
+      }
+    });
+
+    function renderPlace(place, category) {
+      const dates = confirmed[place.id] || [];
+      if (dates.length > 0 && category in categoryProgress) {
+        categoryProgress[category]++;
+      }
+
+    const block = document.createElement('div');
+        block.className = 'place' + (dates.length ? ' confirmed' : '');
+        block.id = 'place-' + place.id;
+        block.setAttribute('data-category', category);
+        block.setAttribute('data-visited', dates.length > 0 ? 'yes' : 'no');
+
+      const ul = dates.map(d => `<li>${d}</li>`).join("");
+
+      block.innerHTML = `
+        <h3>${place.name}</h3>
+        <img src="${place.zdj}" alt="${place.name}">
+        <div class="date"><ul id="date-${place.id}">${ul || "<li>Brak potwierdzeń</li>"}</ul></div>
+        <button onclick="checkLocation(${place.lat}, ${place.lon}, '${place.id}', '${category}')">Potwierdź Obiekt</button>
+      `;
+      content.appendChild(block);
+    }
+
+    function checkLocation(lat, lon, id, category) {
+      if (!navigator.geolocation) return alert("Brak wsparcia geolokalizacji.");
+      navigator.geolocation.getCurrentPosition(pos => {
+        const dist = calculateDistance(pos.coords.latitude, pos.coords.longitude, lat, lon);
+        if (dist <= 100) {
+          const today = new Date().toLocaleDateString();
+          if (!confirmed[id]) confirmed[id] = [];
+          if (confirmed[id].includes(today)) return alert("Już dzisiaj potwierdzono.");
+
+          confirmed[id].push(today);
+          localStorage.setItem("confirmedPlaces", JSON.stringify(confirmed));
+
+          const ul = document.getElementById("date-" + id);
+          if (ul.innerText.includes("Brak")) ul.innerHTML = "";
+          ul.innerHTML += `<li>${today}</li>`;
+          document.getElementById("place-" + id).classList.add("confirmed");
+
+          if (category in categoryProgress && categoryProgress[category] < (requirements[category] || 1)) {
+            categoryProgress[category]++;
+          }
+          if (!confirmedIDs.includes(id)) confirmedIDs.push(id);
+
+          updateProgress();
+          alert("Obiekt został potwierdzony!");
+        } else {
+          alert(`Zostało ${Math.round(dist)} metrów.`);
+        }
+      }, () => alert("Brak dostępu do lokalizacji."));
+    }
+
+    function applyFilter() {
+  const value = document.getElementById('filter').value;
+  const blocks = document.querySelectorAll('.place');
+
+  blocks.forEach(block => {
+    const cat = block.getAttribute('data-category');
+    const visited = block.getAttribute('data-visited');
+
+    let show = false;
+    switch (value) {
+      case 'all':
+        show = true;
+        break;
+      case 'visited':
+        show = visited === 'yes';
+        break;
+      case 'not-visited':
+        show = visited === 'no';
+        break;
+      case 'rezerwaty':
+        show = cat === 'rezerwaty';
+        break;
+      default:
+        show = cat === value;
+        break;
+    }
+
+    block.style.display = show ? '' : 'none';
+  });
+
+  // Ukrywanie nagłówków sekcji i gmin, jeśli nie pasują do filtra
+const headers = document.querySelectorAll('[data-header-type]');
+headers.forEach(header => {
+  const cat = header.getAttribute('data-category');
+  let show = false;
+
+  switch (value) {
+    case 'all':
+      show = true;
+      break;
+    case 'visited':
+    case 'not-visited':
+      // Ukryj wszystkie nagłówki przy filtrze odwiedzonych
+      show = false;
+      break;
+    case 'rezerwaty':
+      show = cat === 'rezerwaty';
+      break;
+    default:
+      show = cat === value;
+      break;
+  }
+
+  header.style.display = show ? '' : 'none';
+});
+
+}
+
+
+    updateProgress();
+  </script>
+</body>
+</html>
