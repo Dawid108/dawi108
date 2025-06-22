@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Karty Dawida</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 10px;
+      background: linear-gradient(to bottom, #0d1b2a, #1b263b);
+      color: white;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 28px;
+      margin-bottom: 5px;
+      color: #ffd700;
+    }
+
+    .filters {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    select {
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    .cards-container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card {
+      background-color: #16222a;
+      border: 2px solid #ffd700;
+      border-radius: 10px;
+      padding: 0;
+      text-align: center;
+    }
+
+    .card img {
+      width: 100%;
+      max-width: 250px;
+      border-radius: 8px;
+      margin: 0;
+      padding: 0;
+    }
+    p{
+      margin: 1;
+      padding: 1;
+    }
+  </style>
+</head>
+<body>
+  <h1>Karty Dawida</h1>
+
+  <div class="filters">
+    <select id="countryFilter">
+      <option>Wszystko</option>
+    </select>
+
+    <select id="clubFilter">
+      <option>Wszystko</option>
+    </select>
+  </div>
+
+  <div id="cardsContainer" class="cards-container"></div>
+
+  <script>
+    const players = [
+      {
+        name: "Ronaldo Nazario",
+        image: "",
+        rating: 98,
+        country: "Brazylia",
+        clubs: ["Sao Cristovao", "Cruzeiro", "PSV", "Barcelona", "Inter Mediolan", "Real Madryt", "AC Milan", "Corinthians"]
+      },
+      {
+        name: "Kaka",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750623682/Kaka-removebg-preview_eewvpy.png",
+        rating: 97,
+        country: "Brazylia",
+        clubs: ["Sao Paulo", "AC Milan", "Real Madryt", "Orlando City"]
+      },
+      {
+        name: "Franck Ribery",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622638/Franck_Ribery-removebg-preview_svxs5g.png",
+        rating: 96,
+        country: "Francja",
+        clubs: ["Lille", "Boulogne", "Ales", "Brest", "Metz", "Galatasaray", "Marsylia", "Bayern Monachium", "Fiorentina", "Salernitana"]
+      },
+      {
+        name: "Eusebio",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622531/Eusebio-removebg-preview_qgr6nb.png",
+        rating: 96,
+        country: "Portugalia",
+        clubs: ["Maxaquene", "Benfica"]
+      },
+      {
+        name: "Gianluigi Buffon",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622937/Gianluigi_Buffon-removebg-preview_mcbkv1.png",
+        rating: 95,
+        country: "Włochy",
+        clubs: ["Parma", "Juventus", "PSG"]
+      },
+      {
+        name: "Steven Gerrard",
+        image: "",
+        rating: 95,
+        country: "Anglia",
+        clubs: ["Liverpool", "Los Angeles Galaxy"]
+      },
+      {
+        name: "Robin van Persie",
+        image: "",
+        rating: 95,
+        country: "Holandia",
+        clubs: ["Feyenoord", "Arsenal", "Manchester United", "Fenerbahce"]
+      },
+      {
+        name: "Nemanja Vidic",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624806/Nemanja_Vidi%C4%87-removebg-preview_pdm5jt.png",
+        rating: 95,
+        country: "Serbia",
+        clubs: ["Crvena zvezda", "Sp. Subotica", "Spartak Moskwa", "Manchester United", "Inter Mediolan"]
+      },
+      {
+        name: "Ferenc Puskas",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622584/Ferenc_Puskas-removebg-preview_qziwju.png",
+        rating: 95,
+        country: "Węgry",
+        clubs: ["Kispest", "Honved", "Real Madryt"]
+      },
+      {
+        name: "Cristiano Ronaldo",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622393/Cristiano_Ronaldo-removebg-preview_ybwgag.png",
+        rating: 94,
+        country: "Portugalia",
+        clubs: ["Sporting", "Manchester United", "Real Madryt", "Juventus", "Al Nassr Riyadh"]
+      },
+      {
+        name: "Lionel Messi",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624144/Lionel_Messi-removebg-preview_sizlwa.png",
+        rating: 94,
+        country: "Argentyna",
+        clubs: ["Newells Old Boys", "Barcelona", "PSG", "Inter Miami"]
+      },
+      {
+        name: "Petr Cech",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624994/Petr_Cech-removebg-preview_no5omn.png",
+        rating: 94,
+        country: "Czechy",
+        clubs: ["FC Viktoria Pilzno", "Blsany", "Sparta Praga", "Rennes", "Chelsea", "Arsenal"]
+      },
+      {
+        name: "Andrea Pirlo",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750621274/Andrea_Pirlo-removebg-preview_y3eqmo.png",
+        rating: 94,
+        country: "Włochy",
+        clubs: ["AC Milan", "Juventus", "New York City"]
+      },
+      {
+        name: "Gareth Bale",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622829/Gareth_Bale-removebg-preview_o2k8l6.png",
+        rating: 94,
+        country: "Walia",
+        clubs: ["Southampton", "Tottenham", "Real Madryt", "Los Angeles FC"]
+      },
+      {
+        name: "Iker Casillas",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750623548/Iker_Casillas-removebg-preview_ynbvr8.png",
+        rating: 93,
+        country: "Hiszpania",
+        clubs: ["Real Madryt", "FC Porto"]
+      },
+      {
+        name: "Wayne Rooney",
+        image: "",
+        rating: 93,
+        country: "Anglia",
+        clubs: ["Everton", "Manchester United", "DC United", "Derby"]
+      },
+      {
+        name: "Didier Drogba",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622473/Didier_Drogba-removebg-preview_bytbb1.png",
+        rating: 93,
+        country: "WKS",
+        clubs: ["Le Mans", "Guingamp", "Marsylia", "Chelsea", "Shanghai Shenhua", "Galatasaray", "CF Montreal", "Phoenix Rising"]
+      },
+      {
+        name: "Bastian Schweinsteger",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750621491/Bastian_Schweinsteiger-removebg-preview_oughuu.png",
+        rating: 93,
+        country: "Niemcy",
+        clubs: ["Bayern Monachium", "Manchester United", "Chicago Fire"]
+      },
+      {
+        name: "Peter Schmeichel",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624959/Peter_Schmeichel-removebg-preview_qs5jxf.png",
+        rating: 93,
+        country: "Dania",
+        clubs: ["Gladsaxei-Hero", "Hvidovre IF", "Brondby", "Manchester United", "Sporting", "Aston Villa", "Manchester City"]
+      },
+      {
+        name: "Fernando Torres",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622610/Fernando_Torres-removebg-preview_p0w6x8.png",
+        rating: 92,
+        country: "Hiszpania",
+        clubs: ["Atletico Madryt", "Liverpool", "Chelsea", "AC Milan", "Sagan Tosu"]
+      },
+      {
+        name: "Philipp Lahm",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750625025/Philipp_Lahm-removebg-preview_btjxuh.png",
+        rating: 92,
+        country: "Niemcy",
+        clubs: ["Bayern Monachium", "VfB Stuttgart"]
+      },
+      {
+        name: "Manuel Neuer",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624261/Manuel_Neuer-removebg-preview_icoxbj.png",
+        rating: 92,
+        country: "Niemcy",
+        clubs: ["FC Schalke 04", "Bayern Monachium"]
+      },
+      {
+        name: "Luis Suarez",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624185/Luis_Suarez-removebg-preview_khsogy.png",
+        rating: 92,
+        country: "Urugwaj",
+        clubs: ["Nacional", "Groningen", "Ajax", "Liverpool", "Barcelona", "Atletico Madryt", "Gremio", "Inter Miami"]
+      },
+      {
+        name: "Robert Lewandowski",
+        image: "",
+        rating: 92,
+        country: "Polska",
+        clubs: ["Legia Warszawa", "Znicz Pruszków", "Lech Poznań", "Borussia Dortmund", "Bayern Monachium", "Barcelona"]
+      },
+      {
+        name: "Neymar Jr",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624852/Neymar_Jr-removebg-preview_frssao.png",
+        rating: 92,
+        country: "Brazylia",
+        clubs: ["Santos", "Barcelona", "PSG", "Al-Hilal"]
+      },
+      {
+        name: "Alan Schearer",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750620281/Alan_Shearer_ty6is6.png",
+        rating: 92,
+        country: "Anglia",
+        clubs: ["Southampton", "Blackburn", "Newcastle"]
+      },
+      {
+        name: "Michael Laudrup",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624457/Michael_Laudrup-removebg-preview_rydu0t.png",
+        rating: 92,
+        country: "Dania",
+        clubs: ["Kjobenhavns BK", "Brondby", "Juventus", "Lazio", "Barcelona", "Real Madryt", "Kobe", "Ajax"]
+      },
+      {
+        name: "Andreas Iniesta",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750621301/Andres_Iniesta-removebg-preview_qsskdf.png",
+        rating: 91,
+        country: "Hiszpania",
+        clubs: ["Barcelona", "Kobe", "Emirates Club"]
+      },
+      {
+        name: "Luka Modric",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624225/Luka_Modri%C4%87-removebg-preview_kz6zap.png",
+        rating: 91,
+        country: "Chorwacja",
+        clubs: ["Zadar", "Dinamo Zagrzeb", "Zrinjski", "Zapresic", "Tottenham", "Real Madryt"]
+      },
+      {
+        name: "Sergio Ramos",
+        image: "",
+        rating: 91,
+        country: "Hiszpania",
+        clubs: ["Sevilla", "Real Madryt", "PSG", "Monterrey"]
+      },
+      {
+        name: "Karim Benzema",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750623713/Karim_Benzema-removebg-preview_uvmwkb.png",
+        rating: 91,
+        country: "Francja",
+        clubs: ["Lyon", "Real Madryt", "Al-Ittihad FC"]
+      },
+      {
+        name: "Eden Hazard",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622506/Eden_Hazard-removebg-preview_w64lv6.png",
+        rating: 91,
+        country: "Belgia",
+        clubs: ["Tubize-Braine", "Lille", "Chelsea", "Real Madryt"]
+      },
+      {
+        name: "David de Gea",
+        image: "",
+        rating: 91,
+        country: "Hiszpania",
+        clubs: ["Atletico Madryt", "Manchester United", "Fiorentina"]
+      },
+      {
+        name: "Kevin De Bruyne",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750623749/Kevin_De_Bruyne-removebg-preview_auwbga.png",
+        rating: 91,
+        country: "Belgia",
+        clubs: ["Gent", "Genk", "Chelsea", "Werder Brema", "VfL Wolfsburg", "Manchester City", "Napoli"]
+      },
+      {
+        name: "Kylian Mbappe",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750623787/Kylian_Mbappe-removebg-preview_nezn3g.png",
+        rating: 91,
+        country: "Francja",
+        clubs: ["Monaco", "PSG", "Real Madryt"]
+      },
+      {
+        name: "Erling Haaland",
+        image: "",
+        rating: 91,
+        country: "Norwegia",
+        clubs: ["Bryne", "Molde", "RB Salzburg", "Borussia Dortmund", "Manchester City"]
+      },
+      {
+        name: "Zlatan Ibrahimovic",
+        image: "",
+        rating: 90,
+        country: "Szwecja",
+        clubs: ["Malmo FF", "Ajax", "Juventus", "Inter Mediolan", "Barcelona", "AC Milan", "PSG", "Manchester United", "Los Angeles Galaxy"]
+      },
+      {
+        name: "Arjen Robben",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750621380/Arjen_Robben-removebg-preview_fdhvvb.png",
+        rating: 90,
+        country: "Holandia",
+        clubs: ["Groningen", "PSV", "Chelsea", "Real Madryt", "Bayern Monachium"]
+      },
+      {
+        name: "Falcao",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622558/Falcao-removebg-preview_azidcy.png",
+        rating: 90,
+        country: "Kolumbia",
+        clubs: ["River Plate", "FC Porto", "Atletico Madryt", "Monaco", "Manchester United", "Chelsea", "Galatasaray", "Vallecano", "Millonarios"]
+      },
+      {
+        name: "Xabi Alonso",
+        image: "",
+        rating: 90,
+        country: "Hiszpania",
+        clubs: ["Real Sociedad", "Eibar", "Liverpool", "Real Madryt", "Bayern Monachium"]
+      },
+      {
+        name: "Giorgio Chiellini",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622968/Giorgio_Chiellini-removebg-preview_yge5g8.png",
+        rating: 90,
+        country: "Włochy",
+        clubs: ["Livorno", "Fiorentina", "Juventus", "Los Angeles FC"]
+      },
+      {
+        name: "Toni Kroos",
+        image: "",
+        rating: 90,
+        country: "Niemcy",
+        clubs: ["Rostock", "Bayern Monachium", "Bayer Leverkusen", "Real Madryt"]
+      },
+      {
+        name: "Jerome Boateng",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750623648/Jerome_Boateng-removebg-preview_p9klbc.png",
+        rating: 90,
+        country: "Niemcy",
+        clubs: ["TB Berlin", "Hertha Berlin", "Hamburger SV", "Manchester City", "Bayern Monachium", "Lyon", "Salernitana", "LASK"]
+      },
+      {
+        name: "Thibaut Courtois",
+        image: "",
+        rating: 90,
+        country: "Belgia",
+        clubs: ["Genk", "Chelsea", "Atletico Madryt", "Real Madryt"]
+      },
+      {
+        name: "Gonzalo Higuain",
+        image: "",
+        rating: 90,
+        country: "Argentyna",
+        clubs: ["River Plate", "Real Madryt", "Napoli", "Juventus", "AC Milan", "Chelsea", "Inter Miami"]
+      },
+      {
+        name: "Diego Godin",
+        image: "",
+        rating: 90,
+        country: "Urugwaj",
+        clubs: ["Cerro CA", "Nacional", "Villarreal", "Atletico Madryt", "Inter Mediolan", "Cagliari", "Atletico-MG", "Velez Sarsfield", "Porongos"]
+      },
+      {
+        name: "Harry Kane",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750623513/Harry_Kane-removebg-preview_rwkomc.png",
+        rating: 90,
+        country: "Anglia",
+        clubs: ["Tottenham", "Leyton Orient", "Millwall", "Norwich", "Leicester", "Bayern Monachium"]
+      },
+      {
+        name: "Marc Andre ter Stegen",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624295/Marc_Andre_Ter_Stegen-removebg-preview_kq5u39.png",
+        rating: 90,
+        country: "Niemcy",
+        clubs: ["B. Moenchengladbach", "Barcelona"]
+      },
+      {
+        name: "N Golo Kante",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624756/N_Golo_Kante-removebg-preview_diyv0j.png",
+        rating: 90,
+        country: "Francja",
+        clubs: ["Boulogne", "Cean", "Leicester", "Chelsea", "Al-Ittihad FC"]
+      },
+      {
+        name: "Mohamed Salah",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624493/Mohamed_Salah-removebg-preview_wafg5o.png",
+        rating: 90,
+        country: "Egipt",
+        clubs: ["Arab Contractors", "Basel", "Chelsea", "Fiorentina", "AS Roma", "Liverpool"]
+      },
+      {
+        name: "Virgil van Dijk",
+        image: "",
+        rating: 90,
+        country: "Holandia",
+        clubs: ["Willem II", "Groningen", "Celtic", "Southampton", "Liverpool"]
+      },
+      {
+        name: "Sadio Mane",
+        image: "",
+        rating: 90,
+        country: "Senegal",
+        clubs: ["Metz", "RB Salzburg", "Southampton", "Liverpool", "Bayern Monachium", "Al Nassr Riyadh"]
+      },
+      {
+        name: "Ashley Cole",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750621428/Ashley_Cole-removebg-preview_dfhjls.png",
+        rating: 90,
+        country: "Anglia",
+        clubs: ["Arsenal", "Crystal Palace", "Chelsea", "AS Roma", "Los Angeles Galaxy", "Derby"]
+      },
+      {
+        name: "Jude Bellingham",
+        image: "",
+        rating: 90,
+        country: "Anglia",
+        clubs: ["Birmingham", "Borussia Dortmund", "Real Madryt"]
+      },
+      {
+        name: "David Villa",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622423/David_Villa-removebg-preview_sau2tm.png",
+        rating: 89,
+        country: "Hiszpania",
+        clubs: ["Langreo", "Gijon", "Zaragoza", "Valencia", "Barcelona", "Atletico Madryt", "New York City", "Melbourne City", "Kobe"]
+      },
+      {
+        name: "Thiago Silva",
+        image: "",
+        rating: 89,
+        country: "Brazylia",
+        clubs: ["Fluminese", "Pedrabranca", "Juventude", "FC Porto", "Dynamo Moskwa", "Fluminese", "AC Milan", "PSG", "Chelsea"]
+      },
+      {
+        name: "David Silva",
+        image: "",
+        rating: 89,
+        country: "Hiszpania",
+        clubs: ["Valencia", "Eibar", "Celta Vigo", "Manchester City", "Real Sociedad"]
+      },
+      {
+        name: "Sergio Aguero",
+        image: "",
+        rating: 89,
+        country: "Argentyna",
+        clubs: ["Independiente", "Atletico Madryt", "Manchester City", "Barcelona"]
+      },
+      {
+        name: "Mesut Ozil",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624424/Mesut_Ozil-removebg-preview_mjuzdn.png",
+        rating: 89,
+        country: "Niemcy",
+        clubs: ["FC Schalke 04", "RW Essen", "Werder Brema", "Real Madryt", "Arsenal", "Fenerbahce", "Basaksehir"]
+      },
+      {
+        name: "Edinson Cavani",
+        image: "",
+        rating: 89,
+        country: "Urugwaj",
+        clubs: ["Danubio", "Palermo", "Napoli", "PSG", "Manchester United", "Valencia", "Boca Juniors"]
+      },
+      {
+        name: "Mats Hummels",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624392/Mats_Hummels-removebg-preview_ybfg8c.png",
+        rating: 89,
+        country: "Niemcy",
+        clubs: ["Bayern Monachium", "Borussia Dortmund", "AS Roma"]
+      },
+      {
+        name: "Alexis Sanchez",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750621246/Alexis_Sanchez-removebg-preview_acwsak.png",
+        rating: 89,
+        country: "Chile",
+        clubs: ["Cobreloa", "Udinese", "Colo Colo", "River Plate", "Barcelona", "Arsenal", "Manchester United", "Inter Mediolan", "Marsylia", "Udinese"]
+      },
+      {
+        name: "Antoine Griezmann",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750621330/Antoine_Griezmann-removebg-preview_fwmlex.png",
+        rating: 89,
+        country: "Francja",
+        clubs: ["Macon", "Real Sociedad", "Atletico Madryt", "Barcelona"]
+      },
+      {
+        name: "Paulo Dybala",
+        image: "",
+        rating: 89,
+        country: "Argentyna",
+        clubs: ["Instituto", "Palermo", "Juventus", "AS Roma"]
+      },
+      {
+        name: "Isco",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750623583/Isco-removebg-preview_nels0p.png",
+        rating: 89,
+        country: "Hiszpania",
+        clubs: ["Valencia", "Malaga", "Real Madryt", "Sevilla", "Betis"]
+      },
+      {
+        name: "Sergio Busquets",
+        image: "",
+        rating: 89,
+        country: "Hiszpania",
+        clubs: ["Terrassa", "Barcelona", "Inter Miami"]
+      },
+      {
+        name: "Casemiro",
+        image: "",
+        rating: 89,
+        country: "Brazylia",
+        clubs: ["Sao Paulo", "Real Madryt", "FC Porto", "Manchester United"]
+      },
+      {
+        name: "Joshua Kimmich",
+        image: "",
+        rating: 89,
+        country: "Niemcy",
+        clubs: ["VfB Stuttgart", "RB Lipsk", "Bayern Monachium"]
+      },
+      {
+        name: "Gianluigi Donnarumma",
+        image: "",
+        rating: 89,
+        country: "Włochy",
+        clubs: ["AC Milan", "PSG"]
+      },
+      {
+        name: "Ederson",
+        image: "",
+        rating: 89,
+        country: "Brazylia",
+        clubs: ["Sao Paulo", "Benfica", "Ribeirao", "Rio Ave", "Manchester City"]
+      },
+      {
+        name: "Wesley Sneijder",
+        image: "",
+        rating: 88,
+        country: "Holandia",
+        clubs: ["Ajax", "Real Madryt", "Inter Mediolan", "Galatasaray", "Nice", "Al-Gharafa"]
+      },
+      {
+        name: "Carlos Tevez",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622361/Carlos_Tevez-removebg-preview_bbehgd.png",
+        rating: 88,
+        country: "Argentyna",
+        clubs: ["All Boys", "Boca Juniors", "Corinthians", "West Ham", "Manchester United", "Manchester City", "Juventus", "Shanghai Shenhua"]
+      },
+      {
+        name: "Cesc Fabregas",
+        image: "",
+        rating: 88,
+        country: "Hiszpania",
+        clubs: ["Barcelona", "Arsenal", "Chelsea", "Monaco", "Como"]
+      },
+      {
+        name: "Gerrard Pique",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622859/Gerard_Pique-removebg-preview_jptkpa.png",
+        rating: 88,
+        country: "Hiszpania",
+        clubs: ["Barcelona", "Manchester United", "Zaragoza"]
+      },
+      {
+        name: "Pepe",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624924/Pepe-removebg-preview_fnhrzj.png",
+        rating: 88,
+        country: "Portugalia",
+        clubs: ["Corinthians", "Maritimo", "FC Porto", "Real Madryt", "Besiktas"]
+      },
+      {
+        name: "Hugo Lloris",
+        image: "",
+        rating: 88,
+        country: "Francja",
+        clubs: ["Nice", "Lyon", "Tottenham", "Los Angeles FC"]
+      },
+      {
+        name: "Marco Reus",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624330/Marco_Reus-removebg-preview_dqap9h.png",
+        rating: 88,
+        country: "Niemcy",
+        clubs: ["Borussia Dortmund", "Ahlen", "B. Moenchengladbach", "Los Angeles Galaxy"]
+      },
+      {
+        name: "Paul Pogba",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750624892/Paul_Pogba-removebg-preview_pda4vv.png",
+        rating: 88,
+        country: "Francja",
+        clubs: ["Manchester United", "Juventus"]
+      },
+      {
+        name: "Raheem Sterling",
+        image: "",
+        rating: 88,
+        country: "Anglia",
+        clubs: ["QPR", "Liverpool", "Manchester City", "Chelsea", "Arsenal"]
+      },
+      {
+        name: "Samir Handanovic",
+        image: "",
+        rating: 88,
+        country: "Słowenia",
+        clubs: ["Domzale", "Udinese", "Inter Mediolan"]
+      },
+      {
+        name: "Romelu Lukaku",
+        image: "",
+        rating: 88,
+        country: "Belgia",
+        clubs: ["Anderlecht", "Chelsea", "West Brom", "Everton", "Manchester United", "Inter Mediolan", "AS Roma", "Napoli"]
+      },
+      {
+        name: "Bruno Fernandes",
+        image: "",
+        rating: 88,
+        country: "Portugalia",
+        clubs: ["Boavista", "Novara", "Udinese", "Sampdoria", "Sporting", "Manchester United"]
+      },
+      {
+        name: "Marquinhos",
+        image: "",
+        rating: 88,
+        country: "Brazylia",
+        clubs: ["Corinthians", "AS Roma", "PSG"]
+      },
+      {
+        name: "Bernardo Silva",
+        image: "",
+        rating: 88,
+        country: "Portugalia",
+        clubs: ["Benfica", "Monaco", "Manchester City"]
+      },
+      {
+        name: "Phil Foden",
+        image: "",
+        rating: 88,
+        country: "Anglia",
+        clubs: ["Manchester City"]
+      },
+      {
+        name: "Antonio Rudiger",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750621355/Antonio_Rudiger-removebg-preview_isfos4.png",
+        rating: 88,
+        country: "Niemcy",
+        clubs: ["Hertha Berlin", "Borussia Dortmund", "VfB Stuttgart", "AS Roma", "Chelsea", "Real Madryt"]
+      },
+      {
+        name: "Raphael van der Vaart",
+        image: "",
+        rating: 88,
+        country: "Holandia",
+        clubs: ["Ajax", "Hamburger SV", "Real Madryt", "Tottenham", "Betis", "Midtjylland", "Esbjerg"]
+      },
+      {
+        name: "Juan Mata",
+        image: "",
+        rating: 88,
+        country: "Hiszpania",
+        clubs: ["R. Oviedo", "Real Madryt", "Valencia", "Chelsea", "Manchester United", "Galatasaray", "Kobe", "WS Wanderers"]
+      },
+      {
+        name: "Bukayo Saka",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750622332/Bukayo_Saka-removebg-preview_eih7aw.png",
+        rating: 88,
+        country: "Anglia",
+        clubs: ["Arsenal"]
+      },
+      {
+        name: "William Saliba",
+        image: "",
+        rating: 88,
+        country: "Francja",
+        clubs: ["St. Etienne", "Arsenal", "Nice", "Marsylia"]
+      },
+      {
+        name: "Yaya Toure",
+        image: "",
+        rating: 88,
+        country: "WKS",
+        clubs: ["ASEC Mimosas", "KSK Beveren", "M. Donieck", "Olympiakos", "Monaco", "Barcelona", "Manchester City", "Qingdao FC"]
+      },
+      {
+        name: "James Rodriguez",
+        image: "https://res.cloudinary.com/diljpkw9f/image/upload/v1750623614/James_Rodriguez-removebg-preview_kyic29.png",
+        rating: 88,
+        country: "Kolumbia",
+        clubs: ["Envigado", "Banfield", "FC Porto", "Monaco", "Real Madryt", "Everton", "Al-Rayyan", "Olympiakos", "Sao Paulo", "Vallecano", "Leon"]
+      },
+      {
+        name: "Thomas Mueller",
+        image: "",
+        rating: 88,
+        country: "Niemcy",
+        clubs: ["Bayern Monachium"]
+      }
+    ];
+
+    const countryFilter = document.getElementById("countryFilter");
+    const clubFilter = document.getElementById("clubFilter");
+    const cardsContainer = document.getElementById("cardsContainer");
+
+    function populateFilters() {
+      const countries = new Set();
+      const clubs = new Set();
+
+      players.forEach(p => {
+        countries.add(p.country);
+        p.clubs.forEach(club => clubs.add(club));
+      });
+
+      [...countries].sort().forEach(country => {
+        const option = document.createElement("option");
+        option.textContent = country;
+        countryFilter.appendChild(option);
+      });
+
+      [...clubs].sort().forEach(club => {
+        const option = document.createElement("option");
+        option.textContent = club;
+        clubFilter.appendChild(option);
+      });
+    }
+
+    function displayCards() {
+      const selectedCountry = countryFilter.value;
+      const selectedClub = clubFilter.value;
+      cardsContainer.innerHTML = "";
+
+      players.forEach(player => {
+        const matchesCountry = selectedCountry === "Wszystko" || player.country === selectedCountry;
+        const matchesClub = selectedClub === "Wszystko" || player.clubs.includes(selectedClub);
+
+        if (matchesCountry && matchesClub) {
+          const card = document.createElement("div");
+          card.className = "card";
+
+          card.innerHTML = `
+            <h2>${player.name}</h2>
+            <img src="${player.image}" alt="${player.name}">
+            <p><strong>Ocena:</strong> ${player.rating}</p>
+            <p><strong>Kraj:</strong> ${player.country}</p>
+            <p><strong>Kluby:</strong> ${player.clubs.join(", ")}</p>
+          `;
+
+          cardsContainer.appendChild(card);
+        }
+      });
+    }
+
+    countryFilter.addEventListener("change", displayCards);
+    clubFilter.addEventListener("change", displayCards);
+
+    populateFilters();
+    displayCards();
+  </script>
+</body>
+</html>
