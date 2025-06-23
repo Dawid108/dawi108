@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kręgle HTML5 (Jeden Plik)</title>
+    <title>Ulepszone Kręgle HTML5</title>
     <style>
         /* --- style.css --- */
         body {
@@ -53,7 +53,7 @@
     </style>
 </head>
 <body>
-    <h1>Kręgle</h1>
+    <h1>Ulepszone Kręgle</h1>
     <canvas id="gameCanvas" width="360" height="640"></canvas>
     <button id="resetButton">Zagraj ponownie</button>
     <p>Zbite kręgle: <span id="score">0</span></p>
@@ -71,9 +71,13 @@
         // --- Ustawienia gry ---
         const BALL_RADIUS = 15;
         const PIN_RADIUS = 10;
-        const PIN_ROWS = 4; // Liczba rzędów kręgli
-        const PIN_SPACING = 30; // Odstęp między kręglami
+        const PIN_ROWS = 4; // Liczba rzędów kręgli (1 + 2 + 3 + 4 = 10 kręgli)
+        const PIN_SPACING = 30; // Odległość między środkami kręgli
         const LAUNCH_AREA_HEIGHT = 100; // Wysokość obszaru do "ciągnięcia" kuli
+
+        // Współczynnik tarcia i odbicia
+        const FRICTION_FACTOR = 0.98;
+        const BOUNCE_FACTOR = 0.7; // Tłumienie siły odbicia
 
         let ball = {
             x: CANVAS_WIDTH / 2,
@@ -98,10 +102,10 @@
             ctx.closePath();
         }
 
-        function drawPin(x, y, knockedDown = false) {
+        function drawPin(x, y, isKnockedDown = false) {
             ctx.beginPath();
             ctx.arc(x, y, PIN_RADIUS, 0, Math.PI * 2);
-            ctx.fillStyle = knockedDown ? '#999' : '#fff'; // Szary, jeśli zbity, biały, jeśli stoi
+            ctx.fillStyle = isKnockedDown ? '#999' : '#fff'; // Szary, jeśli zbity, biały, jeśli stoi
             ctx.strokeStyle = '#333';
             ctx.lineWidth = 1;
             ctx.fill();
@@ -111,7 +115,7 @@
 
         function drawPins() {
             pins.forEach(pin => {
-                drawPin(pin.x, pin.y, pin.knockedDown);
+                drawPin(pin.x, pin.y, pin.isKnockedDown);
             });
         }
 
@@ -139,70 +143,175 @@
             ball.dx = 0;
             ball.dy = 0;
             ball.isMoving = false;
-            ball.canLaunch = true; // Można wystrzelić po resecie
+            ball.canLaunch = true;
 
             pins = [];
             score = 0;
             scoreDisplay.textContent = score;
 
-            // Generowanie kręgli
-            let startX = CANVAS_WIDTH / 2 - (PIN_ROWS - 1) * PIN_SPACING / 2;
-            let startY = 50; // Początkowa wysokość pierwszego rzędu kręgli
+            // Ulepszone generowanie kręgli w trójkąt: 1, 2, 3, 4
+            const firstRowY = 50; // Wysokość pierwszego kręgla
+            const pinHeight = PIN_RADIUS * 2;
+            const rowSpacing = pinHeight * 0.8; // Pionowa odległość między rzędami
 
             for (let row = 0; row < PIN_ROWS; row++) {
-                for (let i = 0; i <= row; i++) {
+                const numPinsInRow = row + 1;
+                const rowWidth = (numPinsInRow - 1) * PIN_SPACING;
+                const startX = CANVAS_WIDTH / 2 - rowWidth / 2;
+                const currentY = firstRowY + row * rowSpacing;
+
+                for (let i = 0; i < numPinsInRow; i++) {
                     pins.push({
-                        x: startX + i * PIN_SPACING + (row - i) * PIN_SPACING / 2, // Ustawienie trójkąta
-                        y: startY + row * PIN_SPACING * Math.sqrt(3) / 2, // Odstępy w pionie
+                        x: startX + i * PIN_SPACING,
+                        y: currentY,
                         radius: PIN_RADIUS,
-                        knockedDown: false
+                        dx: 0, // Prędkość kręgla X
+                        dy: 0, // Prędkość kręgla Y
+                        isKnockedDown: false,
+                        canKnockDown: true // Kręgiel może strącić inne
                     });
                 }
             }
         }
 
+        // Funkcja do sprawdzenia kolizji między dwoma okręgami (np. kula-kręgiel, kręgiel-kręgiel)
+        function checkCollision(obj1, obj2) {
+            const dx = obj1.x - obj2.x;
+            const dy = obj1.y - obj2.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            const minDistance = obj1.radius + obj2.radius;
+
+            if (distance < minDistance) {
+                // Kolizja nastąpiła
+                const angle = Math.atan2(dy, dx);
+                const overlap = minDistance - distance;
+
+                // Odsuń obiekty, by nie nachodziły na siebie
+                obj1.x += Math.cos(angle) * overlap / 2;
+                obj1.y += Math.sin(angle) * overlap / 2;
+                obj2.x -= Math.cos(angle) * overlap / 2;
+                obj2.y -= Math.sin(angle) * overlap / 2;
+
+                // Obliczanie nowych prędkości po kolizji (uproszczone)
+                const totalMass = obj1.radius + obj2.radius; // Promień jako masa
+                const obj1NewDx = ((obj1.dx * (obj1.radius - obj2.radius)) + (2 * obj2.radius * obj2.dx)) / totalMass;
+                const obj1NewDy = ((obj1.dy * (obj1.radius - obj2.radius)) + (2 * obj2.radius * obj2.dy)) / totalMass;
+                const obj2NewDx = ((obj2.dx * (obj2.radius - obj1.radius)) + (2 * obj1.radius * obj1.dx)) / totalMass;
+                const obj2NewDy = ((obj2.dy * (obj2.radius - obj1.radius)) + (2 * obj1.radius * obj1.dy)) / totalMass;
+
+                obj1.dx = obj1NewDx * BOUNCE_FACTOR;
+                obj1.dy = obj1NewDy * BOUNCE_FACTOR;
+                obj2.dx = obj2NewDx * BOUNCE_FACTOR;
+                obj2.dy = obj2NewDy * BOUNCE_FACTOR;
+
+                return true; // Kolizja miała miejsce
+            }
+            return false;
+        }
+
         function update() {
+            // Aktualizacja pozycji kuli
             if (ball.isMoving) {
                 ball.x += ball.dx;
                 ball.y += ball.dy;
 
                 // Odbijanie od ścian bocznych
                 if (ball.x + ball.radius > CANVAS_WIDTH || ball.x - ball.radius < 0) {
-                    ball.dx = -ball.dx * 0.8; // Trochę straty energii
+                    ball.dx = -ball.dx * BOUNCE_FACTOR;
                     if (ball.x + ball.radius > CANVAS_WIDTH) ball.x = CANVAS_WIDTH - ball.radius;
                     if (ball.x - ball.radius < 0) ball.x = ball.radius;
                 }
 
-                // Kula wyjechała poza górną krawędź lub zatrzymała się
-                // Zatrzymanie gdy prędkość jest bardzo mała i kula nie jest już na starcie
-                if (ball.y < -ball.radius || (Math.abs(ball.dx) < 0.1 && Math.abs(ball.dy) < 0.1 && ball.y < CANVAS_HEIGHT - BALL_RADIUS - 20)) {
-                    ball.isMoving = false;
-                    ball.canLaunch = false; // Po jednym rzucie nie można więcej rzucać
+                // Ograniczenie kuli w pionie (nie może wyjść poza dół ani nad tor)
+                if (ball.y + ball.radius > CANVAS_HEIGHT) {
+                    ball.y = CANVAS_HEIGHT - ball.radius;
+                    ball.dy = -ball.dy * BOUNCE_FACTOR;
+                }
+                if (ball.y < BALL_RADIUS) { // Nie może wyjść zbyt wysoko
+                    ball.y = BALL_RADIUS;
+                    ball.dy = -ball.dy * BOUNCE_FACTOR;
                 }
 
-                // Tarcie (stopniowe zmniejszanie prędkości)
-                ball.dx *= 0.99;
-                ball.dy *= 0.99;
 
-                // Detekcja kolizji z kręglami
+                // Tarcie dla kuli
+                ball.dx *= FRICTION_FACTOR;
+                ball.dy *= FRICTION_FACTOR;
+
+                // Zatrzymanie kuli, gdy jest bardzo wolna
+                if (Math.abs(ball.dx) < 0.1 && Math.abs(ball.dy) < 0.1) {
+                    ball.isMoving = false;
+                    ball.dx = 0;
+                    ball.dy = 0;
+                }
+
+                // Kolizje kuli z kręglami
                 pins.forEach(pin => {
-                    if (!pin.knockedDown) {
-                        const distance = Math.sqrt(Math.pow(ball.x - pin.x, 2) + Math.pow(ball.y - pin.y, 2));
-                        if (distance < ball.radius + pin.radius) {
-                            pin.knockedDown = true;
+                    if (!pin.isKnockedDown) {
+                        if (checkCollision(ball, pin)) {
+                            // Jeśli kula uderzy w kręgiel, kręgiel jest zbity
+                            pin.isKnockedDown = true;
                             score++;
                             scoreDisplay.textContent = score;
-
-                            // Uproszczone odbicie kuli od kręgla
-                            const angle = Math.atan2(ball.y - pin.y, ball.x - pin.x);
-                            const force = 5; // Siła odbicia
-                            ball.dx = Math.cos(angle) * force;
-                            ball.dy = Math.sin(angle) * force;
                         }
                     }
                 });
             }
+
+            // Aktualizacja pozycji kręgli i kolizje między kręglami
+            for (let i = 0; i < pins.length; i++) {
+                const pin = pins[i];
+                if (pin.dx !== 0 || pin.dy !== 0) {
+                    pin.x += pin.dx;
+                    pin.y += pin.dy;
+
+                    // Tarcie dla kręgli
+                    pin.dx *= FRICTION_FACTOR;
+                    pin.dy *= FRICTION_FACTOR;
+
+                    // Zatrzymanie kręgla, gdy jest bardzo wolny
+                    if (Math.abs(pin.dx) < 0.1 && Math.abs(pin.dy) < 0.1) {
+                        pin.dx = 0;
+                        pin.dy = 0;
+                    }
+
+                    // Odbijanie kręgli od ścian bocznych
+                    if (pin.x + pin.radius > CANVAS_WIDTH || pin.x - pin.radius < 0) {
+                        pin.dx = -pin.dx * BOUNCE_FACTOR;
+                        if (pin.x + pin.radius > CANVAS_WIDTH) pin.x = CANVAS_WIDTH - pin.radius;
+                        if (pin.x - pin.radius < 0) pin.x = pin.radius;
+                    }
+
+                    // Odbijanie kręgli od górnej i dolnej granicy (opcjonalnie, zależy od estetyki)
+                    if (pin.y + pin.radius > CANVAS_HEIGHT || pin.y - pin.radius < 0) {
+                        pin.dy = -pin.dy * BOUNCE_FACTOR;
+                        if (pin.y + pin.radius > CANVAS_HEIGHT) pin.y = CANVAS_HEIGHT - pin.radius;
+                        if (pin.y - pin.radius < 0) pin.y = pin.radius;
+                    }
+                }
+
+                // Kolizje między kręglami
+                if (pin.canKnockDown) { // Tylko kręgle, które jeszcze nie są "zbite" liczą się do dalszych kolizji
+                    for (let j = i + 1; j < pins.length; j++) {
+                        const otherPin = pins[j];
+                        if (pin.isKnockedDown && otherPin.isKnockedDown) continue; // Nie sprawdzamy kolizji między dwoma zbitymi
+
+                        if (checkCollision(pin, otherPin)) {
+                            // Jeśli kręgiel uderzy w inny, oba stają się zbite, jeśli jeszcze nie są
+                            if (!pin.isKnockedDown) {
+                                pin.isKnockedDown = true;
+                                score++;
+                            }
+                            if (!otherPin.isKnockedDown) {
+                                otherPin.isKnockedDown = true;
+                                score++;
+                            }
+                            scoreDisplay.textContent = score;
+                        }
+                    }
+                }
+            }
         }
+
 
         function gameLoop() {
             drawBackground();
@@ -212,11 +321,11 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // --- Obsługa zdarzeń dotyku/myszy ---
+        // --- Obsługa zdarzeń dotyku/myszy (bez zmian) ---
         let touchStartX, touchStartY;
 
         canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Zapobiega przewijaniu strony
+            e.preventDefault();
             if (!ball.isMoving && ball.canLaunch) {
                 const rect = canvas.getBoundingClientRect();
                 touchStartX = e.touches[0].clientX - rect.left;
@@ -226,7 +335,6 @@
 
         canvas.addEventListener('touchmove', (e) => {
             e.preventDefault();
-            // Można tu dodać wizualizację naciągu, np. linię
         });
 
         canvas.addEventListener('touchend', (e) => {
@@ -235,22 +343,19 @@
                 const touchEndX = e.changedTouches[0].clientX - rect.left;
                 const touchEndY = e.changedTouches[0].clientY - rect.top;
 
-                // Oblicz wektor naciągu (od startu do końca dotyku)
                 let launchX = touchEndX - touchStartX;
-                let launchY = touchEndY - touchStartY; // Ujemne, bo celujemy w górę
+                let launchY = touchEndY - touchStartY;
 
-                // Ogranicz siłę tylko do ruchu w górę (launchY musi być ujemne)
-                if (launchY > -5) launchY = -5; // Minimalny ruch w górę
-                if (launchY < -LAUNCH_AREA_HEIGHT) launchY = -LAUNCH_AREA_HEIGHT; // Maksymalny ruch w górę
+                if (launchY > -5) launchY = -5;
+                if (launchY < -LAUNCH_AREA_HEIGHT) launchY = -LAUNCH_AREA_HEIGHT;
 
-                // Przelicz wektor na prędkość
-                // Współczynniki dostosowane do odczuć gry
-                ball.dx = launchX * 0.05;
-                ball.dy = launchY * 0.1;
+                // Zwiększamy współczynnik, by kula była szybsza
+                ball.dx = launchX * 0.1; // Zwiększona siła X
+                ball.dy = launchY * 0.2; // Zwiększona siła Y
 
                 ball.isMoving = true;
-                ball.canLaunch = false; // Po wystrzeleniu nie można ponownie strzelać
-                touchStartX = undefined; // Resetuj punkt startowy dotyku
+                ball.canLaunch = false;
+                touchStartX = undefined;
                 touchStartY = undefined;
             }
         });
@@ -276,8 +381,8 @@
                 if (launchY > -5) launchY = -5;
                 if (launchY < -LAUNCH_AREA_HEIGHT) launchY = -LAUNCH_AREA_HEIGHT;
 
-                ball.dx = launchX * 0.05;
-                ball.dy = launchY * 0.1;
+                ball.dx = launchX * 0.1;
+                ball.dy = launchY * 0.2;
 
                 ball.isMoving = true;
                 ball.canLaunch = false;
@@ -285,7 +390,6 @@
                 touchStartY = undefined;
             }
         });
-
 
         // Przycisk resetu
         resetButton.addEventListener('click', initGame);
