@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Super Kręgle HTML5 (Poprawka)</title>
+    <title>Super Kręgle HTML5 (Poprawka 2)</title>
     <style>
         /* --- style.css --- */
         body {
@@ -137,7 +137,7 @@
         const PIN_SPACING_X = PIN_RADIUS * 2.5; // Odległość pozioma między środkami kręgli
         const PIN_SPACING_Y = PIN_RADIUS * 2.2; // Odległość pionowa między środkami kręgli
         const LAUNCH_AREA_HEIGHT = 100; // Wysokość obszaru do "ciągnięcia" kuli
-        const PIN_AREA_TOP_Y = 50; // Początkowa Y dla kręgli
+        const PIN_AREA_TOP_Y = 50; // Wysokość, na której znajduje się najniższy kręgiel (pierwszy w rzędzie 1)
 
         // Współczynnik tarcia i odbicia
         const FRICTION_FACTOR = 0.98;
@@ -157,7 +157,7 @@
         let scoreCurrentThrow = 0;
         let totalGameScore = 0;
         let strikeCount = 0;
-        let gameActive = false; // Nowa flaga, by śledzić, czy gra jest w trakcie rzutu
+        let waitingForEndOfThrow = false; // Nowa flaga, by zarządzać zakończeniem tury
 
         let globalHighScore = parseInt(localStorage.getItem('highScore')) || 0;
         let globalTotalKnockedPins = parseInt(localStorage.getItem('totalKnockedPins')) || 0;
@@ -212,7 +212,7 @@
             ball.dy = 0;
             ball.isMoving = false;
             ball.canLaunch = true;
-            gameActive = true; // Gra jest aktywna
+            waitingForEndOfThrow = false; // Resetuj flagę na początku nowej gry/rzutu
 
             pins = [];
             scoreCurrentThrow = 0;
@@ -222,14 +222,14 @@
             gameOverOverlay.style.display = 'none';
 
             // Generowanie kręgli: 1 na dole, 2 wyżej, 3, 4 na górze
-            // PIN_AREA_TOP_Y to będzie wysokość, na której znajduje się "szczyt" trójkąta (czyli rząd z 4 kręglami)
-            const firstPinY = PIN_AREA_TOP_Y + (PIN_ROWS - 1) * PIN_SPACING_Y; // Y dla pojedynczego, dolnego kręgla
+            // PIN_AREA_TOP_Y to będzie wysokość, na której znajduje się "wierzchołek" trójkąta (rząd 1)
+            const firstPinY = PIN_AREA_TOP_Y; // Y dla pojedynczego, dolnego kręgla
 
             for (let row = 0; row < PIN_ROWS; row++) {
-                const numPinsInRow = PIN_ROWS - row;
+                const numPinsInRow = row + 1; // 1, 2, 3, 4 kręgle
                 const currentRowWidth = (numPinsInRow - 1) * PIN_SPACING_X;
                 const startX = CANVAS_WIDTH / 2 - currentRowWidth / 2;
-                const currentY = firstPinY - row * PIN_SPACING_Y; // Im wyższy rząd (większe 'row'), tym mniejsze Y
+                const currentY = firstPinY + row * PIN_SPACING_Y; // Zwiększanie Y wraz z rzędem (niższe rzędy bliżej)
 
                 for (let i = 0; i < numPinsInRow; i++) {
                     pins.push({
@@ -306,13 +306,9 @@
                     if (ball.x - ball.radius < 0) ball.x = ball.radius;
                 }
 
-                // Odbijanie od górnej i dolnej krawędzi (ale tylko w obrębie toru)
-                if (ball.y < BALL_RADIUS) {
-                    ball.y = BALL_RADIUS;
-                    ball.dy = -ball.dy * BOUNCE_FACTOR;
-                }
-                // Jeśli kula wyjechała daleko poza tor na dół, zatrzymaj ją
-                if (ball.y > CANVAS_HEIGHT + BALL_RADIUS * 2) {
+                // Kula wyjechała poza obszar gry lub jest bardzo wolna - zatrzymaj ją
+                if (ball.y < -BALL_RADIUS || ball.y > CANVAS_HEIGHT + BALL_RADIUS * 2 ||
+                    (Math.abs(ball.dx) < 0.1 && Math.abs(ball.dy) < 0.1 && ball.y < CANVAS_HEIGHT - LAUNCH_AREA_HEIGHT)) { // Zatrzymaj, jeśli bardzo wolna i na dole
                     ball.isMoving = false;
                     ball.dx = 0;
                     ball.dy = 0;
@@ -321,14 +317,6 @@
                 // Tarcie dla kuli
                 ball.dx *= FRICTION_FACTOR;
                 ball.dy *= FRICTION_FACTOR;
-
-                // Sprawdzenie, czy kula jest na tyle wolna, by się zatrzymać
-                // I czy znajduje się na obszarze startowym lub dalej, aby nie zatrzymała się "w biegu"
-                if (Math.abs(ball.dx) < 0.1 && Math.abs(ball.dy) < 0.1 && ball.y > CANVAS_HEIGHT - LAUNCH_AREA_HEIGHT - BALL_RADIUS) {
-                    ball.isMoving = false;
-                    ball.dx = 0;
-                    ball.dy = 0;
-                }
 
                 // Kolizje kuli z kręglami
                 pins.forEach(pin => {
@@ -370,10 +358,10 @@
                     }
 
                     // Ograniczenie kręgli do obszaru gry (nie mogą wyjść poza tor)
-                    if (pin.y + pin.radius > CANVAS_HEIGHT || pin.y - pin.radius < PIN_AREA_TOP_Y / 2) {
+                    if (pin.y + pin.radius > CANVAS_HEIGHT || pin.y - pin.radius < PIN_AREA_TOP_Y - PIN_RADIUS) { // Upewnij się, że nie wyjdą za daleko w górę
                         pin.dy = -pin.dy * BOUNCE_FACTOR;
                         if (pin.y + pin.radius > CANVAS_HEIGHT) pin.y = CANVAS_HEIGHT - pin.radius;
-                        if (pin.y - pin.radius < PIN_AREA_TOP_Y / 2) pin.y = PIN_AREA_TOP_Y / 2 + pin.radius;
+                        if (pin.y - pin.radius < PIN_AREA_TOP_Y - PIN_RADIUS) pin.y = PIN_AREA_TOP_Y - PIN_RADIUS + pin.radius;
                     }
                 }
 
@@ -394,20 +382,15 @@
                 }
             }
 
-            // --- NOWA LOGIKA ZAKOŃCZENIA TURY ---
-            // Wywołaj handleEndOfThrow() tylko, gdy:
-            // 1. Kula nie porusza się.
-            // 2. Wszystkie kręgle nie poruszają się.
-            // 3. Gra jest aktywna (nie zakończyła się jeszcze i nie czeka na następny rzut)
-            // 4. Kula opuściła obszar kręgli (np. minęła linię startową kręgli)
-            const ballPassedPins = ball.y < pins[0].y - PIN_SPACING_Y; // Sprawdź, czy kula minęła obszar kręgli
-
-            if (!ball.isMoving && allPinsStopped && gameActive && ballPassedPins) {
-                // Dodaj krótkie opóźnienie, aby upewnić się, że wszystkie animacje się skończyły
+            // --- POPRAWIONA LOGIKA ZAKOŃCZENIA TURY ---
+            // Sprawdzamy, czy wszystkie ruchy ustały i czy kula została wystrzelona (canLaunch jest false)
+            if (!ball.isMoving && allPinsStopped && ball.canLaunch === false && !waitingForEndOfThrow) {
+                // Ustawiamy flagę, aby zapobiec wielokrotnemu wywołaniu
+                waitingForEndOfThrow = true;
                 setTimeout(() => {
                     handleEndOfThrow();
-                }, 500);
-                gameActive = false; // Ustaw flagę, żeby nie wywoływać ponownie handleEndOfThrow()
+                    waitingForEndOfThrow = false; // Resetuj flagę po zakończeniu obsługi
+                }, 700); // Wydłużono czas oczekiwania, aby animacje miały czas się zakończyć
             }
         }
 
@@ -423,11 +406,12 @@
             if (knockedDownCount === pins.length) { // Strike!
                 strikeCount++;
                 nextThrowButton.style.display = 'block';
-                nextThrowButton.textContent = `Następny rzut (Strike! Twój wynik: ${totalGameScore})`;
-                ball.canLaunch = true;
-                resetKnockedDownPins(); // Podnieś wszystkie kręgle
-                // Nie wywołuj initGame(), bo kręgle są już resetowane
+                nextThrowButton.textContent = `Następny rzut (Strike! Suma: ${totalGameScore})`; // Poprawka tekstu
+                ball.canLaunch = true; // Pozwól na nowy rzut
+                resetKnockedDownPins(); // Podnieś kręgle, bo jest kolejny rzut
+                // Nie wywołuj initGame() tutaj, bo to nastąpi po kliknięciu przycisku "Następny rzut"
             } else {
+                // Koniec gry, bo nie był to strike
                 strikeCount = 0;
                 endGame();
             }
@@ -463,7 +447,8 @@
 
         canvas.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if (!ball.isMoving && ball.canLaunch && gameActive) { // Upewnij się, że gra jest aktywna
+            // Upewnij się, że można wystrzelić kulę i nie czekamy na koniec poprzedniego rzutu
+            if (!ball.isMoving && ball.canLaunch && !waitingForEndOfThrow) {
                 const rect = canvas.getBoundingClientRect();
                 touchStartX = e.touches[0].clientX - rect.left;
                 touchStartY = e.touches[0].clientY - rect.top;
@@ -476,7 +461,7 @@
         });
 
         canvas.addEventListener('touchend', (e) => {
-            if (isDragging && !ball.isMoving && ball.canLaunch && touchStartX !== undefined && gameActive) {
+            if (isDragging && !ball.isMoving && ball.canLaunch && touchStartX !== undefined && !waitingForEndOfThrow) {
                 const rect = canvas.getBoundingClientRect();
                 const touchEndX = e.changedTouches[0].clientX - rect.left;
                 const touchEndY = e.changedTouches[0].clientY - rect.top;
@@ -500,7 +485,7 @@
 
         // Obsługa myszy (do testowania na komputerze)
         canvas.addEventListener('mousedown', (e) => {
-            if (!ball.isMoving && ball.canLaunch && gameActive) {
+            if (!ball.isMoving && ball.canLaunch && !waitingForEndOfThrow) {
                 const rect = canvas.getBoundingClientRect();
                 touchStartX = e.clientX - rect.left;
                 touchStartY = e.clientY - rect.top;
@@ -509,7 +494,7 @@
         });
 
         canvas.addEventListener('mouseup', (e) => {
-            if (isDragging && !ball.isMoving && ball.canLaunch && touchStartX !== undefined && gameActive) {
+            if (isDragging && !ball.isMoving && ball.canLaunch && touchStartX !== undefined && !waitingForEndOfThrow) {
                 const rect = canvas.getBoundingClientRect();
                 const touchEndX = e.clientX - rect.left;
                 const touchEndY = e.clientY - rect.top;
@@ -532,7 +517,8 @@
         });
 
         nextThrowButton.addEventListener('click', () => {
-            initGame(); // To wystarczy, aby zresetować kręgle i rozpocząć kolejny rzut
+            // Po kliknięciu przycisku "Następny rzut", zainicjuj nową turę
+            initGame();
             nextThrowButton.style.display = 'none';
         });
 
