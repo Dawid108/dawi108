@@ -19,21 +19,27 @@
       gap: 10px;
       background-color: #3498db;
       padding: 10px;
+      flex-wrap: wrap;
+    }
+
+    .header-buttons {
+      display: flex;
+      gap: 10px;
     }
 
     button {
       padding: 10px 20px;
       font-size: 16px;
       border: none;
-      background-color: #2980b9;
-      color: white;
+      background-color: white;
+      color: #3498db;
       border-radius: 5px;
       cursor: pointer;
     }
 
     button.active {
-      background-color: white;
-      color: #3498db;
+      background-color: #2980b9;
+      color: white;
     }
 
     .content {
@@ -75,8 +81,11 @@
 </head>
 <body>
   <header>
-    <button id="btnAverage" class="active">Średnia</button>
-    <button id="btnSubjects">Przedmioty</button>
+    <div class="header-buttons">
+      <button id="btnAverage" class="active">Średnia</button>
+      <button id="btnSubjects">Przedmioty</button>
+      <button id="btnReset">Resetuje</button>
+    </div>
   </header>
 
   <div class="content">
@@ -95,13 +104,14 @@
       "Bezpieczeństwo i Higiena Pracy", "Biologia", "Biznes i Zarządzanie", "Chemia", "Edukacja dla Bezpieczeństwa", "Fizyka", "Geografia", "Historia", "Historia i Teraźniejszość", "Informatyka", "Język Angielski", "Język Angielski Zawodowy", "Język Niemiecki", "Język Polski", "Matematyka", "Muzyka", "Plastyka", "Podstawy Informatyki", "Pracownia Programowania Aplikacji Desktopowych", "Pracownia Programowania Aplikacji Internetowych", "Pracownia Projektowania i Administrowania Bazami Danych", "Pracownia Projektowania Oprogramowania", "Pracownia Projektowania Stron Internetowych", "Programowanie Aplikacji Desktopowych", "Programowanie Aplikacji Internetowych", "Programowanie Obiektowe", "Projektowanie i Administrowanie Bazami Danych", "Projektowanie Stron Internetowych", "Projektowanie Oprogramowania", "Przyroda", "Religia", "Technika", "Wiedza o Społeczeństwie", "Wychowanie Fizyczne"
     ];
 
-    const selectedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || {};
-    const grades = JSON.parse(localStorage.getItem("grades")) || {};
+    let selectedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || {};
+    let grades = JSON.parse(localStorage.getItem("grades")) || {};
 
     const averageView = document.getElementById("averageView");
     const subjectsView = document.getElementById("subjectsView");
     const btnAverage = document.getElementById("btnAverage");
     const btnSubjects = document.getElementById("btnSubjects");
+    const btnReset = document.getElementById("btnReset");
     const selectedSubjectsDiv = document.getElementById("selected-subjects");
     const averageDisplay = document.getElementById("average-display");
     const checkboxesDiv = document.getElementById("subject-checkboxes");
@@ -121,6 +131,16 @@
       averageView.style.display = "none";
       subjectsView.style.display = "block";
       renderSubjectCheckboxes();
+    });
+
+    // RESET PRZYCISK
+    btnReset.addEventListener("click", () => {
+      localStorage.clear();
+      selectedSubjects = {};
+      grades = {};
+      renderSubjectCheckboxes();
+      renderAverageView();
+      alert("Wszystkie dane zostały zresetowane.");
     });
 
     function renderSubjectCheckboxes() {
