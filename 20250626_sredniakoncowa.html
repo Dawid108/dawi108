@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kalkulator Średniej</title>
   <style>
     body {
@@ -20,11 +20,6 @@
       background-color: #3498db;
       padding: 10px;
       flex-wrap: wrap;
-    }
-
-    .header-buttons {
-      display: flex;
-      gap: 10px;
     }
 
     button {
@@ -81,11 +76,8 @@
 </head>
 <body>
   <header>
-    <div class="header-buttons">
-      <button id="btnAverage" class="active">Średnia</button>
-      <button id="btnSubjects">Przedmioty</button>
-      <button id="btnReset">Resetuj</button>
-    </div>
+    <button id="btnAverage" class="active">Średnia</button>
+    <button id="btnSubjects">Przedmioty</button>
   </header>
 
   <div class="content">
@@ -111,7 +103,6 @@
     const subjectsView = document.getElementById("subjectsView");
     const btnAverage = document.getElementById("btnAverage");
     const btnSubjects = document.getElementById("btnSubjects");
-    const btnReset = document.getElementById("btnReset");
     const selectedSubjectsDiv = document.getElementById("selected-subjects");
     const averageDisplay = document.getElementById("average-display");
     const checkboxesDiv = document.getElementById("subject-checkboxes");
@@ -131,16 +122,6 @@
       averageView.style.display = "none";
       subjectsView.style.display = "block";
       renderSubjectCheckboxes();
-    });
-
-    // RESET PRZYCISK
-    btnReset.addEventListener("click", () => {
-      localStorage.clear();
-      selectedSubjects = {};
-      grades = {};
-      renderSubjectCheckboxes();
-      renderAverageView();
-      alert("Wszystkie dane zostały zresetowane.");
     });
 
     function renderSubjectCheckboxes() {
@@ -166,7 +147,10 @@
       let total = 0;
       let count = 0;
 
-      const selected = Object.entries(selectedSubjects).filter(([k, v]) => v);
+      const selected = Object.entries(selectedSubjects)
+        .filter(([_, checked]) => checked)
+        .map(([subject]) => subject)
+        .sort(); // Sortowanie alfabetyczne
 
       if (selected.length === 0) {
         averageDisplay.textContent = "Brak wybranych przedmiotów";
@@ -175,7 +159,7 @@
 
       averageDisplay.textContent = "Średnia: ";
 
-      selected.forEach(([subject]) => {
+      selected.forEach(subject => {
         const block = document.createElement("div");
         block.className = "subject-block";
 
@@ -192,11 +176,10 @@
           const val = parseFloat(input.value);
           if (val >= 1 && val <= 6) {
             grades[subject] = val;
-            localStorage.setItem("grades", JSON.stringify(grades));
           } else {
             delete grades[subject];
-            localStorage.setItem("grades", JSON.stringify(grades));
           }
+          localStorage.setItem("grades", JSON.stringify(grades));
           renderAverageView(); // ponowne przeliczenie
         });
 
