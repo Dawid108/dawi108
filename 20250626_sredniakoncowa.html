@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Średniej</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f0f0;
+    }
+
+    header {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      background-color: #3498db;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: white;
+      color: #3498db;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button.active {
+      background-color: #2980b9;
+      color: white;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .subject-block {
+      background-color: white;
+      margin: 10px auto;
+      padding: 10px;
+      border-radius: 8px;
+      max-width: 300px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .subject-block input[type="number"] {
+      width: 80px;
+      padding: 5px;
+      font-size: 16px;
+    }
+
+    .checkbox-list {
+      text-align: left;
+      max-width: 300px;
+      margin: 0 auto;
+    }
+
+    .checkbox-list label {
+      display: block;
+      margin: 5px 0;
+    }
+
+    #average-display {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <button id="btnAverage" class="active">Średnia</button>
+    <button id="btnSubjects">Przedmioty</button>
+  </header>
+
+  <div class="content">
+    <div id="averageView">
+      <div id="average-display">Średnia: </div>
+      <div id="selected-subjects"></div>
+    </div>
+
+    <div id="subjectsView" style="display:none;">
+      <div class="checkbox-list" id="subject-checkboxes"></div>
+    </div>
+  </div>
+
+  <script>
+    const subjects = [
+      "Matematyka", "Polski", "Angielski", "Historia",
+      "Geografia", "Biologia", "Chemia", "Fizyka",
+      "Informatyka", "Muzyka", "Plastyka", "WF"
+    ];
+
+    const selectedSubjects = JSON.parse(localStorage.getItem("selectedSubjects")) || {};
+    const grades = JSON.parse(localStorage.getItem("grades")) || {};
+
+    const averageView = document.getElementById("averageView");
+    const subjectsView = document.getElementById("subjectsView");
+    const btnAverage = document.getElementById("btnAverage");
+    const btnSubjects = document.getElementById("btnSubjects");
+    const selectedSubjectsDiv = document.getElementById("selected-subjects");
+    const averageDisplay = document.getElementById("average-display");
+    const checkboxesDiv = document.getElementById("subject-checkboxes");
+
+    // Przełączanie widoków
+    btnAverage.addEventListener("click", () => {
+      btnAverage.classList.add("active");
+      btnSubjects.classList.remove("active");
+      averageView.style.display = "block";
+      subjectsView.style.display = "none";
+      renderAverageView();
+    });
+
+    btnSubjects.addEventListener("click", () => {
+      btnAverage.classList.remove("active");
+      btnSubjects.classList.add("active");
+      averageView.style.display = "none";
+      subjectsView.style.display = "block";
+      renderSubjectCheckboxes();
+    });
+
+    function renderSubjectCheckboxes() {
+      checkboxesDiv.innerHTML = "";
+      subjects.forEach(subject => {
+        const label = document.createElement("label");
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.checked = selectedSubjects[subject] || false;
+        checkbox.addEventListener("change", () => {
+          selectedSubjects[subject] = checkbox.checked;
+          localStorage.setItem("selectedSubjects", JSON.stringify(selectedSubjects));
+          renderAverageView();
+        });
+        label.appendChild(checkbox);
+        label.append(" " + subject);
+        checkboxesDiv.appendChild(label);
+      });
+    }
+
+    function renderAverageView() {
+      selectedSubjectsDiv.innerHTML = "";
+      let total = 0;
+      let count = 0;
+
+      const selected = Object.entries(selectedSubjects).filter(([k, v]) => v);
+
+      if (selected.length === 0) {
+        averageDisplay.textContent = "Brak wybranych przedmiotów";
+        return;
+      }
+
+      averageDisplay.textContent = "Średnia: ";
+
+      selected.forEach(([subject]) => {
+        const block = document.createElement("div");
+        block.className = "subject-block";
+
+        const label = document.createElement("label");
+        label.textContent = subject + ": ";
+
+        const input = document.createElement("input");
+        input.type = "number";
+        input.min = 1;
+        input.max = 6;
+        input.step = 1;
+        input.value = grades[subject] || "";
+        input.addEventListener("input", () => {
+          const val = parseFloat(input.value);
+          if (val >= 1 && val <= 6) {
+            grades[subject] = val;
+            localStorage.setItem("grades", JSON.stringify(grades));
+          } else {
+            delete grades[subject];
+            localStorage.setItem("grades", JSON.stringify(grades));
+          }
+          renderAverageView(); // ponowne przeliczenie
+        });
+
+        block.appendChild(label);
+        block.appendChild(input);
+        selectedSubjectsDiv.appendChild(block);
+
+        const grade = parseFloat(input.value);
+        if (grade >= 1 && grade <= 6) {
+          total += grade;
+          count++;
+        }
+      });
+
+      if (count > 0) {
+        const avg = (total / count).toFixed(2);
+        averageDisplay.textContent = "Średnia: " + avg;
+      } else {
+        averageDisplay.textContent = "Średnia: brak ocen";
+      }
+    }
+
+    // Początkowy widok
+    renderAverageView();
+  </script>
+</body>
+</html>
