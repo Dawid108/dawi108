@@ -110,8 +110,15 @@
 
     <section id="plan" style="display: none;">
       <h2>Plan Wycieczki - Do Fiordów Norwegii (Itaka)</h2>
-      <ol id="planList">
-        <!-- Tu JS wstawi dni -->
+      <ol>
+        <li><strong>Dzień 1:</strong> Przelot do Norwegii, zakwaterowanie</li>
+        <li><strong>Dzień 2:</strong> Zwiedzanie Oslo</li>
+        <li><strong>Dzień 3:</strong> Przejazd do regionu fiordów</li>
+        <li><strong>Dzień 4:</strong> Rejs po fiordzie Geiranger</li>
+        <li><strong>Dzień 5:</strong> Wodospady i góry, dolina Flam</li>
+        <li><strong>Dzień 6:</strong> Bergen – miasto nad fiordem</li>
+        <li><strong>Dzień 7:</strong> Czas wolny lub opcjonalne wycieczki</li>
+        <li><strong>Dzień 8:</strong> Powrót do Polski</li>
       </ol>
     </section>
 
@@ -123,16 +130,16 @@
   </main>
 
   <script>
-    const planWycieczki = [
-      "Przelot do Norwegii, zakwaterowanie",
-      "Zwiedzanie Oslo",
-      "Przejazd do regionu fiordów",
-      "Rejs po fiordzie Geiranger",
-      "Wodospady i góry, dolina Flam",
-      "Bergen – miasto nad fiordem",
-      "Czas wolny lub opcjonalne wycieczki",
-      "Powrót do Polski"
-    ];
+    function showSection(id) {
+      const sections = document.querySelectorAll("main > section");
+      sections.forEach(section => {
+        section.style.display = section.id === id ? "block" : "none";
+      });
+
+      if (id === 'dzis') {
+        updateDzis();
+      }
+    }
 
     const ciekawostkiDnia = [
       "W Norwegii mieszka więcej owiec niż ludzi.",
@@ -145,30 +152,17 @@
       "Najczystsze powietrze w Europie? W Norwegii!"
     ];
 
-    // Pokazanie odpowiedniej sekcji
-    function showSection(id) {
-      const sections = document.querySelectorAll("main > section");
-      sections.forEach(section => {
-        section.style.display = section.id === id ? "block" : "none";
-      });
+    const planWycieczki = [
+      "Przelot do Norwegii, zakwaterowanie",
+      "Zwiedzanie Oslo",
+      "Przejazd do regionu fiordów",
+      "Rejs po fiordzie Geiranger",
+      "Wodospady i góry, dolina Flam",
+      "Bergen – miasto nad fiordem",
+      "Czas wolny lub opcjonalne wycieczki",
+      "Powrót do Polski"
+    ];
 
-      if (id === 'dzis') updateDzis();
-      if (id === 'plan') renderPlan();
-    }
-
-    // Tworzenie listy dni w planie
-    function renderPlan() {
-      const planList = document.getElementById("planList");
-      if (planList.innerHTML !== "") return; // już załadowano
-
-      planWycieczki.forEach((dzien, index) => {
-        const li = document.createElement("li");
-        li.innerHTML = `<strong>Dzień ${index + 1}:</strong> ${dzien}`;
-        planList.appendChild(li);
-      });
-    }
-
-    // Pokazanie aktualnego dnia i ciekawostki
     function updateDzis() {
       const dzienElement = document.getElementById("dzien");
       const ciekawostkaElement = document.getElementById("ciekawostkaDnia");
@@ -179,13 +173,16 @@
 
       let dayNumber = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
 
-      if (today < startDate) dayNumber = 1;
-      else if (today > endDate) dayNumber = 8;
+      if (today < startDate) {
+        dayNumber = 1;
+      } else if (today > endDate) {
+        dayNumber = 8;
+      }
 
-      const opis = planWycieczki[dayNumber - 1];
+      const opisDnia = planWycieczki[dayNumber - 1];
       const ciekawostka = ciekawostkiDnia[dayNumber - 1];
 
-      dzienElement.textContent = `Dzień ${dayNumber}:\n${opis}`;
+      dzienElement.textContent = `Plan dnia: ${opisDnia}`;
       ciekawostkaElement.textContent = `Ciekawostka dnia: ${ciekawostka}`;
     }
   </script>
