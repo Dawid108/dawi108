@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Norwegia</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #e6f0f7;
+      color: #002b45;
+      padding-bottom: 50px;
+    }
+
+    header {
+      background: #003153;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      border-bottom: 4px solid #87cefa;
+    }
+
+    nav {
+      margin-top: 1rem;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      background: #ffffff;
+      border: 2px solid #003153;
+      padding: 0.5rem 1rem;
+      margin: 0.3rem;
+      border-radius: 8px;
+      font-weight: bold;
+      color: #003153;
+      cursor: pointer;
+    }
+
+    nav button:hover {
+      background: #dcefff;
+    }
+
+    main {
+      padding: 1rem;
+    }
+
+    section {
+      margin-top: 1rem;
+    }
+
+    h2 {
+      border-bottom: 2px solid #003153;
+      padding-bottom: 0.3rem;
+    }
+
+    ul, ol {
+      padding-left: 1.2rem;
+    }
+
+    #dzien {
+      margin: 1rem 0;
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+
+    #ciekawostkaDnia {
+      background: #fff;
+      border-left: 4px solid #003153;
+      padding: 0.8rem;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🇳🇴 Norwegia</h1>
+    <nav>
+      <button onclick="showSection('ciekawostki')">Ciekawostki</button>
+      <button onclick="showSection('rekordy')">Rekordy</button>
+      <button onclick="showSection('plan')">Plan Wycieczki</button>
+      <button onclick="showSection('dzis')">Dziś</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="ciekawostki">
+      <h2>Ciekawostki o Norwegii</h2>
+      <ul>
+        <li>Norwegia ma ponad 1 100 fiordów!</li>
+        <li>W Norwegii można zobaczyć zorzę polarną.</li>
+        <li>Norwegowie piją najwięcej kawy na świecie po Finach.</li>
+        <li>Język norweski ma dwie wersje: bokmål i nynorsk.</li>
+        <li>W Norwegii znajduje się najdłuższy tunel drogowy świata – Laerdal (24,5 km).</li>
+      </ul>
+    </section>
+
+    <section id="rekordy" style="display: none;">
+      <h2>Rekordy Norwegii</h2>
+      <ul>
+        <li><strong>Największe jezioro:</strong> Mjøsa</li>
+        <li><strong>Najgłębsze jezioro:</strong> Hornindalsvatnet (514 m)</li>
+        <li><strong>Największy fiord:</strong> Sognefjord (ponad 200 km)</li>
+        <li><strong>Najwyższy szczyt:</strong> Galdhøpiggen (2469 m n.p.m.)</li>
+        <li><strong>Najwyższy wodospad:</strong> Vinnufossen (865 m)</li>
+      </ul>
+    </section>
+
+    <section id="plan" style="display: none;">
+      <h2>Plan Wycieczki - Do Fiordów Norwegii (Itaka)</h2>
+      <ol>
+        <li><strong>Dzień 1:</strong> Przelot do Norwegii, zakwaterowanie</li>
+        <li><strong>Dzień 2:</strong> Zwiedzanie Oslo</li>
+        <li><strong>Dzień 3:</strong> Przejazd do regionu fiordów</li>
+        <li><strong>Dzień 4:</strong> Rejs po fiordzie Geiranger</li>
+        <li><strong>Dzień 5:</strong> Wodospady i góry, dolina Flam</li>
+        <li><strong>Dzień 6:</strong> Bergen – miasto nad fiordem</li>
+        <li><strong>Dzień 7:</strong> Czas wolny lub opcjonalne wycieczki</li>
+        <li><strong>Dzień 8:</strong> Powrót do Polski</li>
+      </ol>
+    </section>
+
+    <section id="dzis" style="display: none;">
+      <h2>Dziś</h2>
+      <div id="dzien"></div>
+      <div id="ciekawostkaDnia"></div>
+    </section>
+  </main>
+
+  <script>
+    function showSection(id) {
+      const sections = document.querySelectorAll("main > section");
+      sections.forEach(section => {
+        section.style.display = section.id === id ? "block" : "none";
+      });
+
+      if (id === 'dzis') {
+        updateDzis();
+      }
+    }
+
+    const ciekawostkiDnia = [
+      "W Norwegii mieszka więcej owiec niż ludzi.",
+      "Geirangerfjord jest wpisany na listę UNESCO.",
+      "Norwegowie mają jedno z najwyższych HDI na świecie.",
+      "W Norwegii można podróżować koleją przez fiordy!",
+      "Droga Trolli to jedna z najbardziej krętych tras w Europie.",
+      "Bergen nazywane jest Bramą do Fiordów.",
+      "Norwegia to ojczyzna nart.",
+      "Najczystsze powietrze w Europie? W Norwegii!"
+    ];
+
+    function updateDzis() {
+      const dzienElement = document.getElementById("dzien");
+      const ciekawostkaElement = document.getElementById("ciekawostkaDnia");
+
+      const today = new Date();
+      const startDate = new Date("2025-07-05");
+      const endDate = new Date("2025-07-12");
+
+      let dayNumber = Math.floor((today - startDate) / (1000 * 60 * 60 * 24)) + 1;
+
+      if (today < startDate) {
+        dayNumber = 1;
+      } else if (today > endDate) {
+        dayNumber = 8;
+      }
+
+      dzienElement.textContent = `Dzień ${dayNumber} wycieczki`;
+      ciekawostkaElement.textContent = `Ciekawostka dnia: ${ciekawostkiDnia[dayNumber - 1]}`;
+    }
+  </script>
+</body>
+</html>
