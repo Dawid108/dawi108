@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Norwegia</title>
+  <link rel="manifest" href="20250704_manifest.json">
+<meta name="theme-color" content="#003153">
   <style>
     body {
       margin: 0;
@@ -283,6 +285,11 @@ Zacumowanie. Przejazd wzdłuż zachodniego wybrzeża Szwecji do granicy z Norweg
       dzienElement.innerHTML = `${opisDnia}`;
       ciekawostkaElement.textContent = `Ciekawostka dnia: ${ciekawostka}`;
     }
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("20250704_service-worker.js")
+    .then(() => console.log("Service Worker zarejestrowany"))
+    .catch(err => console.log("Błąd Service Workera:", err));
+}
   </script>
 </body>
 </html>
