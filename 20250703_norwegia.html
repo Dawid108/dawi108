@@ -66,90 +66,88 @@ li {
   margin-bottom: 0.3rem; /* lub np. 5px */
 }
 
-        /* Styl dla tabeli */
+          /* Styl dla tabeli */
         .stadium-table {
             width: 100%;
+            /* Maksymalna szerokość dla czytelności na dużych ekranach, ale elastyczna na małych */
+            max-width: 900px;
             border-collapse: collapse;
-            margin: 0 auto;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            background-color: #ffffff;
-            overflow: hidden; /* Ensures rounded corners apply to content */
-            border-radius: 8px; /* Rounded corners for the whole table */
+            margin: 20px auto; /* Wyśrodkowuje tabelę i dodaje marginesy pionowe */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1); /* Wyraźniejszy cień */
+            background-color: #ffffff; /* Białe tło tabeli */
+            border-radius: 12px; /* Bardziej zaokrąglone rogi */
+            overflow: hidden; /* Ważne dla zaokrąglonych rogów */
+            border: 1px solid #e0e0e0; /* Delikatna ramka tabeli */
         }
 
         .stadium-table thead tr {
-            background-color: #3498db;
+            background: linear-gradient(to right, #4a90e2, #60b0f4); /* Gradientowy nagłówek */
             color: white;
             text-align: left;
+            font-size: 1em;
+            text-transform: uppercase; /* Duże litery w nagłówkach */
+            letter-spacing: 0.05em; /* Lekki odstęp między literami */
         }
 
         .stadium-table th,
         .stadium-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #ddd;
+            padding: 15px 20px; /* Większy padding dla lepszej czytelności */
+            border-bottom: 1px solid #f0f0f0; /* Bardzo delikatna ramka między wierszami */
             text-align: left;
             font-size: 0.95em;
         }
 
+        /* Styl dla parzystych wierszy */
         .stadium-table tbody tr:nth-child(even) {
-            background-color: #f8f8f8;
+            background-color: #f9f9f9; /* Bardzo jasne tło dla co drugiego wiersza */
         }
 
+        /* Efekt hover na wierszach */
         .stadium-table tbody tr:hover {
-            background-color: #eef;
+            background-color: #e6f7ff; /* Jasnoniebieskie tło po najechaniu */
             cursor: pointer;
+            transition: background-color 0.2s ease; /* Płynne przejście koloru */
         }
 
-        /* Specyficzne style dla komórek pojemności (opcjonalnie, aby wyróżnić) */
+        /* Specyficzne style dla komórek pojemności */
         .stadium-table td:nth-child(4) {
             font-weight: bold;
-            color: #007bff;
+            color: #007bff; /* Ciemniejszy niebieski dla wyróżnienia */
+            font-size: 1em; /* Trochę większy rozmiar dla pojemności */
         }
 
-        /* Responsywność dla małych ekranów - ZMIENIONY KOD */
-        @media screen and (max-width: 600px) {
+        /* Responsywność dla mniejszych ekranów: overflow-x dla przewijania */
+        @media screen and (max-width: 768px) {
             .stadium-table {
-                border: none; /* Usuwamy ramkę z całej tabeli */
-                box-shadow: none; /* Usuwamy cień z całej tabeli */
+                /* Usuwamy max-width, aby na telefonach tabela mogła się przewijać */
+                max-width: 100%;
+                /* Dodajemy poziome przewijanie, jeśli zawartość jest za szeroka */
+                display: block; /* Umożliwia przewijanie */
+                overflow-x: auto; /* Pokazuje pasek przewijania tylko wtedy, gdy potrzebny */
+                white-space: nowrap; /* Zapobiega zawijaniu się tekstu w komórkach */
             }
 
-            .stadium-table thead {
-                display: none; /* Ukryj nagłówki na małych ekranach */
+            .stadium-table thead, .stadium-table tbody, .stadium-table th, .stadium-table td, .stadium-table tr {
+                white-space: nowrap; /* Ważne: zapobiega zawijaniu się tekstu, zmuszając do przewijania poziomego */
             }
 
-            .stadium-table tbody {
-                display: block; /* Upewnij się, że tbody jest blokiem */
-                width: 100%;
+            .stadium-table th, .stadium-table td {
+                padding: 12px 15px; /* Delikatnie zmniejszone paddingi na mobilnych */
+                min-width: 120px; /* Minimalna szerokość kolumny, aby były czytelne */
+            }
+            .stadium-table td:nth-child(3) { /* Kluby */
+                min-width: 150px; /* Większa minimalna szerokość dla kolumny "Kluby" */
+            }
+            .stadium-table td:nth-child(4) { /* Pojemność */
+                min-width: 100px;
             }
 
-            .stadium-table tr {
-                margin-bottom: 15px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                overflow: hidden;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-                display: block; /* Każdy wiersz jako blok */
+            h1 {
+                font-size: 1.5em; /* Mniejszy nagłówek na mobilnych */
+                padding: 0 10px;
             }
-
-            .stadium-table td {
-                display: block; /* Każda komórka jako blok, jedna pod drugą */
-                text-align: left; /* Wyrównaj tekst do lewej */
-                padding: 8px 15px; /* Mniejsze paddingi */
-                border-bottom: 1px solid #eee; /* Dzielenie między komórkami */
-                position: relative; /* Potrzebne dla pseudo-elementu */
-            }
-
-            .stadium-table td:last-child {
-                border-bottom: none; /* Ostatnia komórka w wierszu bez dolnej ramki */
-            }
-
-            .stadium-table td::before {
-                content: attr(data-label); /* Wyświetl etykietę z atrybutu data-label */
-                display: block; /* Etykieta jako blok, by była nad wartością */
-                font-weight: bold;
-                color: #555;
-                margin-bottom: 2px; /* Odstęp między etykietą a wartością */
-                font-size: 0.85em; /* Mniejszy rozmiar etykiety */
+            body {
+                padding: 10px;
             }
         }
 
@@ -179,7 +177,7 @@ li {
   </header>
 
   <main>
-<section id="onorwegii">
+<section id="onorwegii" style="display: none;">
   <h2>O Norwegii</h2>
 
   <h3>🇳🇴 Norwegia – Informacje ogólne</h3>
@@ -274,24 +272,24 @@ li {
             </tr>
         </thead>
         <tbody>
-            <tr><td data-label="Nazwa">Ullevaal Stadion</td><td data-label="Miasto">Oslo</td><td data-label="Kluby">-</td><td data-label="Pojemność">27 200</td></tr>
-            <tr><td data-label="Nazwa">Lerkendal Stadion</td><td data-label="Miasto">Trondheim</td><td data-label="Kluby">Rosenborg</td><td data-label="Pojemność">21 366</td></tr>
-            <tr><td data-label="Nazwa">Brann Stadion</td><td data-label="Miasto">Bergen</td><td data-label="Kluby">Brann</td><td data-label="Pojemność">17 686</td></tr>
-            <tr><td data-label="Nazwa">Intility Arena</td><td data-label="Miasto">Oslo</td><td data-label="Kluby">Vålerenga</td><td data-label="Pojemność">17 333</td></tr>
-            <tr><td data-label="Nazwa">Telenor Arena</td><td data-label="Miasto">Fornebu</td><td data-label="Kluby">-</td><td data-label="Pojemność">15 600</td></tr>
-            <tr><td data-label="Nazwa">Bislett Stadion</td><td data-label="Miasto">Oslo</td><td data-label="Kluby">Skeid, Lyn</td><td data-label="Pojemność">15 400</td></tr>
-            <tr><td data-label="Nazwa">Viking Stadion</td><td data-label="Miasto">Stavanger</td><td data-label="Kluby">Viking</td><td data-label="Pojemność">15 300</td></tr>
-            <tr><td data-label="Nazwa">Sør Arena</td><td data-label="Miasto">Kristiansand</td><td data-label="Kluby">IK Start</td><td data-label="Pojemność">14 300</td></tr>
-            <tr><td data-label="Nazwa">Åråsen Stadion</td><td data-label="Miasto">Lillestrøm</td><td data-label="Kluby">Lillestrøm SK</td><td data-label="Pojemność">12 250</td></tr>
-            <tr><td data-label="Nazwa">Aker Stadion</td><td data-label="Miasto">Molde</td><td data-label="Kluby">Molde FK</td><td data-label="Pojemność">11 167</td></tr>
-            <tr><td data-label="Nazwa">Color Line Stadion</td><td data-label="Miasto">Ålesund</td><td data-label="Kluby">Ålesund FK</td><td data-label="Pojemność">10 720</td></tr>
-            <tr><td data-label="Nazwa">Release Arena</td><td data-label="Miasto">Sandefjord</td><td data-label="Kluby">Sandefjord Fotball</td><td data-label="Pojemność">9 000</td></tr>
-            <tr><td data-label="Nazwa">Marienlyst Stadion</td><td data-label="Miasto">Drammen</td><td data-label="Kluby">Stromsgodset, Drafn, Drammen FK</td><td data-label="Pojemność">8 500</td></tr>
-            <tr><td data-label="Nazwa">Aspmyra Stadion</td><td data-label="Miasto">Bodø</td><td data-label="Kluby">Bodø/Glimt</td><td data-label="Pojemność">8 215</td></tr>
-            <tr><td data-label="Nazwa">Sarpsborg Stadion</td><td data-label="Miasto">Sarpsborg</td><td data-label="Kluby">Sarpsborg 08 FF</td><td data-label="Pojemność">8 022</td></tr>
-            <tr><td data-label="Nazwa">Briskeby Stadion</td><td data-label="Miasto">Hamar</td><td data-label="Kluby">HamKam</td><td data-label="Pojemność">7 800</td></tr>
-            <tr><td data-label="Nazwa">Alfheim Stadion</td><td data-label="Miasto">Tromsø</td><td data-label="Kluby">Tromsø IL</td><td data-label="Pojemność">7 500</td></tr>
-            <tr><td data-label="Nazwa">Øster Hus Arena</td><td data-label="Miasto">Sandnes</td><td data-label="Kluby">Sandnes Ulf</td><td data-label="Pojemność">6 043</td></tr>
+            <tr><td>Ullevaal Stadion</td><td>Oslo</td><td>-</td><td>27 200</td></tr>
+            <tr><td>Lerkendal Stadion</td><td>Trondheim</td><td>Rosenborg</td><td>21 366</td></tr>
+            <tr><td>Brann Stadion</td><td>Bergen</td><td>Brann</td><td>17 686</td></tr>
+            <tr><td>Intility Arena</td><td>Oslo</td><td>Vålerenga</td><td>17 333</td></tr>
+            <tr><td>Telenor Arena</td><td>Fornebu</td><td>-</td><td>15 600</td></tr>
+            <tr><td>Bislett Stadion</td><td>Oslo</td><td>Skeid, Lyn</td><td>15 400</td></tr>
+            <tr><td>Viking Stadion</td><td>Stavanger</td><td>Viking</td><td>15 300</td></tr>
+            <tr><td>Sør Arena</td><td>Kristiansand</td><td>IK Start</td><td>14 300</td></tr>
+            <tr><td>Åråsen Stadion</td><td>Lillestrøm</td><td>Lillestrøm SK</td><td>12 250</td></tr>
+            <tr><td>Aker Stadion</td><td>Molde</td><td>Molde FK</td><td>11 167</td></tr>
+            <tr><td>Color Line Stadion</td><td>Ålesund</td><td>Ålesund FK</td><td>10 720</td></tr>
+            <tr><td>Release Arena</td><td>Sandefjord</td><td>Sandefjord Fotball</td><td>9 000</td></tr>
+            <tr><td>Marienlyst Stadion</td><td>Drammen</td><td>Stromsgodset, Drafn, Drammen FK</td><td>8 500</td></tr>
+            <tr><td>Aspmyra Stadion</td><td>Bodø</td><td>Bodø/Glimt</td><td>8 215</td></tr>
+            <tr><td>Sarpsborg Stadion</td><td>Sarpsborg</td><td>Sarpsborg 08 FF</td><td>8 022</td></tr>
+            <tr><td>Briskeby Stadion</td><td>Hamar</td><td>HamKam</td><td>7 800</td></tr>
+            <tr><td>Alfheim Stadion</td><td>Tromsø</td><td>Tromsø IL</td><td>7 500</td></tr>
+            <tr><td>Øster Hus Arena</td><td>Sandnes</td><td>Sandnes Ulf</td><td>6 043</td></tr>
         </tbody>
     </table>
 </section>
@@ -336,7 +334,7 @@ Zacumowanie. Przejazd wzdłuż zachodniego wybrzeża Szwecji do granicy z Norweg
       </ul>
     </section>
 
-    <section id="dzis" style="display: none;">
+    <section id="dzis">
       <h2>Dziś</h2>
       <div id="dzien"></div>
       <div id="ciekawostkaDnia"></div>
