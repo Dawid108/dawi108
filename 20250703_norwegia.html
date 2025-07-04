@@ -106,15 +106,20 @@ li {
             color: #007bff;
         }
 
-        /* Responsywność dla małych ekranów - sprawia, że tabela działa lepiej na telefonach */
+        /* Responsywność dla małych ekranów - ZMIENIONY KOD */
         @media screen and (max-width: 600px) {
-            .stadium-table, .stadium-table tbody, .stadium-table tr, .stadium-table td {
-                display: block;
-                width: 100%;
+            .stadium-table {
+                border: none; /* Usuwamy ramkę z całej tabeli */
+                box-shadow: none; /* Usuwamy cień z całej tabeli */
             }
 
             .stadium-table thead {
                 display: none; /* Ukryj nagłówki na małych ekranach */
+            }
+
+            .stadium-table tbody {
+                display: block; /* Upewnij się, że tbody jest blokiem */
+                width: 100%;
             }
 
             .stadium-table tr {
@@ -123,32 +128,29 @@ li {
                 border-radius: 8px;
                 overflow: hidden;
                 box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+                display: block; /* Każdy wiersz jako blok */
             }
 
             .stadium-table td {
-                text-align: right;
-                padding-left: 50%; /* Miejsce na etykietę */
-                position: relative;
-                border: none;
+                display: block; /* Każda komórka jako blok, jedna pod drugą */
+                text-align: left; /* Wyrównaj tekst do lewej */
+                padding: 8px 15px; /* Mniejsze paddingi */
+                border-bottom: 1px solid #eee; /* Dzielenie między komórkami */
+                position: relative; /* Potrzebne dla pseudo-elementu */
+            }
+
+            .stadium-table td:last-child {
+                border-bottom: none; /* Ostatnia komórka w wierszu bez dolnej ramki */
             }
 
             .stadium-table td::before {
                 content: attr(data-label); /* Wyświetl etykietę z atrybutu data-label */
-                position: absolute;
-                left: 15px;
-                width: calc(50% - 30px);
-                padding-right: 10px;
-                white-space: nowrap;
-                text-align: left;
+                display: block; /* Etykieta jako blok, by była nad wartością */
                 font-weight: bold;
                 color: #555;
+                margin-bottom: 2px; /* Odstęp między etykietą a wartością */
+                font-size: 0.85em; /* Mniejszy rozmiar etykiety */
             }
-
-            /* Specyficzne style dla etykiet */
-            .stadium-table td:nth-child(1)::before { content: "Nazwa:"; }
-            .stadium-table td:nth-child(2)::before { content: "Miasto:"; }
-            .stadium-table td:nth-child(3)::before { content: "Kluby:"; }
-            .stadium-table td:nth-child(4)::before { content: "Pojemność:"; }
         }
 
     #dzien {
