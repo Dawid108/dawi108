@@ -1,10 +1,7 @@
 const CACHE_NAME = "norwegia-v1";
 const urlsToCache = [
-  "/",
-  "/index.html",
-  "/style.css",
-  "/script.js",
-  "/manifest.json",
+  "/20250703_norwegia.html",
+  "/20250704_manifest.json",
   "/icon-192.png",
   "/icon-512.png"
 ];
