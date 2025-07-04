@@ -66,6 +66,91 @@ li {
   margin-bottom: 0.3rem; /* lub np. 5px */
 }
 
+        /* Styl dla tabeli */
+        .stadium-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+            overflow: hidden; /* Ensures rounded corners apply to content */
+            border-radius: 8px; /* Rounded corners for the whole table */
+        }
+
+        .stadium-table thead tr {
+            background-color: #3498db;
+            color: white;
+            text-align: left;
+        }
+
+        .stadium-table th,
+        .stadium-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+            font-size: 0.95em;
+        }
+
+        .stadium-table tbody tr:nth-child(even) {
+            background-color: #f8f8f8;
+        }
+
+        .stadium-table tbody tr:hover {
+            background-color: #eef;
+            cursor: pointer;
+        }
+
+        /* Specyficzne style dla komórek pojemności (opcjonalnie, aby wyróżnić) */
+        .stadium-table td:nth-child(4) {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        /* Responsywność dla małych ekranów - sprawia, że tabela działa lepiej na telefonach */
+        @media screen and (max-width: 600px) {
+            .stadium-table, .stadium-table tbody, .stadium-table tr, .stadium-table td {
+                display: block;
+                width: 100%;
+            }
+
+            .stadium-table thead {
+                display: none; /* Ukryj nagłówki na małych ekranach */
+            }
+
+            .stadium-table tr {
+                margin-bottom: 15px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            }
+
+            .stadium-table td {
+                text-align: right;
+                padding-left: 50%; /* Miejsce na etykietę */
+                position: relative;
+                border: none;
+            }
+
+            .stadium-table td::before {
+                content: attr(data-label); /* Wyświetl etykietę z atrybutu data-label */
+                position: absolute;
+                left: 15px;
+                width: calc(50% - 30px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: #555;
+            }
+
+            /* Specyficzne style dla etykiet */
+            .stadium-table td:nth-child(1)::before { content: "Nazwa:"; }
+            .stadium-table td:nth-child(2)::before { content: "Miasto:"; }
+            .stadium-table td:nth-child(3)::before { content: "Kluby:"; }
+            .stadium-table td:nth-child(4)::before { content: "Pojemność:"; }
+        }
+
     #dzien {
       margin: 1rem 0;
       font-weight: bold;
@@ -174,6 +259,39 @@ li {
 
   <li><strong>Igrzyska zimowe:</strong> Norwegia to najbardziej utytułowany kraj w historii zimowych igrzysk olimpijskich – zdobyła 405 medali (148 złotych) do 2022 roku.</li>
 </ul>
+
+    <h3>🏟️ Stadiony w Norwegii</h3>
+
+    <table class="stadium-table">
+        <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th>Miasto</th>
+                <th>Kluby</th>
+                <th>Pojemność</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td data-label="Nazwa">Ullevaal Stadion</td><td data-label="Miasto">Oslo</td><td data-label="Kluby">-</td><td data-label="Pojemność">27 200</td></tr>
+            <tr><td data-label="Nazwa">Lerkendal Stadion</td><td data-label="Miasto">Trondheim</td><td data-label="Kluby">Rosenborg</td><td data-label="Pojemność">21 366</td></tr>
+            <tr><td data-label="Nazwa">Brann Stadion</td><td data-label="Miasto">Bergen</td><td data-label="Kluby">Brann</td><td data-label="Pojemność">17 686</td></tr>
+            <tr><td data-label="Nazwa">Intility Arena</td><td data-label="Miasto">Oslo</td><td data-label="Kluby">Vålerenga</td><td data-label="Pojemność">17 333</td></tr>
+            <tr><td data-label="Nazwa">Telenor Arena</td><td data-label="Miasto">Fornebu</td><td data-label="Kluby">-</td><td data-label="Pojemność">15 600</td></tr>
+            <tr><td data-label="Nazwa">Bislett Stadion</td><td data-label="Miasto">Oslo</td><td data-label="Kluby">Skeid, Lyn</td><td data-label="Pojemność">15 400</td></tr>
+            <tr><td data-label="Nazwa">Viking Stadion</td><td data-label="Miasto">Stavanger</td><td data-label="Kluby">Viking</td><td data-label="Pojemność">15 300</td></tr>
+            <tr><td data-label="Nazwa">Sør Arena</td><td data-label="Miasto">Kristiansand</td><td data-label="Kluby">IK Start</td><td data-label="Pojemność">14 300</td></tr>
+            <tr><td data-label="Nazwa">Åråsen Stadion</td><td data-label="Miasto">Lillestrøm</td><td data-label="Kluby">Lillestrøm SK</td><td data-label="Pojemność">12 250</td></tr>
+            <tr><td data-label="Nazwa">Aker Stadion</td><td data-label="Miasto">Molde</td><td data-label="Kluby">Molde FK</td><td data-label="Pojemność">11 167</td></tr>
+            <tr><td data-label="Nazwa">Color Line Stadion</td><td data-label="Miasto">Ålesund</td><td data-label="Kluby">Ålesund FK</td><td data-label="Pojemność">10 720</td></tr>
+            <tr><td data-label="Nazwa">Release Arena</td><td data-label="Miasto">Sandefjord</td><td data-label="Kluby">Sandefjord Fotball</td><td data-label="Pojemność">9 000</td></tr>
+            <tr><td data-label="Nazwa">Marienlyst Stadion</td><td data-label="Miasto">Drammen</td><td data-label="Kluby">Stromsgodset, Drafn, Drammen FK</td><td data-label="Pojemność">8 500</td></tr>
+            <tr><td data-label="Nazwa">Aspmyra Stadion</td><td data-label="Miasto">Bodø</td><td data-label="Kluby">Bodø/Glimt</td><td data-label="Pojemność">8 215</td></tr>
+            <tr><td data-label="Nazwa">Sarpsborg Stadion</td><td data-label="Miasto">Sarpsborg</td><td data-label="Kluby">Sarpsborg 08 FF</td><td data-label="Pojemność">8 022</td></tr>
+            <tr><td data-label="Nazwa">Briskeby Stadion</td><td data-label="Miasto">Hamar</td><td data-label="Kluby">HamKam</td><td data-label="Pojemność">7 800</td></tr>
+            <tr><td data-label="Nazwa">Alfheim Stadion</td><td data-label="Miasto">Tromsø</td><td data-label="Kluby">Tromsø IL</td><td data-label="Pojemność">7 500</td></tr>
+            <tr><td data-label="Nazwa">Øster Hus Arena</td><td data-label="Miasto">Sandnes</td><td data-label="Kluby">Sandnes Ulf</td><td data-label="Pojemność">6 043</td></tr>
+        </tbody>
+    </table>
 </section>
 
     <section id="ciekawostki" style="display: none;">
