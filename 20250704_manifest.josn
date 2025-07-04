@@ -1,20 +1,20 @@
 {
   "name": "Norwegia",
   "short_name": "Norwegia",
-  "start_url": "20250703_norwegia.html",
+  "start_url": "https://dawid108.github.io/dawi108/20250703_norwegia.html",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#003153",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "https://res.cloudinary.com/diljpkw9f/image/upload/v1750246418/dawi_108_tgzpht.jpg",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/jpeg"
     },
     {
-      "src": "icon-512.png",
+      "src": "https://dawid108.github.io/dawi108/",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/jpeg"
     }
   ]
 }
