@@ -1,9 +1,9 @@
 const CACHE_NAME = "norwegia-v1";
 const urlsToCache = [
-  "/20250703_norwegia.html",
-  "/20250704_manifest.json",
-  "/icon-192.png",
-  "/icon-512.png"
+  "https://dawid108.github.io/dawi108/20250703_norwegia.html",
+  "https://dawid108.github.io/dawi108/20250704_manifest.json",
+  "https://res.cloudinary.com/diljpkw9f/image/upload/v1750246418/dawi_108_tgzpht.jpg",
+  "https://res.cloudinary.com/diljpkw9f/image/upload/v1750246418/dawi_108_tgzpht.jpg"
 ];
 
 self.addEventListener("install", event => {
