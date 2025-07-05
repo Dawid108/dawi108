@@ -377,9 +377,34 @@ Zacumowanie. Przejazd wzdłuż zachodniego wybrzeża Szwecji do granicy z Norweg
       `Dzień 8:<br>Przypłynięcie promu. Przejazd do Polski.`
     ];
 
+const pogodaDnia = [
+      `Pogoda Świnoujście:
+<table><tr>
+<th>01:00</th><th>02:00</th><th>03:00</th><th>04:00</th><th>05:00</th><th>06:00</th><th>07:00</th><th>08:00</th><th>09:00</th><th>10:00</th><th>11:00</th><th>12:00</th><th>13:00</th><th>14:00</th><th>15:00</th><th>16:00</th><th>17:00</th><th>18:00</th><th>19:00</th><th>20:00</th><th>21:00</th><th>22:00</th><th>23:00</th><th>00:00</th>
+</tr><tr>
+<td>17°</td><td>17°</td><td>16°</td>
+<td>16°</td><td>16°</td><td>17°</td>
+<td>18°</td><td>19°</td><td>20°</td>
+<td>22°</td><td>23°</td><td>23°</td>
+<td>24°</td><td>23°</td><td>23°</td>
+<td>24°</td><td>24°</td><td>23°</td>
+<td>23°</td><td>22°</td><td>21°</td>
+<td>21°</td><td>18°</td><td>18°</td>
+</tr></table`,
+      `Pogoda Jutro`,
+      `Norwegowie mają jedno z najwyższych HDI na świecie.`,
+      `W Norwegii można podróżować koleją przez fiordy!`,
+      `Droga Trolli to jedna z najbardziej krętych tras w Europie.`,
+      `Bergen nazywane jest Bramą do Fiordów.`,
+      `Norwegia to ojczyzna nart.`,
+      `Najczystsze powietrze w Europie? W Norwegii!`
+    ];
+
     function updateDzis() {
       const dzienElement = document.getElementById("dzien");
-      const ciekawostkaElement = document.getElementById("ciekawostkaDnia");
+      const ciekawostkaElement = document.getElementById("ciekawostkiDnia");
+      const pogodaElement = 
+document.getElementById("pogodaDnia");
 
       const today = new Date();
       const startDate = new Date("2025-07-05");
@@ -396,8 +421,11 @@ Zacumowanie. Przejazd wzdłuż zachodniego wybrzeża Szwecji do granicy z Norweg
       const opisDnia = planWycieczki[dayNumber - 1];
       const ciekawostka = ciekawostkiDnia[dayNumber - 1];
 
+const pogoda = pogodaDnia[dayNumber - 1];
+
       dzienElement.innerHTML = `${opisDnia}`;
       ciekawostkaElement.textContent = `Ciekawostka dnia: ${ciekawostka}`;
+      pogodaElement.innerHTML = `${pogodaDnia}`;
     }
 if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("https://dawid108.github.io/dawi108/20250704_service-worker.js")
