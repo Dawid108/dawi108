@@ -94,7 +94,7 @@ li {
             padding: 15px 20px; /* Większy padding dla lepszej czytelności */
             border-bottom: 1px solid #f0f0f0; /* Bardzo delikatna ramka między wierszami */
             text-align: left;
-            font-size: 0.95em;
+            font-size: 1em;
         }
 
         /* Styl dla parzystych wierszy */
@@ -111,8 +111,7 @@ li {
 
         /* Specyficzne style dla komórek pojemności */
         .stadium-table td:nth-child(4) {
-            font-weight: bold;
-            color: #007bff; /* Ciemniejszy niebieski dla wyróżnienia */
+            color: black; /* Ciemniejszy niebieski dla wyróżnienia */
             font-size: 1em; /* Trochę większy rozmiar dla pojemności */
         }
 
@@ -133,13 +132,13 @@ li {
 
             .stadium-table th, .stadium-table td {
                 padding: 12px 15px; /* Delikatnie zmniejszone paddingi na mobilnych */
-                min-width: 120px; /* Minimalna szerokość kolumny, aby były czytelne */
+                min-width: 50px; /* Minimalna szerokość kolumny, aby były czytelne */
             }
             .stadium-table td:nth-child(3) { /* Kluby */
-                min-width: 150px; /* Większa minimalna szerokość dla kolumny "Kluby" */
+                min-width: 50px; /* Większa minimalna szerokość dla kolumny "Kluby" */
             }
             .stadium-table td:nth-child(4) { /* Pojemność */
-                min-width: 100px;
+                min-width: 50px;
             }
         }
 
@@ -387,8 +386,8 @@ const pogodaDnia = [
 <td>16°</td><td>16°</td><td>17°</td>
 <td>18°</td><td>19°</td><td>20°</td>
 <td>22°</td><td>23°</td><td>23°</td>
-<td>24°</td><td>23°</td><td>23°🌧️20%</td>
-<td>24°🌧️20%</td><td>24°</td><td>23°</td>
+<td>24°</td><td>23°</td><td>23° 🌧️20%</td>
+<td>24° 🌧️20%</td><td>24°</td><td>23°</td>
 <td>23°</td><td>22°</td><td>21°</td>
 <td>21°</td><td>18°</td><td>18°</td>
 </tr></tbody></table`,
