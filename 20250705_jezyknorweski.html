@@ -25,7 +25,7 @@
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             padding: 20px;
-            margin-bottom: 20px;
+            margin-bottom: 30px; /* Zwiększony odstęp między kategoriami */
         }
         .phrase-item {
             margin-bottom: 10px;
@@ -38,6 +38,14 @@
             font-style: italic;
             color: #34495e;
         }
+        .false-friend .norwegian {
+            color: #ff9800; /* Kolor dla "fałszywych przyjaciół" */
+        }
+        .false-friend .polish::before {
+            content: "(UWAŻAJ!) ";
+            font-weight: bold;
+            color: #c0392b;
+        }
     </style>
 </head>
 <body>
@@ -45,8 +53,6 @@
     <h1>Często Używane Słowa i Zwroty po Norwesku</h1>
 
     <p>Oto lista często używanych słów i zwrotów po norwesku wraz z tłumaczeniem na polski. Podzieliłem je na kilka kategorii, aby ułatwić naukę:</p>
-
-    ---
 
     <div class="category">
         <h2>Podstawowe Powitania i Zwroty</h2>
@@ -72,8 +78,6 @@
         <div class="phrase-item"><span class="norwegian">Kanskje</span> – <span class="polish">Może</span></div>
     </div>
 
-    ---
-
     <div class="category">
         <h2>Przydatne Zwroty w Rozmowie</h2>
         <div class="phrase-item"><span class="norwegian">Jeg forstår ikke.</span> – <span class="polish">Nie rozumiem.</span></div>
@@ -90,8 +94,6 @@
         <div class="phrase-item"><span class="norwegian">Jeg bor i...</span> – <span class="polish">Mieszkam w...</span></div>
     </div>
 
-    ---
-
     <div class="category">
         <h2>Pytania i Słowa Pytające</h2>
         <div class="phrase-item"><span class="norwegian">Hva?</span> – <span class="polish">Co?</span></div>
@@ -105,8 +107,6 @@
         <div class="phrase-item"><span class="norwegian">Hvor mange?</span> – <span class="polish">Ile? (policzalne)</span></div>
     </div>
 
-    ---
-
     <div class="category">
         <h2>Zakupy i Jedzenie</h2>
         <div class="phrase-item"><span class="norwegian">Hva koster dette?</span> – <span class="polish">Ile to kosztuje?</span></div>
@@ -118,8 +118,6 @@
         <div class="phrase-item"><span class="norwegian">Er det ledig?</span> – <span class="polish">Czy jest wolne (miejsce)?</span></div>
         <div class="phrase-item"><span class="norwegian">God appetitt!</span> – <span class="polish">Smacznego!</span></div>
     </div>
-
-    ---
 
     <div class="category">
         <h2>Kierunki i Transport</h2>
@@ -136,7 +134,32 @@
         <div class="phrase-item"><span class="norwegian">Stasjon</span> – <span class="polish">Stacja</span></div>
     </div>
 
-    ---
+    <div class="category">
+        <h2>Słowa podobne w pisowni i znaczeniu</h2>
+        <p>Te słowa są łatwe do zapamiętania ze względu na ich podobieństwo do polskich odpowiedników.</p>
+        <div class="phrase-item"><span class="norwegian">Bank</span> – <span class="polish">Bank</span></div>
+        <div class="phrase-item"><span class="norwegian">Film</span> – <span class="polish">Film</span></div>
+        <div class="phrase-item"><span class="norwegian">Sport</span> – <span class="polish">Sport</span></div>
+        <div class="phrase-item"><span class="norwegian">Radio</span> – <span class="polish">Radio</span></div>
+        <div class="phrase-item"><span class="norwegian">Telefon</span> – <span class="polish">Telefon</span></div>
+        <div class="phrase-item"><span class="norwegian">Sykkel</span> – <span class="polish">Cykiel (Rower)</span></div>
+        <div class="phrase-item"><span class="norwegian">Vinter</span> – <span class="polish">Zima</span></div>
+        <div class="phrase-item"><span class="norwegian">Katt</span> – <span class="polish">Kot</span></div>
+        <div class="phrase-item"><span class="norwegian">Mus</span> – <span class="polish">Mysz</span></div>
+        <div class="phrase-item"><span class="norwegian">Gress</span> – <span class="polish">Trawa</span></div>
+        <div class="phrase-item"><span class="norwegian">Lampe</span> – <span class="polish">Lampa</span></div>
+    </div>
+
+    <div class="category">
+        <h2>"Fałszywi Przyjaciele" (Słowa mylące!)</h2>
+        <p>Pamiętaj, że te słowa brzmią lub wyglądają podobnie, ale mają zupełnie inne znaczenie, co bywa mylące!</p>
+        <div class="phrase-item false-friend"><span class="norwegian">Kona</span> – <span class="polish">Kobieta / Żona</span></div>
+        <div class="phrase-item false-friend"><span class="norwegian">Do</span> – <span class="polish">Toaleta (używane też jako "ty" - du)</span></div>
+        <div class="phrase-item false-friend"><span class="norwegian">Aktor</span> – <span class="polish">Prokurator / Oskarżyciel (w kontekście prawnym)</span></div>
+        <div class="phrase-item false-friend"><span class="norwegian">Kurv</span> – <span class="polish">Kosz</span></div>
+        <div class="phrase-item false-friend"><span class="norwegian">Peis</span> – <span class="polish">Kominek</span></div>
+        <div class="phrase-item false-friend"><span class="norwegian">Heis</span> – <span class="polish">Winda</span></div>
+    </div>
 
     <div class="category">
         <h2>Liczby (od 1 do 10)</h2>
