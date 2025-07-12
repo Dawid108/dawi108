@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wschodnia Polska – Wycieczka Objazdowa</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #d0eafc, #f0fff4);
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background-color: #0275d8;
+      color: white;
+      padding: 15px;
+      text-align: center;
+      font-size: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 10px;
+    }
+
+    .arrow {
+      font-size: 24px;
+      padding: 10px 20px;
+      cursor: pointer;
+      user-select: none;
+      color: #0275d8;
+    }
+
+    .arrow.disabled {
+      color: #ccc;
+      pointer-events: none;
+    }
+
+    .date {
+      font-weight: bold;
+      font-size: 18px;
+      margin: 0 20px;
+    }
+
+    .content {
+      padding: 20px;
+    }
+
+    .day-title {
+      font-size: 22px;
+      color: #025aa5;
+      margin-bottom: 10px;
+    }
+
+    .description {
+      margin-bottom: 15px;
+      line-height: 1.5;
+    }
+
+    .map-link {
+      margin: 10px 0;
+      display: block;
+      color: #0275d8;
+      text-decoration: underline;
+    }
+
+    iframe {
+      width: 100%;
+      max-width: 500px;
+      height: 300px;
+      border: none;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header>Wschodnia Polska – Wycieczka Objazdowa</header>
+
+  <div class="nav">
+    <div id="prev" class="arrow">&#x25C0;</div>
+    <div id="date" class="date"></div>
+    <div id="next" class="arrow">&#x25B6;</div>
+  </div>
+
+  <div class="content" id="day-content"></div>
+
+  <script>
+    const tripStart = new Date('2025-07-16');
+    const tripEnd = new Date('2025-07-29');
+    const today = new Date();
+    let currentDate;
+
+    // Ustaw datę startową, końcową lub dzisiejszą w ramach wycieczki
+    if (today < tripStart) {
+      currentDate = new Date(tripStart);
+    } else if (today > tripEnd) {
+      currentDate = new Date(tripEnd);
+    } else {
+      currentDate = new Date(today);
+    }
+
+    const content = {
+      '2025-07-16': {
+        title: "Dzień 1 – Start wycieczki: Białystok",
+        description: "Rozpoczęcie wycieczki w Białymstoku. Spacer po mieście, zwiedzanie Pałacu Branickich.",
+        googleMaps: "https://www.google.com/maps/dir//Pałac+Branickich,+Białystok",
+        mapycz: "https://mapy.cz/s/kunagohoja"
+      },
+      '2025-07-17': {
+        title: "Dzień 2 – Supraśl i Kruszyniany",
+        description: "Wizyta w Supraślu i meczecie w Kruszynianach. Kuchnia tatarska.",
+        googleMaps: "https://www.google.com/maps/dir//Supraśl,+Polska",
+        mapycz: "https://mapy.cz/s/pugojazaru"
+      },
+      // Dodaj pozostałe dni poniżej...
+      '2025-07-29': {
+        title: "Dzień 14 – Zakończenie: Chełm",
+        description: "Zwiedzanie kredowych podziemi w Chełmie. Oficjalne zakończenie wycieczki.",
+        googleMaps: "https://www.google.com/maps/dir//Podziemia+Kredowe,+Chełm",
+        mapycz: "https://mapy.cz/s/jasupotasu"
+      }
+    };
+
+    function formatDate(date) {
+      return date.toISOString().split('T')[0];
+    }
+
+    function updateView() {
+      const dateStr = formatDate(currentDate);
+      document.getElementById('date').textContent = currentDate.toLocaleDateString('pl-PL', {
+        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+      });
+
+      const dayData = content[dateStr];
+      const container = document.getElementById('day-content');
+      container.innerHTML = "";
+
+      if (dayData) {
+        container.innerHTML = `
+          <div class="day-title">${dayData.title}</div>
+          <div class="description">${dayData.description}</div>
+          <a class="map-link" href="${dayData.googleMaps}" target="_blank">Otwórz trasę w Google Maps</a>
+          <iframe src="${dayData.mapycz}" loading="lazy"></iframe>
+        `;
+      } else {
+        container.innerHTML = `<p>Brak danych dla tego dnia.</p>`;
+      }
+
+      // Zablokuj strzałki jeśli poza zakresem
+      document.getElementById('prev').classList.toggle('disabled', currentDate <= tripStart);
+      document.getElementById('next').classList.toggle('disabled', currentDate >= tripEnd);
+    }
+
+    document.getElementById('prev').addEventListener('click', () => {
+      if (currentDate > tripStart) {
+        currentDate.setDate(currentDate.getDate() - 1);
+        updateView();
+      }
+    });
+
+    document.getElementById('next').addEventListener('click', () => {
+      if (currentDate < tripEnd) {
+        currentDate.setDate(currentDate.getDate() + 1);
+        updateView();
+      }
+    });
+
+    updateView();
+  </script>
+</body>
+</html>
