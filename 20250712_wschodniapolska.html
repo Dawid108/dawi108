@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Wschodnia Polska – Wycieczka Objazdowa</title>
   <style>
     body {
@@ -19,9 +19,6 @@
       padding: 15px;
       text-align: center;
       font-size: 20px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
     }
 
     .nav {
@@ -72,12 +69,23 @@
       text-decoration: underline;
     }
 
+    .mountain-hike {
+      margin-top: 20px;
+    }
+
+    .mountain-title {
+      font-weight: bold;
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
     iframe {
       width: 100%;
       max-width: 500px;
-      height: 300px;
+      height: 280px;
       border: none;
       border-radius: 8px;
+      margin-bottom: 15px;
     }
   </style>
 </head>
@@ -98,7 +106,6 @@
     const today = new Date();
     let currentDate;
 
-    // Ustaw datę startową, końcową lub dzisiejszą w ramach wycieczki
     if (today < tripStart) {
       currentDate = new Date(tripStart);
     } else if (today > tripEnd) {
@@ -111,21 +118,38 @@
       '2025-07-16': {
         title: "Dzień 1 – Start wycieczki: Białystok",
         description: "Rozpoczęcie wycieczki w Białymstoku. Spacer po mieście, zwiedzanie Pałacu Branickich.",
-        googleMaps: "https://www.google.com/maps/dir//Pałac+Branickich,+Białystok",
-        mapycz: "https://mapy.cz/s/kunagohoja"
+        googleMaps: "https://www.google.com/maps/dir//Pałac+Branickich,+Białystok"
       },
       '2025-07-17': {
-        title: "Dzień 2 – Supraśl i Kruszyniany",
-        description: "Wizyta w Supraślu i meczecie w Kruszynianach. Kuchnia tatarska.",
-        googleMaps: "https://www.google.com/maps/dir//Supraśl,+Polska",
-        mapycz: "https://mapy.cz/s/pugojazaru"
+        title: "Dzień 2 – Wycieczka na Tarnicę",
+        description: "Przejazd do Wołosatego i wejście na Tarnicę – najwyższy szczyt Bieszczadów.",
+        googleMaps: "https://www.google.com/maps/dir//Wołosate",
+        mapycz: [
+          {
+            title: "Tarnica 1346 m n.p.m.",
+            url: "https://mapy.cz/s/kunagohoja"
+          }
+        ]
       },
-      // Dodaj pozostałe dni poniżej...
+      '2025-07-18': {
+        title: "Dzień 3 – Dwie trasy górskie",
+        description: "Dzień w Bieszczadach – dwie grupy wyruszają na różne trasy.",
+        googleMaps: "https://www.google.com/maps/dir//Ustrzyki+Górne",
+        mapycz: [
+          {
+            title: "Połonina Caryńska",
+            url: "https://mapy.cz/s/pugojazaru"
+          },
+          {
+            title: "Połonina Wetlińska",
+            url: "https://mapy.cz/s/jasupotasu"
+          }
+        ]
+      },
       '2025-07-29': {
         title: "Dzień 14 – Zakończenie: Chełm",
         description: "Zwiedzanie kredowych podziemi w Chełmie. Oficjalne zakończenie wycieczki.",
-        googleMaps: "https://www.google.com/maps/dir//Podziemia+Kredowe,+Chełm",
-        mapycz: "https://mapy.cz/s/jasupotasu"
+        googleMaps: "https://www.google.com/maps/dir//Podziemia+Kredowe,+Chełm"
       }
     };
 
@@ -144,17 +168,28 @@
       container.innerHTML = "";
 
       if (dayData) {
-        container.innerHTML = `
+        let html = `
           <div class="day-title">${dayData.title}</div>
           <div class="description">${dayData.description}</div>
           <a class="map-link" href="${dayData.googleMaps}" target="_blank">Otwórz trasę w Google Maps</a>
-          <iframe src="${dayData.mapycz}" loading="lazy"></iframe>
         `;
+
+        if (dayData.mapycz) {
+          html += `<div class="mountain-hike">`;
+          dayData.mapycz.forEach(trasa => {
+            html += `
+              <div class="mountain-title">${trasa.title}</div>
+              <iframe src="${trasa.url}" loading="lazy"></iframe>
+            `;
+          });
+          html += `</div>`;
+        }
+
+        container.innerHTML = html;
       } else {
         container.innerHTML = `<p>Brak danych dla tego dnia.</p>`;
       }
 
-      // Zablokuj strzałki jeśli poza zakresem
       document.getElementById('prev').classList.toggle('disabled', currentDate <= tripStart);
       document.getElementById('next').classList.toggle('disabled', currentDate >= tripEnd);
     }
