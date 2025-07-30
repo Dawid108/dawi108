@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Polska Objazdówka</title>
+  <style>
+    /* Reset stylów domyślnych */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+}
+
+.header {
+  text-align: center;
+  background-color: #f8f8f8;
+  padding: 10px;
+  z-index: 10;
+  position: relative;
+}
+
+.header h1 {
+  font-size: 24px;
+  color: #333;
+}
+
+.header p {
+  font-size: 16px;
+  color: #666;
+}
+
+iframe {
+  position: absolute;
+  top: 70px; /* wysokość nagłówka */
+  left: 0;
+  width: 100vw;
+  height: calc(100vh - 70px);
+  border: none;
+}
+
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Polska Objazdówka</h1>
+    <p>Trasa około 2600 km</p>
+  </div>
+
+  <iframe
+    src="https://mapy.com/s/cuvavopuge"
+    frameborder="0"
+    allowfullscreen
+  ></iframe>
+</body>
+</html>
