@@ -99,7 +99,7 @@
             display: none;
         }
 
-        #score-display, #lives-display {
+        #scorejablko-display, #lives-display {
             position: absolute;
             top: 10px;
             color: white;
@@ -110,7 +110,7 @@
             z-index: 15;
         }
 
-        #score-display {
+        #scorejablko-display {
             left: 10px;
         }
 
@@ -130,30 +130,30 @@
         </div>
         <div id="game-over-screen" class="game-overlay hidden">
             <h3>Koniec Gry!</h3>
-            <p>Twój wynik: <span id="final-score"></span></p>
-            <p>Twój rekord: <span id="high-score"></span></p>
+            <p>Twój wynik: <span id="final-scorejablko"></span></p>
+            <p>Twój rekord: <span id="high-scorejablko"></span></p>
             <p>Suma Zebranych Jabłek: <span id="total-apples"></span></p>
             <button id="restart-game-button">Nowa Gra</button>
         </div>
-        <div id="score-display">Wynik: 0</div>
+        <div id="scorejablko-display">Wynik: 0</div>
         <div id="lives-display">Życia: 3</div>
     </div>
     <script>
         const gameContainer = document.getElementById('game-container');
         const worm = document.getElementById('worm');
-        const scoreDisplay = document.getElementById('score-display');
+        const scorejablkoDisplay = document.getElementById('scorejablko-display');
         const livesDisplay = document.getElementById('lives-display');
         const startScreen = document.getElementById('start-screen');
         const gameOverScreen = document.getElementById('game-over-screen');
         const startGameButton = document.getElementById('start-game-button');
         const restartGameButton = document.getElementById('restart-game-button');
-        const finalScoreSpan = document.getElementById('final-score');
-        const highScoreSpan = document.getElementById('high-score');
+        const finalScorejablkoSpan = document.getElementById('final-scorejablko');
+        const highScorejablkoSpan = document.getElementById('high-scorejablko');
         const totalApplesSpan = document.getElementById('total-apples');
 
-        let score = 0;
+        let scorejablko = 0;
         let lives = 3;
-        let highScore = parseInt(localStorage.getItem('highScore')) || 0;
+        let highScorejablko = parseInt(localStorage.getItem('highScorejablko')) || 0;
         let totalApplesCollected = parseInt(localStorage.getItem('totalApples')) || 0;
         let gameInterval;
         let appleFallSpeed = 5; // Początkowa prędkość spadania jabłek
@@ -166,18 +166,18 @@
         let isGameRunning = false;
 
         // Ustawienie początkowych wartości w ekranie startowym
-        updateScoresOnScreen();
+        updateScorejablkosOnScreen();
 
-        function updateScoresOnScreen() {
-            highScoreSpan.textContent = highScore;
+        function updateScorejablkosOnScreen() {
+            highScorejablkoSpan.textContent = highScorejablko;
             totalApplesSpan.textContent = totalApplesCollected;
         }
 
         function startGame() {
-            score = 0;
+            scorejablko = 0;
             lives = 3;
             appleFallSpeed = initialAppleFallSpeed; // Resetuj prędkość na początkową
-            scoreDisplay.textContent = 'Wynik: 0';
+            scorejablkoDisplay.textContent = 'Wynik: 0';
             livesDisplay.textContent = 'Życia: 3';
             startScreen.classList.add('hidden');
             gameOverScreen.classList.add('hidden');
@@ -206,14 +206,14 @@
             cancelAnimationFrame(gameInterval);
 
             // Zaktualizuj rekord
-            if (score > highScore) {
-                highScore = score;
-                localStorage.setItem('highScore', highScore);
+            if (scorejablko > highScorejablko) {
+                highScorejablko = scorejablko;
+                localStorage.setItem('highScorejablko', highScorejablko);
             }
 
             // Wyświetl ekran końca gry
-            finalScoreSpan.textContent = score;
-            updateScoresOnScreen(); // Aktualizuje highScore i totalApples na ekranie końca gry
+            finalScorejablkoSpan.textContent = scorejablko;
+            updateScorejablkosOnScreen(); // Aktualizuje highScorejablko i totalApples na ekranie końca gry
             gameOverScreen.classList.remove('hidden');
         }
 
@@ -238,10 +238,10 @@
 
                 // Sprawdź kolizję z robaczkiem
                 if (checkCollision(apple, worm)) {
-                    score++;
+                    scorejablko++;
                     totalApplesCollected++;
                     localStorage.setItem('totalApples', totalApplesCollected);
-                    scoreDisplay.textContent = 'Wynik: ' + score;
+                    scorejablkoDisplay.textContent = 'Wynik: ' + scorejablko;
                     apple.remove();
                     clearInterval(fallInterval);
                 } else if (appleTop + apple.clientHeight >= gameContainer.clientHeight) {
@@ -346,7 +346,7 @@
         window.onload = () => {
             startScreen.classList.remove('hidden');
             gameOverScreen.classList.add('hidden');
-            updateScoresOnScreen();
+            updateScorejablkosOnScreen();
         };
     </script>
 </body>
