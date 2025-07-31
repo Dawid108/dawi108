@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ordery Madery</title>
+  <link rel="manifest" href="20250731_manifest.json">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f0ea;
+      color: #2e2e2e;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      background: #005d4b;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      font-size: 32px;
+      font-family: 'Georgia', serif;
+      letter-spacing: 2px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 10px;
+      gap: 10px;
+    }
+
+    button {
+      flex: 1 1 40%;
+      padding: 15px;
+      font-size: 16px;
+      background: #007a63;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    }
+
+    button:hover {
+      background: #005d4b;
+    }
+
+    #content {
+      margin: 20px;
+      padding: 15px;
+      background: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 5px;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    strong {
+      display: inline-block;
+    }
+
+    hr {
+      margin: 10px 0 20px;
+      border: none;
+      border-top: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Madera</h1>
+
+  <div class="buttons">
+    <button onclick="showPlan()">Plan Wycieczki</button>
+    <button onclick="showToday()">Dziś</button>
+    <button onclick="showAbout()">O Maderze</button>
+    <button onclick="showFacts()">Ciekawostki</button>
+    <button onclick="showLanguage()">Język</button>
+    <button onclick="location.href='20250731_inne.html'">Inne</button>
+  </div>
+
+  <div id="content"></div>
+
+  <script>
+const plan = [
+  "<strong>Dzień 1 (02.08.2025 Sobota):</strong><br>Zbiórka uczestników na lotnisku. Przelot do Funchal. Transfer do hotelu. Zależnie od godziny przylotu: czas wolny, kolacja, nocleg.",
+  "<strong>Dzień 2 (03.08.2025 Niedziela):</strong><br>Śniadanie. Czas wolny – wypoczynek w hotelu lub udział w wycieczkach fakultatywnych. Kolacja, nocleg.",
+  "<strong>Dzień 3 (04.08.2025 Poniedziałek):</strong><br><strong>Funchal – Wzgórze Monte – Eira Do Serrado – Dolina Zakonnic – Camara De Lobos</strong><br>Śniadanie. Wycieczka do centrum wyspy: przejazd kolejką linową ponad dachami FUNCHAL na WZGÓRZE MONTE. Zwiedzanie: sanktuarium Matki Boskiej, ogród tropikalny z roślinnością reliktową i endemiczną Madery. Fakultatywnie (za dodatkową opłatą na miejscu): szalony zjazd wiklinowymi saniami. Malownicza górska droga prowadzi do serca Madery, gdzie z tarasów panoramicznych EIRA DO SERRADO można podziwiać wspaniały widok na górskie przepaście. Obiad. Przejazd do ustronnej wioski w DOLINIE ZAKONNIC i degustacja lokalnego specjału – likierów kasztanowych. Dalej trasa prowadzi do CAMARA DE LOBOS, typowej wioski rybackiej, ulubionego miejsca Winstona Churchilla. Powrót do hotelu, kolacja, nocleg.",
+  "<strong>Dzień 4 (05.08.2025 Wtorek):</strong><br><strong>Funchal – Pico Dos Barcelos</strong><br>Śniadanie. Zwiedzanie FUNCHAL, stolicy wyspy. Wjazd na punkt widokowy PICO DOS BARCELOS (355 m n.p.m.), skąd roztacza się wspaniała panorama miasta. Spacer: okolice portu, XV-wieczna katedra w stylu manuelińskim, budynek parlamentu Madery, cytadela św. Wawrzyńca. Wizyta w słynnej winiarni The Old Blandy Wine Lodge, założonej przez Johna Blandy’ego, który zapoczątkował trwającą do dziś tradycję winiarską na wyspie. Zapoznanie się z procesem produkcji i historią, degustacja wyjątkowego maderyjskiego wina, które swój niepowtarzalny smak zawdzięcza leżakowaniu w dębowych beczkach. Wizyta na targu miejskim, najbardziej kolorowej części miasta. Powrót do hotelu, kolacja, nocleg.",
+  "<strong>Dzień 5 (06.08.2025 Środa):</strong><br>Śniadanie. Czas wolny – wypoczynek w hotelu lub udział w wycieczkach fakultatywnych. Kolacja, nocleg.",
+  "<strong>Dzień 6 (07.08.2025 Czwartek):</strong><br><strong>Pico De Arieiro – Las Laurissilva – Santana – Półwysep Św. Wawrzyńca</strong><br>Śniadanie. Wizyta w ogrodzie botanicznym Quinta do Palheiro w posiadłości rodziny Blandy z urzekającą roślinnością sprowadzoną z całego świata, zaaranżowanym w stylu XIX-wiecznych dworów angielskich. Wjazd na PICO DE ARIEIRO – trzeci co do wielkości szczyt Madery (1818 m n.p.m.), z którego przy dobrych warunkach pogodowych można dostrzec koronę wyspy i spektakularne górskie pejzaże. Spacer lewadą przez prastary LAS LAURISSILVA. Obiad. Wizyta w unikalnym skansenie tradycyjnych domków krytych strzechą w wiosce SANTANA, podziwianie klifowego krajobrazu PÓŁWYSPU ŚW. WAWRZYŃCA, punkty widokowe z panoramą Orlej Skały, wysp Porto Santo, Desertas i pasa startowego lotniska wspartego na 180 kolumnach. Powrót do hotelu, kolacja, nocleg.",
+  "<strong>Dzień 7 (08.08.2025 Piątek):</strong><br><strong>Cabo Girão – Płaskowyż Paul De Serra – Lasy Fanal – Porto Moniz – Ribeira Brava</strong><br>Śniadanie. Wyjazd w godzinach porannych. Na początek okazja do podziwiania spektakularnych widoków z najwyższego klifu Madery – CABO GIRÃO. Dalej trasa prowadzi na plantację bananów, gdzie mieści się pierwsze na wyspie, innowacyjne Muzeum Banana, w którym będzie można skosztować pysznego, bananowego piwa! Kolejnym punktem programu jest przejazd przez jedyny na wyspie PŁASKOWYŻ PAUL DE SERRA i wizyta w magicznych, mglistych LASACH FANAL, objętych patronatem UNESCO. Po drodze przystanek w spektakularnym punkcie widokowym Ribeira da Janela, skąd rozpościera się widok na dzikie, klifowe wybrzeże Madery. Następnie przejazd do popularnego kurortu PORTO MONIZ, gdzie z bliska można podziwiać naturalne baseny lawowe (krótki postój). Przejazd do São Vicente na obiad. Na zakończenie wycieczki wizyta w pięknej wiosce rybackiej RIBEIRA BRAVA z zabytkowym kościółkiem w centrum. Powrót do hotelu, kolacja, nocleg.",
+  "<strong>Dzień 8 (09.08.2025 Sobota):</strong><br>Zależnie od godziny wylotu: śniadanie, czas wolny, transfer na lotnisko i wylot do Polski. Dla osób, które przedłużają pobyt o tygodniowy wypoczynek: śniadanie, wykwaterowanie, przejazd na lotnisko, transfer do wybranego hotelu."
+];
+
+    function formatPlanItem(item) {
+      const parts = item.split(":");
+      const dayTitle = parts[0].trim();
+      const description = parts[1]?.trim() || "";
+      return `<li><strong>${dayTitle}</strong><br>${description}</li>`;
+    }
+
+function showPlan() {
+  const listItems = plan.map(item => `<li>${item}</li>`).join("");
+  document.getElementById("content").innerHTML = `
+    <h2>Plan Wycieczki</h2><hr>
+    <ul>${listItems}</ul>
+  `;
+}
+
+function showToday() {
+  const today = new Date();
+  const tripStart = new Date("2025-08-02");
+  const tripEnd = new Date("2025-08-09");
+
+  let index = 0;
+  if (today < tripStart) {
+    index = 0;
+  } else if (today > tripEnd) {
+    index = plan.length - 1;
+  } else {
+    const diff = Math.floor((today - tripStart) / (1000 * 60 * 60 * 24));
+    index = Math.min(diff, plan.length - 1);
+  }
+
+  const item = `<li>${plan[index]}</li>`;
+  document.getElementById("content").innerHTML = `
+    <h2>Dzisiejszy Dzień</h2><hr>
+    <ul>${item}</ul>
+  `;
+}
+
+
+    function showAbout() {
+      document.getElementById("content").innerHTML = `
+        <h2>O Maderze</h2><hr>
+
+<h3>Madera – Informacje Ogólne</h3>
+<ul>
+  <li><strong>Język urzędowy:</strong> portugalski 🇵🇹</li>
+  <li><strong>Waluta:</strong> euro (€)</li>
+  <li><strong>Powierzchnia:</strong> około 801 km²</li>
+  <li><strong>Liczba ludności:</strong> około 250 000 mieszkańców</li>
+  <li><strong>Największe miasto:</strong> Funchal 🌆</li>
+  <li><strong>Strefa czasowa:</strong> GMT (latem GMT+1)</li>
+  <li><strong>Religia dominująca:</strong> katolicyzm ✝️</li>
+  <li><strong>Oficjalna nazwa:</strong> Autonomiczny Region Madery</li>
+  <li><strong>Przynależność państwowa:</strong> Portugalia 🇵🇹</li>
+  <li><strong>Numer kierunkowy:</strong> +351</li>
+</ul>
+
+<h3>Madera – Geografia i Rekordy</h3>
+<ul>
+  <li><strong>Położenie:</strong> Ocean Atlantycki, ok. 600 km od wybrzeży Maroka 🌍</li>
+  <li><strong>Archipelag:</strong> Madera, Porto Santo, Desertas, Selvagens</li>
+  <li><strong>Najwyższy szczyt:</strong> Pico Ruivo – 1862 m n.p.m. 🏔️</li>
+  <li><strong>Najdłuższa rzeka:</strong> Ribeira de São Vicente</li>
+  <li><strong>Klimat:</strong> subtropikalny – łagodny przez cały rok ☀️🌤️</li>
+  <li><strong>Słynne produkty:</strong> wino madera, owoce egzotyczne, kwiaty 🍷🍌🌺</li>
+</ul>
+
+<h3>Najciekawsze Atrakcje</h3>
+<ul>
+  <li>Pico do Arieiro – drugi najwyższy szczyt, z którego można iść na Pico Ruivo ⛰️</li>
+  <li>Levada walks – wędrówki wzdłuż kanałów wodnych 🚶‍♂️🚶‍♀️</li>
+  <li>Funchal – stolica z ogrodem botanicznym i portem 🌸🚢</li>
+  <li>Cabo Girão – jeden z najwyższych klifów w Europie z przeszkloną platformą 🌄</li>
+  <li>Monte Toboggan Ride – zjazd wiklinowymi sankami ulicami Funchal 🛷😄</li>
+  <li>Ogród Tropikalny Monte Palace – egzotyczna roślinność i rzeźby 🏝️</li>
+  <li>Prainha de Caniçal – urokliwa plaża z czarnym piaskiem 🏖️</li>
+  <li>Wulkaniczne baseny w Porto Moniz 🧖‍♀️🌊</li>
+  <li>Delfiny i wieloryby – rejsy obserwacyjne 🐬🐳</li>
+  <li>Szlak na Ponta de São Lourenço – wschodni kraniec wyspy z niesamowitymi widokami 🥾📸</li>
+</ul>
+      `;
+    }
+
+    function showFacts() {
+      document.getElementById("content").innerHTML = `
+<h2>Ciekawostki o Maderze</h2><hr>
+<ul>
+  <li>🏝️ Madera to portugalski archipelag położony na Oceanie Atlantyckim, ok. 1000 km od Europy.</li>
+  <li>🌋 Wyspa ma pochodzenie wulkaniczne – jej krajobraz jest bardzo górzysty i zielony.</li>
+  <li>🌤️ Madera nazywana jest "wyspą wiecznej wiosny" – przez cały rok panuje tu łagodny klimat.</li>
+  <li>🚶‍♂️ Na Maderze znajduje się ponad 2000 km tras spacerowych i szlaków wzdłuż levad – dawnych kanałów irygacyjnych.</li>
+  <li>🌺 Słynie z egzotycznej roślinności – wiosną odbywa się Festiwal Kwiatów.</li>
+  <li>🛬 Główne lotnisko nazwane jest na cześć Cristiano Ronaldo – "Aeroporto Internacional da Madeira Cristiano Ronaldo".</li>
+  <li>⚽ Cristiano Ronaldo urodził się w Funchal, stolicy Madery, 5 lutego 1985 roku.</li>
+  <li>🏠 Ronaldo wychowywał się w dzielnicy Santo António w Funchal.</li>
+  <li>🏡 W Funchal znajduje się rodzinny dom Ronaldo oraz jego luksusowy apartament z widokiem na ocean.</li>
+  <li>📸 W Funchal można odwiedzić muzeum CR7 poświęcone Cristiano Ronaldo oraz jego pomnik.</li>
+  <li>⚽ Ronaldo rozpoczął karierę w klubie Andorinha z Madery, zanim przeniósł się do Sportingu Lizbona.</li>
+  <li>⛰️ Najwyższy szczyt Madery to Pico Ruivo (1862 m n.p.m.).</li>
+  <li>🌆 Funchal to największe miasto wyspy – zamieszkuje je ok. 110 000 osób.</li>
+  <li>🛳️ Madera jest popularnym przystankiem dla rejsów wycieczkowych po Atlantyku.</li>
+  <li>🎆 Sylwester w Funchal słynie z jednego z największych pokazów fajerwerków na świecie (rekord Guinnessa w 2006).</li>
+  <li>🍷 Madera słynie z produkcji wina – "wino madera" eksportowane jest na cały świat.</li>
+  <li>🍌 Występują tu odmiany bananów mniejszych i słodszych niż te znane w Europie kontynentalnej.</li>
+  <li>🐬 W okolicach wyspy można obserwować delfiny i wieloryby w naturalnym środowisku.</li>
+  <li>⛪ Madera była jedną z pierwszych europejskich kolonii zamorskich Portugalii – odkryta w 1419 r.</li>
+  <li>🌊 Mimo że to wyspa, Madera nie ma naturalnych plaż piaszczystych – dominują plaże kamieniste i klifowe.</li>
+</ul>
+      `;
+    }
+
+    function showLanguage() {
+      document.getElementById("content").innerHTML = `
+  <h2>Podstawowe zwroty po portugalsku</h2><hr>
+
+  <h3>Powitania i uprzejmości</h3>
+  <ul>
+    <li>Olá (ola) – Cześć</li>
+    <li>Bom dia (bom dija) – Dzień dobry (rano)</li>
+    <li>Boa tarde (boa tardy) – Dzień dobry (po południu)</li>
+    <li>Boa noite (boa nojci) – Dobry wieczór / Dobranoc</li>
+    <li>Tchau (czaj) – Cześć (na pożegnanie)</li>
+    <li>Como vai? (komu waj?) – Jak się masz?</li>
+    <li>Bem, obrigado/obrigada (bej, obrigado/obrigada) – Dobrze, dziękuję</li>
+    <li>Por favor (por fawor) – Proszę</li>
+    <li>Obrigado/Obrigada (obrigado/obrigada) – Dziękuję</li>
+    <li>Desculpe (dżiskulpe) – Przepraszam</li>
+  </ul>
+
+  <h3>W restauracji</h3>
+  <ul>
+    <li>O cardápio (u kardapju) – Menu</li>
+    <li>Uma mesa para dois (uma meza para dojś) – Stolik dla dwóch</li>
+    <li>Água (agua) – Woda</li>
+    <li>Vinho (winju) – Wino</li>
+    <li>Cerveja (serweżia) – Piwo</li>
+    <li>Conta, por favor (konta por fawor) – Rachunek, proszę</li>
+    <li>Bom apetite (bom apetit) – Smacznego</li>
+    <li>Está delicioso (eszta delisjozu) – To jest pyszne</li>
+    <li>Sem açúcar (sem asukar) – Bez cukru</li>
+    <li>Vegetariano (weżetariano) – Wegetariański</li>
+  </ul>
+
+  <h3>W sklepie</h3>
+  <ul>
+    <li>Quanto custa? (kuantu kuszta?) – Ile to kosztuje?</li>
+    <li>É muito caro (e mujtu karo) – To jest bardzo drogie</li>
+    <li>Barato (baratu) – Tanie</li>
+    <li>Eu quero isso (eu kero isu) – Chcę to</li>
+    <li>Posso experimentar? (posu ezperimentar?) – Czy mogę przymierzyć?</li>
+    <li>Aberto (abertu) – Otwarte</li>
+    <li>Fechado (feszadu) – Zamknięte</li>
+    <li>Dinheiro (dzinjejru) – Gotówka</li>
+    <li>Cartão (kartąu) – Karta (płatnicza)</li>
+    <li>Desconto (dżiskonto) – Zniżka</li>
+  </ul>
+
+  <h3>Liczby</h3>
+  <ul>
+    <li>Um (um) – Jeden</li>
+    <li>Dois (dojś) – Dwa</li>
+    <li>Três (tresz) – Trzy</li>
+    <li>Quatro (kwatru) – Cztery</li>
+    <li>Cinco (sinku) – Pięć</li>
+    <li>Seis (sejsz) – Sześć</li>
+    <li>Sete (sete) – Siedem</li>
+    <li>Oito (ojtu) – Osiem</li>
+    <li>Nove (nowi) – Dziewięć</li>
+    <li>Dez (dez) – Dziesięć</li>
+  </ul>
+
+  <h3>Inne przydatne zwroty</h3>
+  <ul>
+    <li>Onde fica...? (ądżi fika) – Gdzie jest...?</li>
+    <li>Preciso de ajuda (presizu dżi ajuda) – Potrzebuję pomocy</li>
+    <li>Não entendo (nąu entendu) – Nie rozumiem</li>
+    <li>Fala inglês? (fala inglejz?) – Czy mówi pan/pani po angielsku?</li>
+    <li>Sim (sim) – Tak</li>
+    <li>Não (nąu) – Nie</li>
+    <li>Talvez (tawlwejz) – Może</li>
+    <li>Hoje (oży) – Dzisiaj</li>
+    <li>Amanhã (amania) – Jutro</li>
+    <li>Agora (agora) – Teraz</li>
+  </ul>
+      `;
+    }
+
+    // Wyświetl plan wycieczki od razu po załadowaniu strony
+    window.onload = showPlan;
+  </script>
+  <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('20250731_sw.js')
+      .then(() => console.log('Service Worker zarejestrowany'))
+      .catch(error => console.error('Błąd Service Workera:', error));
+  }
+</script>
+</body>
+</html>
