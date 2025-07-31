@@ -99,7 +99,7 @@
     <canvas id="gameCanvas"></canvas>
     <div id="score">Wynik: 0</div>
     <div id="gameOverScreen">
-        <h2>Pływający Kosmiczny Śmieć</h2>
+        <h2>Kosmiczny Kwadrat</h2>
         <p id="initialMessage">Kliknij lub dotknij, aby wystartować!</p>
         <p id="finalScoreText" style="display: none;">Twój wynik: <span id="finalScore">0</span></p>
         <p id="highScoreText" style="display: none;">Twój rekord: <span id="highScore">0</span></p>
@@ -325,7 +325,7 @@
             resizeCanvas(); // Ustaw rozmiar canvasa przed wyświetleniem ekranu startowego
             scoreDisplay.style.display = 'none'; // Ukryj wynik na ekranie startowym
             gameOverScreen.style.display = 'flex'; // Pokaż ekran startowy
-            gameOverScreen.querySelector('h2').textContent = "Pływający Kosmiczny Śmieć";
+            gameOverScreen.querySelector('h2').textContent = "Kosmiczny Kwadrat";
             initialMessage.style.display = 'block'; // Pokaż wiadomość początkową
             finalScoreText.style.display = 'none'; // Ukryj wynik końcowy
             highScoreText.style.display = 'none'; // Ukryj rekord
