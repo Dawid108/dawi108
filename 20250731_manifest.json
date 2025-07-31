@@ -1,0 +1,8 @@
+{
+  "name": "Ordery Madery",
+  "short_name": "Madery",
+  "start_url": "20250731_madera.html",
+  "display": "standalone",
+  "background_color": "#f4f0ea",
+  "theme_color": "#005d4b"
+}
