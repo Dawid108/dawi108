@@ -1,8 +1,15 @@
 {
-  "name": "Ordery Madery",
-  "short_name": "Madery",
-  "start_url": "20250731_madera.html",
+  "name": "Madera",
+  "short_name": "Madera",
+  "start_url": "https://dawid108.github.io/dawi108/20250731_madera.html",
   "display": "standalone",
   "background_color": "#f4f0ea",
-  "theme_color": "#005d4b"
+  "theme_color": "#005d4b",
+  "icons": [
+    {
+      "src": "20250801_madera.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
