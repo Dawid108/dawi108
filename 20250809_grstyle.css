@@ -1,7 +1,7 @@
 :root{
   --ui-bg: rgba(0,0,0,0.6);
   --accent: #ffd700;
-  --lane-w: 28%; /* width of a lane block */
+  --lane-w: 28%;
 }
 
 /* reset */
@@ -32,10 +32,21 @@ main#stage{position:relative;flex:1;overflow:hidden;background:linear-gradient(#
 #objects{position:absolute;inset:0;overflow:visible;pointer-events:none}
 
 /* player */
-#playerWrap{position:absolute;left:0;right:0;bottom:12%;height:0;display:flex;justify-content:center;pointer-events:none}
-#player{position:relative; width:64px; height:64px; display:flex; align-items:center; justify-content:center; font-size:44px; transform:translateX(0) translateY(0); transition:transform 180ms cubic-bezier(.2,.9,.2,1); pointer-events:auto}
+#playerWrap{position:absolute;left:0;right:0;bottom:0;height:0;display:block;pointer-events:none}
+#player{
+  position:absolute;
+  bottom:12%;
+  left:calc(50% - 32px); /* default center */
+  width:64px;
+  height:64px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:44px;
+  transition: left 200ms cubic-bezier(.2,.9,.2,1), transform 100ms linear;
+  pointer-events:auto;
+}
 #player.ground{box-shadow: 0 8px 14px rgba(0,0,0,0.4)}
-/* jump translate handled with inline style bottom via JS */
 
 /* obstacles and coins */
 .object{position:absolute; font-size:34px; width:64px; height:64px; display:flex; align-items:center; justify-content:center; pointer-events:none; user-select:none; transform:translateY(0)}
@@ -65,5 +76,3 @@ footer{padding:6px 10px;text-align:center;font-size:12px;background:linear-gradi
   .object{font-size:28px;width:52px;height:52px}
   #ui button{font-size:13px;padding:7px}
 }
-
-/* animation frame hint: running frames might be toggled by JS class */
