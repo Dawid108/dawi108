@@ -1,30 +1,232 @@
-/* Podstawowy styl responsywny dla telefonów */
-:root{--ui-bg:rgba(0,0,0,0.6);--accent:#ffd700}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial}
-#gameWrap{display:flex;flex-direction:column;height:100vh;background:#111;color:#fff}
-header{padding:8px 12px;display:flex;justify-content:space-between;align-items:center}
-header h1{font-size:18px;margin:0}
-.hud{font-size:13px}
-main#stage{position:relative;flex:1;overflow:hidden;background:linear-gradient(#87ceeb,#6fb3d2)}
-#background{position:absolute;inset:0;transition:background 0.3s ease}
-/* mapy jako klasy */
-.map-0{background:linear-gradient(#87ceeb,#6fb3d2)}
-.map-1{background:linear-gradient(#202040,#101020)}
-.map-2{background:linear-gradient(#ffbf80,#ff9f4d)}
-.map-3{background:linear-gradient(#2b2b2b,#111)}
-#player{position:absolute;left:12%;bottom:12%;font-size:40px;transform-origin:center;transition:bottom 0.08s linear}
-.obstacle, .coin{position:absolute;font-size:34px;bottom:12%}
-.obstacle{transform:translateX(0)}
-.coin{font-size:28px;bottom:30%}
-#ui{position:absolute;right:8px;top:8px;display:flex;flex-direction:column;gap:8px}
-#ui button{padding:8px 10px;background:var(--ui-bg);border:0;color:#fff;border-radius:8px}
-#shop{position:absolute;left:6%;top:10%;width:88%;height:70%;background:rgba(10,10,10,0.95);padding:12px;border-radius:12px;overflow:auto}
-#shop.hidden{display:none}
-.cards{display:flex;flex-wrap:wrap;gap:8px}
-.card{background:#222;padding:8px;border-radius:8px;min-width:70px;display:flex;flex-direction:column;align-items:center}
-.card button{margin-top:6px;padding:6px 8px}
-#gameOver{position:absolute;inset:20% 10%;background:rgba(0,0,0,0.85);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:12px}
-#gameOver.hidden{display:none}
-footer{padding:6px 10px;text-align:center;font-size:12px}
-@media (min-width:600px){#player{font-size:60px}.obstacle,.coin{font-size:44px}}
+:root {
+  --ui-bg: rgba(0, 0, 0, 0.6);
+  --accent: #ffd700;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: #111;
+  color: #fff;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  overflow: hidden;
+}
+
+#gameWrap {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+header {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #222;
+}
+
+header h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.hud {
+  font-size: 14px;
+}
+
+main#stage {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: linear-gradient(#87ceeb, #6fb3d2);
+  touch-action: none; /* important for touch gestures */
+}
+
+#background {
+  position: absolute;
+  inset: 0;
+  transition: background 0.3s ease;
+  z-index: 0;
+}
+
+/* track lines */
+#track-lines {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.track-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* player */
+#player {
+  position: absolute;
+  bottom: 10%;
+  left: calc(16.66%); /* start center track */
+  font-size: 48px;
+  transition: left 0.2s ease;
+  user-select: none;
+  z-index: 10;
+  will-change: transform;
+}
+
+/* obstacles and coins */
+.obstacle,
+.coin {
+  position: absolute;
+  font-size: 36px;
+  pointer-events: none;
+  user-select: none;
+  z-index: 5;
+  left: 0;
+  transform: translateY(0);
+}
+
+/* UI buttons */
+#ui {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 20;
+}
+
+#ui button {
+  padding: 8px 12px;
+  background: var(--ui-bg);
+  border: none;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 14px;
+  user-select: none;
+}
+
+/* Shop */
+#shop {
+  position: absolute;
+  left: 5%;
+  top: 10%;
+  width: 90%;
+  height: 75%;
+  background: rgba(20, 20, 20, 0.95);
+  padding: 16px;
+  border-radius: 12px;
+  overflow-y: auto;
+  z-index: 50;
+}
+
+#shop.hidden {
+  display: none;
+}
+
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.card {
+  background: #222;
+  padding: 10px;
+  border-radius: 10px;
+  min-width: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #eee;
+  user-select: none;
+  text-align: center;
+}
+
+.card button {
+  margin-top: 6px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: #222;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.card button:hover {
+  background-color: #c7a700;
+}
+
+/* Game Over */
+#gameOver {
+  position: absolute;
+  inset: 25% 10%;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  z-index: 100;
+  color: #fff;
+  text-align: center;
+  user-select: none;
+  padding: 20px;
+}
+
+#gameOver.hidden {
+  display: none;
+}
+
+#gameOver button {
+  margin-top: 16px;
+  padding: 10px 16px;
+  font-size: 16px;
+  border: none;
+  background: var(--accent);
+  color: #222;
+  border-radius: 12px;
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+#gameOver button:hover {
+  background-color: #c7a700;
+}
+
+footer {
+  padding: 6px 10px;
+  text-align: center;
+  font-size: 12px;
+  background: #222;
+  user-select: none;
+}
+
+/* Responsive */
+@media (min-width: 600px) {
+  #player {
+    font-size: 72px;
+  }
+
+  .obstacle,
+  .coin {
+    font-size: 48px;
+  }
+}
