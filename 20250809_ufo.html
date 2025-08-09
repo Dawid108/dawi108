@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+  <title>Ufo — gra</title>
+  <link rel="stylesheet" href="20250809_style.css">
+</head>
+<body>
+  <div id="game">
+    <header>
+      <h1>Ufo</h1>
+      <div id="score">Punkty: <span id="scoreValue">0</span></div>
+    </header>
+
+    <div id="playfield">
+      <div id="ufo" aria-hidden="true">🛸</div>
+      <!-- bomby będą dodawane dynamicznie tutaj -->
+    </div>
+
+    <div id="ui-overlay" class="centered">
+      <button id="startBtn" class="big">Rozpocznij Grę</button>
+    </div>
+
+    <div id="gameover-overlay" class="centered hidden">
+      <div class="card">
+        <h2>Gra zakończona</h2>
+        <p>Uzyskany wynik: <span id="finalScore">0</span></p>
+        <p>Twój rekord: <span id="bestScore">0</span></p>
+        <button id="newGameBtn" class="big">Nowa Gra</button>
+      </div>
+    </div>
+    <footer>
+      <small>Steruj palcem lub myszką. Omijaj bomby 💣</small>
+    </footer>
+  </div>
+
+  <script src="20250809_script.js"></script>
+</body>
+</html>
