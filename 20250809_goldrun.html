@@ -17,32 +17,26 @@
     </header>
 
     <main id="stage">
-      <!-- tło/mapa (zmienia się klasą) -->
       <div id="background" class="map-0"></div>
 
-      <!-- pasy/linie torów -->
       <div id="lanes">
         <div class="lane" data-lane="0"></div>
         <div class="lane" data-lane="1"></div>
         <div class="lane" data-lane="2"></div>
       </div>
 
-      <!-- gracz -->
       <div id="playerWrap">
         <div id="player" class="run-frame">🐱</div>
       </div>
 
-      <!-- kontener na obiekty spadające -->
       <div id="objects"></div>
 
-      <!-- UI -->
       <div id="ui">
         <button id="startBtn">Start</button>
         <button id="jumpBtn">Skocz</button>
         <button id="shopBtn">Sklep</button>
       </div>
 
-      <!-- sklep (overlay) -->
       <aside id="shop" class="hidden">
         <h2>Sklep</h2>
         <div class="balance">Monety: <span id="shopCoins">0</span></div>
@@ -57,7 +51,6 @@
         <button id="closeShop">Zamknij</button>
       </aside>
 
-      <!-- ekran game over -->
       <div id="gameOver" class="hidden">
         <h2>Przegrałeś!</h2>
         <p>Wynik: <span id="scoreFinal">0</span></p>
