@@ -1,0 +1,93 @@
+/* Przyjemny, kontrastowy styl dostosowany do telefonu */
+:root{
+  --bg:#071014;
+  --panel:#0b2a33;
+  --accent:#7ce7d9;
+  --danger:#ff6b6b;
+  --glass: rgba(255,255,255,0.03);
+  --card: rgba(255,255,255,0.04);
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:var(--font);
+  background: linear-gradient(180deg,var(--bg), #04202a 120%);
+  color:#eafaf6;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#game{display:flex;flex-direction:column;height:100vh;gap:8px;padding:10px}
+
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:6px 8px;border-radius:12px;background:linear-gradient(180deg,var(--panel), #07282f);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+header h1{margin:0;font-size:18px;letter-spacing:1px}
+#score{font-weight:700;font-size:16px}
+
+#playfield{
+  position:relative;flex:1;border-radius:12px;overflow:hidden;
+  background:
+    radial-gradient(1200px 300px at 10% 0%, rgba(124,231,217,0.04), transparent 10%),
+    linear-gradient(180deg, rgba(255,255,255,0.02), transparent 20%),
+    var(--glass);
+  margin-top:4px;
+  display:block;
+}
+
+/* UFO */
+#ufo{
+  position:absolute;bottom:18px;left:50%;
+  transform:translateX(-50%);
+  font-size:44px;
+  width:64px;height:64px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  user-select:none;touch-action:none;
+  -webkit-user-drag:none;
+  filter:drop-shadow(0 8px 14px rgba(0,0,0,0.6));
+  transition: transform 0.08s linear;
+}
+
+/* Bomby */
+.bomb{
+  position:absolute;top:-80px;
+  font-size:32px;
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+  will-change:transform;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.6);
+}
+
+/* overlayy */
+.centered{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  z-index:50;
+  pointer-events:auto;
+}
+#ui-overlay{z-index:40}
+#gameover-overlay .card{
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  padding:18px;border-radius:14px;text-align:center;min-width:230px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+.hidden{display:none}
+
+button.big{
+  background:linear-gradient(180deg,var(--accent), #31cbbd);
+  border:none;padding:12px 18px;border-radius:12px;font-size:16px;font-weight:700;
+  color:#052525;cursor:pointer;box-shadow: 0 8px 18px rgba(7,30,30,0.45);
+}
+button.big:active{transform:translateY(1px)}
+
+/* footer */
+footer{font-size:12px;text-align:center;opacity:0.9;margin-top:4px}
+
+/* adaptacja na małe ekrany */
+@media (max-width:420px){
+  #ufo{font-size:40px;width:56px;height:56px;bottom:12px}
+  .bomb{font-size:28px;width:40px;height:40px}
+}
