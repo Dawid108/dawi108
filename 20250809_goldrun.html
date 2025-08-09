@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Gold Run</title>
+  <link rel="stylesheet" href="20250809_grstyle.css">
+</head>
+<body>
+  <div id="gameWrap">
+    <header>
+      <h1>Gold Run</h1>
+      <div class="hud">
+        <div id="coins">Monety: <span>0</span></div>
+        <div id="best">Najlepszy: <span>0</span></div>
+      </div>
+    </header>
+
+    <main id="stage">
+      <div id="background" class="map-0"></div>
+      <div id="player">🐱</div>
+      <div id="ui">
+        <button id="startBtn">Start</button>
+        <button id="jumpBtn">Skocz</button>
+        <button id="shopBtn">Sklep</button>
+      </div>
+    </main>
+
+    <aside id="shop" class="hidden">
+      <h2>Sklep</h2>
+      <div class="balance">Monety: <span id="shopCoins">0</span></div>
+      <div class="section">
+        <h3>Postacie</h3>
+        <div id="chars" class="cards"></div>
+      </div>
+      <div class="section">
+        <h3>Mapy</h3>
+        <div id="maps" class="cards"></div>
+      </div>
+      <button id="closeShop">Zamknij</button>
+    </aside>
+
+    <div id="gameOver" class="hidden">
+      <h2>Przegrałeś!</h2>
+      <p>Wynik: <span id="scoreFinal">0</span></p>
+      <button id="restartBtn">Zagraj ponownie</button>
+    </div>
+
+    <footer>
+      <small>Gold Run — gra mobilna w przeglądarce</small>
+    </footer>
+  </div>
+
+  <script src="20250809_grscript.js"></script>
+</body>
+</html>
