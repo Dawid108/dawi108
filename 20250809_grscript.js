@@ -1,15 +1,9 @@
 /* 20250809_grscript.js
-   Ulepszona wersja Gold Run:
-   - 3 tory (lewy, środkowy, prawy)
-   - obiekty spadają z góry (po 2 na raz na różnych torach)
-   - sterowanie dotykiem: swipe left/right -> zmiana toru; swipe up / tap -> skok
-   - requestAnimationFrame dla płynnej animacji
-   - sklep z postaciami i mapami, wszystko w localStorage
-   - animacja biegu: cykliczne 3 emoji
-   - 5 punktów za każdy obiekt który dotknie dołu
+   Naprawiona pozycja gracza: kot już nie startuje z prawego boku i nie wychodzi poza ekran.
+   Pozostała logika: 3 tory, spadające obiekty, sklep, animacja biegu itd.
 */
 
-/* ========== KONFIG ========== */
+/* --- KONFIG --- */
 const CHARACTERS = [
   {id:'cat',emoji:['🐱','😺','😸'],price:0},
   {id:'monkey',emoji:['🐵','🙉','🦧'],price:50},
@@ -32,34 +26,29 @@ const MAPS = [
 const OBSTACLES = [
   {emoji:'🚘',jumpable:true},
   {emoji:'🚧',jumpable:true},
-  {emoji:'🚊',jumpable:false} // trzeba omijać w bok
+  {emoji:'🚊',jumpable:false}
 ];
 
-// game tuning
 const LANES = 3;
-const LANE_PERCENT = [12, 50, 88]; // positions as percentage (center x of lanes)
+const LANE_PERCENT = [12, 50, 88]; // centers in percent
 const GRAVITY = 0.8;
 const JUMP_FORCE = 14;
-const FALLING_BASE_SPEED = 2.5; // px per frame base, will scale
-const SPAWN_BASE = 1200; // ms baseline (we use timer/acc) - conceptual
+const FALLING_BASE_SPEED = 2.5;
 const POINTS_PER_HIT_BOTTOM = 5;
 
-/* ========== STORAGE ========== */
+/* --- STORAGE --- */
 let coins = Number(localStorage.getItem('gr_coins')||0);
 let best = Number(localStorage.getItem('gr_best')||0);
 let unlocked = JSON.parse(localStorage.getItem('gr_unlocked')||'{}');
 let selectedChar = localStorage.getItem('gr_char')||'cat';
 let selectedMap = localStorage.getItem('gr_map')||'city';
-
-/* ensure free items are unlocked */
 CHARACTERS.forEach(c=>{ if(c.price===0) unlocked[c.id]=true });
 MAPS.forEach(m=>{ if(m.price===0) unlocked[m.id]=true });
 
-/* ========== DOM ========== */
+/* --- DOM --- */
 const stage = document.getElementById('stage');
 const objectsWrap = document.getElementById('objects');
 const playerEl = document.getElementById('player');
-const playerWrap = document.getElementById('playerWrap');
 const startBtn = document.getElementById('startBtn');
 const jumpBtn = document.getElementById('jumpBtn');
 const shopBtn = document.getElementById('shopBtn');
@@ -75,33 +64,32 @@ const scoreFinalEl = document.getElementById('scoreFinal');
 const bestEl = document.querySelector('#best span');
 const restartBtn = document.getElementById('restartBtn');
 
-/* ========== GAME STATE ========== */
+/* --- STATE --- */
 let running = false;
 let score = 0;
-let fallingSpeed = FALLING_BASE_SPEED; // px per frame baseline multiplied
-let objs = []; // {id, type:'obs'|'coin', lane, y, el, meta}
+let fallingSpeed = FALLING_BASE_SPEED;
+let objs = [];
 let lastSpawn = 0;
-let spawnInterval = 1200; // ms dynamic
+let spawnInterval = 1200;
 let lastTime = 0;
 let animId = null;
 
-/* player state */
-let lane = 1; // 0,1,2 (start in middle)
+/* player */
+let lane = 1;
 let targetLane = 1;
-let laneX = 0; // pixel x target updated
-let playerY = 0; // vertical offset for jump (px)
+let playerY = 0;
 let velY = 0;
 let isJumping = false;
 
-/* run animation frames */
+/* run animation */
 let runFrameIndex = 0;
 let runFrameTimer = 0;
 
-/* helpers for sizes (calculated on resize) */
+/* stage rect */
 let stageRect = stage.getBoundingClientRect();
-function updateStageRect(){ stageRect = stage.getBoundingClientRect() }
+function updateStageRect(){ stageRect = stage.getBoundingClientRect(); }
 
-/* ========== INIT UI ========== */
+/* ========== UI INIT ========== */
 function initUI(){
   coinsEl.textContent = coins;
   shopCoinsEl.textContent = coins;
@@ -119,8 +107,7 @@ function applySelected(){
 
 /* ========== SHOP ========== */
 function renderShop(){
-  charsWrap.innerHTML = '';
-  mapsWrap.innerHTML = '';
+  charsWrap.innerHTML = ''; mapsWrap.innerHTML = '';
   CHARACTERS.forEach(c=>{
     const div = document.createElement('div'); div.className='card';
     div.innerHTML = `<div style="font-size:28px">${c.emoji[0]}</div><strong>${c.id}</strong><div>${c.price} 🪙</div>`;
@@ -135,7 +122,6 @@ function renderShop(){
     div.appendChild(btn);
     charsWrap.appendChild(div);
   });
-
   MAPS.forEach(m=>{
     const div = document.createElement('div'); div.className='card';
     div.innerHTML = `<div style="font-size:26px">${m.emoji}</div><strong>${m.name}</strong><div>${m.price} 🪙</div>`;
@@ -151,159 +137,110 @@ function renderShop(){
     mapsWrap.appendChild(div);
   });
 }
-
 function buyItem(item){
   if(coins >= item.price){
     coins -= item.price;
-    localStorage.setItem('gr_coins',coins);
+    localStorage.setItem('gr_coins', coins);
     unlocked[item.id] = true;
-    localStorage.setItem('gr_unlocked',JSON.stringify(unlocked));
-    if(item.id && item.emoji) { /* character bought */ }
+    localStorage.setItem('gr_unlocked', JSON.stringify(unlocked));
     shopCoinsEl.textContent = coins; coinsEl.textContent = coins;
     renderShop(); applySelected();
-  } else {
-    alert('Masz za mało monet!');
-  }
+  } else alert('Masz za mało monet!');
 }
 
-/* ========== SPAWNING ========== */
+/* ========== SPAWN ========== */
 function spawnPair(){
-  // choose two distinct lanes
   const a = Math.floor(Math.random()*LANES);
   let b = Math.floor(Math.random()*LANES);
   while(b===a) b = Math.floor(Math.random()*LANES);
-
-  // for each lane choose coin or obstacle (coins somewhat likely)
   [a,b].forEach(l=>{
     const isCoin = Math.random() < 0.35;
-    if(isCoin){
-      spawnObject('coin', l);
-    } else {
-      // pick obstacle type randomly
+    if(isCoin) spawnObject('coin', l);
+    else {
       const meta = OBSTACLES[Math.floor(Math.random()*OBSTACLES.length)];
       spawnObject('obs', l, meta);
     }
   });
 }
-
 let objIdCounter = 0;
 function spawnObject(type, laneIndex, meta = null){
   const el = document.createElement('div');
   el.className = 'object ' + (type==='coin' ? 'coin' : 'obstacle');
   const midXpercent = LANE_PERCENT[laneIndex];
-  el.style.left = `calc(${midXpercent}% - 32px)`; // center-ish
+  el.style.left = `calc(${midXpercent}% - 32px)`;
   el.style.top = `-80px`;
-  if(type==='coin'){
-    el.textContent = '🪙';
-  } else {
-    el.textContent = meta.emoji;
-  }
+  if(type==='coin') el.textContent = '🪙'; else el.textContent = meta.emoji;
   const id = ++objIdCounter;
   objectsWrap.appendChild(el);
-  objs.push({
-    id, type, lane: laneIndex, y: -80, el,
-    meta: meta || {}
-  });
+  objs.push({ id, type, lane: laneIndex, y: -80, el, meta: meta || {} });
 }
 
-/* ========== COLLISIONS & SCORING ========== */
+/* ========== COLLISIONS & BOTTOM ========== */
 function checkCollisionsAndBottom(dt){
   const pRect = playerEl.getBoundingClientRect();
-
   for(let i = objs.length - 1; i >= 0; i--){
     const o = objs[i];
-    // update element position
     o.el.style.top = (o.y) + 'px';
-
     const oRect = o.el.getBoundingClientRect();
-
-    // collision with player: only if on same lane & vertically overlapping
     const sameLane = (o.lane === lane);
     const verticallyOverlap = !(oRect.bottom < pRect.top || oRect.top > pRect.bottom);
 
-    // if collided with player
     if(sameLane && verticallyOverlap){
       if(o.type === 'coin'){
-        // collect coin
         coins += 1;
         localStorage.setItem('gr_coins', coins);
         coinsEl.textContent = coins; shopCoinsEl.textContent = coins;
-        // remove object
         o.el.remove(); objs.splice(i,1);
         continue;
       } else {
-        // obstacle: if jumpable and player is high enough -> safe
         const jumpable = !!o.meta.jumpable;
-        const playerAboveThreshold = playerY > 40; // px - tunable
+        const playerAboveThreshold = playerY > 40;
         if(jumpable && playerAboveThreshold){
-          // safe: player jumped over it -> do nothing (object continues to fall)
+          // safe - jumped over
         } else {
-          // collision -> game over
           endGame();
           return;
         }
       }
     }
 
-    // if object reaches bottom of stage -> award points and remove
     if(o.y > stageRect.height - 40){
-      // award points for object touching bottom
       score += POINTS_PER_HIT_BOTTOM;
-      // remove element
       o.el.remove();
       objs.splice(i,1);
-      // optionally: visual feedback (not implemented)
       continue;
     }
   }
 }
 
-/* ========== PHYSICS & PLAYER ========== */
+/* ========== PLAYER UPDATE (NAPRAWA POZYCJI) ========== */
 function updatePlayerPosition(dt){
-  // horizontal: smooth move toward target lane center
+  // Oblicz lewy px względem szerokości sceny i ustaw left (absolutnie).
   const targetPercent = LANE_PERCENT[targetLane];
-  const centerX = stageRect.left + (stageRect.width * (targetPercent/100));
-  // we position playerWrap (center) at that x
-  // compute current transform X and animate using CSS transform for smoothness
-  // We'll set playerWrap's left by translateX
-  const wrapRect = playerWrap.getBoundingClientRect();
-  const currentCenter = wrapRect.left + wrapRect.width/2;
-  const dx = centerX - currentCenter;
-  // move by portion to be smooth
-  const moveStep = dx * Math.min(1, 0.2);
-  if(Math.abs(moveStep) > 0.5){
-    playerWrap.style.transform = `translateX(${moveStep}px)`;
-  } else {
-    playerWrap.style.transform = `translateX(0px)`;
-  }
-  // Instead of persistent transform, we set playerWrap absolute via left to center it
-  // But to keep it simple across screen sizes, directly set playerEl transformX
-  const stageLeft = stageRect.left;
-  const px = (stageRect.width * (targetPercent/100)) - (playerEl.offsetWidth/2) - stageLeft;
-  playerEl.style.transform = `translateX(${px}px) translateY(${ -playerY }px)`;
+  const rawPx = Math.round(stageRect.width * (targetPercent/100) - (playerEl.offsetWidth/2));
+  // clamp: nie wychodzimy poza scenę
+  const minPx = 0;
+  const maxPx = Math.max(0, stageRect.width - playerEl.offsetWidth);
+  const px = Math.min(Math.max(rawPx, minPx), maxPx);
+  playerEl.style.left = px + 'px';
 
-  // vertical: gravity
+  // vertical physics (skok)
   if(isJumping){
     velY -= GRAVITY;
     playerY += velY;
     if(playerY <= 0){
-      // landed
-      playerY = 0;
-      velY = 0;
-      isJumping = false;
-      playerEl.classList.add('ground');
+      playerY = 0; velY = 0; isJumping = false; playerEl.classList.add('ground');
     } else {
       playerEl.classList.remove('ground');
     }
-  } else {
-    // small bobbing when on ground to imitate running
-    const bob = Math.sin(Date.now()/120) * 2;
-    playerEl.style.transform = `translateX(${px}px) translateY(${ -playerY + bob }px)`;
   }
+  // bobbing when on ground
+  const bob = isJumping ? 0 : Math.sin(Date.now()/120) * 2;
+  playerEl.style.transform = `translateY(${ -playerY + bob }px)`;
 
-  // update run animation frames
+  // run frame animation
   runFrameTimer += 1;
-  if(runFrameTimer > 8){ // change every ~8 frames (~8*16ms ~ 128ms)
+  if(runFrameTimer > 8){
     runFrameIndex = (runFrameIndex + 1) % getSelectedCharFrames().length;
     playerEl.textContent = getSelectedCharFrames()[runFrameIndex];
     runFrameTimer = 0;
@@ -313,9 +250,10 @@ function updatePlayerPosition(dt){
 function positionPlayerInstant(){
   updateStageRect();
   const targetPercent = LANE_PERCENT[lane];
-  const stageLeft = stageRect.left;
-  const px = (stageRect.width * (targetPercent/100)) - (playerEl.offsetWidth/2) - stageLeft;
-  playerEl.style.transform = `translateX(${px}px) translateY(0px)`;
+  const pxRaw = Math.round(stageRect.width * (targetPercent/100) - (playerEl.offsetWidth/2));
+  const px = Math.min(Math.max(pxRaw, 0), Math.max(0, stageRect.width - playerEl.offsetWidth));
+  playerEl.style.left = px + 'px';
+  playerEl.style.transform = `translateY(0px)`;
 }
 
 /* ========== GAME LOOP ========== */
@@ -324,78 +262,48 @@ function gameLoop(ts){
   const dt = ts - lastTime;
   lastTime = ts;
 
-  // spawn logic: spawn every spawnInterval ms (decreasing with score)
   lastSpawn += dt;
-  // adjust spawnInterval based on score to make it harder
-  const speedFactor = 1 + Math.floor(score/50) * 0.12;
   spawnInterval = Math.max(450, 1200 - Math.floor(score/3));
   if(lastSpawn > spawnInterval){
-    spawnPair();
-    lastSpawn = 0;
+    spawnPair(); lastSpawn = 0;
   }
 
-  // update falling speed based on score
   fallingSpeed = FALLING_BASE_SPEED + (score * 0.02);
+  const pxStep = fallingSpeed * (dt / 16.66);
+  objs.forEach(o => { o.y += pxStep; o.el.style.top = o.y + 'px'; });
 
-  // update all objects (y += fallingSpeed * dtFactor)
-  // dt is ms; convert to approximate px per frame scaling
-  const pxStep = fallingSpeed * (dt / 16.66); // baseline per frame scale
-
-  objs.forEach(o => {
-    o.y += pxStep;
-    // set top immediately; checkCollisions will evaluate later
-    o.el.style.top = o.y + 'px';
-  });
-
-  // collisions and bottom detection
   checkCollisionsAndBottom(dt);
-
-  // player update
   updatePlayerPosition(dt);
 
-  if(running){
-    animId = requestAnimationFrame(gameLoop);
-  } else {
-    cancelAnimationFrame(animId);
-  }
+  if(running) animId = requestAnimationFrame(gameLoop);
+  else cancelAnimationFrame(animId);
 }
 
 /* ========== START / END ========== */
 function startGame(){
   if(running) return;
   running = true;
-  score = 0;
-  lastSpawn = 0;
-  objs.forEach(o=>o.el.remove());
-  objs = [];
+  score = 0; lastSpawn = 0;
+  objs.forEach(o=>o.el.remove()); objs = [];
   isJumping = false; velY = 0; playerY = 0;
   lane = 1; targetLane = 1;
-  updateStageRect();
-  positionPlayerInstant();
+  updateStageRect(); positionPlayerInstant();
   lastTime = 0;
   playerEl.classList.add('ground');
-  animId = requestAnimationFrame(gameLoop);
-  // UI
   gameOverEl.classList.add('hidden');
+  animId = requestAnimationFrame(gameLoop);
 }
 
 function endGame(){
   running = false;
-  // store best
-  if(score > best){
-    best = score;
-    localStorage.setItem('gr_best', best);
-    bestEl.textContent = best;
-  }
-  // show summary
-  scoreFinalEl.textContent = score;
-  gameOverEl.classList.remove('hidden');
+  if(score > best){ best = score; localStorage.setItem('gr_best', best); bestEl.textContent = best; }
+  scoreFinalEl.textContent = score; gameOverEl.classList.remove('hidden');
 }
 
-/* ========== CONTROLS: TOUCH & BUTTONS ========== */
+/* ========== CONTROLS ========== */
 let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
-const SWIPE_THRESHOLD = 30; // px
-const SWIPE_TIME = 600; // ms
+const SWIPE_THRESHOLD = 30;
+const SWIPE_TIME = 600;
 
 stage.addEventListener('touchstart', (e)=>{
   if(e.touches && e.touches[0]){
@@ -411,14 +319,11 @@ stage.addEventListener('touchend', (e)=>{
   const dt = Date.now() - touchStartTime;
 
   if(Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > SWIPE_THRESHOLD && dt < SWIPE_TIME){
-    // horizontal swipe
     if(dx > 0) swipeRight();
     else swipeLeft();
   } else if(Math.abs(dy) > Math.abs(dx) && dy < -SWIPE_THRESHOLD && dt < SWIPE_TIME){
-    // swipe up
     doJump();
   } else {
-    // tap
     if(running) doJump();
   }
 }, {passive:true});
@@ -442,13 +347,8 @@ shopBtn.addEventListener('click', ()=>{ shopEl.classList.remove('hidden'); shopC
 closeShop.addEventListener('click', ()=>{ shopEl.classList.add('hidden'); });
 restartBtn.addEventListener('click', ()=>{ gameOverEl.classList.add('hidden'); startGame(); });
 
-/* resize */
-window.addEventListener('resize', ()=>{
-  updateStageRect();
-  positionPlayerInstant();
-});
+window.addEventListener('resize', ()=>{ updateStageRect(); positionPlayerInstant(); });
 
-/* save on unload */
 window.addEventListener('beforeunload', ()=>{
   localStorage.setItem('gr_coins', coins);
   localStorage.setItem('gr_unlocked', JSON.stringify(unlocked));
@@ -457,24 +357,8 @@ window.addEventListener('beforeunload', ()=>{
   localStorage.setItem('gr_best', best);
 });
 
-/* ========== UTILITIES ========== */
-function getSelectedCharFrames(){
-  const ch = CHARACTERS.find(c=>c.id===selectedChar);
-  return ch ? ch.emoji : ['🐱','😺','😸'];
-}
+function getSelectedCharFrames(){ const ch = CHARACTERS.find(c=>c.id===selectedChar); return ch ? ch.emoji : ['🐱','😺','😸']; }
 
-/* ========== INITIALIZE ========== */
+/* init */
 updateStageRect();
 initUI();
-
-/* Debug: expose some values (optional)
-window.__goldrun = { startGame, endGame, objs, getSelectedCharFrames };
-*/
-
-/* Notes on logic:
- - Przeszkody i monety spadają z góry. spawnPair() tworzy dwa obiekty na różnych torach.
- - Obiekty które dotkną dołu (y > stage.height - 40) dają 5 punktów.
- - Kolizja z przeszkodą kończy grę, chyba że przeszkoda jest 'jumpable' i gracz jest wystarczająco wysoko.
- - Monety zbierasz dotknięciem — zwiększa się liczba monet w localStorage.
- - Shop i wybory postaci/mapy działają jak poprzednio.
-*/
