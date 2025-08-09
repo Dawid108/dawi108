@@ -55,7 +55,6 @@ window.addEventListener('pointerup', (e)=>{
 
 // Tap/click on playfield to move center of UFO
 playfield.addEventListener('click', (e)=>{
-  // ignore clicks on UI overlays
   if(!running) return;
   moveUfoTo(e.clientX - ufo.offsetWidth/2);
 });
@@ -67,7 +66,6 @@ function moveUfoTo(x){
   let target = x;
   if(target < minX) target = minX;
   if(target > maxX) target = maxX;
-  // set relative to playfield
   const left = target - pf.left;
   ufo.style.left = `${left}px`;
   ufo.style.transform = `translateX(0)`;
@@ -78,23 +76,32 @@ function createBomb(){
   const b = document.createElement('div');
   b.className = 'bomb';
   b.textContent = '💣';
-  // losuj x w zakresie playfield
   const pf = pfBounds();
   const minLeft = 6;
   const maxLeft = pf.width - 44 - 6;
   const x = randInt(minLeft, Math.max(minLeft, maxLeft));
   b.style.left = x + 'px';
-  b.dataset.y = -80; // startowa pozycja
-  b.dataset.speed = (fallSpeedBase + difficultyLevel*0.03) + (Math.random()*0.05); // px per ms
+  b.dataset.y = -80; 
+  b.dataset.speed = (fallSpeedBase + difficultyLevel*0.03) + (Math.random()*0.05);
   playfield.appendChild(b);
   bombs.push(b);
 }
 
-// usuń bombę z DOM i z listy
 function removeBomb(b){
   const idx = bombs.indexOf(b);
   if(idx !== -1) bombs.splice(idx,1);
   if(b && b.parentElement) b.parentElement.removeChild(b);
+}
+
+// --- funkcja decydująca ile bomb spada naraz
+function spawnBombWave(){
+  if(score >= 200){
+    for(let i=0;i<3;i++) createBomb();
+  } else if(score >= 100){
+    for(let i=0;i<2;i++) createBomb();
+  } else {
+    createBomb();
+  }
 }
 
 // aktualizuj animację
@@ -102,33 +109,43 @@ let lastTime = null;
 function tick(ts){
   if(!running) return;
   if(!lastTime) lastTime = ts;
-  const dt = ts - lastTime; // ms
+  const dt = ts - lastTime;
   lastTime = ts;
 
   const pf = pfBounds();
-  // przesuwaj bomby
   for(let i = bombs.length-1;i>=0;i--){
     const b = bombs[i];
     const speed = parseFloat(b.dataset.speed) || 0.12;
     let y = parseFloat(b.dataset.y) || -80;
-    y += speed * dt * 2; // mnożnik by gra była dynamiczna
+    y += speed * dt * 2;
     b.dataset.y = y;
     b.style.transform = `translateY(${y}px)`;
 
-    // jeśli dotknęła dolnej krawędzi -> +1 punkt i usuń
     if(y > pf.height){
       removeBomb(b);
       score += 1;
       bombsDropped += 1;
       scoreValueEl.textContent = score;
-      // co 10 opadniętych bomb zwiększamy trudność
-      if(bombsDropped % 10 === 0){
+
+      // Reset i zmiana trudności przy 100 i 200 punktach
+      if(score === 100){
+        difficultyLevel = 0;
+        spawnInterval = 1000;
+        fallSpeedBase = 0.10;
+        bombsDropped = 0;
+        restartSpawning();
+      } else if(score === 200){
+        difficultyLevel = 0;
+        spawnInterval = 900;
+        fallSpeedBase = 0.09;
+        bombsDropped = 0;
+        restartSpawning();
+      } else if(bombsDropped % 10 === 0){
         increaseDifficulty();
       }
       continue;
     }
 
-    // kolizja z UFO?
     const bRect = b.getBoundingClientRect();
     const uRect = ufoBounds();
     if(rectsIntersect(bRect, uRect)){
@@ -140,7 +157,7 @@ function tick(ts){
   animationId = requestAnimationFrame(tick);
 }
 
-// prosta kolizja AABB
+// kolizja AABB
 function rectsIntersect(a,b){
   return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
 }
@@ -148,22 +165,18 @@ function rectsIntersect(a,b){
 // zwiększ trudność
 function increaseDifficulty(){
   difficultyLevel += 1;
-  // skróć interwał spawnu (do pewnego minimum)
   spawnInterval = Math.max(300, spawnInterval - 120);
-  // lekko zwiększ prędkość już istniejących bomb
   bombs.forEach(b => {
     const cur = parseFloat(b.dataset.speed) || 0.12;
     b.dataset.speed = (cur + 0.03).toString();
   });
 }
 
-// rozpocznij i zatrzymaj spawner
+// startSpawning i restartSpawning z nową falą bomb
 function startSpawning(){
   if(spawnTimer) clearInterval(spawnTimer);
   spawnTimer = setInterval(()=>{
-    // w czasie wysokiej trudności może tworzyć kilka bomb naraz
-    createBomb();
-    // drobne losowe dodatkowe bomby
+    spawnBombWave();
     if(Math.random() < 0.12 + difficultyLevel*0.03) createBomb();
   }, spawnInterval);
 }
@@ -171,29 +184,25 @@ function startSpawning(){
 function restartSpawning(){
   if(spawnTimer) clearInterval(spawnTimer);
   spawnTimer = setInterval(()=>{
-    createBomb();
+    spawnBombWave();
     if(Math.random() < 0.12 + difficultyLevel*0.03) createBomb();
   }, spawnInterval);
 }
 
 // start gry
 function startGame(){
-  // reset
   score = 0; bombsDropped = 0; difficultyLevel = 0;
   spawnInterval = 1200; fallSpeedBase = 0.12;
   scoreValueEl.textContent = score;
-  // usuń istniejące bomby
   bombs.slice().forEach(removeBomb);
   uiOverlay.classList.add('hidden');
   gameoverOverlay.classList.add('hidden');
   running = true;
   lastTime = null;
-  // ustaw UFO na środek
   const pf = pfBounds();
   ufo.style.left = `${(pf.width - ufo.offsetWidth)/2}px`;
 
-  // start spawner i animacji
-  createBomb();
+  spawnBombWave();
   startSpawning();
   animationId = requestAnimationFrame(tick);
 }
@@ -212,16 +221,13 @@ function endGame(){
   gameoverOverlay.classList.remove('hidden');
 }
 
-// inicjalizacja przy ładowaniu
+// inicjalizacja
 function init(){
-  // ustaw rekord
   const rec = parseInt(localStorage.getItem(RECORD_KEY) || '0', 10);
   bestScoreEl.textContent = rec;
 
-  // Start buttony
   startBtn.addEventListener('click', ()=>{
     startGame();
-    // po krótkim czasie restart spawnera by dopasować do zmiennego spawnInterval
     setTimeout(restartSpawning, 500);
   });
 
@@ -230,9 +236,7 @@ function init(){
     setTimeout(restartSpawning, 500);
   });
 
-  // Jeśli gra jest przerwana (np. zmiana rozmiaru), dostosuj pozycję UFO
   window.addEventListener('resize', ()=>{
-    // utrzymaj UFO wewnątrz pola
     const pf = pfBounds();
     const uRect = ufo.getBoundingClientRect();
     let left = parseFloat(ufo.style.left || '0');
@@ -240,15 +244,11 @@ function init(){
     ufo.style.left = left + 'px';
   });
 
-  // Zapewnij, że pole kliknięcia nie przeszkadza wciśnięciom na overlayy
   playfield.addEventListener('pointerdown', (e)=>{
-    // jeśli nie ruszamy UFO bezpośrednio, pozwól na przesunięcie go natychmiast
     if(!running) return;
-    // gdy klikamy po stronie, przesuwamy UFO do tej pozycji
     if(e.target === playfield) moveUfoTo(e.clientX - ufo.offsetWidth/2);
   });
 
-  // drobne pływające animacje ufo gdy gra nie trwa
   (function idleLoop(){
     if(!running){
       const t = Date.now()/800;
