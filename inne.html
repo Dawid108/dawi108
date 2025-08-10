@@ -110,6 +110,28 @@
             </a>
         </div>
     </div>
-    <script src="script.js"></script>
+<script>
+// --- Tryb ciemny ---
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    document.body.classList.add('dark-mode');
+}
+
+// --- Losowe wyświetlanie aplikacji ---
+let apps = Array.from(document.querySelectorAll('.app-icon'));
+
+// Mieszanie kolejności (Fisher–Yates)
+for (let i = apps.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [apps[i], apps[j]] = [apps[j], apps[i]];
+}
+
+// Wybieramy 8 pierwszych
+let selectedApps = apps.slice(0, 8);
+
+// Czyścimy i dodajemy do kontenera
+let container = document.querySelector('.buttons');
+container.innerHTML = "";
+selectedApps.forEach(app => container.appendChild(app));
+</script>
 </body>
 </html>
