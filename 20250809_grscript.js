@@ -6,14 +6,14 @@
 /* --- KONFIG --- */
 const CHARACTERS = [
   {id:'cat',emoji:['🐱','😺','😸'],price:0},
-  {id:'monkey',emoji:['🐵','🙉','🦧'],price:50},
-  {id:'lion',emoji:['🦁','😼','😻'],price:120},
-  {id:'tiger',emoji:['🐯','😺','😸'],price:200},
-  {id:'dog',emoji:['🐶','🐕','🐩'],price:80},
-  {id:'bear',emoji:['🐻','🐻‍❄️','🧸'],price:180},
+  {id:'monkey',emoji:['🐵','🙉','🙊'],price:50},
+  {id:'lion',emoji:['🦁','🦁','🦁'],price:120},
+  {id:'tiger',emoji:['🐯','🐯','🐯'],price:200},
+  {id:'dog',emoji:['🐶','🐶','🐶'],price:80},
+  {id:'bear',emoji:['🐻','🐻‍❄️','🐨'],price:180},
   {id:'panda',emoji:['🐼','🐼','🐼'],price:160},
   {id:'fox',emoji:['🦊','🦊','🦊'],price:90},
-  {id:'rabbit',emoji:['🐰','🐇','🐰'],price:40}
+  {id:'rabbit',emoji:['🐰','🐰','🐰'],price:40}
 ];
 
 const MAPS = [
