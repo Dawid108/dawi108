@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Zgadywanie emotek</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --accent:#7c5cff; --muted:#94a3b8; --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.03);
+      --radius:16px;
+      --safe-padding:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,92,255,0.12), transparent),
+                  linear-gradient(180deg, var(--bg), #071024 140%);
+      color:#e6eef8; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+
+    .app{
+      width:100%; max-width:840px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:20px; padding:20px; box-shadow: 0 8px 30px rgba(2,6,23,0.7);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    header{
+      display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px;
+    }
+    .top-left, .top-right{
+      display:flex; gap:8px; align-items:center;
+      background:var(--glass); padding:8px 12px; border-radius:12px; font-weight:600; color:var(--muted);
+    }
+    .top-left .time, .top-right .score{font-size:1.05rem; color:#fff}
+
+    main{
+      display:flex; flex-direction:column; align-items:center; gap:12px; padding:16px;
+    }
+
+    .reveal{
+      min-height:22px; color:var(--muted); font-weight:600; text-align:center; margin-bottom:6px; opacity:0.95;
+    }
+
+    .emoji-card{
+      width:min(62vw,420px); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:16px; border:1px solid var(--glass-2);
+      box-shadow: inset 0 -8px 30px rgba(2,6,23,0.35), 0 8px 40px rgba(2,6,23,0.6);
+      font-size:6.6rem; user-select:none; -webkit-user-select:none; position:relative;
+      transition:transform .12s ease;
+    }
+    .emoji-card.small{font-size:5rem}
+
+    input[type="text"]{
+      width:100%; max-width:540px; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.04);
+      background:rgba(255,255,255,0.02); color:#fff; font-size:1.05rem; outline:none; text-align:center;
+    }
+    input[type="text"]:disabled{opacity:0.5}
+
+    .controls{display:flex; gap:10px; align-items:center; margin-top:8px}
+    button{cursor:pointer; border:0; padding:10px 14px; border-radius:10px; font-weight:700}
+    .btn-start{background:linear-gradient(90deg,var(--accent), #6bd3ff); color:#021025; box-shadow:0 6px 20px rgba(124,92,255,0.18)}
+    .btn-small{background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.03)}
+
+    /* result modal */
+    .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:50}
+    .overlay.show{display:flex}
+    .modal{background:linear-gradient(180deg, rgba(10,14,22,0.9), rgba(8,10,16,0.95)); padding:24px; border-radius:14px; width:min(92%,420px); text-align:center; border:1px solid rgba(255,255,255,0.04)}
+    .modal h2{margin:6px 0 2px; font-size:1.6rem}
+    .modal p{margin:0 0 12px; color:var(--muted)}
+
+    footer{display:flex; justify-content:center; margin-top:12px}
+
+    @media(min-width:900px){
+      body{padding:40px}
+      .app{padding:28px}
+    }
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <header>
+      <div class="top-left"><div class="muted">Czas:</div>&nbsp;<div class="time">30s</div></div>
+      <div class="top-right"><div class="muted">Punkty:</div>&nbsp;<div class="score">0</div></div>
+    </header>
+
+    <main>
+      <div class="reveal" id="revealText"></div>
+      <div class="emoji-card" id="emojiCard" aria-live="polite">❓</div>
+
+      <input id="guessInput" type="text" placeholder="Wpisz nazwę emotki (PL / EN)" autocomplete="off" inputmode="text" spellcheck="false" />
+
+      <div class="controls">
+        <button id="startBtn" class="btn-start">Rozpocznij Grę</button>
+        <button id="hintBtn" class="btn-small">Pokaż podpowiedź</button>
+      </div>
+
+      <footer class="muted" style="margin-top:8px">Zgadnij emotkę — możesz wpisywać po polsku lub po angielsku. Błędna odpowiedź: -5s.</footer>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2>Twój Wynik</h2>
+      <p id="finalScore">0</p>
+      <h3>Twój Rekord</h3>
+      <p id="bestScore">0</p>
+      <div style="margin-top:12px">
+        <button id="restartBtn" class="btn-start">Nowa gra</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Dane emotek ---
+    // Każdy obiekt ma pola: emoji, pl (główna polska), en (główna angielska), others (tablica dodatkowych poprawnych słów)
+    const EMOJI_BANK = {
+     easy: [
+      {emoji:'🍓', pl:'Truskawka', en:'Strawberry', others:['truskawki']},
+      {emoji:'🍒', pl:'Wiśnia', en:'Cherry', others:['czereśnia']},
+      {emoji:'🍎', pl:'Jabłko', en:'Apple', others:['jablko']},
+      {emoji:'🍅', pl:'Pomidor', en:'Tomato', others:[]},
+      {emoji:'🍉', pl:'Arbuz', en:'Watermelon', others:[]},
+      {emoji:'🍑', pl:'Brzoskwinia', en:'Peach', others:[]},
+      {emoji:'🍊', pl:'Pomarańcza', en:'Orange', others:['pomarancza']},
+      {emoji:'🥕', pl:'Marchewka', en:'Carrot', others:['marchew']},
+      {emoji:'🍍', pl:'Ananas', en:'Pineapple', others:[]},
+      {emoji:'🍌', pl:'Banan', en:'Banana', others:['banany']},
+      {emoji:'🌽', pl:'Kukurydza', en:'Corn', others:['kolba kukurydzy']},
+      {emoji:'🍋', pl:'Cytryna', en:'Lemon', others:[]},
+      {emoji:'🍐', pl:'Gruszka', en:'Pear', others:[]},
+      {emoji:'🥝', pl:'Kiwi', en:'Kiwi', others:[]},
+      {emoji:'🥦', pl:'Brokuł', en:'Broccoli', others:['brokuly']},
+      {emoji:'🥒', pl:'Ogórek', en:'Cucumber', others:['ogorek']},
+      {emoji:'🫐', pl:'Borówka', en:'Blueberry', others:['jagoda']},
+      {emoji:'🍇', pl:'Winogrono', en:'Grape', others:['winogrona']},
+      {emoji:'🥥', pl:'Kokos', en:'Coconut', others:[]},
+      {emoji:'🥔', pl:'Ziemniak', en:'Potato', others:['kartofel']},
+      {emoji:'🧅', pl:'Cebula', en:'Onion', others:[]},
+      {emoji:'🥜', pl:'Orzech', en:'Peanut', others:['orzeszek']},
+      {emoji:'🍞', pl:'Chleb', en:'Bread', others:[]},
+      {emoji:'🫓', pl:'Placek', en:'Flatbread', others:['pita']},
+      {emoji:'🥐', pl:'Rogalik', en:'Croissant', others:[]},
+      {emoji:'🥖', pl:'Bagietka', en:'Baguette', others:[]},
+      {emoji:'🧇', pl:'Gofr', en:'Waffle', others:['gofry']},
+      {emoji:'🥞', pl:'Naleśnik', en:'Pancake', others:['nalesniki']},
+      {emoji:'🥚', pl:'Jajko', en:'Egg', others:[]},
+      {emoji:'🧀', pl:'Ser', en:'Cheese', others:['ser zolty']},
+      {emoji:'🍔', pl:'Hamburger', en:'Hamburger', others:['burger']},
+      {emoji:'🌭', pl:'Hot dog', en:'Hot Dog', others:[]},
+      {emoji:'🥪', pl:'Kanapka', en:'Sandwich', others:[]},
+      {emoji:'🍟', pl:'Frytki', en:'French Fries', others:['fryt']},
+      {emoji:'🍕', pl:'Pizza', en:'Pizza', others:[]},
+      {emoji:'🥙', pl:'Kebab', en:'Stuffed Flatbread', others:[]},
+      {emoji:'🍝', pl:'Spaghetti', en:'Spaghetti', others:[]},
+      {emoji:'🍣', pl:'Sushi', en:'Sushi', others:[]},
+      {emoji:'🍚', pl:'Ryż', en:'Cooked Rice', others:['ryz']},
+      {emoji:'🥟', pl:'Pierożek', en:'Dumpling', others:['pierozki', 'pieróg', "pierogi"]},
+      {emoji:'🍫', pl:'Czekolada', en:'Chocolate', others:['czekoladki']}
+     ],
+     medium:[
+      {emoji:'🌶️', pl:'Papryka chili', en:'Chili Pepper', others:['chili','ostra papryka', 'papryka chili']},
+      {emoji:'🥭', pl:'Mango', en:'Mango', others:[]},
+      {emoji:'🍈', pl:'Melon', en:'Melon', others:[]},
+      {emoji:'🥬', pl:'Sałata', en:'Lettuce', others:['salata']},
+      {emoji:'🫑', pl:'Papryka', en:'Bell Pepper', others:['papryka slodka']},
+      {emoji:'🍏', pl:'Zielone jabłko', en:'Green Apple', others:['zielone jablko']},
+      {emoji:'🥑', pl:'Awokado', en:'Avocado', others:[]},
+      {emoji:'🫒', pl:'Oliwka', en:'Olive', others:['oliwki']},
+      {emoji:'🍆', pl:'Bakłażan', en:'Eggplant', others:['baklazan']},
+      {emoji:'🍠', pl:'Batat', en:'Sweet Potato', others:['slodki ziemniak']},
+      {emoji:'🧄', pl:'Czosnek', en:'Garlic', others:[]},
+      {emoji:'🌰', pl:'Kasztan', en:'Chestnut', others:[]},
+      {emoji:'🍳', pl:'Jajko sadzone', en:'Fried Egg', others:['jajecznica']},
+      {emoji:'🥓', pl:'Bekon', en:'Bacon', others:[]},
+      {emoji:'🥩', pl:'Stek', en:'Steak', others:['mieso']},
+      {emoji:'🍗', pl:'Udko', en:'Poultry Leg', others:['kurczak']},
+      {emoji:'🥨', pl:'Precel', en:'Pretzel', others:[]},
+      {emoji:'🥫', pl:'Puszka jedzenia', en:'Canned Food', others:['can']},
+      {emoji:'🥗', pl:'Sałatka', en:'Green Salad', others:['salatka']},
+      {emoji:'🍲', pl:'Zupa', en:'Pot of Food', others:['gulasz']},
+      {emoji:'🦞', pl:'Homar', en:'Lobster', others:[]},
+      {emoji:'🍤', pl:'Krewetka', en:'Fried Shrimp', others:['krewetki']},
+      {emoji:'🥡', pl:'Pudełko na wynos', en:'Takeout Box', others:[]},
+      {emoji:'🍘', pl:'Cracker ryżowy', en:'Rice Cracker', others:[]},
+      {emoji:'🍧', pl:'Lody w kubku', en:'Shaved Ice', others:[]},
+      {emoji:'🍨', pl:'Lody', en:'Ice Cream', others:['lody w pucharku']},
+      {emoji:'🍦', pl:'Lody w rożku', en:'Soft Ice Cream', others:['rozek']},
+      {emoji:'🥧', pl:'Ciasto', en:'Pie', others:[]},
+      {emoji:'🍰', pl:'Tort', en:'Shortcake', others:['ciasto']},
+      {emoji:'🍮', pl:'Budyń', en:'Custard', others:[]},
+      {emoji:'🎂', pl:'Urodzinowy tort', en:'Birthday Cake', others:[]},
+      {emoji:'🧁', pl:'Babeczka', en:'Cupcake', others:[]},
+      {emoji:'🍭', pl:'Lizak', en:'Lollipop', others:[]},
+      {emoji:'🍬', pl:'Cukierek', en:'Candy', others:['cukierki']},
+      {emoji:'🍩', pl:'Pączek', en:'Doughnut', others:['paczek']},
+      {emoji:'🍪', pl:'Ciastko', en:'Cookie', others:['ciasteczko']},
+      {emoji:'🍯', pl:'Miód', en:'Honey', others:['miodek']},
+      {emoji:'🧂', pl:'Sól', en:'Salt', others:[]},
+      {emoji:'🧈', pl:'Masło', en:'Butter', others:[]},
+      {emoji:'🍿', pl:'Popcorn', en:'Popcorn', others:[]},
+      {emoji:'🧊', pl:'Kostka lodu', en:'Ice Cube', others:['lód']},
+      {emoji:'🥤', pl:'Napój w kubku', en:'Cup with Straw', others:[]},
+      {emoji:'🧋', pl:'Bubble tea', en:'Bubble Tea', others:[]},
+      {emoji:'🧃', pl:'Sok', en:'Beverage Box', others:['karton soku']},
+      {emoji:'🥛', pl:'Mleko', en:'Milk', others:[]},
+      {emoji:'🍼', pl:'Butelka dla dziecka', en:'Baby Bottle', others:[]},
+      {emoji:'🍵', pl:'Herbata', en:'Teacup Without Handle', others:[]},
+      {emoji:'☕', pl:'Kawa', en:'Coffee', others:['filiżanka kawy']},
+      {emoji:'🫖', pl:'Czajnik', en:'Teapot', others:[]},
+      {emoji:'🍺', pl:'Piwo', en:'Beer', others:[]},
+      {emoji:'🍻', pl:'Kufle piwa', en:'Clinking Beer Mugs', others:[]},
+      {emoji:'🍾', pl:'Szampan', en:'Bottle with Popping Cork', others:[]},
+      {emoji:'🍷', pl:'Wino', en:'Wine', others:[]},
+      {emoji:'🥃', pl:'Whisky', en:'Whisky Glass', others:[]},
+      {emoji:'🍸', pl:'Koktajl', en:'Cocktail Glass', others:[]},
+      {emoji:'🍹', pl:'Drink', en:'Tropical Drink', others:[]},
+      {emoji:'🥢', pl:'Pałeczki', en:'Chopsticks', others:[]},
+      {emoji:'🍴', pl:'Sztućce', en:'Fork and Knife', others:[]},
+      {emoji:'🥄', pl:'Łyżka', en:'Spoon', others:[]},
+      {emoji:'🔪', pl:'Nóż kuchenny', en:'Kitchen Knife', others:['nóż']},
+      {emoji:'🍽️', pl:'Talerz ze sztućcami', en:'Fork and Knife with Plate', others:[]}
+     ],
+     hard:[
+      {emoji:'🥯', pl:'Bajgiel', en:'Bagel', others:[]},
+      {emoji:'🍖', pl:'Kość z mięsem', en:'Meat on Bone', others:[]},
+      {emoji:'🫔', pl:'Tamale', en:'Tamale', others:[]},
+      {emoji:'🌮', pl:'Taco', en:'Taco', others:[]},
+      {emoji:'🌯', pl:'Burrito', en:'Burrito', others:[]},
+      {emoji:'🧆', pl:'Falafel', en:'Falafel', others:[]},
+      {emoji:'🥘', pl:'Paella', en:'Shallow Pan Food', others:[]},
+      {emoji:'🫕', pl:'Fondue', en:'Fondue', others:[]},
+      {emoji:'🥣', pl:'Miska z łyżką', en:'Bowl with Spoon', others:[]},
+      {emoji:'🍛', pl:'Curry', en:'Curry', others:[]},
+      {emoji:'🍜', pl:'Ramen', en:'Steaming Bowl', others:['zupa ramen']},
+      {emoji:'🦪', pl:'Ostryga', en:'Oyster', others:[]},
+      {emoji:'🍢', pl:'Oden', en:'Oden', others:[]},
+      {emoji:'🍙', pl:'Onigiri', en:'Rice Ball', others:[]},
+      {emoji:'🍥', pl:'Narutomaki', en:'Fish Cake with Swirl', others:[]},
+      {emoji:'🍡', pl:'Dango', en:'Dango', others:[]},
+      {emoji:'🥠', pl:'Ciasteczko z wróżbą', en:'Fortune Cookie', others:[]},
+      {emoji:'🥮', pl:'Ciasto księżycowe', en:'Moon Cake', others:[]},
+      {emoji:'🍱', pl:'Bento', en:'Bento Box', others:[]},
+      {emoji:'🧉', pl:'Yerba mate', en:'Mate', others:[]},
+      {emoji:'🥂', pl:'Toast', en:'Clinking Glasses', others:[]},
+      {emoji:'🍶', pl:'Sake', en:'Sake', others:[]}
+     ]
+    };
+
+    // --- Helpery ---
+    const $ = id => document.getElementById(id);
+    const timeEl = document.querySelector('.time');
+    const scoreEl = document.querySelector('.score');
+    const emojiCard = $('emojiCard');
+    const guessInput = $('guessInput');
+    const revealText = $('revealText');
+    const startBtn = $('startBtn');
+    const overlay = $('overlay');
+    const finalScore = $('finalScore');
+    const bestScoreEl = $('bestScore');
+    const restartBtn = $('restartBtn');
+    const hintBtn = $('hintBtn');
+
+    // Local storage key
+    const RECORD_KEY = 'zywnosc_emotki_best';
+
+    // Game state
+    let timeLeft = 30;
+    let score = 0;
+    let timerInterval = null;
+    let gameActive = false;
+
+    // Tier management
+    let tiers = ['easy','medium','hard'];
+    let pools = {}; // copies of arrays that we'll remove from as guessed
+    let currentTierIndex = 0;
+    let currentItem = null;
+    let roundCount = 1; // first full pass is round 1; when we loop again becomes round 2 (bonus reduced)
+
+    // ensure we have a mobile friendly keyboard suggestion
+    guessInput.setAttribute('inputmode','text');
+
+    function loadRecord(){
+      return parseInt(localStorage.getItem(RECORD_KEY) || '0',10) || 0;
+    }
+    function saveRecord(val){ localStorage.setItem(RECORD_KEY, String(val)); }
+
+    function shuffle(a){
+      for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]}
+      return a;
+    }
+
+    function normalizeAnswer(s){
+      if(!s) return '';
+      // lowercase, trim, remove diacritics and punctuation
+      const down = s.trim().toLowerCase();
+      // remove diacritics
+      return down.normalize('NFD').replace(/\p{Diacritic}/gu,'').replace(/[^a-z0-9\s]/g,'');
+    }
+
+    function preparePools(){
+      pools = {};
+      for(const t of tiers){
+        // deep copy
+        pools[t] = EMOJI_BANK[t].map(e=>Object.assign({}, e));
+        shuffle(pools[t]);
+      }
+      currentTierIndex = 0;
+    }
+
+    function nextItem(){
+      // if current tier pool empty -> move to next tier
+      if(pools[tiers[currentTierIndex]].length === 0){
+        currentTierIndex++;
+        if(currentTierIndex >= tiers.length){
+          // finished all tiers -> start new cycle
+          currentTierIndex = 0;
+          roundCount++;
+          // prepare new pools again
+          preparePools();
+          // NOTE: according to spec: second loop onwards only +1s bonus
+        }
+      }
+      // pop one
+      const t = tiers[currentTierIndex];
+      if(pools[t].length === 0) return null;
+      currentItem = pools[t].pop();
+      renderEmoji(currentItem.emoji);
+      revealText.textContent = '';
+    }
+
+    function renderEmoji(e){
+      emojiCard.textContent = e;
+      // adjust font-size if emoji is wide
+      emojiCard.classList.toggle('small', (''+e).length>2);
+      // small scale animation
+      emojiCard.style.transform='scale(1.02)';
+      setTimeout(()=>emojiCard.style.transform='scale(1)',120);
+    }
+
+    function updateHUD(){
+      timeEl.textContent = Math.max(0,Math.ceil(timeLeft)) + 's';
+      scoreEl.textContent = String(score);
+    }
+
+    function endGame(){
+      gameActive=false;
+      clearInterval(timerInterval);
+      guessInput.disabled = true;
+      // show overlay with results
+      finalScore.textContent = score;
+      const best = loadRecord();
+      if(score>best){ saveRecord(score); }
+      bestScoreEl.textContent = loadRecord();
+      overlay.classList.add('show');
+      // hide keyboard
+      guessInput.blur();
+    }
+
+    function tick(){
+      timeLeft -= 0.25;
+      if(timeLeft <= 0){ timeLeft = 0; updateHUD(); endGame(); return; }
+      updateHUD();
+    }
+
+    function startGame(){
+      // reset
+      timeLeft = 30; score = 0; roundCount = 1; gameActive=true;
+      preparePools();
+      nextItem();
+      updateHUD();
+      guessInput.disabled = false;
+      guessInput.value = '';
+      guessInput.focus();
+      overlay.classList.remove('show');
+      clearInterval(timerInterval);
+      timerInterval = setInterval(tick,250);
+    }
+
+    function checkAnswer(val){
+      if(!gameActive) return;
+      const answer = normalizeAnswer(val);
+      if(!currentItem) return;
+      const accepted = [currentItem.pl, currentItem.en].concat(currentItem.others||[])
+        .filter(Boolean).map(normalizeAnswer);
+      if(accepted.includes(answer)){
+        score += 1;
+        const bonus = (roundCount === 1) ? 3 : 1;
+        timeLeft += bonus;
+        updateHUD();
+        guessInput.value = '';
+        nextItem();
+      } else {
+        timeLeft -= 3; // zmiana z -5s na -3s
+        if(timeLeft < 0) timeLeft = 0;
+        revealText.textContent = `${currentItem.pl} / ${currentItem.en}`;
+        updateHUD();
+        guessInput.value = '';
+        // poczekaj 2 sekundy przed następną emotką
+        setTimeout(()=>{
+          nextItem();
+          try{ guessInput.focus(); }catch(e){}
+        },2000);
+      }
+      setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },60);
+    }
+
+    // --- events ---
+    startBtn.addEventListener('click', ()=>{ startGame(); });
+    restartBtn.addEventListener('click', ()=>{ startGame(); });
+
+    guessInput.addEventListener('keydown', (e)=>{
+      if(!gameActive) return;
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        const val = guessInput.value;
+        checkAnswer(val);
+      }
+    });
+
+    // also check on input blur/submit so mobile can use "go" key
+    guessInput.addEventListener('input', (e)=>{
+      // optional: if user types something and then presses a punctuation like space+enter we handle on enter
+    });
+
+    hintBtn.addEventListener('click', ()=>{
+      if(!currentItem) return;
+      // hint: show first letter of polish and english
+      const pl = currentItem.pl ? currentItem.pl[0] : '?';
+      const en = currentItem.en ? currentItem.en[0] : '?';
+      revealText.textContent = `Podpowiedź: ${pl}... / ${en}...`;
+      setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },50);
+    });
+
+    // Keep keyboard focused while game active on visibility change
+    document.addEventListener('visibilitychange', ()=>{
+      if(gameActive && !document.hidden){ setTimeout(()=>guessInput.focus(),80); }
+    });
+
+    // prevent typing when time over
+    const observer = new MutationObserver(()=>{
+      if(!gameActive){ guessInput.disabled = true; }
+    });
+    observer.observe(overlay,{attributes:true,childList:true,subtree:true});
+
+    // init hud
+    updateHUD();
+    bestScoreEl.textContent = loadRecord();
+
+    // Try to autofocus input when the page loads (may be blocked on some mobiles until user interacts)
+    window.addEventListener('load', ()=>{ setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },300); });
+
+    // Accessibility: allow spacebar to focus input if not focused
+    window.addEventListener('keydown',(e)=>{
+      if(e.code==='Space' && document.activeElement !== guessInput){ e.preventDefault(); guessInput.focus(); }
+    });
+
+    // On tap of emoji card also focus input
+    emojiCard.addEventListener('click', ()=> guessInput.focus());
+
+  </script>
+</body>
+</html>
