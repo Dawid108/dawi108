@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Wędkarstwo</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+  <style>
+    /* --- Reset & base --- */
+    :root{
+      --sea1:#a0e9ff;
+      --sea2:#4dc0ff;
+      --sea3:#0b78b6;
+      --sand:#f0d9b5;
+      --accent:#ffd166;
+      --glass: rgba(255,255,255,0.12);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Inter, system-ui, Arial, Helvetica, sans-serif}
+    body{background: linear-gradient(180deg,var(--sea1) 0%, var(--sea2) 40%, var(--sea3) 100%);display:flex;align-items:stretch;}
+
+    /* --- Game container --- */
+    .game-wrap{width:100%;max-width:900px;margin:auto;height:100vh;position:relative;overflow:hidden;border-left:8px solid rgba(255,255,255,0.03);border-right:8px solid rgba(255,255,255,0.03);}
+
+    /* subtle waves at top */
+    .waves{position:absolute;left:0;right:0;top:0;height:18vh;background:radial-gradient(circle at 20% 20%, rgba(255,255,255,0.06), transparent 20%), radial-gradient(circle at 80% 50%, rgba(255,255,255,0.04), transparent 18%);pointer-events:none}
+    .sand{position:absolute;left:0;right:0;bottom:0;height:8vh;background:linear-gradient(180deg,var(--sand), rgba(255,255,255,0.06));filter:blur(6px);opacity:0.6}
+
+    /* header */
+    header{position:absolute;left:12px;top:12px;padding:6px 10px;border-radius:10px;background:var(--glass);backdrop-filter:blur(6px);display:flex;gap:10px;align-items:center}
+    header h1{margin:0;font-size:18px;color:white;letter-spacing:0.6px}
+    .record{font-size:13px;color:#eaf6ff}
+
+    /* score display */
+    .hud{position:absolute;left:12px;top:60px;background:rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:white}
+
+    /* fixed rod area */
+    .rod-area{position:absolute;left:50%;transform:translateX(-50%);bottom:6vh;z-index:30;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .rod{font-size:44px;cursor:pointer;user-select:none;filter:drop-shadow(0 4px 6px rgba(0,0,0,0.25))}
+    .rod:active{transform: translateY(2px)}
+
+    /* line and hook */
+    .line{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(6vh + 30px);width:2px;background:linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.4));border-radius:2px;z-index:25;display:none}
+    .hook{position:absolute;left:50%;transform:translate(-50%, 0) rotate(180deg);bottom:calc(6vh + 8px);font-size:30px;z-index:26;display:none;text-shadow:0 2px 4px rgba(0,0,0,0.25)}
+
+    /* fish */
+    .fish{position:absolute;font-size:36px;top:10vh;z-index:20;will-change:transform}
+    .fish.small{font-size:30px}
+    .fish.big{font-size:46px}
+
+    /* start / gameover modal */
+    .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:50}
+    .panel{background:linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));padding:18px;border-radius:14px;min-width:260px;color:white;text-align:center;backdrop-filter: blur(6px);box-shadow:0 8px 30px rgba(0,0,0,0.4)}
+    .panel h2{margin:6px 0 12px;font-size:20px}
+    .panel button{margin-top:12px;padding:10px 16px;border-radius:10px;border:0;background:linear-gradient(90deg,var(--accent),#ffb3a7);font-weight:600}
+    .small-muted{font-size:13px;color:#e8fbff}
+
+    /* responsive tweaks */
+    @media (max-width:420px){
+      .rod{font-size:40px}
+      .hook{font-size:28px}
+      .fish{font-size:30px}
+      header h1{font-size:16px}
+    }
+  </style>
+</head>
+<body>
+  <div class="game-wrap" id="game">
+    <header>
+      <h1>Wędkarstwo 🎣</h1>
+      <div class="record" id="topRecord">Rekord: 0</div>
+    </header>
+    <div class="hud" id="hud">Wynik: 0</div>
+    <div class="rod-area">
+      <div class="rod" id="rod">🎣</div>
+    </div>
+    <div class="line" id="line"></div>
+    <div class="hook" id="hook">🪝</div>
+    <div class="overlay" id="overlay">
+      <div class="panel" id="panel">
+        <h2 id="panelTitle">Wędkarstwo</h2>
+        <div class="small-muted" id="panelText">Twój rekord: <span id="best">0</span></div>
+        <button id="startBtn">Rozpocznij Grę</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const EMOJI_FISH = ['🐙','🦑','🐡','🐠','🐟','🐳','🐋','🐬','🦈'];
+    const rod = document.getElementById('rod');
+    const line = document.getElementById('line');
+    const hook = document.getElementById('hook');
+    const hud = document.getElementById('hud');
+    const overlay = document.getElementById('overlay');
+    const panelText = document.getElementById('panelText');
+    const bestEl = document.getElementById('best');
+    const startBtn = document.getElementById('startBtn');
+    const topRecord = document.getElementById('topRecord');
+    const gameEl = document.getElementById('game');
+
+    let score = 0;
+    let best = parseInt(localStorage.getItem('fishing_record')||'0');
+    bestEl.textContent = best;
+    topRecord.textContent = 'Rekord: ' + best;
+
+    let fishes = [];
+    let maxAllowedActive = 5;
+    let running = false;
+    let hookState = {active:false, returning:false, fish:null, y:0};
+
+    function rand(min,max){return Math.random()*(max-min)+min}
+
+    function createFish(){
+      const el = document.createElement('div');
+      el.className = 'fish';
+      const emoji = EMOJI_FISH[Math.floor(Math.random()*EMOJI_FISH.length)];
+      el.textContent = emoji;
+      gameEl.appendChild(el);
+      const fromLeft = Math.random() < 0.5;
+      const y = rand(8,48);
+      const speed = rand(0.03,0.08);
+      const obj = {el, dir: fromLeft?1:-1, x: fromLeft? -10 : 110, y, speed, emoji};
+      el.style.top = y + 'vh';
+      el.style.left = obj.x + '%';
+      fishes.push(obj);
+    }
+
+    function startGame(){
+      score = 0;
+      hud.textContent = 'Wynik: 0';
+      running = true;
+      hookState.active = false;
+      hookState.returning = false;
+      hookState.fish = null;
+      hook.style.display='none';
+      line.style.display='none';
+      fishes.forEach(f=>f.el.remove());
+      fishes = [];
+      maxAllowedActive = 5;
+      for(let i=0;i<5;i++) createFish();
+      overlay.style.display='none';
+      requestAnimationFrame(loop);
+    }
+
+    function endGame(){
+      running = false;
+      overlay.style.display='flex';
+      document.getElementById('panelTitle').textContent = 'Koniec gry';
+      panelText.innerHTML = 'Twój wynik: <strong>' + score + '</strong><br>Twój rekord: <strong>' + best + '</strong>';
+      startBtn.textContent = 'Nowa Gra';
+      if(score>best){
+        best = score;
+        localStorage.setItem('fishing_record', String(best));
+        bestEl.textContent = best;
+        topRecord.textContent = 'Rekord: ' + best;
+      }
+    }
+
+    rod.addEventListener('click', ()=>{
+      if(!running) return;
+      if(hookState.active) return;
+      launchHook();
+    });
+
+    startBtn.addEventListener('click', startGame);
+
+    function launchHook(){
+      hookState.active = true;
+      hookState.returning = false;
+      hookState.fish = null;
+      hook.style.display='block';
+      line.style.display='block';
+      hookState.y = 30;
+      updateHookVisual();
+    }
+
+    function updateHookVisual(){
+      hook.style.bottom = hookState.y + 'px';
+      const lineHeight = hookState.y - 30;
+      if(lineHeight>0){
+        line.style.display='block';
+        line.style.bottom = '30px';
+        line.style.height = lineHeight + 'px';
+      } else {
+        line.style.display='none';
+      }
+      if(hookState.fish){
+        hookState.fish.el.style.bottom = hookState.y + 'px';
+        hookState.fish.el.style.left = 'calc(50% - 18px)';
+      }
+    }
+
+    function catchFish(index){
+      hookState.fish = fishes[index];
+      fishes.splice(index,1);
+      hookState.returning = true;
+    }
+
+    function checkCollisions(){
+      const hookRect = hook.getBoundingClientRect();
+      for(let i=0;i<fishes.length;i++){
+        const fRect = fishes[i].el.getBoundingClientRect();
+        if(!(fRect.right < hookRect.left || fRect.left > hookRect.right || fRect.bottom < hookRect.top || fRect.top > hookRect.bottom)){
+          catchFish(i);
+          break;
+        }
+      }
+    }
+
+    function loop(){
+      if(!running) return;
+      fishes.forEach(f=>{
+        f.x += f.dir * f.speed * 2;
+        f.el.style.left = f.x + '%';
+        if(f.dir===1 && f.x > 110) { f.x = -12; f.y = rand(8,48); f.el.style.top = f.y + 'vh'; }
+        if(f.dir===-1 && f.x < -15){ f.x = 112; f.y = rand(8,48); f.el.style.top = f.y + 'vh'; }
+      });
+
+      if(hookState.active){
+        if(!hookState.returning){
+          hookState.y += 10;
+          updateHookVisual();
+          checkCollisions();
+          if(hook.getBoundingClientRect().top <= gameEl.getBoundingClientRect().top + 6){
+            endGame();
+            return;
+          }
+        } else {
+          hookState.y -= 10;
+          if(hookState.y <= 30){
+            if(hookState.fish){
+              hookState.fish.el.remove();
+              hookState.fish = null;
+              score++;
+              hud.textContent = 'Wynik: ' + score;
+              if(fishes.length < maxAllowedActive){
+                createFish();
+              }
+            }
+            hookState.active = false;
+            hookState.returning = false;
+            hook.style.display='none';
+            line.style.display='none';
+          }
+          updateHookVisual();
+        }
+      }
+      requestAnimationFrame(loop);
+    }
+
+    overlay.style.display='flex';
+    panelText.textContent = 'Twój rekord: ' + best;
+  </script>
+</body>
+</html>
