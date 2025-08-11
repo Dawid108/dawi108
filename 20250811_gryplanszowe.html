@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gry Planszowe</title>
+    <style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f5f5f5;
+    padding: 10px;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #444;
+    margin-bottom: 20px;
+}
+
+.game-card {
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    /* Animacja */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 1;
+}
+
+.game-card.enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.game-card.enter-active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.game-card.exit {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.game-card.exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pin-btn {
+    background: #ffcc00;
+    border: none;
+    padding: 5px 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.pin-btn.pinned {
+    background: #ff9900;
+}
+
+.level-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.level-container input {
+    width: 60px;
+    padding: 5px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.progress {
+    font-weight: bold;
+    color: #0077cc;
+}
+
+.completed {
+    background: linear-gradient(135deg, #c8f7c5, #a0e3a0);
+    box-shadow: 0px 0px 12px rgba(0, 150, 0, 0.4);
+    border: 2px solid #4caf50;
+}
+
+    </style>
+</head>
+<body>
+    <h1>Gry Planszowe</h1>
+    <div id="games-container"></div>
+
+    <script>
+        // Lista gier i maksymalne poziomy
+const gamesData = [
+    { name: "Dżungla", max: 80 },
+    { name: "Kolorowy Kod", max: 100 },
+    { name: "Kot i Mysz", max: 48 },
+    { name: "Metro", max: 64 },
+    { name: "Piece Puzzle", max: 999 },
+    { name: "Port Lotniczy", max: 48 },
+    { name: "Szachy Solo", max: 60 },
+    { name: "Wieżowce", max: 60 },
+    { name: "Żabki", max: 40 }
+];
+
+const container = document.getElementById("games-container");
+
+// Pobierz dane z localStorage lub ustaw domyślne
+let games = JSON.parse(localStorage.getItem("gamesProgress")) || gamesData.map(g => ({
+    name: g.name,
+    max: g.max,
+    level: 0,
+    pinned: false
+}));
+
+function saveData() {
+    localStorage.setItem("gamesProgress", JSON.stringify(games));
+}
+
+let sortTimeout = null;
+
+function renderGames() {
+    // Usuwamy animacyjnie stare karty
+    const oldCards = Array.from(container.children);
+    oldCards.forEach(card => {
+        card.classList.add("exit");
+        setTimeout(() => card.classList.add("exit-active"), 0);
+        setTimeout(() => card.remove(), 300);
+    });
+
+    // Sortowanie według zasad
+    games.sort((a, b) => {
+        if (a.pinned && !b.pinned) return -1;
+        if (!a.pinned && b.pinned) return 1;
+
+        const percentA = Math.floor((a.level / a.max) * 100);
+        const percentB = Math.floor((b.level / b.max) * 100);
+
+        if (percentA !== percentB) return percentB - percentA;
+        return a.name.localeCompare(b.name, "pl");
+    });
+
+    // Renderowanie nowych gier z animacją
+    games.forEach((game, index) => {
+        const card = document.createElement("div");
+        card.className = "game-card enter";
+
+        // Wyróżnienie gier z 100% ukończenia
+        const percentValue = Math.floor((game.level / game.max) * 100);
+        if (percentValue >= 100) {
+            card.classList.add("completed");
+        }
+
+        const header = document.createElement("div");
+        header.className = "game-header";
+
+        const title = document.createElement("h2");
+        title.textContent = `${index + 1}. ${game.name}`;
+        title.style.fontSize = "18px";
+
+        const pinBtn = document.createElement("button");
+        pinBtn.className = "pin-btn" + (game.pinned ? " pinned" : "");
+        pinBtn.textContent = game.pinned ? "Odepnij" : "Przypnij";
+        pinBtn.onclick = () => {
+            if (!game.pinned && games.some(g => g.pinned)) {
+                alert("Już przypięto grę");
+                return;
+            }
+            game.pinned = !game.pinned;
+            saveData();
+            renderGames();
+        };
+
+        header.appendChild(title);
+        header.appendChild(pinBtn);
+
+        const levelContainer = document.createElement("div");
+        levelContainer.className = "level-container";
+
+        const input = document.createElement("input");
+        input.type = "number";
+        input.min = 0;
+        input.max = game.max;
+        input.value = game.level;
+        input.oninput = () => {
+            game.level = Math.min(Math.max(0, parseInt(input.value) || 0), game.max);
+            saveData();
+
+            // Jeśli użytkownik wpisuje poziom, opóźniamy sortowanie
+            if (sortTimeout) clearTimeout(sortTimeout);
+            sortTimeout = setTimeout(() => {
+                renderGames();
+            }, 3000); // 3 sekundy
+        };
+
+        const maxLabel = document.createElement("span");
+        maxLabel.textContent = `/${game.max}`;
+
+        const percentLabel = document.createElement("span");
+        percentLabel.className = "progress";
+        percentLabel.textContent = `${percentValue}%`;
+
+        levelContainer.appendChild(input);
+        levelContainer.appendChild(maxLabel);
+        levelContainer.appendChild(percentLabel);
+
+        card.appendChild(header);
+        card.appendChild(levelContainer);
+
+        container.appendChild(card);
+
+        // Animacja wejścia
+        setTimeout(() => {
+            card.classList.add("enter-active");
+        }, 0);
+    });
+}
+
+// Pierwsze renderowanie
+renderGames();
+
+    </script>
+</body>
+</html>
