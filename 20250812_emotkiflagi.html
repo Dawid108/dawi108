@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Zgadywanie emotek</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="manifest.json">
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --accent:#7c5cff; --muted:#94a3b8; --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.03);
+      --radius:16px;
+      --safe-padding:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,92,255,0.12), transparent),
+                  linear-gradient(180deg, var(--bg), #071024 140%);
+      color:#e6eef8; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+
+    .app{
+      width:100%; max-width:840px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:20px; padding:20px; box-shadow: 0 8px 30px rgba(2,6,23,0.7);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    header{
+      display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px;
+    }
+    .top-left, .top-right{
+      display:flex; gap:8px; align-items:center;
+      background:var(--glass); padding:8px 12px; border-radius:12px; font-weight:600; color:var(--muted);
+    }
+    .top-left .time, .top-right .score{font-size:1.05rem; color:#fff}
+
+    main{
+      display:flex; flex-direction:column; align-items:center; gap:12px; padding:16px;
+    }
+
+    .reveal{
+      min-height:22px; color:var(--muted); font-weight:600; text-align:center; margin-bottom:6px; opacity:0.95;
+    }
+
+    .emoji-card{
+      width:min(62vw,420px); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:16px; border:1px solid var(--glass-2);
+      box-shadow: inset 0 -8px 30px rgba(2,6,23,0.35), 0 8px 40px rgba(2,6,23,0.6);
+      font-size:6.6rem; user-select:none; -webkit-user-select:none; position:relative;
+      transition:transform .12s ease;
+    }
+    .emoji-card.small{font-size:5rem}
+
+    input[type="text"]{
+      width:100%; max-width:540px; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.04);
+      background:rgba(255,255,255,0.02); color:#fff; font-size:1.05rem; outline:none; text-align:center;
+    }
+    input[type="text"]:disabled{opacity:0.5}
+
+    .controls{display:flex; gap:10px; align-items:center; margin-top:8px}
+    button{cursor:pointer; border:0; padding:10px 14px; border-radius:10px; font-weight:700}
+    .btn-start{background:linear-gradient(90deg,var(--accent), #6bd3ff); color:#021025; box-shadow:0 6px 20px rgba(124,92,255,0.18)}
+    .btn-small{background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.03)}
+
+    /* result modal */
+    .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:50}
+    .overlay.show{display:flex}
+    .modal{background:linear-gradient(180deg, rgba(10,14,22,0.9), rgba(8,10,16,0.95)); padding:24px; border-radius:14px; width:min(92%,420px); text-align:center; border:1px solid rgba(255,255,255,0.04)}
+    .modal h2{margin:6px 0 2px; font-size:1.6rem}
+    .modal p{margin:0 0 12px; color:var(--muted)}
+
+    footer{display:flex; justify-content:center; margin-top:12px}
+
+    @media(min-width:900px){
+      body{padding:40px}
+      .app{padding:28px}
+    }
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <header>
+      <div class="top-left"><div class="muted">Czas:</div>&nbsp;<div class="time">60s</div></div>
+      <div class="top-right"><div class="muted">Punkty:</div>&nbsp;<div class="score">0</div></div>
+    </header>
+
+    <main>
+      <div class="reveal" id="revealText"></div>
+      <div class="emoji-card" id="emojiCard" aria-live="polite">❓</div>
+
+      <input id="guessInput" type="text" placeholder="Wpisz nazwę emotki (PL / EN)" autocomplete="off" inputmode="text" spellcheck="false"  autocorrect="off" />
+
+      <div class="controls">
+        <button id="startBtn" class="btn-start">Rozpocznij Grę</button>
+        <button id="hintBtn" class="btn-small">Pokaż podpowiedź</button>
+      </div>
+
+      <footer class="muted" style="margin-top:8px">Zgadnij emotkę — możesz wpisywać po polsku lub po angielsku. Błędna odpowiedź: -1s.</footer>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2>Twój Wynik</h2>
+      <p id="finalScore">0</p>
+      <h3>Twój Rekord</h3>
+      <p id="bestScore">0</p>
+      <div style="margin-top:12px">
+        <button id="restartBtn" class="btn-start">Nowa gra</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Dane emotek ---
+    // Każdy obiekt ma pola: emoji, pl (główna polska), en (główna angielska), others (tablica dodatkowych poprawnych słów)
+    const EMOJI_BANK = {
+     easy: [
+  {emoji:'🇦🇷', pl:'Argentyna', en:'Argentina', others:['Buenos Aires','argentinian','argantina']},
+  {emoji:'🇧🇷', pl:'Brazylia', en:'Brazil', others:['Brasília','brazilian','brasil']},
+  {emoji:'🇩🇪', pl:'Niemcy', en:'Germany', others:['Berlin','german','germanny']},
+  {emoji:'🇪🇸', pl:'Hiszpania', en:'Spain', others:['Madryt','spanish','spainnn']},
+  {emoji:'🇫🇷', pl:'Francja', en:'France', others:['Paryż','french','frnace']},
+  {emoji:'🇮🇹', pl:'Włochy', en:'Italy', others:['Rzym','italian','italia']},
+  {emoji:'🇵🇱', pl:'Polska', en:'Poland', others:['Warszawa','polish','polen']},
+  {emoji:'🇵🇹', pl:'Portugalia', en:'Portugal', others:['Lizbona','portuguese','portagal']},
+  {emoji:'🇺🇸', pl:'Stany Zjednoczone', en:'United States', others:['Waszyngton','american','usa', 'stany']}
+     ],
+     medium:[
+  {emoji:'🇦🇩', pl:'Andora', en:'Andorra', others:['Andora la Vella','andorran','andora']},
+  {emoji:'🇦🇪', pl:'Zjednoczone Emiraty Arabskie', en:'United Arab Emirates', others:['Abu Zabi','emirati','emirats', 'zea', 'emiraty']},
+  {emoji:'🇦🇫', pl:'Afganistan', en:'Afghanistan', others:['Kabul','afghan','afganistan']},
+  {emoji:'🇦🇱', pl:'Albania', en:'Albania', others:['Tirana','albanian','albanie']},
+  {emoji:'🇦🇶', pl:'Antarktyda', en:'Antarctica', others:['McMurdo','antarctic','antartica']},
+  {emoji:'🇦🇬', pl:'Antigua i Barbuda', en:'Antigua and Barbuda', others:['Saint John’s','antiguan','antigua', 'aib', 'barbuda']},
+  {emoji:'🇦🇲', pl:'Armenia', en:'Armenia', others:['Erywań','armenian','armenja']},
+  {emoji:'🇦🇴', pl:'Angola', en:'Angola', others:['Luanda','angolan','angoola']},
+  {emoji:'🇦🇹', pl:'Austria', en:'Austria', others:['Wiedeń','austrian','austrija']},
+  {emoji:'🇦🇺', pl:'Australia', en:'Australia', others:['Canberra','australian','austrailia']},
+  {emoji:'🇦🇿', pl:'Azerbejdżan', en:'Azerbaijan', others:['Baku','azerbaijani','azerbajan']},
+  {emoji:'🇧🇦', pl:'Bośnia i Hercegowina', en:'Bosnia and Herzegovina', others:['Sarajewo','bosnian','bosnia', 'bih']},
+  {emoji:'🇧🇧', pl:'Barbados', en:'Barbados', others:['Bridgetown','barbadian','barbadoss']},
+  {emoji:'🇧🇩', pl:'Bangladesz', en:'Bangladesh', others:['Dhaka','bangladeshi','bangladeshh']},
+  {emoji:'🇧🇪', pl:'Belgia', en:'Belgium', others:['Bruksela','belgian','belgiam']},
+  {emoji:'🇧🇫', pl:'Burkina Faso', en:'Burkina Faso', others:['Wagadugu','burkinabe','burkinafaso', 'burkina']},
+  {emoji:'🇧🇬', pl:'Bułgaria', en:'Bulgaria', others:['Sofia','bulgarian','bulgaira']},
+  {emoji:'🇧🇭', pl:'Bahrajn', en:'Bahrain', others:['Manama','bahraini','bahrein']},
+  {emoji:'🇧🇯', pl:'Benin', en:'Benin', others:['Porto-Novo','beninese','benine']},
+  {emoji:'🇧🇲', pl:'Bermudy', en:'Bermuda', others:['Hamilton','bermudian','bermooda']},
+  {emoji:'🇧🇴', pl:'Boliwia', en:'Bolivia', others:['Sucre','bolivian','bolvia']},
+  {emoji:'🇧🇸', pl:'Bahamy', en:'Bahamas', others:['Nassau','bahamian','bahams']},
+  {emoji:'🇧🇼', pl:'Botswana', en:'Botswana', others:['Gaborone','botswanan','botswna']},
+  {emoji:'🇧🇾', pl:'Białoruś', en:'Belarus', others:['Mińsk','belarusian','belaruse']},
+  {emoji:'🇨🇦', pl:'Kanada', en:'Canada', others:['Ottawa','canadian','canadaa']},
+  {emoji:'🇨🇨', pl:'Wyspy Kokosowe', en:'Cocos (Keeling) Islands', others:['West Island','cocos','coccos', 'wk', 'kokos']},
+  {emoji:'🇨🇩', pl:'Demokratyczna Republika Konga', en:'Democratic Republic of the Congo', others:['Kinszasa','congolese','drc', 'drk', 'kongo']},
+  {emoji:'🇨🇫', pl:'Republika Środkowoafrykańska', en:'Central African Republic', others:['Bangui','central african','car', 'rs', 'rsa', 'srodek']},
+  {emoji:'🇨🇬', pl:'Kongo', en:'Congo', others:['Brazaville','congolese','kongo']},
+  {emoji:'🇨🇭', pl:'Szwajcaria', en:'Switzerland', others:['Berno','swiss','switserland']},
+  {emoji:'🇨🇮', pl:'Wybrzeże Kości Słoniowej', en:'Ivory Coast', others:['Jamestown','ivorian','ivry coast', 'wks', 'kosci', 'slon']},
+  {emoji:'🇨🇱', pl:'Chile', en:'Chile', others:['Santiago','chilean','chilli']},
+  {emoji:'🇨🇲', pl:'Kamerun', en:'Cameroon', others:['Jaunde','cameroonian','kamerun']},
+  {emoji:'🇨🇳', pl:'Chiny', en:'China', others:['Pekin','chinese','chinna']},
+  {emoji:'🇨🇴', pl:'Kolumbia', en:'Colombia', others:['Bogota','colombian','columbia']},
+  {emoji:'🇨🇷', pl:'Kostaryka', en:'Costa Rica', others:['San Jose','costa rican','costarica']},
+  {emoji:'🇨🇺', pl:'Kuba', en:'Cuba', others:['Hawana','cuban','kubaa']},
+  {emoji:'🇨🇻', pl:'Republika Zielonego Przylądka', en:'Cape Verde', others:['Praia','cape verdean','capeverd', 'rzp', 'zielony', 'przyladek']},
+  {emoji:'🇨🇼', pl:'Curaçao', en:'Curaçao', others:['Willemstad','curacaoan','curacoa']},
+  {emoji:'🇨🇽', pl:'Wyspa Bożego Narodzenia', en:'Christmas Island', others:['Flying Fish Cove','christmas','xmas island', 'wbn']},
+  {emoji:'🇨🇾', pl:'Cypr', en:'Cyprus', others:['Nikozja','cypriot','cypruss']},
+  {emoji:'🇨🇿', pl:'Czechy', en:'Czech Republic', others:['Praga','czech','chech']},
+  {emoji:'🇩🇯', pl:'Dżibuti', en:'Djibouti', others:['Dżibuti','djiboutian','jibuti']},
+  {emoji:'🇩🇰', pl:'Dania', en:'Denmark', others:['Kopenhaga','danish','denmak']},
+  {emoji:'🇩🇲', pl:'Dominika', en:'Dominica', others:['Roseau','dominican','dominika']},
+  {emoji:'🇩🇴', pl:'Dominikana', en:'Dominican Republic', others:['Santo Domingo','dominican','dominicana']},
+  {emoji:'🇩🇿', pl:'Algieria', en:'Algeria', others:['Algier','algerian','algerie']},
+  {emoji:'🇪🇨', pl:'Ekwador', en:'Ecuador', others:['Quito','ecuadorian','equador']},
+  {emoji:'🇪🇪', pl:'Estonia', en:'Estonia', others:['Tallinn','estonian','estonie']},
+  {emoji:'🇪🇬', pl:'Egipt', en:'Egypt', others:['Kair','egyptian','egipt']},
+  {emoji:'🇪🇭', pl:'Sahara Zachodnia', en:'Western Sahara', others:['Laayoune','sahrawi','west sahara', 'sahara']},
+  {emoji:'🇪🇹', pl:'Etiopia', en:'Ethiopia', others:['Addis Abeba','ethiopian','etiopa']},
+  {emoji:'🇪🇺', pl:'Unia Europejska', en:'European Union', others:['Bruksela','eu','eurpean union', 'europa']},
+  {emoji:'🇫🇮', pl:'Finlandia', en:'Finland', others:['Helsinki','finnish','finlandd']},
+  {emoji:'🇫🇯', pl:'Fidżi', en:'Fiji', others:['Suva','fijian','fijji']},
+  {emoji:'🇫🇴', pl:'Wyspy Owcze', en:'Faroe Islands', others:['Tórshavn','faroese','faro islands', 'owce']},
+  {emoji:'🇬🇦', pl:'Gabon', en:'Gabon', others:['Libreville','gabonese','gabbon']},
+  {emoji:'🇬🇧', pl:'Wielka Brytania', en:'United Kingdom', others:['Londyn','british','uk','england','great britain']},
+  {emoji:'🇬🇩', pl:'Grenada', en:'Grenada', others:['Saint George’s','grenadian','greneda']},
+  {emoji:'🇬🇪', pl:'Gruzja', en:'Georgia', others:['Tbilisi','georgian','gruzia']},
+  {emoji:'🇬🇫', pl:'Gujana Francuska', en:'French Guiana', others:['Kajenna','french guiana','gujana francuska', 'francja']},
+  {emoji:'🇬🇭', pl:'Ghana', en:'Ghana', others:['Akra','ghanaian','gana']},
+  {emoji:'🇬🇮', pl:'Gibraltar', en:'Gibraltar', others:['gibraltarian','gibralter']},
+  {emoji:'🇬🇱', pl:'Grenlandia', en:'Greenland', others:['Nuuk','greenlander','greenlnd']},
+  {emoji:'🇬🇲', pl:'Gambia', en:'Gambia', others:['Bandżul','gambian','gambiaa']},
+  {emoji:'🇬🇳', pl:'Gwinea', en:'Guinea', others:['Konakry','guinean','guiena']},
+  {emoji:'🇬🇵', pl:'Gwadelupa', en:'Guadeloupe', others:['Basse-Terre','guadeloupian','guadelupe']},
+  {emoji:'🇬🇶', pl:'Gwinea Równikowa', en:'Equatorial Guinea', others:['Malabo','equatoguinean','guinea equatorial', 'gwinea', 'rownik']},
+  {emoji:'🇬🇷', pl:'Grecja', en:'Greece', others:['Ateny','greek','grecee']},
+  {emoji:'🇬🇹', pl:'Gwatemala', en:'Guatemala', others:['Gwatemala City','guatemalan','guatamala']},
+  {emoji:'🇬🇾', pl:'Gujana', en:'Guyana', others:['Georgetown','guyanese','guyanna']},
+  {emoji:'🇭🇰', pl:'Hongkong', en:'Hong Kong', others:['hongkong','hongkong sar','hk']},
+  {emoji:'🇭🇲', pl:'Wyspy Heard i McDonalda', en:'Heard Island and McDonald Islands', others:['heard island','mcdonald islands', 'mcdonald', 'mcdonalds', 'donald', 'heard']},
+  {emoji:'🇭🇳', pl:'Honduras', en:'Honduras', others:['Tegucigalpa','honduran','hondorus']},
+  {emoji:'🇭🇷', pl:'Chorwacja', en:'Croatia', others:['Zagrzeb','croatian','chrovacia']},
+  {emoji:'🇭🇹', pl:'Haiti', en:'Haiti', others:['Port-au-Prince','haitian','haitii']},
+  {emoji:'🇭🇺', pl:'Węgry', en:'Hungary', others:['Budapeszt','hungarian','hungaryy']},
+  {emoji:'🇮🇨', pl:'Wyspy Kanaryjskie', en:'Canary Islands', others:['Las Palmas','canaries','islas canarias', 'kanary', 'canary']},
+  {emoji:'🇮🇩', pl:'Indonezja', en:'Indonesia', others:['Dżakarta','indonesian','indonasia']},
+  {emoji:'🇮🇪', pl:'Irlandia', en:'Ireland', others:['Dublin','irish','irelnd']},
+  {emoji:'🇮🇱', pl:'Izrael', en:'Israel', others:['Jerozolima','israeli','isreal']},
+  {emoji:'🇮🇳', pl:'Indie', en:'India', others:['Nowe Delhi','indian','indiaa']},
+  {emoji:'🇮🇶', pl:'Irak', en:'Iraq', others:['Bagdad','iraqi','irack']},
+  {emoji:'🇮🇷', pl:'Iran', en:'Iran', others:['Teheran','iranian','irn']},
+  {emoji:'🇮🇸', pl:'Islandia', en:'Iceland', others:['Reykjavik','icelander','icelandic']},
+  {emoji:'🇯🇲', pl:'Jamajka', en:'Jamaica', others:['Kingston','jamaican','jamayka']},
+  {emoji:'🇯🇴', pl:'Jordania', en:'Jordan', others:['Amman','jordanian','jordann']},
+  {emoji:'🇯🇵', pl:'Japonia', en:'Japan', others:['Tokio','japanese','japanse']},
+  {emoji:'🇰🇪', pl:'Kenia', en:'Kenya', others:['Nairobi','kenyan','kenyya']},
+  {emoji:'🇰🇬', pl:'Kirgistan', en:'Kyrgyzstan', others:['Biszkek','kyrgyz','kirgizstan']},
+  {emoji:'🇰🇭', pl:'Kambodża', en:'Cambodia', others:['Phnom Penh','cambodian','cambodza']},
+  {emoji:'🇰🇲', pl:'Komory', en:'Comoros', others:['Moroni','comorian','komoros']},
+  {emoji:'🇰🇳', pl:'Saint Kitts i Nevis', en:'Saint Kitts and Nevis', others:['Basseterre','kitts','nevis', 'kit']},
+  {emoji:'🇰🇵', pl:'Korea Północna', en:'North Korea', others:['Pjongjang','north korean','dprk', 'korea']},
+  {emoji:'🇰🇷', pl:'Korea Południowa', en:'South Korea', others:['Seul','south korean','rok', 'korea']},
+  {emoji:'🇰🇼', pl:'Kuwejt', en:'Kuwait', others:['Kuwejt City','kuwaiti','kuweit']},
+  {emoji:'🇰🇿', pl:'Kazachstan', en:'Kazakhstan', others:['Astana','kazakh','kazakstan']},
+  {emoji:'🇱🇦', pl:'Laos', en:'Laos', others:['Wientian','laotian','laoss']},
+  {emoji:'🇱🇧', pl:'Liban', en:'Lebanon', others:['Bejrut','lebanese','lebannon']},
+  {emoji:'🇱🇮', pl:'Liechtenstein', en:'Liechtenstein', others:['Vaduz','liechtensteiner','lichtenstein']},
+  {emoji:'🇱🇰', pl:'Sri Lanka', en:'Sri Lanka', others:['Sri Dźajawardanapura Kotte','sri lankan','ceylon', 'sri', 'lanka']},
+  {emoji:'🇱🇷', pl:'Liberia', en:'Liberia', others:['Monrovia','liberian','liberya']},
+  {emoji:'🇱🇸', pl:'Lesotho', en:'Lesotho', others:['Maseru','basotho','lesoto']},
+  {emoji:'🇱🇹', pl:'Litwa', en:'Lithuania', others:['Wilno','lithuanian','litwa']},
+  {emoji:'🇱🇺', pl:'Luksemburg', en:'Luxembourg', others:['Luksemburg','luxembourgish','luxemburg']},
+  {emoji:'🇱🇻', pl:'Łotwa', en:'Latvia', others:['Ryga','latvian','lotva']},
+  {emoji:'🇱🇾', pl:'Libia', en:'Libya', others:['Trypolis','libyan','libyia']},
+  {emoji:'🇲🇦', pl:'Maroko', en:'Morocco', others:['Rabat','moroccan','marocco']},
+  {emoji:'🇲🇨', pl:'Monako', en:'Monaco', others:['Monako','monacan','monnaco']},
+  {emoji:'🇲🇩', pl:'Mołdawia', en:'Moldova', others:['Kiszyniów','moldovan','moldavia']},
+  {emoji:'🇲🇪', pl:'Czarnogóra', en:'Montenegro', others:['Podgorica','montenegrin','montenegoro']},
+  {emoji:'🇲🇫', pl:'Saint-Martin', en:'Saint Martin', others:['Marigot','st martin','saintmartin', 'francja']},
+  {emoji:'🇲🇬', pl:'Madagaskar', en:'Madagascar', others:['Antananarywa','malagasy','madagazcar']},
+  {emoji:'🇲🇭', pl:'Wyspy Marshalla', en:'Marshall Islands', others:['Majuro','marshallese','marshall island', 'marszal']},
+  {emoji:'🇲🇰', pl:'Macedonia Północna', en:'North Macedonia', others:['Skopje','macedonian','fyrom', 'macedonia']},
+  {emoji:'🇲🇱', pl:'Mali', en:'Mali', others:['Bamako','malian','malii']},
+  {emoji:'🇲🇳', pl:'Mongolia', en:'Mongolia', others:['Ułan Bator','mongolian','mongolya']},
+  {emoji:'🇲🇴', pl:'Makau', en:'Macau', others:['makau','macao','macau sar']},
+  {emoji:'🇲🇶', pl:'Martynika', en:'Martinique', others:['Fort-de-France','martiniquais','martinika']},
+  {emoji:'🇲🇷', pl:'Mauretania', en:'Mauritania', others:['Nawakszut','mauritanian','mauritaniaa']},
+  {emoji:'🇲🇸', pl:'Montserrat', en:'Montserrat', others:['Plymouth','montserratian','monserat']},
+  {emoji:'🇲🇹', pl:'Malta', en:'Malta', others:['Valletta','maltese','maltaa']},
+  {emoji:'🇲🇺', pl:'Mauritius', en:'Mauritius', others:['Port Louis','mauritian','mauritiuss']},
+  {emoji:'🇲🇻', pl:'Malediwy', en:'Maldives', others:['Male','maldivian','maledives']},
+  {emoji:'🇲🇼', pl:'Malawi', en:'Malawi', others:['Lilongwe','malawian','malawiie']},
+  {emoji:'🇲🇽', pl:'Meksyk', en:'Mexico', others:['Meksyk City','mexican','mexiko']},
+  {emoji:'🇲🇾', pl:'Malezja', en:'Malaysia', others:['Kuala Lumpur','malaysian','malezia']},
+  {emoji:'🇲🇿', pl:'Mozambik', en:'Mozambique', others:['Maputo','mozambican','mozambiquee']},
+  {emoji:'🇳🇦', pl:'Namibia', en:'Namibia', others:['Windhuk','namibian','namibya']},
+  {emoji:'🇳🇪', pl:'Niger', en:'Niger', others:['Niamey','nigerien','nigger']},
+  {emoji:'🇳🇬', pl:'Nigeria', en:'Nigeria', others:['Abudża','nigerian','nigeriaa']},
+  {emoji:'🇳🇮', pl:'Nikaragua', en:'Nicaragua', others:['Managua','nicaraguan','nikaraguaa']},
+  {emoji:'🇳🇱', pl:'Holandia', en:'Netherlands', others:['Amsterdam','dutch','holland', 'niderland', 'niderlandia', 'niderlandy']},
+  {emoji:'🇳🇴', pl:'Norwegia', en:'Norway', others:['Oslo','norwegian','norwey']},
+  {emoji:'🇳🇵', pl:'Nepal', en:'Nepal', others:['Katmandu','nepali','neepal', 'everest']},
+  {emoji:'🇳🇿', pl:'Nowa Zelandia', en:'New Zealand', others:['Wellington','kiwi','aotearoa', 'zelandia']},
+  {emoji:'🇴🇲', pl:'Oman', en:'Oman', others:['Maskat','omani','omann']},
+  {emoji:'🇵🇦', pl:'Panama', en:'Panama', others:['Panama City','panamanian','panamaa']},
+  {emoji:'🇵🇪', pl:'Peru', en:'Peru', others:['Lima','peruvian','peruu']},
+  {emoji:'🇵🇬', pl:'Papua-Nowa Gwinea', en:'Papua New Guinea', others:['Port Moresby','papuan','png', 'gwinea', 'paupa']},
+  {emoji:'🇵🇭', pl:'Filipiny', en:'Philippines', others:['Manila','filipino','phillipines']},
+  {emoji:'🇵🇰', pl:'Pakistan', en:'Pakistan', others:['Islamabad','pakistani','pakistaan']},
+  {emoji:'🇵🇷', pl:'Portoryko', en:'Puerto Rico', others:['San Juan','puertorican','porto rico']},
+  {emoji:'🇵🇸', pl:'Palestyna', en:'Palestine', others:['Ramallah','palestinian','palastine']},
+  {emoji:'🇵🇾', pl:'Paragwaj', en:'Paraguay', others:['Asunción','paraguayan','paragway']},
+  {emoji:'🇶🇦', pl:'Katar', en:'Qatar', others:['Doha','qatari','quatar']},
+  {emoji:'🇷🇪', pl:'Reunion', en:'Réunion', others:['Saint-Denis','reunionese','reunion island', 'francja']},
+  {emoji:'🇷🇴', pl:'Rumunia', en:'Romania', others:['Bukareszt','czad','chad']}, // podobna flaga do Czadu
+  {emoji:'🇷🇸', pl:'Serbia', en:'Serbia', others:['Belgrad','serbian','serbiaa']},
+  {emoji:'🇷🇺', pl:'Rosja', en:'Russia', others:['Moskwa','russian','rossiya']},
+  {emoji:'🇷🇼', pl:'Rwanda', en:'Rwanda', others:['Kigali','rwandan','ruanda']},
+  {emoji:'🇸🇦', pl:'Arabia Saudyjska', en:'Saudi Arabia', others:['Rijad','saudi','ksa', 'arabia']},
+  {emoji:'🇸🇧', pl:'Wyspy Salomona', en:'Solomon Islands', others:['Honiara','solomon islander','salomon', 'salamon']},
+  {emoji:'🇸🇨', pl:'Seszele', en:'Seychelles', others:['Victoria','seychellois','seycheles']},
+  {emoji:'🇸🇩', pl:'Sudan', en:'Sudan', others:['Chartum','sudanese','sudann']},
+  {emoji:'🇸🇪', pl:'Szwecja', en:'Sweden', others:['Sztokholm','swedish','swedden']},
+  {emoji:'🇸🇬', pl:'Singapur', en:'Singapore', others:['singaporean','Singapur','singapour']},
+  {emoji:'🇸🇮', pl:'Słowenia', en:'Slovenia', others:['Lublana','slovenian','slovenija']},
+  {emoji:'🇸🇰', pl:'Słowacja', en:'Slovakia', others:['Bratysława','slovak','slovakya']},
+  {emoji:'🇸🇱', pl:'Sierra Leone', en:'Sierra Leone', others:['Freetown','sierra leonian','serra leone', 'leon', 'leone']},
+  {emoji:'🇸🇲', pl:'San Marino', en:'San Marino', others:['San Marino','sammarinese','sanmarino', 'san']},
+  {emoji:'🇸🇳', pl:'Senegal', en:'Senegal', others:['Dakar','senegalese','senegall']},
+  {emoji:'🇸🇴', pl:'Somalia', en:'Somalia', others:['Mogadiszu','somali','somaliya']},
+  {emoji:'🇸🇷', pl:'Surinam', en:'Suriname', others:['Paramaribo','surinamese','surinamee']},
+  {emoji:'🇸🇸', pl:'Sudan Południowy', en:'South Sudan', others:['Dżuba','south sudanese','southern sudan', 'sudan']},
+  {emoji:'🇸🇹', pl:'Wyspy Świętego Tomasza i Książęca', en:'São Tomé and Príncipe', others:['São Tomé','sao tome','principe', 'wstik', 'tomasz', 'ksiaze']},
+  {emoji:'🇸🇻', pl:'Salwador', en:'El Salvador', others:['San Salvador','salvadoran','elsalvador']},
+  {emoji:'🇸🇾', pl:'Syria', en:'Syria', others:['Damaszek','syrian','syriya']},
+  {emoji:'🇹🇩', pl:'Czad', en:'Chad', others:['Ndżamena','czad','rumunia']}, // podobna flaga do Rumunii
+  {emoji:'🇹🇬', pl:'Togo', en:'Togo', others:['Lome','togolese','togoo']},
+  {emoji:'🇹🇭', pl:'Tajlandia', en:'Thailand', others:['Bangkok','thai','thailande']},
+  {emoji:'🇹🇯', pl:'Tadżykistan', en:'Tajikistan', others:['Duszanbe','tajik','tadjikistan']},
+  {emoji:'🇹🇲', pl:'Turkmenistan', en:'Turkmenistan', others:['Aszchabad','turkmen','turkmanistan']},
+  {emoji:'🇹🇳', pl:'Tunezja', en:'Tunisia', others:['Tunis','tunisian','tunizja']},
+  {emoji:'🇹🇴', pl:'Tonga', en:'Tonga', others:['Nukuʻalofa','tongan','tonga island']},
+  {emoji:'🇹🇷', pl:'Turcja', en:'Turkey', others:['Ankara','turkish','turkiye']},
+  {emoji:'🇹🇹', pl:'Trynidad i Tobago', en:'Trinidad and Tobago', others:['Port of Spain','trinidadian','trinidad tobago', 'trinidad', 'tobago', 'tit']},
+  {emoji:'🇹🇼', pl:'Tajwan', en:'Taiwan', others:['Tajpej','taiwanese','republic of china']},
+  {emoji:'🇹🇿', pl:'Tanzania', en:'Tanzania', others:['Dodoma','tanzanian','tanzanya']},
+  {emoji:'🇺🇦', pl:'Ukraina', en:'Ukraine', others:['Kijów','ukrainian','ukraina']},
+  {emoji:'🇺🇬', pl:'Uganda', en:'Uganda', others:['Kampala','ugandan','ugandaa']},
+  {emoji:'🇺🇲', pl:'Dalekie Wyspy Mniejsze Stanów Zjednoczonych', en:'United States Minor Outlying Islands', others:['johnston atoll','usmo','palmyra', 'usa', 'stany zjednoczone']},
+  {emoji:'🇺🇳', pl:'Organizacja Narodów Zjednoczonych', en:'United Nations', others:['ONZ','UN','unitednations']},
+  {emoji:'🇺🇾', pl:'Urugwaj', en:'Uruguay', others:['Montevideo','uruguayan','urugway']},
+  {emoji:'🇺🇿', pl:'Uzbekistan', en:'Uzbekistan', others:['Taszkent','uzbek','uzbekystan']},
+  {emoji:'🇻🇦', pl:'Watykan', en:'Vatican City', others:['Vatican','holy see','vatikan']},
+  {emoji:'🇻🇨', pl:'Saint Vincent i Grenadyny', en:'Saint Vincent and the Grenadines', others:['Kingstown','st vincent','grenadines', 'vincent', 'wincent', 'grenadyny']},
+  {emoji:'🇻🇪', pl:'Wenezuela', en:'Venezuela', others:['Caracas','venezuelan','venezuella']},
+  {emoji:'🇻🇳', pl:'Wietnam', en:'Vietnam', others:['Hanoi','vietnamese','viet nam']},
+  {emoji:'🇽🇰', pl:'Kosowo', en:'Kosovo', others:['Prisztina','kosovar','kosova']},
+  {emoji:'🇾🇪', pl:'Jemen', en:'Yemen', others:['Sana','yemeni','yaman']},
+  {emoji:'🇿🇦', pl:'Republika Południowej Afryki', en:'South Africa', others:['Pretoria','south african','rpa']},
+  {emoji:'🇿🇲', pl:'Zambia', en:'Zambia', others:['Lusaka','zambian','zambiya']},
+  {emoji:'🇿🇼', pl:'Zimbabwe', en:'Zimbabwe', others:['Harare','zimbabwean','zimbabue']}
+     ],
+     hard:[
+  {emoji:'🇦🇨', pl:'Wyspa Wniebowstąpienia', en:'Ascension Island', others:['Georgetown','ascension','asencion', 'wniebowstopienie', 'niebo']},
+  {emoji:'🇦🇮', pl:'Anguilla', en:'Anguilla', others:['The Valley','anguillan','anguila']},
+  {emoji:'🇦🇸', pl:'Samoa Amerykańskie', en:'American Samoa', others:['Pago Pago','samoan','amercan samoa', 'samoa']},
+  {emoji:'🇦🇼', pl:'Aruba', en:'Aruba', others:['Oranjestad','aruban','arubba']},
+  {emoji:'🇦🇽', pl:'Wyspy Alandzkie', en:'Åland Islands', others:['Mariehamn','aland','aland islands', 'alandy']},
+  {emoji:'🇧🇮', pl:'Burundi', en:'Burundi', others:['Gitega','burundian','burndy']},
+  {emoji:'🇧🇱', pl:'Saint-Barthélemy', en:'Saint Barthélemy', others:['Gustavia','barths','saint barthelemy', 'saint']},
+  {emoji:'🇧🇳', pl:'Brunei', en:'Brunei', others:['Bandar Seri Begawan','bruneian','bruney', 'bruno']},
+  {emoji:'🇧🇶', pl:'Bonaire, Sint Eustatius i Saba', en:'Bonaire, Sint Eustatius and Saba', others:['Kralendijk','bonaire','bonnaire', 'bono']},
+  {emoji:'🇧🇹', pl:'Bhutan', en:'Bhutan', others:['Thimphu','bhutanese','butan']},
+  {emoji:'🇧🇻', pl:'Wyspa Bouveta', en:'Bouvet Island', others:['bouvet','bovet', 'bouveta', 'boveta', 'wyspa']},
+  {emoji:'🇧🇿', pl:'Belize', en:'Belize', others:['Belmopan','belizean','belizee', 'blaiz', 'blitz']},
+  {emoji:'🇨🇰', pl:'Wyspy Cooka', en:'Cook Islands', others:['Avarua','cook','cookislands', 'gotuj']},
+  {emoji:'🇨🇵', pl:'Clipperton', en:'Clipperton Island', others:['clipperton','clippperton']},
+  {emoji:'🇩🇬', pl:'Diego Garcia', en:'Diego Garcia', others:['diego','diago', 'garcia']},
+  {emoji:'🇪🇦', pl:'Ceuta i Melilla', en:'Ceuta and Melilla', others:['Ceuta','melilla','ceuta melila']},
+  {emoji:'🇪🇷', pl:'Erytrea', en:'Eritrea', others:['Asmara','eritrean','eritra']},
+  {emoji:'🇫🇰', pl:'Falklandy', en:'Falkland Islands', others:['Stanley','falklander','falklands']},
+  {emoji:'🇫🇲', pl:'Mikronezja', en:'Micronesia', others:['Palikir','micronesian','micronisia']},
+  {emoji:'🇬🇬', pl:'Guernsey', en:'Guernsey', others:['Saint Peter Port','guernseyman','guernsy']},
+  {emoji:'🇬🇸', pl:'Georgia Południowa i Sandwich Południowy', en:'South Georgia and the South Sandwich Islands', others:['King Edward Point','south georgia','sgssi', 'kanapka', 'georgia', 'sandwich']},
+  {emoji:'🇬🇺', pl:'Guam', en:'Guam', others:['Hagåtña','guamanian','guuam']},
+  {emoji:'🇬🇼', pl:'Gwinea Bissau', en:'Guinea-Bissau', others:['Bissau','bissauan','guinea bissao', 'gwinea']},
+  {emoji:'🇮🇲', pl:'Wyspa Man', en:'Isle of Man', others:['Douglas','manx','isle man', 'man', 'spiderman']},
+  {emoji:'🇮🇴', pl:'Brytyjskie Terytorium Oceanu Indyjskiego', en:'British Indian Ocean Territory', others:['Diego Garcia','british indian ocean','biot', 'brytania']},
+  {emoji:'🇯🇪', pl:'Jersey', en:'Jersey', others:['Saint Helier','jerseyman','jerzey']},
+  {emoji:'🇰🇮', pl:'Kiribati', en:'Kiribati', others:['Tarawa','kiribatian','kiribaty']},
+  {emoji:'🇰🇾', pl:'Kajmany', en:'Cayman Islands', others:['George Town','caymanian','cayman']},
+  {emoji:'🇱🇨', pl:'Saint Lucia', en:'Saint Lucia', others:['Castries','lucian','st lucia', 'lucia', 'luis']},
+  {emoji:'🇲🇲', pl:'Mjanma', en:'Myanmar', others:['Naypyidaw','burmese','burma']},
+  {emoji:'🇲🇵', pl:'Mariany Północne', en:'Northern Mariana Islands', others:['Saipan','northern marianas','cnmi', 'marian', 'mariany']},
+  {emoji:'🇳🇨', pl:'Nowa Kaledonia', en:'New Caledonia', others:['Nouméa','caledonian','noumea', 'kaledonia']},
+  {emoji:'🇳🇫', pl:'Norfolk', en:'Norfolk Island', others:['Kingston','norfolk islander','norfolc']},
+  {emoji:'🇳🇷', pl:'Nauru', en:'Nauru', others:['Yaren','nauruan','nauru island']},
+  {emoji:'🇳🇺', pl:'Niue', en:'Niue', others:['Alofi','niuean','niuue']},
+  {emoji:'🇵🇫', pl:'Polinezja Francuska', en:'French Polynesia', others:['Papeete','tahitian','polinesia', 'francja']},
+  {emoji:'🇵🇲', pl:'Saint-Pierre i Miquelon', en:'Saint Pierre and Miquelon', others:['Saint-Pierre','spm','miquelon', 'pierre', 'miquelon']},
+  {emoji:'🇵🇳', pl:'Pitcairn', en:'Pitcairn Islands', others:['Adamstown','pitcairner','pitcarn']},
+  {emoji:'🇵🇼', pl:'Palau', en:'Palau', others:['Ngerulmud','palauan','palao']},
+  {emoji:'🇸🇭', pl:'Wyspa Świętej Heleny', en:'Saint Helena', others:['Jamestown','st helena','saint helena', 'wsh', 'helena']},
+  {emoji:'🇸🇯', pl:'Svalbard i Jan Mayen', en:'Svalbard and Jan Mayen', others:['Longyearbyen','jan mayen','svalbard', 'jan']},
+  {emoji:'🇸🇽', pl:'Sint Maarten', en:'Sint Maarten', others:['Philipsburg','dutch sint maarten','st maarten', 'maarten', 'martin']},
+  {emoji:'🇸🇿', pl:'Eswatini', en:'Eswatini', others:['Mbabane','swazi','swaziland']},
+  {emoji:'🇹🇦', pl:'Tristan da Cunha', en:'Tristan da Cunha', others:['Edinburgh of the Seven Seas','tristan','tda cunha', 'tdc', 'cunha']},
+  {emoji:'🇹🇨', pl:'Turks i Caicos', en:'Turks and Caicos Islands', others:['Cockburn Town','tc islands','turks caicos', 'tic', 'turks']},
+  {emoji:'🇹🇫', pl:'Francuskie Terytoria Południowe', en:'French Southern Territories', others:['Port-aux-Français','ftd','french southern', 'francja']},
+  {emoji:'🇹🇰', pl:'Tokelau', en:'Tokelau', others:['Fakaofo','tokelauan','tokelou']},
+  {emoji:'🇹🇱', pl:'Timor Wschodni', en:'Timor-Leste', others:['Dili','east timor','timorleste', 'timor']},
+  {emoji:'🇹🇻', pl:'Tuvalu', en:'Tuvalu', others:['Funafuti','tuvaluan','tuvaloo']},
+  {emoji:'🇻🇬', pl:'Brytyjskie Wyspy Dziewicze', en:'British Virgin Islands', others:['Road Town','bvi','british virgin', 'british', 'brytania']},
+  {emoji:'🇻🇮', pl:'Wyspy Dziewicze Stanów Zjednoczonych', en:'United States Virgin Islands', others:['Charlotte Amalie','usvi','us virgin', 'usa']},
+  {emoji:'🇻🇺', pl:'Vanuatu', en:'Vanuatu', others:['Port Vila','ni-vanuatu','vanuatua']},
+  {emoji:'🇼🇫', pl:'Wallis i Futuna', en:'Wallis and Futuna', others:['Mata-Utu','wallisian','futunan', 'wallis', 'fatuna']},
+  {emoji:'🇼🇸', pl:'Samoa', en:'Samoa', others:['Apia','samoan','western samoa']},
+  {emoji:'🇾🇹', pl:'Majotta', en:'Mayotte', others:['Mamoudzou','mahoran','mayotta']}
+     ]
+    };
+
+    // --- Helpery ---
+    const $ = id => document.getElementById(id);
+    const timeEl = document.querySelector('.time');
+    const scoreEl = document.querySelector('.score');
+    const emojiCard = $('emojiCard');
+    const guessInput = $('guessInput');
+    const revealText = $('revealText');
+    const startBtn = $('startBtn');
+    const overlay = $('overlay');
+    const finalScore = $('finalScore');
+    const bestScoreEl = $('bestScore');
+    const restartBtn = $('restartBtn');
+    const hintBtn = $('hintBtn');
+
+    // Local storage key
+    const RECORD_KEY = 'flaga_emotka_best';
+
+    // Game state
+    let timeLeft = 60;
+    let score = 0;
+    let timerInterval = null;
+    let gameActive = false;
+
+    // Tier management
+    let tiers = ['easy','medium','hard'];
+    let pools = {}; // copies of arrays that we'll remove from as guessed
+    let currentTierIndex = 0;
+    let currentItem = null;
+    let roundCount = 1; // first full pass is round 1; when we loop again becomes round 2 (bonus reduced)
+
+    // ensure we have a mobile friendly keyboard suggestion
+    guessInput.setAttribute('inputmode','text');
+
+    function loadRecord(){
+      return parseInt(localStorage.getItem(RECORD_KEY) || '0',10) || 0;
+    }
+    function saveRecord(val){ localStorage.setItem(RECORD_KEY, String(val)); }
+
+    function shuffle(a){
+      for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]}
+      return a;
+    }
+
+    function normalizeAnswer(s){
+      if(!s) return '';
+      // lowercase, trim, remove diacritics and punctuation
+      const down = s.trim().toLowerCase();
+      // remove diacritics
+      return down.normalize('NFD').replace(/\p{Diacritic}/gu,'').replace(/[^a-z0-9\s]/g,'');
+    }
+
+    function preparePools(){
+      pools = {};
+      for(const t of tiers){
+        // deep copy
+        pools[t] = EMOJI_BANK[t].map(e=>Object.assign({}, e));
+        shuffle(pools[t]);
+      }
+      currentTierIndex = 0;
+    }
+
+    function nextItem(){
+      // if current tier pool empty -> move to next tier
+      if(pools[tiers[currentTierIndex]].length === 0){
+        currentTierIndex++;
+        if(currentTierIndex >= tiers.length){
+          // finished all tiers -> start new cycle
+          currentTierIndex = 0;
+          roundCount++;
+          // prepare new pools again
+          preparePools();
+          // NOTE: according to spec: second loop onwards only +1s bonus
+        }
+      }
+      // pop one
+      const t = tiers[currentTierIndex];
+      if(pools[t].length === 0) return null;
+      currentItem = pools[t].pop();
+      renderEmoji(currentItem.emoji);
+      revealText.textContent = '';
+    }
+
+    function renderEmoji(e){
+      emojiCard.textContent = e;
+      // adjust font-size if emoji is wide
+      emojiCard.classList.toggle('small', (''+e).length>2);
+      // small scale animation
+      emojiCard.style.transform='scale(1.02)';
+      setTimeout(()=>emojiCard.style.transform='scale(1)',120);
+    }
+
+    function updateHUD(){
+      timeEl.textContent = Math.max(0,Math.ceil(timeLeft)) + 's';
+      scoreEl.textContent = String(score);
+    }
+
+    function endGame(){
+      gameActive=false;
+      clearInterval(timerInterval);
+      guessInput.disabled = true;
+      // show overlay with results
+      finalScore.textContent = score;
+      const best = loadRecord();
+      if(score>best){ saveRecord(score); }
+      bestScoreEl.textContent = loadRecord();
+      overlay.classList.add('show');
+      // hide keyboard
+      guessInput.blur();
+    }
+
+    function tick(){
+      timeLeft -= 0.25;
+      if(timeLeft <= 0){ timeLeft = 0; updateHUD(); endGame(); return; }
+      updateHUD();
+    }
+
+    function startGame(){
+      // reset
+      timeLeft = 60; score = 0; roundCount = 1; gameActive=true;
+      preparePools();
+      nextItem();
+      updateHUD();
+      guessInput.disabled = false;
+      guessInput.value = '';
+      guessInput.focus();
+      overlay.classList.remove('show');
+      clearInterval(timerInterval);
+      timerInterval = setInterval(tick,250);
+    }
+
+    function checkAnswer(val){
+      if(!gameActive) return;
+      const answer = normalizeAnswer(val);
+      if(!currentItem) return;
+      const accepted = [currentItem.pl, currentItem.en].concat(currentItem.others||[])
+        .filter(Boolean).map(normalizeAnswer);
+      if(accepted.includes(answer)){
+        score += 1;
+        const bonus = (roundCount === 1) ? 5 : 1;
+        timeLeft += bonus;
+        updateHUD();
+        guessInput.value = '';
+        nextItem();
+      } else {
+        timeLeft -= 1; // zmiana z -5s na -1s
+        if(timeLeft < 0) timeLeft = 0;
+        revealText.textContent = `${currentItem.pl} / ${currentItem.en}`;
+        updateHUD();
+        guessInput.value = '';
+        // poczekaj 2 sekundy przed następną emotką
+        setTimeout(()=>{
+          nextItem();
+          try{ guessInput.focus(); }catch(e){}
+        },2000);
+      }
+      setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },60);
+    }
+
+    // --- events ---
+    startBtn.addEventListener('click', ()=>{ startGame(); });
+    restartBtn.addEventListener('click', ()=>{ startGame(); });
+
+    guessInput.addEventListener('keydown', (e)=>{
+      if(!gameActive) return;
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        const val = guessInput.value;
+        checkAnswer(val);
+      }
+    });
+
+    // also check on input blur/submit so mobile can use "go" key
+    guessInput.addEventListener('input', (e)=>{
+      // optional: if user types something and then presses a punctuation like space+enter we handle on enter
+    });
+
+    hintBtn.addEventListener('click', ()=>{
+      if(!currentItem) return;
+      // hint: show first letter of polish and english
+      const pl = currentItem.pl ? currentItem.pl[0] : '?';
+      const en = currentItem.en ? currentItem.en[0] : '?';
+      revealText.textContent = `Podpowiedź: ${pl}... / ${en}...`;
+      setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },50);
+    });
+
+    // Keep keyboard focused while game active on visibility change
+    document.addEventListener('visibilitychange', ()=>{
+      if(gameActive && !document.hidden){ setTimeout(()=>guessInput.focus(),80); }
+    });
+
+    // prevent typing when time over
+    const observer = new MutationObserver(()=>{
+      if(!gameActive){ guessInput.disabled = true; }
+    });
+    observer.observe(overlay,{attributes:true,childList:true,subtree:true});
+
+    // init hud
+    updateHUD();
+    bestScoreEl.textContent = loadRecord();
+
+    // Try to autofocus input when the page loads (may be blocked on some mobiles until user interacts)
+    window.addEventListener('load', ()=>{ setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },300); });
+
+    // Accessibility: allow spacebar to focus input if not focused
+    window.addEventListener('keydown',(e)=>{
+      if(e.code==='Space' && document.activeElement !== guessInput){ e.preventDefault(); guessInput.focus(); }
+    });
+
+    // On tap of emoji card also focus input
+    emojiCard.addEventListener('click', ()=> guessInput.focus());
+
+  </script>
+</body>
+</html>
