@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+  <title>💩 Poop Dodger</title>
+  <style>
+    :root{
+      --bg1:#0f1020; --bg2:#16182e; --acc1:#7c5cff; --acc2:#19d3da; --glass:rgba(255,255,255,.08);
+      --text:#e9ecf1; --muted:#b7c0d1; --danger:#ff5d73; --good:#5dffb2; --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, "Apple Color Emoji", "Segoe UI Emoji";
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, #1e224f60, transparent 60%),
+                  radial-gradient(800px 600px at 120% 120%, #19d3da20, transparent 60%),
+                  linear-gradient(135deg, var(--bg1), var(--bg2));
+      overflow:hidden;
+      touch-action:none;
+    }
+
+    /* Layout */
+    .wrap{display:grid; place-items:center; height:100%; padding:16px;}
+    .frame{
+      width:min(100%, 860px);
+      aspect-ratio:9/16; /* phone-first; scales nicely on desktop */
+      background:linear-gradient(180deg, #0e1324, #0a0c18);
+      border:1px solid #ffffff14; border-radius:24px; box-shadow:var(--shadow);
+      position:relative; overflow:hidden;
+    }
+    
+    /* Header / HUD */
+    .hud{
+      position:absolute; inset:0 auto auto 0; width:100%; padding:12px 14px; display:flex; align-items:center; justify-content:space-between; pointer-events:none;
+    }
+    .badge{backdrop-filter: blur(8px); background:var(--glass); border:1px solid #ffffff22; border-radius:16px; padding:8px 12px; box-shadow:var(--shadow); pointer-events:auto}
+    .score{font-weight:800; letter-spacing:.5px}
+    .row{display:flex; gap:8px; align-items:center}
+    button{cursor:pointer; border:0; color:var(--text); font-weight:700}
+    .btn{background:linear-gradient(180deg, #2b2e57, #1a1d3a); border:1px solid #ffffff1a; border-radius:14px; padding:8px 12px; box-shadow:var(--shadow); transition:transform .06s ease;}
+    .btn:active{transform:scale(.98)}
+
+    /* Game area */
+    #game{position:absolute; inset:0;}
+    .entity{position:absolute; translate:-50% -50%; user-select:none;}
+    .emoji{font-size:clamp(24px, 4vmin, 44px); filter: drop-shadow(0 6px 10px #0007)}
+
+    /* Player & items sizes scale with container */
+    .player .emoji{font-size:clamp(36px, 6vmin, 64px)}
+    .poop .emoji{font-size:clamp(30px, 5vmin, 56px)}
+    .star .emoji{font-size:clamp(26px, 4.5vmin, 50px)}
+    .splat{position:absolute; translate:-50% -50%; opacity:.9; animation: pop .45s ease-out forwards}
+    @keyframes pop{0%{transform:scale(.6); opacity:0} 80%{transform:scale(1.15)} 100%{transform:scale(1); opacity:1}}
+
+    /* Overlays */
+    .overlay{position:absolute; inset:0; display:grid; place-items:center; padding:18px; text-align:center;}
+    .card{max-width:520px; background:linear-gradient(180deg, #1a1e3e, #131734); border:1px solid #ffffff1a; border-radius:24px; padding:22px; box-shadow:var(--shadow)}
+    h1{margin:.2em 0 .2em; font-size:clamp(28px, 5.6vmin, 52px)}
+    p{margin:.4em 0; color:var(--muted)}
+    .big{font-size:clamp(20px, 4.3vmin, 30px); font-weight:800}
+
+    /* Controls */
+    .controls{position:absolute; left:0; right:0; bottom:0; padding:10px; display:flex; gap:10px; justify-content:space-between}
+    .pad{flex:1; display:flex; gap:10px}
+    .ctrl{flex:1; height:64px; border-radius:16px; background:linear-gradient(180deg,#2c305e,#1b1f3d); border:1px solid #ffffff20; box-shadow:var(--shadow)}
+    .ctrl:active{filter:brightness(1.1)}
+    .ctrl span{display:block; font-size:28px; line-height:64px}
+    .cta{min-width:40%;}
+
+    /* Responsive tweaks for desktop */
+    @media (min-aspect-ratio: 9/10){
+      .controls{padding:14px}
+      .ctrl{height:70px}
+      .ctrl span{line-height:70px}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <div class="frame" id="frame">
+
+    <div class="hud">
+      <div class="row">
+        <div class="badge score" id="score">Punkty: 0</div>
+        <div class="badge" id="best">Rekord: 0</div>
+      </div>
+      <div class="row">
+        <button class="btn badge" id="pauseBtn" aria-label="Pauza (P)">⏸️ Pauza</button>
+        <button class="btn badge" id="muteBtn" aria-label="Wycisz dźwięki">🔈</button>
+      </div>
+    </div>
+
+    <div id="game" aria-live="polite" aria-label="Pole gry"></div>
+
+    <div class="controls" aria-hidden="false">
+      <div class="pad">
+        <button class="ctrl" id="left"><span>⬅️</span></button>
+        <button class="ctrl" id="right"><span>➡️</span></button>
+      </div>
+      <button class="ctrl cta" id="start"><span>▶️ Start</span></button>
+    </div>
+
+    <div class="overlay" id="startOverlay">
+      <div class="card">
+        <h1>💩 Poop Dodger</h1>
+        <p class="big">Unikaj spadających kup 💩 i zbieraj gwiazdki ⭐!</p>
+        <p>Sterowanie: strzałki / A,D / dotyk. Przytrzymaj, by płynnie jechać. Pauza: P.</p>
+        <p>Im dłużej żyjesz, tym szybciej spadają...</p>
+        <button class="btn" id="startGame">Zaczynamy!</button>
+      </div>
+    </div>
+
+    <div class="overlay" id="gameOver" style="display:none">
+      <div class="card">
+        <h1>💥 O nie, przyklejone!</h1>
+        <p class="big">Twój wynik: <span id="finalScore">0</span></p>
+        <p>Rekord: <span id="finalBest">0</span></p>
+        <div style="display:flex; gap:10px; justify-content:center; margin-top:10px">
+          <button class="btn" id="again">Jeszcze raz</button>
+          <button class="btn" id="share">Udostępnij wynik</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  const game = document.getElementById('game');
+  const frame = document.getElementById('frame');
+  const scoreEl = document.getElementById('score');
+  const bestEl = document.getElementById('best');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const muteBtn = document.getElementById('muteBtn');
+  const startBtn = document.getElementById('startGame');
+  const startOverlay = document.getElementById('startOverlay');
+  const gameOver = document.getElementById('gameOver');
+  const finalScore = document.getElementById('finalScore');
+  const finalBest = document.getElementById('finalBest');
+  const again = document.getElementById('again');
+  const shareBtn = document.getElementById('share');
+  const leftBtn = document.getElementById('left');
+  const rightBtn = document.getElementById('right');
+  const startCtrl = document.getElementById('start');
+
+  // Persistent best
+  let best = Number(localStorage.getItem('poop-best')||0);
+  bestEl.textContent = 'Rekord: ' + best;
+
+  // Game state
+  const state = {
+    running:false, paused:false, muted:true,
+    score:0, t:0, last:0,
+    width:0, height:0, 
+    speed: 180, // base pixels/s
+    player:{x:50, y:88, w:10, h:8, el:null, vx:0}, // in percent
+    items:[], // {type:'poop'|'star', x,y, vy, w,h, el}
+    spawnTimer:0,
+  };
+
+  function createEntity(cls, emoji){
+    const el = document.createElement('div');
+    el.className = 'entity ' + cls;
+    el.innerHTML = '<div class="emoji" aria-hidden="true">'+emoji+'</div>';
+    game.appendChild(el);
+    return el;
+  }
+
+  function setPos(el, x, y){
+    el.style.left = x + '%';
+    el.style.top = y + '%';
+  }
+
+  function spawnPlayer(){
+    const el = createEntity('player','🧻');
+    state.player.el = el;
+    setPos(el, state.player.x, state.player.y);
+  }
+
+  function spawnItem(){
+    const isStar = Math.random() < 0.18; // chance for star
+    const type = isStar ? 'star' : 'poop';
+    const emoji = isStar ? '⭐' : '💩';
+    const x = 6 + Math.random()*88; // keep inside
+    const y = -5;
+    const vy = (state.speed + state.t*4) * (isStar?0.8:1) / 100; // percent per second
+    const w = isStar ? 6 : 8; const h = w;
+    const el = createEntity(type, emoji);
+    setPos(el, x, y);
+    state.items.push({type, x, y, vy, w, h, el});
+  }
+
+  function reset(){
+    // cleanup
+    state.items.forEach(it=>it.el.remove());
+    state.items.length = 0;
+    if(!state.player.el) spawnPlayer();
+    state.player.x = 50; state.player.y = 88; state.player.vx = 0;
+    setPos(state.player.el, state.player.x, state.player.y);
+    state.score = 0; state.t = 0; state.spawnTimer = 0; state.paused=false;
+    updateHUD();
+  }
+
+  function updateHUD(){
+    scoreEl.textContent = 'Punkty: ' + state.score;
+    bestEl.textContent = 'Rekord: ' + best;
+    pauseBtn.textContent = state.paused? '▶️ Wznów' : '⏸️ Pauza';
+    muteBtn.textContent = state.muted? '🔈' : '🔊';
+  }
+
+  function aabb(ax,ay,aw,ah, bx,by,bw,bh){
+    return Math.abs(ax-bx) < (aw+bw)/2 && Math.abs(ay-by) < (ah+bh)/2;
+  }
+
+  function splat(x,y, emoji){
+    const el = document.createElement('div');
+    el.className = 'splat';
+    el.innerHTML = '<div class="emoji">'+emoji+'</div>';
+    game.appendChild(el);
+    setPos(el, x, y);
+    setTimeout(()=>el.remove(), 600);
+  }
+
+  function playPop(){
+    if(state.muted) return;
+    try{
+      const ctx = new (window.AudioContext||window.webkitAudioContext)();
+      const o = ctx.createOscillator(); const g = ctx.createGain();
+      o.type='square'; o.frequency.value = 640; o.connect(g); g.connect(ctx.destination);
+      g.gain.setValueAtTime(0.18, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime+0.12);
+      o.start(); o.stop(ctx.currentTime+0.12);
+    }catch(e){}
+  }
+
+  function tick(ts){
+    if(!state.running){state.last=ts; return requestAnimationFrame(tick);}
+    const dt = Math.min(0.032, (ts - state.last)/1000);
+    state.last = ts;
+    if(state.paused){return requestAnimationFrame(tick);}
+
+    state.t += dt;
+    state.spawnTimer -= dt;
+    if(state.spawnTimer <= 0){
+      spawnItem();
+      const next = 0.7 - Math.min(0.5, state.t*0.03); // faster spawns over time
+      state.spawnTimer = 0.25 + Math.random()*next;
+    }
+
+    // Move player
+    state.player.x = Math.max(5, Math.min(95, state.player.x + state.player.vx*dt));
+    setPos(state.player.el, state.player.x, state.player.y);
+
+    // Move items
+    for(let i=state.items.length-1;i>=0;i--){
+      const it = state.items[i];
+      it.y += it.vy * dt * 100/ (frame.clientHeight || 1); // percent-based already; keep stable
+      setPos(it.el, it.x, it.y);
+
+      // Out of bounds
+      if(it.y > 110){ it.el.remove(); state.items.splice(i,1); continue; }
+
+      // Collisions
+      if(aabb(state.player.x,state.player.y,state.player.w,state.player.h, it.x,it.y,it.w,it.h)){
+        if(it.type==='poop'){
+          splat(it.x, it.y, '💥');
+          gameOverScreen();
+          return; // stop loop actions this frame
+        } else {
+          // star
+          state.score += 5; playPop(); splat(it.x,it.y,'✨');
+          it.el.remove(); state.items.splice(i,1);
+          updateHUD();
+        }
+      }
+    }
+
+    // Passive score over time
+    state.score += dt*2 | 0; // every ~0.5s +1 via bit trick
+    updateHUD();
+    requestAnimationFrame(tick);
+  }
+
+  function startGame(){
+    reset();
+    state.running = true; state.paused=false; startOverlay.style.display='none'; gameOver.style.display='none';
+    updateHUD();
+  }
+
+  function pauseToggle(){
+    if(!state.running) return;
+    state.paused = !state.paused; updateHUD();
+  }
+
+  function gameOverScreen(){
+    state.running = false; state.paused=false;
+    finalScore.textContent = state.score;
+    if(state.score > best){ best = state.score; localStorage.setItem('poop-best', best); }
+    finalBest.textContent = best;
+    updateHUD();
+    gameOver.style.display='grid';
+  }
+
+  // INPUTS
+  const keys = new Set();
+  function updateVX(){
+    const left = keys.has('ArrowLeft')||keys.has('KeyA')||leftHeld;
+    const right = keys.has('ArrowRight')||keys.has('KeyD')||rightHeld;
+    const speed = 55; // percent per second
+    state.player.vx = (right? speed:0) + (left? -speed:0);
+  }
+  window.addEventListener('keydown', (e)=>{
+    if(['ArrowLeft','ArrowRight','KeyA','KeyD','KeyP','Space','Enter'].includes(e.code)) e.preventDefault();
+    if(e.code==='KeyP') return pauseToggle();
+    if(e.code==='Space' || e.code==='Enter') return (state.running? pauseToggle(): startGame());
+    keys.add(e.code); updateVX();
+  }, {passive:false});
+  window.addEventListener('keyup', (e)=>{ keys.delete(e.code); updateVX(); });
+
+  // Touch buttons
+  let leftHeld=false, rightHeld=false;
+  function hold(btn, setter){
+    const start = ()=>{ setter(true); updateVX(); };
+    const end = ()=>{ setter(false); updateVX(); };
+    btn.addEventListener('pointerdown', start);
+    btn.addEventListener('pointerup', end);
+    btn.addEventListener('pointerleave', end);
+    btn.addEventListener('pointercancel', end);
+  }
+  hold(leftBtn, v=>leftHeld=v);
+  hold(rightBtn, v=>rightHeld=v);
+  startCtrl.addEventListener('click', ()=> state.running? pauseToggle(): startGame());
+
+  // Buttons
+  startBtn.addEventListener('click', startGame);
+  again.addEventListener('click', startGame);
+  pauseBtn.addEventListener('click', pauseToggle);
+  muteBtn.addEventListener('click', ()=>{ state.muted=!state.muted; updateHUD(); });
+
+  // Share
+  shareBtn.addEventListener('click', async ()=>{
+    const text = `Właśnie zdobyłem ${state.score} pkt w 💩 Poop Dodger!`;
+    if(navigator.share){
+      try{ await navigator.share({title:'Poop Dodger', text}); }catch(e){}
+    } else {
+      navigator.clipboard.writeText(text);
+      shareBtn.textContent = 'Skopiowano!'; setTimeout(()=>shareBtn.textContent='Udostępnij wynik', 1200);
+    }
+  });
+
+  // Resize handling
+  function onResize(){ state.width = frame.clientWidth; state.height = frame.clientHeight; }
+  new ResizeObserver(onResize).observe(frame); onResize();
+
+  // Kick off loop
+  requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
