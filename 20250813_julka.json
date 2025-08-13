@@ -1,0 +1,15 @@
+{
+  "name": "Julka",
+  "short_name": "Julka",
+  "start_url": "https://dawid108.github.io/dawi108/julka.html",
+  "display": "standalone",
+  "background_color": "#AEE6D8",
+  "theme_color": "#FFD6A5",
+  "icons": [
+    {
+      "src": "20250813_julka.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
