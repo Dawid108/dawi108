@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Piesek — opiekuj się 🐶</title>
+  <style>
+    :root{
+      --bg: #f7f7ff;
+      --card: #ffffff;
+      --brand: #6c5ce7;
+      --brand-2:#00b894;
+      --ink: #2d2a32;
+      --muted:#8b8b99;
+      --shadow: 0 10px 30px rgba(0,0,0,.10);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Noto Sans, "Apple Color Emoji","Segoe UI Emoji";
+      background: linear-gradient(180deg, #eff3ff, #fff);
+      color:var(--ink);
+    }
+    .app{
+      min-height:100%;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      gap:12px;
+      padding: clamp(10px, 2vw, 20px);
+    }
+    header{
+      display:flex; align-items:center; justify-content:space-between;
+      background:var(--card); border-radius:20px; padding:14px 16px; box-shadow:var(--shadow);
+    }
+    header h1{margin:0; font-size:clamp(18px, 3.6vw, 28px)}
+    .progress{display:flex; gap:6px; align-items:center; flex-wrap:wrap}
+    .step{
+      width:28px; height:28px; display:grid; place-items:center; border-radius:10px; background:#eef2ff; color:#5b5b66;
+      box-shadow: inset 0 0 0 2px #d9dffb;
+      font-size:18px;
+      transition:.2s;
+    }
+    .step.active{background:#dfe6ff; transform:translateY(-1px); box-shadow:inset 0 0 0 2px var(--brand)}
+    .step.done{background:#e9fff7; box-shadow:inset 0 0 0 2px var(--brand-2)}
+
+    .game{
+      display:grid; grid-template-columns:1fr; gap:12px;
+    }
+
+    .stage{
+      background:var(--card); border-radius:24px; padding:14px; box-shadow:var(--shadow);
+      display:grid; grid-template-rows:auto 1fr; gap:10px; min-height:55vh;
+    }
+    .scene{
+      position:relative; border-radius:20px; background:linear-gradient(180deg, #c9f1ff, #f7fbff);
+      overflow:hidden; min-height:45vh; display:grid; place-items:center;
+    }
+    .floor{position:absolute; inset:auto 0 0 0; height:35%; background:linear-gradient(180deg,#fff,#f0f0f6)}
+
+    .dog{
+      position:relative; width:min(42vmin, 320px); height:min(42vmin, 320px);
+      display:grid; place-items:center; font-size: min(22vmin, 180px);
+      user-select:none; touch-action:none; cursor:grab;
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.12));
+    }
+    .dog:active{cursor:grabbing}
+    .dog .emoji{pointer-events:none}
+
+    /* overlays */
+    .spots, .foam, .messy, .longfur{position:absolute; inset:0; pointer-events:none}
+    .spots{background: radial-gradient(#5d4037 6px, transparent 8px) 12% 30%/30px 30px,
+                       radial-gradient(#4e342e 7px, transparent 9px) 70% 50%/36px 36px,
+                       radial-gradient(#6d4c41 5px, transparent 7px) 50% 70%/28px 28px;
+      opacity:.85; mix-blend-mode:multiply; filter: blur(.3px);}
+    .foam{
+      background: radial-gradient(closest-side, rgba(255,255,255,.95) 60%, rgba(255,255,255,0) 62%) 10% 30%/48px 48px,
+                  radial-gradient(closest-side, rgba(255,255,255,.95) 60%, rgba(255,255,255,0) 62%) 70% 35%/56px 56px,
+                  radial-gradient(closest-side, rgba(255,255,255,.9) 60%, rgba(255,255,255,0) 62%) 45% 65%/60px 60px,
+                  radial-gradient(closest-side, rgba(255,255,255,.95) 60%, rgba(255,255,255,0) 62%) 80% 60%/44px 44px;
+      background-repeat:no-repeat; opacity:0; transition:opacity .2s ease;
+    }
+    .messy{
+      background: conic-gradient(from 0deg at 50% 30%, #3d3d3d 0 10%, transparent 10% 20%) 40% 20%/60% 20% no-repeat,
+                  conic-gradient(from 180deg at 50% 70%, #3d3d3d 0 10%, transparent 10% 20%) 50% 60%/60% 20% no-repeat;
+      opacity:.7; filter: blur(1px);
+    }
+    .longfur{
+      background: repeating-linear-gradient(180deg, #7a5d45 0 6px, #6b4e39 6px 12px);
+      -webkit-mask: radial-gradient(60% 60% at 50% 40%, black 58%, transparent 60%);
+      mask: radial-gradient(60% 60% at 50% 40%, black 58%, transparent 60%);
+      border-radius:20px; opacity:0; transition:opacity .25s ease;
+    }
+
+    .tooltray{
+      display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:10px;
+    }
+    .tool{
+      background:var(--card); border-radius:18px; padding:10px; box-shadow:var(--shadow);
+      display:flex; align-items:center; justify-content:center; min-height:64px;
+      font-size:28px; cursor:pointer; user-select:none; touch-action:none; position:relative;
+      transition:.15s transform;
+    }
+    .tool:active{transform:scale(.98)}
+    .tool.locked{opacity:.35; pointer-events:none; filter:grayscale(1)}
+    .badge{position:absolute; top:6px; right:8px; font-size:12px; color:#fff; background:var(--brand); border-radius:999px; padding:2px 6px; box-shadow:var(--shadow)}
+
+    .hint{font-size:clamp(14px, 2.6vw, 18px); color:var(--muted)}
+
+    .toast{position:fixed; left:50%; bottom:20px; transform:translateX(-50%);
+       background: #111; color:#fff; padding:10px 14px; border-radius:999px; box-shadow:var(--shadow);
+       opacity:0; pointer-events:none; transition:.25s; z-index:50; font-size:14px}
+    .toast.show{opacity:.95}
+
+    .kitchen{background: linear-gradient(180deg, #ffe9d6, #fff4ea)}
+    .room{background: linear-gradient(180deg, #e6f7ff, #fbfdff)}
+    .bedroom{background: linear-gradient(180deg, #efe9ff, #faf7ff)}
+
+    .table{position:absolute; bottom:10%; width:80%; height:26%; background:#fff; border-radius:20px; box-shadow:var(--shadow); left:10%; display:grid; place-items:center}
+    .foodbar{display:flex; gap:12px}
+    .food{font-size:34px; width:64px; height:64px; display:grid; place-items:center; background:#fff; border-radius:16px; box-shadow:var(--shadow); cursor:grab}
+    .food:active{cursor:grabbing}
+
+    .ball{position:absolute; bottom:14%; left:14%; font-size:50px; cursor:pointer; display:none}
+    .bed{position:absolute; bottom:12%; left:50%; transform:translateX(-50%); font-size:72px; display:none}
+
+    .floating{position:absolute; pointer-events:none; font-size:28px; opacity:.9; animation:floatUp .9s ease forwards}
+    @keyframes floatUp{to{transform:translateY(-30px); opacity:0}}
+
+    /* Responsive tweaks */
+    @media (max-width:640px){
+      .tooltray{grid-template-columns:repeat(3, minmax(0,1fr))}
+      .dog{width:64vw; height:64vw}
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <header>
+      <h1>🐶 Piesek — opiekuj się pupilem</h1>
+      <div class="progress" id="progress"></div>
+    </header>
+
+    <div class="game">
+      <div class="stage">
+        <div class="hint" id="hint">Dotknij 🚿 i przeciągnij strumień na pieska.</div>
+        <div class="scene room" id="scene">
+          <div class="floor"></div>
+          <div class="dog" id="dog" aria-label="Piesek" role="img">
+            <div class="emoji">🐶</div>
+            <div class="spots" id="spots"></div>
+            <div class="foam" id="foam"></div>
+            <div class="messy" id="messy" style="display:none"></div>
+            <div class="longfur" id="longfur"></div>
+          </div>
+          <div class="ball" id="ball">⚽</div>
+          <div class="bed" id="bed">🛏️</div>
+          <div class="table" id="table" style="display:none">
+            <div class="foodbar">
+              <div class="food" data-food="karma" title="Karma">🦴</div>
+              <div class="food" data-food="jablko" title="Jabłko">🍏</div>
+              <div class="food" data-food="burger" title="Hamburger">🍔</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tooltray">
+        <div class="tool" id="tool-shower-1"><span>🚿</span><span class="badge">1</span></div>
+        <div class="tool locked" id="tool-sponge"><span>🧽</span><span class="badge">2</span></div>
+        <div class="tool locked" id="tool-shower-2"><span>🚿</span><span class="badge">3</span></div>
+        <div class="tool locked" id="tool-comb"><span>🪮</span><span class="badge">4</span></div>
+        <div class="tool locked" id="tool-scissors"><span>✂️</span><span class="badge">5</span></div>
+        <div class="tool locked" id="tool-kitchen"><span>🍳</span><span class="badge">6</span></div>
+        <div class="tool locked" id="tool-room"><span>🛝</span><span class="badge">7</span></div>
+        <div class="tool locked" id="tool-bed"><span>🛏️</span><span class="badge">8</span></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast">Gotowe!</div>
+  </div>
+
+  <script>
+  (function(){
+    const hint = document.getElementById('hint');
+    const scene = document.getElementById('scene');
+    const dog = document.getElementById('dog');
+    const spots = document.getElementById('spots');
+    const foam = document.getElementById('foam');
+    const messy = document.getElementById('messy');
+    const longfur = document.getElementById('longfur');
+    const table = document.getElementById('table');
+    const ball = document.getElementById('ball');
+    const bed = document.getElementById('bed');
+    const toast = document.getElementById('toast');
+    const progressEl = document.getElementById('progress');
+
+    const steps = [
+      { id:'shower1', label:'Mycie 1', emoji:'🚿'},
+      { id:'sponge',  label:'Gąbka',  emoji:'🧽'},
+      { id:'shower2', label:'Spłucz', emoji:'🚿'},
+      { id:'comb',    label:'Czesz',  emoji:'🪮'},
+      { id:'scissors',label:'Strzyż', emoji:'✂️'},
+      { id:'kitchen', label:'Kuchnia',emoji:'🍳'},
+      { id:'play',    label:'Zabawa', emoji:'⚽'},
+      { id:'sleep',   label:'Sen',    emoji:'🛏️'},
+    ];
+
+    let state = {
+      stepIndex:0,
+      rubbing:0,
+      foodsEaten: {karma:false, jablko:false, burger:false},
+      playing:false,
+      playTimer:null
+    };
+
+    // Build progress UI
+    steps.forEach((s,i)=>{
+      const el = document.createElement('div');
+      el.className = 'step' + (i===0?' active':'');
+      el.textContent = s.emoji;
+      el.title = `${i+1}. ${s.label}`;
+      progressEl.appendChild(el);
+    });
+
+    function setHint(t){ hint.textContent = t; }
+    function showToast(t){ toast.textContent=t; toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'), 1200); }
+    function setScene(type){
+      scene.classList.remove('room','kitchen','bedroom');
+      scene.classList.add(type);
+    }
+    function setProgress(){
+      [...progressEl.children].forEach((el,i)=>{
+        el.classList.remove('active','done');
+        if(i < state.stepIndex) el.classList.add('done');
+        if(i === state.stepIndex) el.classList.add('active');
+      });
+    }
+    function nextStep(){
+      state.stepIndex = Math.min(state.stepIndex+1, steps.length-1);
+      setProgress();
+      unlockTools();
+    }
+    function resetDay(){
+      // Back to start morning routine
+      state = { stepIndex:0, rubbing:0, foodsEaten:{karma:false,jablko:false,burger:false}, playing:false, playTimer:null };
+      setProgress();
+      setScene('room');
+      spots.style.display='block';
+      foam.style.opacity=0;
+      messy.style.display='none';
+      longfur.style.opacity=0;
+      table.style.display='none';
+      ball.style.display='none';
+      bed.style.display='none';
+      setHint('Dotknij 🚿 i przeciągnij strumień na pieska.');
+      unlockTools();
+    }
+
+    function unlockTools(){
+      const ids=[
+        'tool-shower-1','tool-sponge','tool-shower-2','tool-comb','tool-scissors','tool-kitchen','tool-room','tool-bed'
+      ];
+      ids.forEach((id,i)=>{
+        const el=document.getElementById(id);
+        el.classList.toggle('locked', i>state.stepIndex);
+      });
+    }
+
+    function floatingEmoji(x,y,emoji){
+      const f=document.createElement('div');
+      f.className='floating'; f.textContent=emoji; f.style.left=x+"px"; f.style.top=y+"px";
+      scene.appendChild(f); setTimeout(()=>f.remove(), 900);
+    }
+
+    // === Tools logic ===
+    // 1) Shower 1: remove dirt when dragged over dog
+    initDragTool('tool-shower-1', (pt)=>{
+      if(currentStep()!=='shower1') return;
+      if(overDog(pt)){
+        spots.style.display='none';
+        floatingEmoji(pt.x,pt.y,'✨');
+        showToast('Czysty!');
+        nextStep(); setHint('Kliknij 🧽 i pocieraj po piesku, by zrobić pianę.');
+      }
+    });
+
+    // 2) Sponge: rub to increase foam
+    document.getElementById('tool-sponge').addEventListener('click', ()=>{
+      if(currentStep()!=='sponge') return;
+      setHint('Pocieraj po piesku przez chwilę.');
+      startRubbing();
+    });
+
+    function startRubbing(){
+      let last=null; let total=0; // pixels moved on dog
+      const onMove=(e)=>{
+        const p=pointerFrom(e);
+        if(overDog(p)){
+          if(last){ total += Math.hypot(p.x-last.x, p.y-last.y); }
+          last=p;
+          foam.style.opacity = Math.min(1, 0.2 + total/300);
+          floatingEmoji(p.x,p.y,'🫧');
+          if(total>600){
+            showToast('Piana gotowa!');
+            stop();
+            nextStep(); setHint('Ponownie 🚿 — przeciągnij strumień, aby spłukać pianę.');
+          }
+        }
+      };
+      const stop=()=>{
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', stop);
+        scene.releasePointerCapture?.(last?.id);
+      }
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', stop, {once:true});
+    }
+
+    // 3) Shower 2: rinse foam
+    initDragTool('tool-shower-2', (pt)=>{
+      if(currentStep()!=='shower2') return;
+      if(overDog(pt)){
+        foam.style.opacity=0;
+        floatingEmoji(pt.x,pt.y,'💧');
+        showToast('Spłukane!');
+        messy.style.display='block';
+        nextStep(); setHint('🪮 Przeciągnij grzebień po piesku, by wygładzić sierść.');
+      }
+    });
+
+    // 4) Comb: drag across dog to remove messy
+    initDragTool('tool-comb', (pt)=>{
+      if(currentStep()!=='comb') return;
+      if(overDog(pt)){
+        messy.style.display='none';
+        floatingEmoji(pt.x,pt.y,'🪮');
+        showToast('Uczesany!');
+        longfur.style.opacity=1;
+        nextStep(); setHint('✂️ Przeciągnij po piesku, żeby skrócić sierść.');
+      }
+    });
+
+    // 5) Scissors: drag to trim longfur
+    initDragTool('tool-scissors', (pt)=>{
+      if(currentStep()!=='scissors') return;
+      if(overDog(pt)){
+        longfur.style.opacity=0;
+        floatingEmoji(pt.x,pt.y,'✂️');
+        showToast('Strzyżenie zakończone!');
+        nextStep(); setHint('Kliknij 🍳 aby wejść do kuchni i nakarmić pieska.');
+      }
+    });
+
+    // 6) Kitchen: click to enter, drag foods to dog
+    document.getElementById('tool-kitchen').addEventListener('click', ()=>{
+      if(currentStep()!=='kitchen') return;
+      setScene('kitchen');
+      table.style.display='grid';
+      setHint('Przeciągaj jedzenie na pieska: 🦴, 🍏, 🍔');
+    });
+
+    scene.addEventListener('pointerdown', (e)=>{
+      const t = e.target.closest('.food');
+      if(!t) return;
+      e.preventDefault();
+      const start = pointerFrom(e);
+      let ghost = t.cloneNode(true); ghost.style.position='fixed'; ghost.style.left=start.x-32+'px'; ghost.style.top=start.y-32+'px'; ghost.style.zIndex=20; ghost.style.opacity=.9; ghost.classList.remove('food');
+      document.body.appendChild(ghost);
+      const onMove=(ev)=>{
+        const p=pointerFrom(ev); ghost.style.left=p.x-32+'px'; ghost.style.top=p.y-32+'px';
+      };
+      const onUp=(ev)=>{
+        window.removeEventListener('pointermove', onMove);
+        window.removeEventListener('pointerup', onUp);
+        const p=pointerFrom(ev);
+        if(overDog(p)){
+          const key=t.dataset.food; state.foodsEaten[key]=true; floatingEmoji(p.x,p.y,'😋'); t.style.visibility='hidden';
+          if(Object.values(state.foodsEaten).every(Boolean)){
+            showToast('Najedzony!');
+            nextStep(); setHint('Kliknij 🛝 by wrócić do pokoju na zabawę.');
+            document.getElementById('tool-room').classList.remove('locked');
+          }
+        }
+        ghost.remove();
+      };
+      window.addEventListener('pointermove', onMove);
+      window.addEventListener('pointerup', onUp);
+    });
+
+    // 7) Room / play: click tool to return to room, then tap ball to play 30s
+    document.getElementById('tool-room').addEventListener('click', ()=>{
+      if(currentStep()!=='play') return;
+      setScene('room'); table.style.display='none'; ball.style.display='block';
+      setHint('Kliknij na ⚽ aby pobawić się 30 sekund.');
+    });
+
+    ball.addEventListener('click', ()=>{
+      if(currentStep()!=='play' || state.playing) return;
+      state.playing=true; let t=30; ball.textContent='⚽';
+      const timer=document.createElement('div'); timer.style.position='absolute'; timer.style.top='10px'; timer.style.right='10px'; timer.style.background='#0008'; timer.style.color='#fff'; timer.style.padding='6px 10px'; timer.style.borderRadius='999px'; timer.id='playTimer'; timer.textContent='Zabawa: 30s'; scene.appendChild(timer);
+      animateBall();
+      state.playTimer=setInterval(()=>{
+        t--; timer.textContent='Zabawa: '+t+'s';
+        if(t<=0){
+          clearInterval(state.playTimer); timer.remove(); state.playing=false; ball.style.display='none';
+          showToast('Super zabawa!');
+          nextStep(); bed.style.display='block'; setScene('bedroom'); setHint('Kliknij 🛏️, a potem przeciągnij pieska na łóżko.');
+        }
+      },1000);
+    });
+
+    function animateBall(){
+      let x=14, y=14, vx=2.2, vy=0, g=0.35; // simple physics
+      const loop=()=>{
+        if(!state.playing) return;
+        vy+=g; x+=vx; y+=vy;
+        if(y>70){ y=70; vy*=-0.85; } // floor bounce
+        if(x<10||x>80){ vx*=-1; }
+        ball.style.left=x+'%'; ball.style.bottom=y+'%';
+        requestAnimationFrame(loop);
+      };
+      requestAnimationFrame(loop);
+    }
+
+    // 8) Sleep: click bed tool to show bed, then drag dog onto it
+    document.getElementById('tool-bed').addEventListener('click', ()=>{
+      if(currentStep()!=='sleep') return;
+      setScene('bedroom'); bed.style.display='block';
+    });
+
+    initDragTarget(dog, (pt)=>{
+      if(currentStep()!=='sleep') return;
+      const br = bed.getBoundingClientRect();
+      if(pt.x>br.left && pt.x<br.right && pt.y>br.top && pt.y<br.bottom){
+        // Sleep animation
+        floatingEmoji(pt.x,pt.y,'💤');
+        showToast('Dobranoc!');
+        setTimeout(()=>{
+          bed.style.display='none';
+          resetDay();
+        }, 900);
+      }
+    });
+
+    // ===== Utilities =====
+    function currentStep(){ return steps[state.stepIndex].id; }
+    function overDog(p){ const r=dog.getBoundingClientRect(); return p.x>r.left && p.x<r.right && p.y>r.top && p.y<r.bottom; }
+    function pointerFrom(e){
+      const t = (e.touches && e.touches[0]) || e;
+      return { x: t.clientX, y: t.clientY };
+    }
+
+    function initDragTool(id, onDragOverDog){
+      const el=document.getElementById(id);
+      el.addEventListener('pointerdown', (e)=>{
+        if(el.classList.contains('locked')) return;
+        e.preventDefault();
+        const ghost = el.cloneNode(true);
+        Object.assign(ghost.style,{position:'fixed', left:(e.clientX-26)+'px', top:(e.clientY-26)+'px', zIndex:1000, opacity:.9});
+        document.body.appendChild(ghost);
+        const move=(ev)=>{
+          const p=pointerFrom(ev); ghost.style.left=(p.x-26)+'px'; ghost.style.top=(p.y-26)+'px';
+          onDragOverDog(p);
+        };
+        const up=()=>{ window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); ghost.remove(); };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up, {once:true});
+      });
+    }
+
+    function initDragTarget(el, onDropCheck){
+      let dragging=false; let ghost=null;
+      el.addEventListener('pointerdown',(e)=>{
+        dragging=true; e.preventDefault(); el.setPointerCapture?.(e.pointerId);
+        ghost = el.cloneNode(true); ghost.style.position='fixed'; ghost.style.left=(e.clientX-80)+'px'; ghost.style.top=(e.clientY-80)+'px'; ghost.style.opacity=.7; ghost.style.zIndex=999; ghost.style.transform='scale(.9)';
+        document.body.appendChild(ghost);
+      });
+      window.addEventListener('pointermove',(e)=>{
+        if(!dragging||!ghost) return; const p=pointerFrom(e); ghost.style.left=(p.x-80)+'px'; ghost.style.top=(p.y-80)+'px';
+      });
+      window.addEventListener('pointerup',(e)=>{
+        if(!dragging) return; dragging=false; const p=pointerFrom(e); onDropCheck(p); ghost&&ghost.remove(); ghost=null;
+      });
+    }
+
+    // Start state
+    resetDay();
+  })();
+  </script>
+</body>
+</html>
