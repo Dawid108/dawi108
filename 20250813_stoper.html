@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Kolorowy Stoper</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #9face6);
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      background-color: #ffffffee;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 25px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      max-width: 400px;
+      width: 90%;
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    #display {
+      font-size: 48px;
+      font-weight: bold;
+      color: #222;
+      background: #f5f5f5;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .buttons button {
+      font-size: 18px;
+      padding: 12px 24px;
+      margin: 0 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s;
+      color: #fff;
+    }
+
+    .buttons button:active {
+      transform: scale(0.95);
+    }
+
+    .start-btn {
+      background-color: #28a745;
+    }
+
+    .stop-btn {
+      background-color: #dc3545;
+    }
+
+    .reset-btn {
+      background-color: #007bff;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Kolorowy Stoper</h1>
+    <div id="display">00:00:00.000</div>
+    <div class="buttons">
+      <button class="start-btn" onclick="start()">Start</button>
+      <button class="stop-btn" onclick="stop()">Stop</button>
+      <button class="reset-btn" onclick="reset()">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    let startTime, interval;
+    let running = false;
+    let elapsedTime = 0;
+
+    function updateDisplay(time) {
+      const ms = Math.floor(time % 1000);
+      const s = Math.floor((time / 1000) % 60);
+      const m = Math.floor((time / 1000 / 60) % 60);
+      const h = Math.floor((time / 1000 / 60 / 60));
+
+      document.getElementById('display').textContent =
+        `${pad(h)}:${pad(m)}:${pad(s)}.${padMs(ms)}`;
+    }
+
+    function pad(n) {
+      return n.toString().padStart(2, '0');
+    }
+
+    function padMs(n) {
+      return n.toString().padStart(3, '0');
+    }
+
+    function start() {
+      if (!running) {
+        running = true;
+        startTime = Date.now() - elapsedTime;
+        interval = setInterval(() => {
+          elapsedTime = Date.now() - startTime;
+          updateDisplay(elapsedTime);
+        }, 10);
+      }
+    }
+
+    function stop() {
+      if (running) {
+        running = false;
+        clearInterval(interval);
+      }
+    }
+
+    function reset() {
+      stop();
+      elapsedTime = 0;
+      updateDisplay(0);
+    }
+  </script>
+</body>
+</html>
