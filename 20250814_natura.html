@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Zgadywanie emotek</title>
+  <link rel="icon" href="dawi108.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --accent:#7c5cff; --muted:#94a3b8; --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.03);
+      --radius:16px;
+      --safe-padding:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,92,255,0.12), transparent),
+                  linear-gradient(180deg, var(--bg), #071024 140%);
+      color:#e6eef8; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+
+    .app{
+      width:100%; max-width:840px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:20px; padding:20px; box-shadow: 0 8px 30px rgba(2,6,23,0.7);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    header{
+      display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px;
+    }
+    .top-left, .top-right{
+      display:flex; gap:8px; align-items:center;
+      background:var(--glass); padding:8px 12px; border-radius:12px; font-weight:600; color:var(--muted);
+    }
+    .top-left .time, .top-right .score{font-size:1.05rem; color:#fff}
+
+    main{
+      display:flex; flex-direction:column; align-items:center; gap:12px; padding:16px;
+    }
+
+    .reveal{
+      min-height:22px; color:var(--muted); font-weight:600; text-align:center; margin-bottom:6px; opacity:0.95;
+    }
+
+    .emoji-card{
+      width:min(62vw,420px); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:16px; border:1px solid var(--glass-2);
+      box-shadow: inset 0 -8px 30px rgba(2,6,23,0.35), 0 8px 40px rgba(2,6,23,0.6);
+      font-size:6.6rem; user-select:none; -webkit-user-select:none; position:relative;
+      transition:transform .12s ease;
+    }
+    .emoji-card.small{font-size:5rem}
+
+    input[type="text"]{
+      width:100%; max-width:540px; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.04);
+      background:rgba(255,255,255,0.02); color:#fff; font-size:1.05rem; outline:none; text-align:center;
+    }
+    input[type="text"]:disabled{opacity:0.5}
+
+    .controls{display:flex; gap:10px; align-items:center; margin-top:8px}
+    button{cursor:pointer; border:0; padding:10px 14px; border-radius:10px; font-weight:700}
+    .btn-start{background:linear-gradient(90deg,var(--accent), #6bd3ff); color:#021025; box-shadow:0 6px 20px rgba(124,92,255,0.18)}
+    .btn-small{background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.03)}
+
+    /* result modal */
+    .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:50}
+    .overlay.show{display:flex}
+    .modal{background:linear-gradient(180deg, rgba(10,14,22,0.9), rgba(8,10,16,0.95)); padding:24px; border-radius:14px; width:min(92%,420px); text-align:center; border:1px solid rgba(255,255,255,0.04)}
+    .modal h2{margin:6px 0 2px; font-size:1.6rem}
+    .modal p{margin:0 0 12px; color:var(--muted)}
+
+    footer{display:flex; justify-content:center; margin-top:12px}
+
+    @media(min-width:900px){
+      body{padding:40px}
+      .app{padding:28px}
+    }
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <header>
+      <div class="top-left"><div class="muted">Czas:</div>&nbsp;<div class="time">60s</div></div>
+      <div class="top-right"><div class="muted">Punkty:</div>&nbsp;<div class="score">0</div></div>
+    </header>
+
+    <main>
+      <div class="reveal" id="revealText"></div>
+      <div class="emoji-card" id="emojiCard" aria-live="polite">❓</div>
+
+      <input id="guessInput" type="text" placeholder="Wpisz nazwę emotki (PL / EN)" autocomplete="off" inputmode="text" spellcheck="false"  autocorrect="off" />
+
+      <div class="controls">
+        <button id="startBtn" class="btn-start">Rozpocznij Grę</button>
+        <button id="hintBtn" class="btn-small">Pokaż podpowiedź</button>
+      </div>
+
+      <footer class="muted" style="margin-top:8px">Zgadnij emotkę — możesz wpisywać po polsku lub po angielsku. Błędna odpowiedź: -1s.</footer>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2>Twój Wynik</h2>
+      <p id="finalScore">0</p>
+      <h3>Twój Rekord</h3>
+      <p id="bestScore">0</p>
+      <div style="margin-top:12px">
+        <button id="restartBtn" class="btn-start">Nowa gra</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Dane emotek ---
+    // Każdy obiekt ma pola: emoji, pl (główna polska), en (główna angielska), others (tablica dodatkowych poprawnych słów)
+    const EMOJI_BANK = {
+     easy: [
+  {emoji:'🌹', pl:'Róża', en:'Rose', others:['roza', 'rose', 'rosee']},
+  {emoji:'⛰️', pl:'Góra', en:'Mountain', others:['gorka', 'mountain', 'mountin']},
+  {emoji:'🏖️', pl:'Plaża', en:'Beach with Umbrella', others:['plaza', 'beachwithumbrella', 'beach with umbrlla']},
+  {emoji:'🌈', pl:'Tęcza', en:'Rainbow', others:['tecza', 'rainbow', 'rainboow']},
+  {emoji:'☀️', pl:'Słońce', en:'Sun', others:['slonce', 'sun', 'sunne']},
+     ],
+     medium:[
+  {emoji:'💐', pl:'Bukiet', en:'Bouquet', others:['bukiecik', 'bouqet', 'bouquet']},
+  {emoji:'🥀', pl:'Róża', en:'Rose', others:['wiednaca', 'wiltedrose', 'wilted roze', 'więdnąca róża', 'wilted Rose']},
+  {emoji:'🌷', pl:'Tulipan', en:'Tulip', others:['tulipam', 'tulip', 'tullip']},
+  {emoji:'🌸', pl:'Kwiat', en:'Flower', others:['kwiatwisni', 'cherryblossom', 'chery blossom', 'Kwiat wiśni', 'Cherry Blossom']},
+  {emoji:'💮', pl:'Kwiat', en:'Flower', others:['kwiatdekor', 'whiteflower', 'white flowr', 'Kwiat dekoracyjny', 'White Flower']},
+  {emoji:'🌻', pl:'Słonecznik', en:'Sunflower', others:['slonecznik', 'sunflower', 'sunflwer']},
+  {emoji:'🌼', pl:'Stokrotka', en:'Blossom', others:['stokrotka', 'blossom', 'blosom']},
+  {emoji:'🍂', pl:'Liście', en:'Leaves', others:['opadlylisc', 'fallenleaf', 'fallen leef', 'Opadły liść', 'Fallen Leaf']},
+  {emoji:'🍁', pl:'Liść', en:'Leaf', others:['lisc klonu', 'mapleleaf', 'mapl leaf', 'Liść klonu', 'Maple Leaf']},
+  {emoji:'🍄', pl:'Grzyb', en:'Mushroom', others:['grzybek', 'mushroom', 'mushrom']},
+  {emoji:'🌱', pl:'Kiełek', en:'Seedling', others:['kielek', 'seedling', 'seedlign']},
+  {emoji:'🌿', pl:'Zioło', en:'Herb', others:['ziolo', 'herb', 'herbb']},
+  {emoji:'🍃', pl:'Liść na wietrze', en:'Leaf Fluttering in Wind', others:['liscwietrzny', 'leaffluttering', 'leaf fluttering']},
+  {emoji:'☘️', pl:'Koniczynka', en:'Shamrock', others:['koniczyna', 'shamrock', 'shamrok']},
+  {emoji:'🍀', pl:'Czterolistna koniczyna', en:'Four Leaf Clover', others:['czterolistna', 'fourleafclover', 'four leaf clover']},
+  {emoji:'🪴', pl:'Roślina doniczkowa', en:'Potted Plant', others:['roslinadoniczkowa', 'pottedplant', 'potted plnt']},
+  {emoji:'🌵', pl:'Kaktus', en:'Cactus', others:['kaktus', 'cactus', 'cactuus']},
+  {emoji:'🌴', pl:'Palma', en:'Palm Tree', others:['palmka', 'palmtree', 'palm tree']},
+  {emoji:'🌳', pl:'Drzewo liściaste', en:'Deciduous Tree', others:['drzewo lisc', 'deciduoustree', 'deciduos tree']},
+  {emoji:'🌲', pl:'Drzewo iglaste', en:'Evergreen Tree', others:['iglaste', 'evergreentree', 'ever green tree']},
+  {emoji:'🪵', pl:'Drewno', en:'Wood', others:['drewienko', 'wood', 'wod']},
+  {emoji:'🪨', pl:'Kamień', en:'Rock', others:['kamyk', 'rock', 'rok']},
+  {emoji:'🏔️', pl:'Góra ośnieżona', en:'Snow-Capped Mountain', others:['gora osniezona', 'snowcappedmountain', 'snow capped mountan']},
+  {emoji:'❄️', pl:'Płatek śniegu', en:'Snowflake', others:['platek', 'snowflake', 'snowflak']},
+  {emoji:'☃️', pl:'Bałwan', en:'Snowman', others:['balwan', 'snowman', 'snowmn']},
+  {emoji:'⛄', pl:'Bałwan bez śniegu', en:'Snowman Without Snow', others:['balwanbezn', 'snowmanwithoutsnow', 'snowman without snw']},
+  {emoji:'🌡️', pl:'Termometr', en:'Thermometer', others:['termometr', 'thermometer', 'thermomter']},
+  {emoji:'🔥', pl:'Ogień', en:'Fire', others:['ogien', 'fire', 'fier']},
+  {emoji:'🌋', pl:'Wulkan', en:'Volcano', others:['wulkan', 'volcano', 'volkano']},
+  {emoji:'🏜️', pl:'Pustynia', en:'Desert', others:['pustynka', 'desert', 'dessert']},
+  {emoji:'🏞️', pl:'Park narodowy', en:'National Park', others:['parknarodowy', 'nationalpark', 'nationl park']},
+  {emoji:'🌅', pl:'Wschód słońca', en:'Sunrise', others:['wschodslonca', 'sunrise', 'sunrize']},
+  {emoji:'🌄', pl:'Wschód słońca w górach', en:'Sunrise Over Mountains', others:['wschodgory', 'sunriseovermountains', 'sunrise over mountins']},
+  {emoji:'🏝️', pl:'Wyspa', en:'Desert Island', others:['wysepka', 'desertisland', 'desert iland']},
+  {emoji:'🌊', pl:'Fala', en:'Water Wave', others:['falka', 'waterwave', 'water wav']},
+  {emoji:'🌬️', pl:'Wiatr', en:'Wind Face', others:['wiaterek', 'windface', 'wind fase']},
+  {emoji:'🌀', pl:'Cyklon', en:'Cyclone', others:['cyklonik', 'cyclone', 'cycklone']},
+  {emoji:'🌪️', pl:'Tornado', en:'Tornado', others:['tornadko', 'tornado', 'tornadow']},
+  {emoji:'⚡', pl:'Błyskawica', en:'High Voltage', others:['blyskawka', 'highvoltage', 'high voltage']},
+  {emoji:'☔', pl:'Parasolka z deszczem', en:'Umbrella with Rain Drops', others:['parasolzdeszczem', 'umbrellawithraindrops', 'umbrella with rain drop']},
+  {emoji:'💧', pl:'Kropla wody', en:'Droplet', others:['kroplawody', 'droplet', 'dropplet']},
+  {emoji:'☁️', pl:'Chmura', en:'Cloud', others:['chmurka', 'cloud', 'clod']},
+  {emoji:'🌨️', pl:'Śnieg z chmurą', en:'Cloud with Snow', others:['chmurasnieg', 'cloudwithsnow', 'cloud with sno']},
+  {emoji:'🌧️', pl:'Deszcz z chmurą', en:'Cloud with Rain', others:['chmuradeszcz', 'cloudwithrain', 'cloud with rian']},
+  {emoji:'🌩️', pl:'Błyskawica z chmurą', en:'Cloud with Lightning', others:['chmurablysk', 'cloudwithlightning', 'cloud with lightnig']},
+  {emoji:'⛈️', pl:'Burza', en:'Thunder Cloud and Rain', others:['burzka', 'thundercloudandrain', 'thunder cloud and ran']},
+  {emoji:'🌦️', pl:'Przelotny deszcz', en:'Sun Behind Rain Cloud', others:['przelotny', 'sunbehindraincloud', 'sun behind rain clod']},
+  {emoji:'🌥️', pl:'Słońce za chmurą', en:'Sun Behind Large Cloud', others:['sloncezachmura', 'sunbehindlargecloud', 'sun behind large clod']},
+  {emoji:'⛅', pl:'Słońce za małą chmurą', en:'Sun Behind Cloud', others:['sloncechmurka', 'sunbehindcloud', 'sun behind clud']},
+  {emoji:'🌤️', pl:'Słońce z małą chmurką', en:'Sun Behind Small Cloud', others:['sloncezchmurka', 'sunbehindsmallcloud', 'sun behind smal cloud']},
+  {emoji:'🌙', pl:'Księżyc', en:'Moon', others:['ksiezyc', 'moon', 'mooon']},
+  {emoji:'⭐', pl:'Gwiazda', en:'Star', others:['gwiazdka', 'star', 'starr']},
+  {emoji:'🌟', pl:'Jasna gwiazda', en:'Glowing Star', others:['jasnagwiazda', 'glowingstar', 'glowing starr']},
+  {emoji:'✨', pl:'Błysk', en:'Sparkles', others:['blysk', 'sparkles', 'sparkls']},
+  {emoji:'🕳️', pl:'Dziura', en:'Hole', others:['dziurka', 'hole', 'hol']},
+  {emoji:'🪐', pl:'Planeta z pierścieniami', en:'Ringed Planet', others:['planetazpierscieniami', 'ringedplanet', 'ringed planett']},
+  {emoji:'🌍', pl:'Ziemia', en:'Earth', others:['ziemia', 'earth', 'erth']},
+  {emoji:'🌫️', pl:'Mgła', en:'Fog', others:['mgielka', 'fog', 'fogg']},
+  {emoji:'🌠', pl:'Spadająca gwiazda', en:'Shooting Star', others:['spadajaca', 'shootingstar', 'shooting starr']},
+  {emoji:'🌌', pl:'Droga Mleczna', en:'Milky Way', others:['drogamleczna', 'milkyway', 'milky wae']},
+  {emoji:'☄️', pl:'Kometa', en:'Comet', others:['kometka', 'comet', 'comett']},
+  {emoji:'🌕', pl:'Pełnia księżyca', en:'Full Moon', others:['pelnia', 'fullmoon', 'full mon']}
+     ],
+     hard:[
+  {emoji:'🌺', pl:'Hibiskus', en:'Hibiscus', others:['hibiskus', 'hibiscuss', 'hibiscus']},
+  {emoji:'🏵️', pl:'Rozeta', en:'Rosette', others:['rozettka', 'rosette', 'roset']},
+  {emoji:'🌾', pl:'Kłos', en:'Sheaf of Rice', others:['klos', 'sheafofrice', 'sheaf of rice']},
+     ]
+    };
+
+    // --- Helpery ---
+    const $ = id => document.getElementById(id);
+    const timeEl = document.querySelector('.time');
+    const scoreEl = document.querySelector('.score');
+    const emojiCard = $('emojiCard');
+    const guessInput = $('guessInput');
+    const revealText = $('revealText');
+    const startBtn = $('startBtn');
+    const overlay = $('overlay');
+    const finalScore = $('finalScore');
+    const bestScoreEl = $('bestScore');
+    const restartBtn = $('restartBtn');
+    const hintBtn = $('hintBtn');
+
+    // Local storage key
+    const RECORD_KEY = 'natura_emotki_best';
+
+    // Game state
+    let timeLeft = 60;
+    let score = 0;
+    let timerInterval = null;
+    let gameActive = false;
+
+    // Tier management
+    let tiers = ['easy','medium','hard'];
+    let pools = {}; // copies of arrays that we'll remove from as guessed
+    let currentTierIndex = 0;
+    let currentItem = null;
+    let roundCount = 1; // first full pass is round 1; when we loop again becomes round 2 (bonus reduced)
+
+    // ensure we have a mobile friendly keyboard suggestion
+    guessInput.setAttribute('inputmode','text');
+
+    function loadRecord(){
+      return parseInt(localStorage.getItem(RECORD_KEY) || '0',10) || 0;
+    }
+    function saveRecord(val){ localStorage.setItem(RECORD_KEY, String(val)); }
+
+    function shuffle(a){
+      for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]}
+      return a;
+    }
+
+    function normalizeAnswer(s){
+      if(!s) return '';
+      // lowercase, trim, remove diacritics and punctuation
+      const down = s.trim().toLowerCase();
+      // remove diacritics
+      return down.normalize('NFD').replace(/\p{Diacritic}/gu,'').replace(/[^a-z0-9\s]/g,'');
+    }
+
+    function preparePools(){
+      pools = {};
+      for(const t of tiers){
+        // deep copy
+        pools[t] = EMOJI_BANK[t].map(e=>Object.assign({}, e));
+        shuffle(pools[t]);
+      }
+      currentTierIndex = 0;
+    }
+
+    function nextItem(){
+      // if current tier pool empty -> move to next tier
+      if(pools[tiers[currentTierIndex]].length === 0){
+        currentTierIndex++;
+        if(currentTierIndex >= tiers.length){
+          // finished all tiers -> start new cycle
+          currentTierIndex = 0;
+          roundCount++;
+          // prepare new pools again
+          preparePools();
+          // NOTE: according to spec: second loop onwards only +1s bonus
+        }
+      }
+      // pop one
+      const t = tiers[currentTierIndex];
+      if(pools[t].length === 0) return null;
+      currentItem = pools[t].pop();
+      renderEmoji(currentItem.emoji);
+      revealText.textContent = '';
+    }
+
+    function renderEmoji(e){
+      emojiCard.textContent = e;
+      // adjust font-size if emoji is wide
+      emojiCard.classList.toggle('small', (''+e).length>2);
+      // small scale animation
+      emojiCard.style.transform='scale(1.02)';
+      setTimeout(()=>emojiCard.style.transform='scale(1)',120);
+    }
+
+    function updateHUD(){
+      timeEl.textContent = Math.max(0,Math.ceil(timeLeft)) + 's';
+      scoreEl.textContent = String(score);
+    }
+
+    function endGame(){
+      gameActive=false;
+      clearInterval(timerInterval);
+      guessInput.disabled = true;
+      // show overlay with results
+      finalScore.textContent = score;
+      const best = loadRecord();
+      if(score>best){ saveRecord(score); }
+      bestScoreEl.textContent = loadRecord();
+      overlay.classList.add('show');
+      // hide keyboard
+      guessInput.blur();
+    }
+
+    function tick(){
+      timeLeft -= 0.25;
+      if(timeLeft <= 0){ timeLeft = 0; updateHUD(); endGame(); return; }
+      updateHUD();
+    }
+
+    function startGame(){
+      // reset
+      timeLeft = 60; score = 0; roundCount = 1; gameActive=true;
+      preparePools();
+      nextItem();
+      updateHUD();
+      guessInput.disabled = false;
+      guessInput.value = '';
+      guessInput.focus();
+      overlay.classList.remove('show');
+      clearInterval(timerInterval);
+      timerInterval = setInterval(tick,250);
+    }
+
+    function checkAnswer(val){
+      if(!gameActive) return;
+      const answer = normalizeAnswer(val);
+      if(!currentItem) return;
+      const accepted = [currentItem.pl, currentItem.en].concat(currentItem.others||[])
+        .filter(Boolean).map(normalizeAnswer);
+      if(accepted.includes(answer)){
+        score += 1;
+        const bonus = (roundCount === 1) ? 5 : 1;
+        timeLeft += bonus;
+        updateHUD();
+        guessInput.value = '';
+        nextItem();
+      } else {
+        timeLeft -= 1; // zmiana z -5s na -1s
+        if(timeLeft < 0) timeLeft = 0;
+        revealText.textContent = `${currentItem.pl} / ${currentItem.en}`;
+        updateHUD();
+        guessInput.value = '';
+        // poczekaj 2 sekundy przed następną emotką
+        setTimeout(()=>{
+          nextItem();
+          try{ guessInput.focus(); }catch(e){}
+        },2000);
+      }
+      setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },60);
+    }
+
+    // --- events ---
+    startBtn.addEventListener('click', ()=>{ startGame(); });
+    restartBtn.addEventListener('click', ()=>{ startGame(); });
+
+    guessInput.addEventListener('keydown', (e)=>{
+      if(!gameActive) return;
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        const val = guessInput.value;
+        checkAnswer(val);
+      }
+    });
+
+    // also check on input blur/submit so mobile can use "go" key
+    guessInput.addEventListener('input', (e)=>{
+      // optional: if user types something and then presses a punctuation like space+enter we handle on enter
+    });
+
+    hintBtn.addEventListener('click', ()=>{
+      if(!currentItem) return;
+      // hint: show first letter of polish and english
+      const pl = currentItem.pl ? currentItem.pl[0] : '?';
+      const en = currentItem.en ? currentItem.en[0] : '?';
+      revealText.textContent = `Podpowiedź: ${pl}... / ${en}...`;
+      setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },50);
+    });
+
+    // Keep keyboard focused while game active on visibility change
+    document.addEventListener('visibilitychange', ()=>{
+      if(gameActive && !document.hidden){ setTimeout(()=>guessInput.focus(),80); }
+    });
+
+    // prevent typing when time over
+    const observer = new MutationObserver(()=>{
+      if(!gameActive){ guessInput.disabled = true; }
+    });
+    observer.observe(overlay,{attributes:true,childList:true,subtree:true});
+
+    // init hud
+    updateHUD();
+    bestScoreEl.textContent = loadRecord();
+
+    // Try to autofocus input when the page loads (may be blocked on some mobiles until user interacts)
+    window.addEventListener('load', ()=>{ setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },300); });
+
+    // Accessibility: allow spacebar to focus input if not focused
+    window.addEventListener('keydown',(e)=>{
+      if(e.code==='Space' && document.activeElement !== guessInput){ e.preventDefault(); guessInput.focus(); }
+    });
+
+    // On tap of emoji card also focus input
+    emojiCard.addEventListener('click', ()=> guessInput.focus());
+
+  </script>
+</body>
+</html>
