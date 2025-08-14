@@ -3,6 +3,8 @@ body{
     margin: 0;
     padding: 0;
     text-align: center;
+    background-color: #E6F7F4;
+    color: #2E5E56;
 }
 .container {
     width: 95%;
@@ -12,7 +14,7 @@ body{
 }
 .buttons {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* zawsze 2 kolumny */
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
 }
 .button {
@@ -56,16 +58,17 @@ td{
 }
 a{
     text-decoration: none;
-    color: black;
+    color: #2E5E56;
+    transition: color 0.3s;
 }
 a:hover{
-    color: blue;
+    color: #3EB489;
     cursor: pointer;
 }
 .navbar {
     display: flex;
     justify-content: center;
-    background-color: #fff;
+    background-color: #CFFAF4;
     padding: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     position: sticky;
@@ -74,7 +77,7 @@ a:hover{
     border-radius: 10px;
     max-width: 90%;
     margin: 0 auto;
-    width: auto; /* zamiast fit-content — pozwoli normalnie rozciągać na mobile */
+    width: auto;
 }
 .nav-link {
     text-decoration: none;
@@ -135,16 +138,16 @@ body.dark-mode td, body.dark-mode th {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #f0f0f0;
+    background-color: #CFFAF4;
     border-radius: 15px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 10px;
     transition: transform 0.2s, background-color 0.2s;
     text-decoration: none;
-    color: black;
+    color: #2E5E56;
 }
 .app-icon:hover {
-    background-color: #e0e0e0;
+    background-color: #8FE3CF;
     transform: scale(1.05);
 }
 .app-icon img {
@@ -185,4 +188,4 @@ body.dark-mode .app-icon:hover {
         flex: 1 1 auto;
         text-align: center;
     }
-} /* ← poprawnie zamykamy media query */
+} 
