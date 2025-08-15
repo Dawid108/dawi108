@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Zgadywanie emotek</title>
+  <link rel="icon" href="dawi108.png" type="image/png">
+  <link rel="manifest" href="manifest.json">
+  <style>
+    :root{
+      --bg:#0f1724; --card:#0b1220; --accent:#7c5cff; --muted:#94a3b8; --glass: rgba(255,255,255,0.04);
+      --glass-2: rgba(255,255,255,0.03);
+      --radius:16px;
+      --safe-padding:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(124,92,255,0.12), transparent),
+                  linear-gradient(180deg, var(--bg), #071024 140%);
+      color:#e6eef8; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+      display:flex; align-items:center; justify-content:center; padding:24px;
+    }
+
+    .app{
+      width:100%; max-width:840px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:20px; padding:20px; box-shadow: 0 8px 30px rgba(2,6,23,0.7);
+      border: 1px solid rgba(255,255,255,0.03);
+    }
+
+    header{
+      display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px;
+    }
+    .top-left, .top-right{
+      display:flex; gap:8px; align-items:center;
+      background:var(--glass); padding:8px 12px; border-radius:12px; font-weight:600; color:var(--muted);
+    }
+    .top-left .time, .top-right .score{font-size:1.05rem; color:#fff}
+
+    main{
+      display:flex; flex-direction:column; align-items:center; gap:12px; padding:16px;
+    }
+
+    .reveal{
+      min-height:22px; color:var(--muted); font-weight:600; text-align:center; margin-bottom:6px; opacity:0.95;
+    }
+
+    .emoji-card{
+      width:min(62vw,420px); aspect-ratio:1/1; display:flex; align-items:center; justify-content:center;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:16px; border:1px solid var(--glass-2);
+      box-shadow: inset 0 -8px 30px rgba(2,6,23,0.35), 0 8px 40px rgba(2,6,23,0.6);
+      font-size:6.6rem; user-select:none; -webkit-user-select:none; position:relative;
+      transition:transform .12s ease;
+    }
+    .emoji-card.small{font-size:5rem}
+
+    input[type="text"]{
+      width:100%; max-width:540px; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.04);
+      background:rgba(255,255,255,0.02); color:#fff; font-size:1.05rem; outline:none; text-align:center;
+    }
+    input[type="text"]:disabled{opacity:0.5}
+
+    .controls{display:flex; gap:10px; align-items:center; margin-top:8px}
+    button{cursor:pointer; border:0; padding:10px 14px; border-radius:10px; font-weight:700}
+    .btn-start{background:linear-gradient(90deg,var(--accent), #6bd3ff); color:#021025; box-shadow:0 6px 20px rgba(124,92,255,0.18)}
+    .btn-small{background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.03)}
+
+    /* result modal */
+    .overlay{position:fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:50}
+    .overlay.show{display:flex}
+    .modal{background:linear-gradient(180deg, rgba(10,14,22,0.9), rgba(8,10,16,0.95)); padding:24px; border-radius:14px; width:min(92%,420px); text-align:center; border:1px solid rgba(255,255,255,0.04)}
+    .modal h2{margin:6px 0 2px; font-size:1.6rem}
+    .modal p{margin:0 0 12px; color:var(--muted)}
+
+    footer{display:flex; justify-content:center; margin-top:12px}
+
+    @media(min-width:900px){
+      body{padding:40px}
+      .app{padding:28px}
+    }
+
+    /* small helpers */
+    .muted{color:var(--muted)}
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <header>
+      <div class="top-left"><div class="muted">Czas:</div>&nbsp;<div class="time">60s</div></div>
+      <div class="top-right"><div class="muted">Punkty:</div>&nbsp;<div class="score">0</div></div>
+    </header>
+
+    <main>
+      <div class="reveal" id="revealText"></div>
+      <div class="emoji-card" id="emojiCard" aria-live="polite">❓</div>
+
+      <input id="guessInput" type="text" placeholder="Wpisz nazwę emotki (PL / EN)" autocomplete="off" inputmode="text" spellcheck="false"  autocorrect="off" />
+
+      <div class="controls">
+        <button id="startBtn" class="btn-start">Rozpocznij Grę</button>
+        <button id="hintBtn" class="btn-small">Pokaż podpowiedź</button>
+      </div>
+
+      <footer class="muted" style="margin-top:8px">Zgadnij emotkę — możesz wpisywać po polsku lub po angielsku. Błędna odpowiedź: -1s.</footer>
+    </main>
+  </div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal" role="dialog" aria-modal="true">
+      <h2>Twój Wynik</h2>
+      <p id="finalScore">0</p>
+      <h3>Twój Rekord</h3>
+      <p id="bestScore">0</p>
+      <div style="margin-top:12px">
+        <button id="restartBtn" class="btn-start">Nowa gra</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Dane emotek ---
+    // Każdy obiekt ma pola: emoji, pl (główna polska), en (główna angielska), others (tablica dodatkowych poprawnych słów)
+    const EMOJI_BANK = {
+     easy: [
+  {emoji:'😀', pl:'Uśmiech', en:'Smile', others:['usmiech', 'grinningface', 'grinning fase', 'Grinning Face']},
+  {emoji:'😭', pl:'Płacz', en:'Cry', others:['placz', 'loudlycryingface', 'loudly crying fase', 'Loudly Crying Face']}
+     ],
+     medium:[
+  {emoji:'😃', pl:'Szeroki uśmiech', en:'Grinning Face with Big Eyes', others:['szerokiusmiech', 'grinningfacewithbigeyes', 'grinning face with big eys']},
+  {emoji:'😄', pl:'Uśmiech z oczami', en:'Grinning Face with Smiling Eyes', others:['usmiechzoczami', 'grinningfacewithsmilingeyes', 'grinning face with smilling eyes']},
+  {emoji:'😁', pl:'Szeroki uśmiech z oczami', en:'Beaming Face with Smiling Eyes', others:['usmiechzoczami2', 'beamingfacewithsmilingeyes', 'beaming face with smilling eyes']},
+  {emoji:'😆', pl:'Śmiech z zamkniętymi oczami', en:'Grinning Squinting Face', others:['smiechzamkniety', 'grinningsquintingface', 'grinning squintin face']},
+  {emoji:'😅', pl:'Uśmiech ze łzami ulgi', en:'Grinning Face with Sweat', others:['usmiechze lzami', 'grinningfacewithsweat', 'grinning face with swet']},
+  {emoji:'😂', pl:'Śmiech do łez', en:'Face with Tears of Joy', others:['smiechdolez', 'facewithtearsofjoy', 'face with tears of jo']},
+  {emoji:'🤣', pl:'Turlanie się ze śmiechu', en:'Rolling on the Floor Laughing', others:['turlaniesmiech', 'rollingonthefloorlaughing', 'rolling on the flor laughing']},
+  {emoji:'😉', pl:'Mrugnięcie', en:'Winking Face', others:['mrugniecie', 'winkingface', 'winking fase']},
+  {emoji:'😗', pl:'Całus', en:'Kissing Face', others:['calus', 'kissingface', 'kising face']},
+  {emoji:'😙', pl:'Całus z uśmiechem', en:'Kissing Face with Smiling Eyes', others:['caluszoczami', 'kissingfacewithsmilingeyes', 'kissing face with smilling eyes']},
+  {emoji:'😚', pl:'Całus z zamkniętymi oczami', en:'Kissing Face with Closed Eyes', others:['caluszamkniete', 'kissingfacewithclosedeyes', 'kissing face with closed eys']},
+  {emoji:'😘', pl:'Buziak', en:'Face Blowing a Kiss', others:['buziaczek', 'faceblowingakiss', 'face blowing a kis']},
+  {emoji:'🥰', pl:'Zakochany uśmiech', en:'Smiling Face with Hearts', others:['zakochanie', 'smilingfacewithhearts', 'smilling face with harts']},
+  {emoji:'😍', pl:'Zakochane oczy', en:'Smiling Face with Heart-Eyes', others:['zakochaneoczy', 'smilingfacewithhearteyes', 'smilling face with heart eys']},
+  {emoji:'🤩', pl:'Oczarowanie', en:'Star-Struck', others:['oczarowany', 'starstruck', 'star struk']},
+  {emoji:'🥳', pl:'Świętowanie', en:'Partying Face', others:['swietowanie', 'partyingface', 'parting face']},
+  {emoji:'🙃', pl:'Do góry nogami', en:'Upside-Down Face', others:['dogorynogami', 'upsidedownface', 'upside down fase']},
+  {emoji:'🙂', pl:'Lekki uśmiech', en:'Slightly Smiling Face', others:['lekkiusmiech', 'slightlysmilingface', 'slightli smiling face']},
+  {emoji:'🥲', pl:'Uśmiech przez łzy', en:'Smiling Face with Tear', others:['usmiechprzez lzy', 'smilingfacewithtear', 'smilling face with teer']},
+  {emoji:'😊', pl:'Uśmiechnięta twarz', en:'Smiling Face with Smiling Eyes', others:['usmiechnieta', 'smilingfacewithsmilingeyes', 'smilling face with smilling eyes']},
+  {emoji:'☺️', pl:'Klasyczny uśmiech', en:'Smiling Face', others:['klasycznyusmiech', 'smilingface', 'smilling face']},
+  {emoji:'😌', pl:'Zrelaksowana twarz', en:'Relieved Face', others:['zrelaksowany', 'relievedface', 'relived face']},
+  {emoji:'😏', pl:'Zadziorny uśmiech', en:'Smirking Face', others:['zadziornyusmiech', 'smirkingface', 'smirking fase']},
+  {emoji:'🤤', pl:'Śliniąca się twarz', en:'Drooling Face', others:['sliniaciesie', 'droolingface', 'drooling fase']},
+  {emoji:'😋', pl:'Smaczna twarz', en:'Face Savoring Food', others:['smaczne', 'facesavoringfood', 'face savouring food']},
+  {emoji:'😛', pl:'Język na zewnątrz', en:'Face with Tongue', others:['jezyk', 'facewithtongue', 'face with tong']},
+  {emoji:'😝', pl:'Zamknięte oczy i język', en:'Squinting Face with Tongue', others:['jezykozamkniete', 'squintingfacewithtongue', 'squinting face with tong']},
+  {emoji:'😜', pl:'Mrugnięcie i język', en:'Winking Face with Tongue', others:['mrugjezyk', 'winkingfacewithtongue', 'winking face with tong']},
+  {emoji:'🤪', pl:'Szalone oczy', en:'Zany Face', others:['szalone', 'zanyface', 'zani face']},
+  {emoji:'🥴', pl:'Zawroty głowy', en:'Woozy Face', others:['zawroty', 'woozyface', 'wuzy face']},
+  {emoji:'😔', pl:'Smutna twarz', en:'Pensive Face', others:['smutna', 'pensiveface', 'pensiv face']},
+  {emoji:'🥺', pl:'Błagalny wzrok', en:'Pleading Face', others:['blagalny', 'pleadingface', 'pleading fase']},
+  {emoji:'😬', pl:'Skrzywiona twarz', en:'Grimacing Face', others:['skrzywiona', 'grimacingface', 'grimasing face']},
+  {emoji:'😑', pl:'Bez wyrazu', en:'Expressionless Face', others:['bezwyrazu', 'expressionlessface', 'expresionles face']},
+  {emoji:'😐', pl:'Neutralna twarz', en:'Neutral Face', others:['neutralna', 'neutralface', 'neutral fase']},
+  {emoji:'😶', pl:'Bez ust', en:'Face Without Mouth', others:['bezust', 'facewithoutmouth', 'face without mout']},
+  {emoji:'🤐', pl:'Zamknięte usta', en:'Zipper-Mouth Face', others:['zamknieteusta', 'zippermouthface', 'zipper mouth fase']},
+  {emoji:'🤔', pl:'Myśląca twarz', en:'Thinking Face', others:['myslaca', 'thinkingface', 'thingking face']},
+  {emoji:'🤫', pl:'Cisza', en:'Shushing Face', others:['cisza', 'shushingface', 'shusshing face']},
+  {emoji:'🤭', pl:'Zasłaniająca usta', en:'Face with Hand Over Mouth', others:['zaslaniausta', 'facewithhandovermouth', 'face with hand over mout']},
+  {emoji:'🥱', pl:'Ziewanie', en:'Yawning Face', others:['ziewanie', 'yawningface', 'yawning fase']},
+  {emoji:'🤗', pl:'Przytulenie', en:'Hugging Face', others:['przytulenie', 'huggingface', 'huging face']},
+  {emoji:'😱', pl:'Krzyk ze strachu', en:'Face Screaming in Fear', others:['krzykzesrachu', 'facescreaminginfear', 'face screaming in feer']},
+  {emoji:'🤨', pl:'Podejrzliwy wzrok', en:'Face with Raised Eyebrow', others:['podejrzliwy', 'facewithraisedeyebrow', 'face with rased eyebrow']},
+  {emoji:'🧐', pl:'Badająca twarz', en:'Face with Monocle', others:['badajaca', 'facewithmonocle', 'face with monokle']},
+  {emoji:'😒', pl:'Znużona twarz', en:'Unamused Face', others:['znuzona', 'unamusedface', 'unamuzed face']},
+  {emoji:'🙄', pl:'Przewracanie oczami', en:'Face with Rolling Eyes', others:['przewracanieoczami', 'facewithrollingeyes', 'face with roling eyes']},
+  {emoji:'😤', pl:'Wzdychanie z gniewem', en:'Face with Steam From Nose', others:['wzdychanie', 'facewithsteamfromnose', 'face with steam from nos']},
+  {emoji:'😠', pl:'Zły wyraz twarzy', en:'Angry Face', others:['zly', 'angryface', 'angri face']},
+  {emoji:'😡', pl:'Bardzo zły', en:'Pouting Face', others:['bardzogly', 'poutingface', 'pouting fase']},
+  {emoji:'🤬', pl:'Wulgarny gniew', en:'Face with Symbols on Mouth', others:['wulgarny', 'facewithsymbolsonmouth', 'face with simbols on mout']},
+  {emoji:'😞', pl:'Zawiedziony', en:'Disappointed Face', others:['zawiedziony', 'disappointedface', 'disapointed face']},
+  {emoji:'😓', pl:'Spocona twarz', en:'Downcast Face with Sweat', others:['spocona', 'downcastfacewithsweat', 'downcast face with swet']},
+  {emoji:'😟', pl:'Zmartwiona twarz', en:'Worried Face', others:['zmartwiona', 'worriedface', 'worrid face']},
+  {emoji:'😥', pl:'Ulgowy smutek', en:'Sad but Relieved Face', others:['ulgasmutek', 'sadbutrelievedface', 'sad but relived face']},
+  {emoji:'😢', pl:'Płacząca twarz', en:'Crying Face', others:['placzaca', 'cryingface', 'cryng face']},
+  {emoji:'☹️', pl:'Smutna buzia', en:'Frowning Face', others:['smutnabuzia', 'frowningface', 'froning face']},
+  {emoji:'🙁', pl:'Lekko smutna', en:'Slightly Frowning Face', others:['lekkosmutna', 'slightlyfrowningface', 'slightli frowning face']},
+  {emoji:'😕', pl:'Zmieszanie', en:'Confused Face', others:['zmieszany', 'confusedface', 'confuzed face']},
+  {emoji:'😰', pl:'Strach z potem', en:'Anxious Face with Sweat', others:['strachzpotem', 'anxiousfacewithsweat', 'anxius face with swet']},
+  {emoji:'😨', pl:'Przestraszony', en:'Fearful Face', others:['przestraszony', 'fearfulface', 'fearfull face']},
+  {emoji:'😧', pl:'Zszokowany', en:'Anguished Face', others:['zszokowany', 'anguishedface', 'angushedd face']},
+  {emoji:'😦', pl:'Zaskoczenie', en:'Frowning Face with Open Mouth', others:['zaskoczenie', 'frowningfacewithopenmouth', 'frowning face with open mout']},
+  {emoji:'😮', pl:'Otwarte usta', en:'Face with Open Mouth', others:['otwarteusta', 'facewithopenmouth', 'face with open mout']},
+  {emoji:'😯', pl:'Zaskoczony', en:'Hushed Face', others:['zaskoczony', 'hushedface', 'hushedd face']},
+  {emoji:'😲', pl:'Oszłupienie', en:'Astonished Face', others:['oszlupienie', 'astonishedface', 'astonished fase']},
+  {emoji:'😳', pl:'Zawstydzenie', en:'Flushed Face', others:['zawstydzenie', 'flushedface', 'flushedd face']},
+  {emoji:'🤯', pl:'Wybuch mózgu', en:'Exploding Head', others:['wybuchmozgu', 'explodinghead', 'exploding hed']},
+  {emoji:'😖', pl:'Zamieszanie i ból', en:'Confounded Face', others:['zamieszanie', 'confoundedface', 'confaunded face']},
+  {emoji:'😣', pl:'Zmaganie się', en:'Persevering Face', others:['zmaganiesie', 'perseveringface', 'persevering fase']},
+  {emoji:'😩', pl:'Zmęczona twarz', en:'Weary Face', others:['zmeczona', 'wearyface', 'weeri face']},
+  {emoji:'😫', pl:'Bardzo zmęczony', en:'Tired Face', others:['bardzomęczony', 'tiredface', 'tierd face']},
+  {emoji:'😵', pl:'Zawroty głowy', en:'Dizzy Face', others:['zawroty', 'dizzyface', 'dizy face']},
+  {emoji:'🥶', pl:'Zamarznięta twarz', en:'Cold Face', others:['zamarznieta', 'coldface', 'cold fase']},
+  {emoji:'🥵', pl:'Gorąca twarz', en:'Hot Face', others:['goraca', 'hotface', 'hot fase']},
+  {emoji:'🤢', pl:'Mdłości', en:'Nauseated Face', others:['mdlosci', 'nauseatedface', 'nauseeted face']},
+  {emoji:'🤮', pl:'Wymiotująca twarz', en:'Face Vomiting', others:['wymiotujaca', 'facevomiting', 'face vommiting']},
+  {emoji:'😴', pl:'Śpiąca twarz', en:'Sleeping Face', others:['spiaca', 'sleepingface', 'sliping face']},
+  {emoji:'😪', pl:'Śpiąca ze zmęczenia', en:'Sleepy Face', others:['zmeczona', 'sleepyface', 'slepy face']},
+  {emoji:'🤧', pl:'Kichająca twarz', en:'Sneezing Face', others:['kichanie', 'sneezingface', 'snez face']},
+  {emoji:'🤒', pl:'Chora twarz', en:'Face with Thermometer', others:['choroba', 'facewiththermometer', 'face with termometer']},
+  {emoji:'🤕', pl:'Twarz z opatrunkiem', en:'Face with Head-Bandage', others:['opatrunek', 'facewithheadbandage', 'face with head bandage']},
+  {emoji:'😷', pl:'Twarz w masce', en:'Face with Medical Mask', others:['maska', 'facewithmedicalmask', 'face with medical masq']},
+  {emoji:'🤥', pl:'Kłamiąca twarz', en:'Lying Face', others:['klamstwo', 'lyingface', 'laying face']},
+  {emoji:'😇', pl:'Aniołek', en:'Smiling Face with Halo', others:['aniol', 'smilingfacewithhalo', 'smilling face with halo']},
+  {emoji:'🤠', pl:'Kowboj', en:'Cowboy Hat Face', others:['kowbojski', 'cowboyhatface', 'cow boy hat face']},
+  {emoji:'🤑', pl:'Pieniężna twarz', en:'Money-Mouth Face', others:['pieniadze', 'moneymouthface', 'money mouth fase']},
+  {emoji:'🤓', pl:'Kujon', en:'Nerd Face', others:['okulary', 'nerdface', 'nerd fase']},
+  {emoji:'😎', pl:'Twarz w okularach przeciwsłonecznych', en:'Smiling Face with Sunglasses', others:['sloneczne', 'sunglassesface', 'sun glasses face']},
+  {emoji:'🥸', pl:'Przebrana twarz', en:'Disguised Face', others:['przebranie', 'disguisedface', 'disguise face']},
+  {emoji:'🤡', pl:'Klaun', en:'Clown Face', others:['klaunface', 'clownface', 'clow face']},
+  {emoji:'💩', pl:'Kupka', en:'Pile of Poo', others:['kupa', 'pileofpoo', 'poo pile']},
+  {emoji:'😈', pl:'Uśmiechnięty diabeł', en:'Smiling Face with Horns', others:['diabel', 'smilingfacewithhorns', 'smiling face with hornz']},
+  {emoji:'👿', pl:'Zły diabeł', en:'Angry Face with Horns', others:['zly', 'angryfacewithhorns', 'angry face with hornz']},
+  {emoji:'👻', pl:'Duch', en:'Ghost', others:['straszydlo', 'ghosty', 'gost']},
+  {emoji:'💀', pl:'Czaszka', en:'Skull', others:['czacha', 'skul', 'skullface']},
+  {emoji:'☠️', pl:'Czaszka i piszczele', en:'Skull and Crossbones', others:['trupia', 'skullandcrossbones', 'skull n crossbones']},
+  {emoji:'☃️', pl:'Bałwan', en:'Snowman', others:['balwanek', 'snowman', 'snow man']},
+  {emoji:'⛄', pl:'Bałwan bez śniegu', en:'Snowman Without Snow', others:['balwan', 'snowmanwithoutsnow', 'snowman without sno']},
+  {emoji:'🎃', pl:'Dynia halloweenowa', en:'Jack-O-Lantern', others:['dynia', 'jackolantern', 'jack o lanter']},
+  {emoji:'🤖', pl:'Robot', en:'Robot Face', others:['roboty', 'robotface', 'roboat']},
+  {emoji:'👽', pl:'Obcy', en:'Alien', others:['kosmita', 'alieny', 'alioen']},
+  {emoji:'👾', pl:'Potwór z gry', en:'Alien Monster', others:['gra', 'alienmonster', 'alien monsterr']},
+  {emoji:'🌚', pl:'Księżyc w nowiu z twarzą', en:'New Moon Face', others:['now', 'newmoonface', 'new moon fase']},
+  {emoji:'🌝', pl:'Pełnia z twarzą', en:'Full Moon Face', others:['pelniaksiezyca', 'fullmoonface', 'full moon fase']},
+  {emoji:'🌞', pl:'Słońce z twarzą', en:'Sun with Face', others:['slonce', 'sunwithface', 'sun with fase']},
+  {emoji:'🌛', pl:'Pierwsza kwadra z twarzą', en:'First Quarter Moon Face', others:['ksiezyc', 'firstquartermoonface', 'first quarter moon fase']},
+  {emoji:'🌜', pl:'Ostatnia kwadra z twarzą', en:'Last Quarter Moon Face', others:['ostatnia', 'lastquartermoonface', 'last quarter moon fase']},
+  {emoji:'😺', pl:'Uśmiechnięty kot', en:'Smiling Cat Face', others:['kot', 'smilingcatface', 'smiling cat fase']},
+  {emoji:'😸', pl:'Zadowolony kot z otwartymi ustami', en:'Grinning Cat with Smiling Eyes', others:['kotek', 'grinningcatwithsmilingeyes', 'grinning cat with smailing eyes']},
+  {emoji:'😹', pl:'Kot ze łzami radości', en:'Cat with Tears of Joy', others:['kotoplacz', 'catwithtearsofjoy', 'cat with tears of joi']},
+  {emoji:'😻', pl:'Kot z sercowymi oczami', en:'Smiling Cat with Heart-Eyes', others:['sercokat', 'smilingcatwithhearteyes', 'smiling cat with heart eyez']},
+  {emoji:'😼', pl:'Kot z chytrym uśmiechem', en:'Cat with Wry Smile', others:['sprytnykot', 'catwithwrysmile', 'cat with wry smil']},
+  {emoji:'😽', pl:'Całujący kot', en:'Kissing Cat', others:['pocalunek', 'kissingcat', 'kissing catt']},
+  {emoji:'🙀', pl:'Przerażony kot', en:'Weary Cat', others:['przerazonykot', 'wearycat', 'weary catt']},
+  {emoji:'😿', pl:'Płaczący kot', en:'Crying Cat', others:['placzkot', 'cryingcat', 'crying catt']},
+  {emoji:'😾', pl:'Kot z niezadowoloną miną', en:'Pouting Cat', others:['foch', 'poutingcat', 'pouting catt']},
+  {emoji:'🙈', pl:'Małpa nie widzi', en:'See-No-Evil Monkey', others:['malpa', 'seenoevilmonkey', 'see no evil monkay']},
+  {emoji:'🙉', pl:'Małpa nie słyszy', en:'Hear-No-Evil Monkey', others:['malpka', 'hearnoevilmonkey', 'hear no evil monki']},
+  {emoji:'🙊', pl:'Małpa nie mówi', en:'Speak-No-Evil Monkey', others:['malpeczka', 'speaknoevilmonkey', 'speak no evil monkay']},
+  {emoji:'💫', pl:'Zawroty gwiazd', en:'Dizzy', others:['gwiazdki', 'dizzy', 'dizzi']},
+  {emoji:'⭐', pl:'Gwiazda', en:'Star', others:['gwiazdka', 'starry', 'starr']},
+  {emoji:'🌟', pl:'Błyszcząca gwiazda', en:'Glowing Star', others:['blask', 'glowingstar', 'glowing starr']},
+  {emoji:'✨', pl:'Błyski', en:'Sparkles', others:['blysk', 'sparkless', 'sparkel']},
+  {emoji:'⚡', pl:'Błyskawica', en:'High Voltage', others:['piorun', 'highvoltage', 'high voltag']},
+  {emoji:'💥', pl:'Wybuch', en:'Collision', others:['eksplozja', 'collision', 'colision']},
+  {emoji:'💢', pl:'Znak gniewu', en:'Anger Symbol', others:['gniew', 'angersymbol', 'anger simbol']},
+  {emoji:'💨', pl:'Pęd powietrza', en:'Dashing Away', others:['wiatr', 'dashingaway', 'dashing awai']},
+  {emoji:'💦', pl:'Krople potu/wody', en:'Sweat Droplets', others:['krople', 'sweatdroplets', 'sweat dropllets']},
+  {emoji:'💤', pl:'Zzz - sen', en:'Zzz', others:['sen', 'zzzsleep', 'zz slep']},
+  {emoji:'🕳️', pl:'Dziura', en:'Hole', others:['otwor', 'holee', 'whol']},
+  {emoji:'🔥', pl:'Ogień', en:'Fire', others:['plomien', 'fayer', 'firee']},
+  {emoji:'💯', pl:'Sto punktów', en:'Hundred Points', others:['setka', 'hundredpoints', 'hundred poinz']},
+  {emoji:'🎉', pl:'Konfetti', en:'Party Popper', others:['urodziny', 'partypopper', 'party popar']},
+  {emoji:'🎊', pl:'Kula z konfetti', en:'Confetti Ball', others:['swieto', 'confettiball', 'confeti bal']},
+  {emoji:'❤️', pl:'Czerwone serce', en:'Red Heart', others:['serce', 'redheart', 'redd hart']},
+  {emoji:'🧡', pl:'Pomarańczowe serce', en:'Orange Heart', others:['serducho', 'orangeheart', 'orenge hart']},
+  {emoji:'💛', pl:'Żółte serce', en:'Yellow Heart', others:['zolte', 'yellowheart', 'yelow hart']},
+  {emoji:'💚', pl:'Zielone serce', en:'Green Heart', others:['zielone', 'greenheart', 'gren hart']},
+  {emoji:'💙', pl:'Niebieskie serce', en:'Blue Heart', others:['niebieskie', 'blueheart', 'blu hart']},
+  {emoji:'💜', pl:'Fioletowe serce', en:'Purple Heart', others:['fioletowe', 'purpleheart', 'purpel hart']},
+  {emoji:'🤎', pl:'Brązowe serce', en:'Brown Heart', others:['brazowe', 'brownheart', 'broun hart']},
+  {emoji:'🖤', pl:'Czarne serce', en:'Black Heart', others:['czarne', 'blackheart', 'blak hart']},
+  {emoji:'🤍', pl:'Białe serce', en:'White Heart', others:['biale', 'whiteheart', 'whait hart']},
+  {emoji:'💘', pl:'Serce trafione strzałą', en:'Heart with Arrow', others:['amorek', 'heartwitharrow', 'hart with arrow']},
+  {emoji:'💝', pl:'Serce z kokardą', en:'Heart with Ribbon', others:['prezent', 'heartwithribbon', 'hart with ribon']},
+  {emoji:'💖', pl:'Błyszczące serce', en:'Sparkling Heart', others:['blyszczace', 'sparklingheart', 'sparcling hart']},
+  {emoji:'💗', pl:'Rosnące serce', en:'Growing Heart', others:['rosnace', 'growingheart', 'growin hart']},
+  {emoji:'💓', pl:'Bijące serce', en:'Beating Heart', others:['bijace', 'beatingheart', 'beeting hart']},
+  {emoji:'💞', pl:'Kręcące się serca', en:'Revolving Hearts', others:['milosc', 'revolvinghearts', 'revolvin harts']},
+  {emoji:'💕', pl:'Dwa serca', en:'Two Hearts', others:['zakochani', 'twohearts', 'two harts']},
+  {emoji:'💌', pl:'List miłosny', en:'Love Letter', others:['list', 'loveletter', 'lov letter']},
+  {emoji:'💟', pl:'Ozdobne serce', en:'Heart Decoration', others:['ozdoba', 'heartdecoration', 'hart decoreishon']},
+  {emoji:'♥️', pl:'Serce (symbol kart)', en:'Heart Suit', others:['karty', 'heartsuit', 'hart suit']},
+  {emoji:'❣️', pl:'Wykrzyknik serce', en:'Heart Exclamation', others:['uwaga', 'heartexclamation', 'hart exclamacion']},
+  {emoji:'💔', pl:'Złamane serce', en:'Broken Heart', others:['rozstanie', 'brokenheart', 'brokn hart']},
+  {emoji:'💋', pl:'Pocałunek', en:'Kiss Mark', others:['buziak', 'kissmark', 'kis mark']},
+  {emoji:'🫂', pl:'Przytulenie', en:'People Hugging', others:['uscisk', 'peoplehugging', 'people hugin']},
+  {emoji:'👥', pl:'Sylwetki ludzi', en:'Busts in Silhouette', others:['postacie', 'bustsinsilhouette', 'busts in siluet']},
+  {emoji:'👤', pl:'Sylwetka osoby', en:'Bust in Silhouette', others:['profil', 'bustinsilhouette', 'bust in siluet']},
+  {emoji:'🗣️', pl:'Głos mówiący', en:'Speaking Head', others:['mowienie', 'speakinghead', 'spekin hed']},
+  {emoji:'👣', pl:'Ślady stóp', en:'Footprints', others:['slady', 'footprints', 'footprins']},
+  {emoji:'🧠', pl:'Mózg', en:'Brain', others:['umysl', 'brainn', 'brainn']},
+  {emoji:'🫀', pl:'Serce anatomiczne', en:'Anatomical Heart', others:['organ', 'anatomicalheart', 'anatomiqal hart']},
+  {emoji:'🫁', pl:'Płuca', en:'Lungs', others:['oddech', 'lungs', 'lunggs']},
+  {emoji:'🩸', pl:'Kropla krwi', en:'Drop of Blood', others:['krew', 'dropofblood', 'drop of blud']},
+  {emoji:'🦠', pl:'Bakteria/Wirus', en:'Microbe', others:['mikrob', 'microbe', 'microb']},
+  {emoji:'🦷', pl:'Ząb', en:'Tooth', others:['ząbek', 'toothh', 'toot']},
+  {emoji:'🦴', pl:'Kość', en:'Bone', others:['kostka', 'bonee', 'boen']},
+  {emoji:'👀', pl:'Oczy', en:'Eyes', others:['oczy', 'eyess', 'eys']},
+  {emoji:'👁️', pl:'Oko', en:'Eye', others:['oko', 'eyee', 'aie']},
+  {emoji:'👄', pl:'Usta', en:'Mouth', others:['usta', 'mouthh', 'mout']},
+  {emoji:'👅', pl:'Język', en:'Tongue', others:['jezyk', 'tonguee', 'tong']},
+  {emoji:'👃', pl:'Nos', en:'Nose', others:['nosek', 'nosee', 'noz']},
+  {emoji:'👂', pl:'Ucho', en:'Ear', others:['uszy', 'earr', 'eer']},
+  {emoji:'🦻', pl:'Ucho z aparatem', en:'Ear with Hearing Aid', others:['sluch', 'earwithhearingaid', 'ear with hering aid']},
+  {emoji:'🦶', pl:'Stopa', en:'Foot', others:['stopka', 'foott', 'fut']},
+  {emoji:'🦵', pl:'Noga', en:'Leg', others:['nozka', 'legg', 'leg']},
+  {emoji:'🦿', pl:'Proteza nogi', en:'Mechanical Leg', others:['proteza', 'mechanicalleg', 'mechanikal leg']},
+  {emoji:'🦾', pl:'Proteza ręki', en:'Mechanical Arm', others:['proteza', 'mechanicalarm', 'mechanikal arm']},
+  {emoji:'💪', pl:'Zgięty biceps', en:'Flexed Biceps', others:['sila', 'flexedbiceps', 'flex bicep']},
+  {emoji:'👏', pl:'Oklaski', en:'Clapping Hands', others:['brawa', 'clappinghands', 'claping hands']},
+  {emoji:'👍', pl:'Kciuk w górę', en:'Thumbs Up', others:['ok', 'thumbsup', 'thumbs ap']},
+  {emoji:'👎', pl:'Kciuk w dół', en:'Thumbs Down', others:['nie', 'thumbsdown', 'thums daun']},
+  {emoji:'🙌', pl:'Podniesione ręce', en:'Raising Hands', others:['radość', 'raisinghands', 'raisin hands']},
+  {emoji:'👐', pl:'Otwarte dłonie', en:'Open Hands', others:['otwarte', 'openhands', 'open hand']},
+  {emoji:'🤲', pl:'Złożone dłonie', en:'Palms Up Together', others:['prosba', 'palmsuptogether', 'palms up togeder']},
+  {emoji:'🤜', pl:'Prawy sierp', en:'Right Facing Fist', others:['punch', 'rightfacingfist', 'right facing fis']},
+  {emoji:'🤛', pl:'Lewy sierp', en:'Left Facing Fist', others:['uderzenie', 'leftfacingfist', 'left facing fis']},
+  {emoji:'✊', pl:'Zaciśnięta pięść', en:'Raised Fist', others:['protest', 'raisedfist', 'raisd fist']},
+  {emoji:'👊', pl:'Pięść', en:'Oncoming Fist', others:['cios', 'oncomingfist', 'oncoming fis']},
+  {emoji:'👋', pl:'Machanie ręką', en:'Waving Hand', others:['machanie', 'wavinghand', 'wavin hand']},
+  {emoji:'🤚', pl:'Uniesiona ręka', en:'Raised Back of Hand', others:['dłoń', 'raisedbackofhand', 'raisd bak of hand']},
+  {emoji:'🖐️', pl:'Podniesiona dłoń', en:'Hand with Fingers Splayed', others:['rozczapierzone', 'handwithfingerssplayed', 'hand with fingers spled']},
+  {emoji:'✋', pl:'Podniesiona ręka', en:'Raised Hand', others:['reka', 'raisedhand', 'raisd hand']},
+  {emoji:'🖖', pl:'Saluto wulkaniczny', en:'Vulcan Salute', others:['spock', 'vulcansalute', 'vulkan salu']},
+  {emoji:'🤟', pl:'Kocham Cię w Języku Migowym', en:'Love-You Gesture', others:['migowy', 'loveyougesture', 'love you gestur']},
+  {emoji:'🤘', pl:'Rogi', en:'Sign of the Horns', others:['rock', 'signofthehorns', 'sign of the hor']},
+  {emoji:'✌️', pl:'Zwycięstwo', en:'Victory Hand', others:['victory', 'victoryhand', 'victori hand']},
+  {emoji:'🤞', pl:'Skrzyżowane palce', en:'Crossed Fingers', others:['szczescie', 'crossedfingers', 'crosed fingers']},
+  {emoji:'🤙', pl:'Zadzwoń do mnie', en:'Call Me Hand', others:['call', 'callmehand', 'call mi han']},
+  {emoji:'🤌', pl:'Gest ściśniętych palców', en:'Pinched Fingers', others:['wloski', 'pinchedfingers', 'pinched fingrs']},
+  {emoji:'🤏', pl:'Gest małej ilości', en:'Pinching Hand', others:['malo', 'pinchinghand', 'pinching han']},
+  {emoji:'👌', pl:'OK', en:'OK Hand', others:['ok', 'okhand', 'ok han']},
+  {emoji:'👉', pl:'Wskazanie w prawo', en:'Backhand Index Pointing Right', others:['prawo', 'backhandindexpointingright', 'backhand index pointing rigt']},
+  {emoji:'👈', pl:'Wskazanie w lewo', en:'Backhand Index Pointing Left', others:['lewo', 'backhandindexpointingleft', 'backhand index pointing left']},
+  {emoji:'☝️', pl:'Palec do góry', en:'Index Pointing Up', others:['gora', 'indexpointingup', 'index pointing up']},
+  {emoji:'👆', pl:'Wskazanie w górę', en:'Backhand Index Pointing Up', others:['gora', 'backhandindexpointingup', 'backhand index pointing up']},
+  {emoji:'👇', pl:'Wskazanie w dół', en:'Backhand Index Pointing Down', others:['dol', 'backhandindexpointingdown', 'backhand index pointing daun']},
+  {emoji:'🖕', pl:'Środkowy palec', en:'Middle Finger', others:['fuck', 'middlefinger', 'midle fingr']},
+  {emoji:'✍️', pl:'Pisanie ręką', en:'Writing Hand', others:['pisanie', 'writinghand', 'writing han']},
+  {emoji:'🤳', pl:'Selfie', en:'Selfie', others:['selfie', 'selfiee', 'selphie']},
+  {emoji:'🙏', pl:'Złożone dłonie', en:'Folded Hands', others:['prosba', 'foldedhands', 'folded hans']},
+  {emoji:'💅', pl:'Malowanie paznokci', en:'Nail Polish', others:['paznokcie', 'nailpolish', 'nail polissh']},
+  {emoji:'🤝', pl:'Uścisk dłoni', en:'Handshake', others:['uscisk', 'handshake', 'handsheik']}
+     ],
+     hard:[
+  {emoji:'👹', pl:'Oni', en:'Ogre', others:['potwor', 'ogre', 'ogra']},
+  {emoji:'👺', pl:'Tengu', en:'Goblin', others:['potworek', 'gobliny', 'gobblin']}
+     ]
+    };
+
+    // --- Helpery ---
+    const $ = id => document.getElementById(id);
+    const timeEl = document.querySelector('.time');
+    const scoreEl = document.querySelector('.score');
+    const emojiCard = $('emojiCard');
+    const guessInput = $('guessInput');
+    const revealText = $('revealText');
+    const startBtn = $('startBtn');
+    const overlay = $('overlay');
+    const finalScore = $('finalScore');
+    const bestScoreEl = $('bestScore');
+    const restartBtn = $('restartBtn');
+    const hintBtn = $('hintBtn');
+
+    // Local storage key
+    const RECORD_KEY = 'usmieszki_emotki_best';
+
+    // Game state
+    let timeLeft = 60;
+    let score = 0;
+    let timerInterval = null;
+    let gameActive = false;
+
+    // Tier management
+    let tiers = ['easy','medium','hard'];
+    let pools = {}; // copies of arrays that we'll remove from as guessed
+    let currentTierIndex = 0;
+    let currentItem = null;
+    let roundCount = 1; // first full pass is round 1; when we loop again becomes round 2 (bonus reduced)
+
+    // ensure we have a mobile friendly keyboard suggestion
+    guessInput.setAttribute('inputmode','text');
+
+    function loadRecord(){
+      return parseInt(localStorage.getItem(RECORD_KEY) || '0',10) || 0;
+    }
+    function saveRecord(val){ localStorage.setItem(RECORD_KEY, String(val)); }
+
+    function shuffle(a){
+      for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]}
+      return a;
+    }
+
+    function normalizeAnswer(s){
+      if(!s) return '';
+      // lowercase, trim, remove diacritics and punctuation
+      const down = s.trim().toLowerCase();
+      // remove diacritics
+      return down.normalize('NFD').replace(/\p{Diacritic}/gu,'').replace(/[^a-z0-9\s]/g,'');
+    }
+
+    function preparePools(){
+      pools = {};
+      for(const t of tiers){
+        // deep copy
+        pools[t] = EMOJI_BANK[t].map(e=>Object.assign({}, e));
+        shuffle(pools[t]);
+      }
+      currentTierIndex = 0;
+    }
+
+    function nextItem(){
+      // if current tier pool empty -> move to next tier
+      if(pools[tiers[currentTierIndex]].length === 0){
+        currentTierIndex++;
+        if(currentTierIndex >= tiers.length){
+          // finished all tiers -> start new cycle
+          currentTierIndex = 0;
+          roundCount++;
+          // prepare new pools again
+          preparePools();
+          // NOTE: according to spec: second loop onwards only +1s bonus
+        }
+      }
+      // pop one
+      const t = tiers[currentTierIndex];
+      if(pools[t].length === 0) return null;
+      currentItem = pools[t].pop();
+      renderEmoji(currentItem.emoji);
+      revealText.textContent = '';
+    }
+
+    function renderEmoji(e){
+      emojiCard.textContent = e;
+      // adjust font-size if emoji is wide
+      emojiCard.classList.toggle('small', (''+e).length>2);
+      // small scale animation
+      emojiCard.style.transform='scale(1.02)';
+      setTimeout(()=>emojiCard.style.transform='scale(1)',120);
+    }
+
+    function updateHUD(){
+      timeEl.textContent = Math.max(0,Math.ceil(timeLeft)) + 's';
+      scoreEl.textContent = String(score);
+    }
+
+    function endGame(){
+      gameActive=false;
+      clearInterval(timerInterval);
+      guessInput.disabled = true;
+      // show overlay with results
+      finalScore.textContent = score;
+      const best = loadRecord();
+      if(score>best){ saveRecord(score); }
+      bestScoreEl.textContent = loadRecord();
+      overlay.classList.add('show');
+      // hide keyboard
+      guessInput.blur();
+    }
+
+    function tick(){
+      timeLeft -= 0.25;
+      if(timeLeft <= 0){ timeLeft = 0; updateHUD(); endGame(); return; }
+      updateHUD();
+    }
+
+    function startGame(){
+      // reset
+      timeLeft = 60; score = 0; roundCount = 1; gameActive=true;
+      preparePools();
+      nextItem();
+      updateHUD();
+      guessInput.disabled = false;
+      guessInput.value = '';
+      guessInput.focus();
+      overlay.classList.remove('show');
+      clearInterval(timerInterval);
+      timerInterval = setInterval(tick,250);
+    }
+
+    function checkAnswer(val){
+      if(!gameActive) return;
+      const answer = normalizeAnswer(val);
+      if(!currentItem) return;
+      const accepted = [currentItem.pl, currentItem.en].concat(currentItem.others||[])
+        .filter(Boolean).map(normalizeAnswer);
+      if(accepted.includes(answer)){
+        score += 1;
+        const bonus = (roundCount === 1) ? 5 : 1;
+        timeLeft += bonus;
+        updateHUD();
+        guessInput.value = '';
+        nextItem();
+      } else {
+        timeLeft -= 1; // zmiana z -5s na -1s
+        if(timeLeft < 0) timeLeft = 0;
+        revealText.textContent = `${currentItem.pl} / ${currentItem.en}`;
+        updateHUD();
+        guessInput.value = '';
+        // poczekaj 2 sekundy przed następną emotką
+        setTimeout(()=>{
+          nextItem();
+          try{ guessInput.focus(); }catch(e){}
+        },2000);
+      }
+      setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },60);
+    }
+
+    // --- events ---
+    startBtn.addEventListener('click', ()=>{ startGame(); });
+    restartBtn.addEventListener('click', ()=>{ startGame(); });
+
+    guessInput.addEventListener('keydown', (e)=>{
+      if(!gameActive) return;
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        const val = guessInput.value;
+        checkAnswer(val);
+      }
+    });
+
+    // also check on input blur/submit so mobile can use "go" key
+    guessInput.addEventListener('input', (e)=>{
+      // optional: if user types something and then presses a punctuation like space+enter we handle on enter
+    });
+
+    hintBtn.addEventListener('click', ()=>{
+      if(!currentItem) return;
+      // hint: show first letter of polish and english
+      const pl = currentItem.pl ? currentItem.pl[0] : '?';
+      const en = currentItem.en ? currentItem.en[0] : '?';
+      revealText.textContent = `Podpowiedź: ${pl}... / ${en}...`;
+      setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },50);
+    });
+
+    // Keep keyboard focused while game active on visibility change
+    document.addEventListener('visibilitychange', ()=>{
+      if(gameActive && !document.hidden){ setTimeout(()=>guessInput.focus(),80); }
+    });
+
+    // prevent typing when time over
+    const observer = new MutationObserver(()=>{
+      if(!gameActive){ guessInput.disabled = true; }
+    });
+    observer.observe(overlay,{attributes:true,childList:true,subtree:true});
+
+    // init hud
+    updateHUD();
+    bestScoreEl.textContent = loadRecord();
+
+    // Try to autofocus input when the page loads (may be blocked on some mobiles until user interacts)
+    window.addEventListener('load', ()=>{ setTimeout(()=>{ try{ guessInput.focus(); }catch(e){} },300); });
+
+    // Accessibility: allow spacebar to focus input if not focused
+    window.addEventListener('keydown',(e)=>{
+      if(e.code==='Space' && document.activeElement !== guessInput){ e.preventDefault(); guessInput.focus(); }
+    });
+
+    // On tap of emoji card also focus input
+    emojiCard.addEventListener('click', ()=> guessInput.focus());
+
+  </script>
+</body>
+</html>
