@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Dziennik</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Pasek nawigacyjny */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background: #2d6cdf;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .navbar button {
+      background: white;
+      border: none;
+      margin: 0 5px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .navbar button:hover {
+      background: #d9e5ff;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 10px;
+    }
+    .tabs button {
+      background: #eee;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .tabs button.active {
+      background: #2d6cdf;
+      color: white;
+    }
+    .content {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .exam-block {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: #fafafa;
+    }
+    .exam-block strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button.save-btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button.save-btn:hover {
+      background: #45a049;
+    }
+    .no-data {
+      text-align: center;
+      color: #777;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <button onclick="location.href='20250821_frekwencja.html'">Frekwencja</button>
+    <button onclick="location.href='20250821_oceny.html'">Oceny</button>
+    <button onclick="location.href='20250821_sprawdziany.html'">Sprawdziany i Kartkówki</button>
+    <button onclick="location.href='20250821_pochwaly.html'">Pochwały</button>
+    <button onclick="location.href='20250821_uwagi.html'">Uwagi</button>
+    <button onclick="location.href='20250821_ocenakoncowa.html'">Ocena Końcowa</button>
+  </div>
+
+  <div class="tabs">
+    <button id="futureBtn" class="active" onclick="showTab('future')">Przyszłe Sprawdziany</button>
+    <button id="pastBtn" onclick="showTab('past')">Napisane Sprawdziany</button>
+    <button id="addBtn" onclick="showTab('add')">Dodaj Sprawdzian</button>
+  </div>
+
+  <div class="content" id="content"></div>
+
+  <script>
+    let exams = JSON.parse(localStorage.getItem("exams")) || [];
+
+    function saveExams() {
+      localStorage.setItem("exams", JSON.stringify(exams));
+    }
+
+    function showTab(tab) {
+      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(tab + "Btn").classList.add("active");
+
+      let content = document.getElementById("content");
+      content.innerHTML = "";
+
+      if (tab === "future") {
+        showFutureExams(content);
+      } else if (tab === "past") {
+        showPastExams(content);
+      } else if (tab === "add") {
+        showAddForm(content);
+      }
+    }
+
+    function showFutureExams(container) {
+      let today = new Date().setHours(0,0,0,0);
+      let futureExams = exams.filter(e => new Date(e.date).setHours(0,0,0,0) >= today);
+      futureExams.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+      if (futureExams.length === 0) {
+        container.innerHTML = "<p class='no-data'>Brak danych</p>";
+        return;
+      }
+
+      futureExams.forEach(e => {
+        let div = document.createElement("div");
+        div.className = "exam-block";
+        div.innerHTML = `
+          <strong>${e.subject}</strong>
+          Rodzaj: ${e.type}<br>
+          Data: ${e.date}<br>
+          Temat: ${e.topic}<br>
+          ${e.description ? "Opis: " + e.description : ""}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function showPastExams(container) {
+      let today = new Date().setHours(0,0,0,0);
+      let pastExams = exams.filter(e => new Date(e.date).setHours(0,0,0,0) < today);
+      pastExams.sort((a,b) => new Date(b.date) - new Date(a.date));
+
+      if (pastExams.length === 0) {
+        container.innerHTML = "<p class='no-data'>Brak danych</p>";
+        return;
+      }
+
+      pastExams.forEach(e => {
+        let div = document.createElement("div");
+        div.className = "exam-block";
+        div.innerHTML = `
+          <strong>${e.subject}</strong>
+          Rodzaj: ${e.type}<br>
+          Data: ${e.date}<br>
+          Temat: ${e.topic}<br>
+          ${e.description ? "Opis: " + e.description : ""}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function showAddForm(container) {
+      let form = document.createElement("div");
+      form.innerHTML = `
+        <div class="form-group">
+          <label>Rodzaj:</label>
+          <select id="examType">
+            <option value="">-- wybierz --</option>
+            <option>Sprawdzian</option>
+            <option>Kartkówka</option>
+            <option>Praca Klasowa</option>
+            <option>Test</option>
+            <option>Dyktando</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Przedmiot:</label>
+          <select id="examSubject">
+            <option value="">-- wybierz --</option>
+            <option>Biologia</option>
+            <option>Geografia</option>
+            <option>Historia</option>
+            <option>Informatyka</option>
+            <option>Język angielski</option>
+            <option>Język polski</option>
+            <option>Matematyka</option>
+            <option>Muzyka</option>
+            <option>Plastyka</option>
+            <option>Religia</option>
+            <option>Technika</option>
+            <option>Wychowanie Fizyczne</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Data:</label>
+          <input type="date" id="examDate">
+        </div>
+        <div class="form-group">
+          <label>Temat:</label>
+          <input type="text" id="examTopic">
+        </div>
+        <div class="form-group">
+          <label>Opis:</label>
+          <textarea id="examDescription"></textarea>
+        </div>
+        <button class="save-btn" onclick="addExam()">Zapisz</button>
+      `;
+      container.appendChild(form);
+    }
+
+    function addExam() {
+      let type = document.getElementById("examType").value;
+      let subject = document.getElementById("examSubject").value;
+      let date = document.getElementById("examDate").value;
+      let topic = document.getElementById("examTopic").value;
+      let description = document.getElementById("examDescription").value;
+
+      if (!type || !subject || !date || !topic) {
+        alert("Wypełnij wszystkie obowiązkowe pola!");
+        return;
+      }
+
+      exams.push({ type, subject, date, topic, description });
+      saveExams();
+      showTab("future");
+    }
+
+    // Domyślnie otwiera przyszłe sprawdziany
+    showTab("future");
+  </script>
+</body>
+</html>
