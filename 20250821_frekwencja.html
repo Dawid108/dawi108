@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Dziennik</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f7fb;
+      color: #333;
+    }
+
+    /* Pasek nawigacyjny */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background: #2d6cdf;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .navbar button {
+      background: white;
+      border: none;
+      margin: 0 5px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .navbar button:hover {
+      background: #d9e5ff;
+    }
+
+    /* Podmenu */
+    .submenu {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .submenu button {
+      background: #eee;
+      border: none;
+      margin: 0 5px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .submenu button.active {
+      background: #2d6cdf;
+      color: white;
+    }
+
+    /* Panel tygodnia */
+    .week-panel {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .week-panel button {
+      background: #2d6cdf;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      margin: 0 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .week-panel span {
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    /* Tabela */
+    table {
+      width: 80%;
+      margin: 0 auto 30px auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    th, td {
+      border: 1px solid #ccc;
+      text-align: center;
+      padding: 7px;
+    }
+    th {
+      background: #2d6cdf;
+      color: white;
+    }
+    select {
+      width: 60px;
+      padding: 3px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    /* Statystyki */
+    .stats {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px;
+    }
+    .student-stat {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      width: 280px;
+    }
+    .student-stat h3 {
+      margin-top: 0;
+      color: #2d6cdf;
+    }
+    .highlight {
+      margin-top: 10px;
+      font-weight: bold;
+      color: blue;
+    }
+
+    /* Kolory frekwencji */
+    .present { 
+      background: #8fdf8f; 
+    }   /* zielony */
+    .absent { 
+      background: #ff7f7f; 
+    }    /* czerwony */
+    .excused { 
+      background: #fff799; 
+    }   /* żółty */
+    .late { 
+      background: #ffb84d; 
+    }      /* pomarańczowy */
+    .sports { 
+      background: #7fbfff; 
+    }    /* niebieski */
+  </style>
+</head>
+<body>
+
+  <!-- Pasek nawigacyjny -->
+  <div class="navbar">
+    <button onclick="location.href='20250821_frekwencja.html'">Frekwencja</button>
+    <button onclick="location.href='20250821_oceny.html'">Oceny</button>
+    <button onclick="location.href='20250821_sprawdziany.html'">Sprawdziany i Kartkówki</button>
+    <button onclick="location.href='20250821_pochwaly.html'">Pochwały</button>
+    <button onclick="location.href='20250821_uwagi.html'">Uwagi</button>
+    <button onclick="location.href='20250821_ocenakoncowa.html'">Ocena Końcowa</button>
+  </div>
+
+  <!-- Podmenu -->
+  <div class="submenu">
+    <button id="btnKalendarz" class="active">Kalendarz</button>
+    <button id="btnStatystyki">Statystyki</button>
+  </div>
+
+  <!-- Kalendarz -->
+  <div id="kalendarz">
+    <div class="week-panel">
+      <button onclick="prevWeek()">&lt;</button>
+      <span id="weekDisplay"></span>
+      <button onclick="nextWeek()">&gt;</button>
+    </div>
+    <table id="attendanceTable">
+      <thead>
+        <tr>
+          <th>Uczeń</th>
+          <th>Pon</th>
+          <th>Wt</th>
+          <th>Śr</th>
+          <th>Czw</th>
+          <th>Pt</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Bocian Bolek</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Borsuk Bartek</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Czekolada Celinka</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Frytki Filip</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Krem Krzyś</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Lis Lucek</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Meduza Milena</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Pies Dżi-Pi-Es</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Piesek Piotrek</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Sarenka Hania</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Sówka Zosia</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Ważka Wiola</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+        <tr><td>Zając Zuzia</td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td><td><select></select></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Statystyki -->
+  <div id="statystyki" class="stats"></div>
+
+  <script>
+    const students = ["Bocian Bolek", "Borsuk Bartek", "Czekolada Celinka", "Frytki Filip", "Krem Krzyś", "Lis Lucek", "Meduza Milena", "Pies Dżi-Pi-Es", "Piesek Piotrek", "Sarenka Hania", "Sówka Zosia", "Ważka Wiola", "Zając Zuzia"];
+    const options = ["", "+", "-", "u", "s", "z"];
+
+    // Wypełnianie selectów
+    document.querySelectorAll("select").forEach(sel => {
+      options.forEach(opt => {
+        let o = document.createElement("option");
+        o.value = opt;
+        o.textContent = opt;
+        sel.appendChild(o);
+      });
+    });
+
+    // Zakres tygodni
+    const startDate = new Date(2025, 8, 1); // 01.09.2025
+    const endDate = new Date(2026, 5, 22);  // 22.06.2026
+    let currentWeek = new Date(startDate);
+
+    const kalendarz = document.getElementById("kalendarz");
+    const statystyki = document.getElementById("statystyki");
+    const btnKal = document.getElementById("btnKalendarz");
+    const btnStat = document.getElementById("btnStatystyki");
+
+    function formatDate(date) {
+      return date.toLocaleDateString("pl-PL");
+    }
+
+    function updateWeekDisplay() {
+      const monday = new Date(currentWeek);
+      const friday = new Date(currentWeek);
+      friday.setDate(monday.getDate() + 4);
+      document.getElementById("weekDisplay").textContent = `${formatDate(monday)} - ${formatDate(friday)}`;
+      loadAttendance();
+    }
+
+    function prevWeek() {
+      const newWeek = new Date(currentWeek);
+      newWeek.setDate(currentWeek.getDate() - 7);
+      if (newWeek >= startDate) {
+        currentWeek = newWeek;
+        updateWeekDisplay();
+      }
+    }
+
+    function nextWeek() {
+      const newWeek = new Date(currentWeek);
+      newWeek.setDate(currentWeek.getDate() + 7);
+      if (newWeek <= endDate) {
+        currentWeek = newWeek;
+        updateWeekDisplay();
+      }
+    }
+
+    function getWeekKey() {
+      return "week_" + currentWeek.toISOString().split("T")[0];
+    }
+
+    // Kolorowanie pól
+    function colorCell(select) {
+      let td = select.parentElement;
+      td.className = ""; // reset
+      if (select.value === "+") td.classList.add("present");
+      else if (select.value === "-") td.classList.add("absent");
+      else if (select.value === "u") td.classList.add("excused");
+      else if (select.value === "s") td.classList.add("late");
+      else if (select.value === "z") td.classList.add("sports");
+    }
+
+    // Zapisywanie
+    function saveAttendance() {
+      const rows = document.querySelectorAll("#attendanceTable tbody tr");
+      let data = {};
+      rows.forEach(row => {
+        const name = row.cells[0].textContent;
+        const values = [];
+        for (let i=1; i<=5; i++) {
+          const sel = row.cells[i].querySelector("select");
+          values.push(sel.value);
+        }
+        data[name] = values;
+      });
+      localStorage.setItem(getWeekKey(), JSON.stringify(data));
+    }
+
+    // Ładowanie
+    function loadAttendance() {
+      const rows = document.querySelectorAll("#attendanceTable tbody tr");
+      rows.forEach(row => {
+        for (let i=1; i<=5; i++) {
+          const sel = row.cells[i].querySelector("select");
+          sel.value = "";
+          colorCell(sel);
+        }
+      });
+      const saved = localStorage.getItem(getWeekKey());
+      if (saved) {
+        const data = JSON.parse(saved);
+        rows.forEach(row => {
+          const name = row.cells[0].textContent;
+          if (data[name]) {
+            data[name].forEach((val, i) => {
+              const sel = row.cells[i+1].querySelector("select");
+              sel.value = val;
+              colorCell(sel);
+            });
+          }
+        });
+      }
+    }
+
+    document.querySelectorAll("#attendanceTable select").forEach(sel => {
+      sel.addEventListener("change", () => {
+        colorCell(sel);
+        saveAttendance();
+      });
+    });
+
+    // Statystyki
+    function showStats() {
+      statystyki.innerHTML = "";
+      let totals = {};
+      students.forEach(s => {
+        totals[s] = {minus:0,u:0,s:0,z:0,plus:0};
+      });
+
+      for (let key in localStorage) {
+        if (key.startsWith("week_")) {
+          const data = JSON.parse(localStorage.getItem(key));
+          students.forEach(s => {
+            if (data[s]) {
+              data[s].forEach(val => {
+                if (val === "-") totals[s].minus++;
+                else if (val === "u") totals[s].u++;
+                else if (val === "s") totals[s].s++;
+                else if (val === "z") totals[s].z++;
+                else if (val === "+") totals[s].plus++;
+              });
+            }
+          });
+        }
+      }
+
+      students.forEach(s => {
+        const totalPresent = totals[s].plus + totals[s].s + totals[s].z;
+        const totalAbsent = totals[s].minus + totals[s].u;
+        const totalCount = totalPresent + totalAbsent;
+        let percent = totalCount > 0 ? Math.round((totalPresent/totalCount)*100) : 0;
+
+        let div = document.createElement("div");
+        div.className = "student-stat";
+        div.innerHTML = `<h3>${s}</h3>
+          <b>Nieobecność nieusprawiedliwiona: </b>${totals[s].minus}<br>
+          <b>Nieobecność usprawiedliwiona: </b>${totals[s].u}<br>
+          <b>Spóźnienie: </b>${totals[s].s}<br>
+          <b>Zawody: </b>${totals[s].z}<br>
+          <div class="highlight">Frekwencja: ${percent}%</div>`;
+        statystyki.appendChild(div);
+      });
+    }
+
+    btnKal.addEventListener("click", () => {
+      btnKal.classList.add("active");
+      btnStat.classList.remove("active");
+      kalendarz.style.display = "block";
+      statystyki.style.display = "none";
+    });
+
+    btnStat.addEventListener("click", () => {
+      btnStat.classList.add("active");
+      btnKal.classList.remove("active");
+      kalendarz.style.display = "none";
+      statystyki.style.display = "flex";
+      showStats();
+    });
+
+    // Start
+    updateWeekDisplay();
+  </script>
+</body>
+</html>
