@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Dziennik</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Pasek nawigacyjny */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background: #2d6cdf;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .navbar button {
+      background: white;
+      border: none;
+      margin: 0 5px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .navbar button:hover {
+      background: #d9e5ff;
+    }
+    .tab-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 10px; 
+    }
+    .tab-buttons button {
+      background: #eee;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .tab-buttons button.active {
+      background: #2d6cdf;
+      color: white;
+    }
+    .tab-content { 
+      display: none;
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
+    }
+    .tab-content.active { 
+      display: block;
+    }
+    select, input { 
+      padding: 8px; 
+      border: 1px solid #ccc; 
+      border-radius: 5px;
+      margin-bottom: 7px; 
+    }
+    table { 
+      width: 96%;
+      margin: 0 auto 30px auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    th, td { 
+      border: 1px solid #ccc;
+      text-align: center;
+      padding: 5px;
+    }
+    th {
+      background: #2d6cdf;
+      color: white;
+      padding: 5px;
+    }
+    .stat-block { 
+      background: #fff; 
+      padding: 15px; 
+      margin: 10px 0; 
+      border-radius: 8px; 
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1); 
+    }
+    .average { 
+      color: blue; 
+      font-weight: bold; 
+      text-align: center;
+    }
+    h3 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <button onclick="location.href='20250821_frekwencja.html'">Frekwencja</button>
+    <button onclick="location.href='20250821_oceny.html'">Oceny</button>
+    <button onclick="location.href='20250821_sprawdziany.html'">Sprawdziany i Kartkówki</button>
+    <button onclick="location.href='20250821_pochwaly.html'">Pochwały</button>
+    <button onclick="location.href='20250821_uwagi.html'">Uwagi</button>
+    <button onclick="location.href='20250821_ocenakoncowa.html'">Ocena Końcowa</button>
+  </div>
+
+  <div class="tab-buttons">
+    <button onclick="showTab('students')">Uczniowie</button>
+    <button onclick="showTab('stats')">Statystyki</button>
+  </div>
+
+  <!-- Uczniowie -->
+  <div id="students" class="tab-content active">
+    <label>Wybierz ucznia:
+      <select id="studentSelect" onchange="loadGrades()"></select>
+    </label>
+
+    <table id="gradesTable">
+      <thead>
+        <tr><th>Przedmiot</th><th>Ocena Końcowa</th></tr>
+      </thead>
+      <tbody id="gradesBody"></tbody>
+    </table>
+
+    <h3>Średnia Końcowa: <span id="studentAverage">-</span></h3>
+  </div>
+
+  <!-- Statystyki -->
+  <div id="stats" class="tab-content"><h2>Najlepsze Średnie:</h2>
+    <div id="statsContainer"></div>
+  </div>
+
+  <script>
+    const students = [
+      "Bocian Bolek", "Borsuk Bartek", "Czekolada Celinka", "Frytki Filip",
+      "Krem Krzyś", "Lis Lucek", "Meduza Milena", "Pies Dżi-Pi-Es",
+      "Piesek Piotrek", "Sarenka Hania", "Sówka Zosia",
+      "Ważka Wiola", "Zając Zuzia"
+    ];
+    const subjects = [
+      "Biologia", "Geografia", "Historia", "Informatyka",
+      "Język angielski", "Język polski", "Matematyka", "Muzyka",
+      "Plastyka", "Religia", "Technika", "Wychowanie Fizyczne"
+    ];
+    let grades = JSON.parse(localStorage.getItem("finalGrades")) || {};
+
+    function showTab(tab) {
+      // przełączanie zakładek
+      document.querySelectorAll(".tab-content").forEach(div => div.classList.remove("active"));
+      document.getElementById(tab).classList.add("active");
+
+      // przełączanie aktywnego przycisku
+      document.querySelectorAll(".tab-buttons button").forEach(btn => btn.classList.remove("active"));
+      if (tab === "students") {
+        document.querySelector(".tab-buttons button:nth-child(1)").classList.add("active");
+      } else if (tab === "stats") {
+        document.querySelector(".tab-buttons button:nth-child(2)").classList.add("active");
+      }
+
+      if (tab === "stats") updateStats();
+    }
+
+    function init() {
+      let select = document.getElementById("studentSelect");
+      select.innerHTML = "";
+      students.forEach(st => {
+        let opt = document.createElement("option");
+        opt.value = st;
+        opt.textContent = st;
+        select.appendChild(opt);
+      });
+      select.value = "Bocian Bolek";
+      loadGrades();
+    }
+
+    function loadGrades() {
+      const student = document.getElementById("studentSelect").value;
+      const tbody = document.getElementById("gradesBody");
+      tbody.innerHTML = "";
+      subjects.forEach(sub => {
+        let tr = document.createElement("tr");
+        let td1 = document.createElement("td");
+        td1.textContent = sub;
+        let td2 = document.createElement("td");
+
+        let select = document.createElement("select");
+        ["",6,5,4,3,2,1].forEach(grade => {
+          let opt = document.createElement("option");
+          opt.value = grade;
+          opt.textContent = grade;
+          if (grades[student]?.[sub] == grade) opt.selected = true;
+          select.appendChild(opt);
+        });
+        select.onchange = () => {
+          if (!grades[student]) grades[student] = {};
+          grades[student][sub] = select.value;
+          localStorage.setItem("finalGrades", JSON.stringify(grades));
+          updateAverage(student);
+        };
+        td2.appendChild(select);
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tbody.appendChild(tr);
+      });
+      updateAverage(student);
+    }
+
+    function updateAverage(student) {
+      if (!grades[student]) return;
+      let sum = 0, count = 0;
+      for (let sub of subjects) {
+        let g = parseInt(grades[student][sub]);
+        if (!isNaN(g)) { sum += g; count++; }
+      }
+      let avg = count ? (sum / count).toFixed(2) : "-";
+      document.getElementById("studentAverage").textContent = avg;
+    }
+
+    function updateStats() {
+      const container = document.getElementById("statsContainer");
+      container.innerHTML = "";
+      let stats = students.map(st => {
+        let sum = 0, count = 0;
+        if (grades[st]) {
+          for (let sub of subjects) {
+            let g = parseInt(grades[st][sub]);
+            if (!isNaN(g)) { sum += g; count++; }
+          }
+        }
+        let avg = count ? (sum / count).toFixed(2) : "0.00";
+        return { name: st, avg: parseFloat(avg) };
+      });
+      stats.sort((a,b) => b.avg - a.avg);
+      stats.forEach(s => {
+        let div = document.createElement("div");
+        div.className = "stat-block";
+        div.innerHTML = `<h3>${s.name}</h3><p class="average">Średnia: ${s.avg}</p>`;
+        container.appendChild(div);
+      });
+    }
+
+    init();
+  </script>
+</body>
+</html>
