@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Dziennik</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f4f7fb;
+      color: #333;
+    }
+
+    /* Pasek nawigacyjny */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background: #2d6cdf;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .navbar button {
+      background: white;
+      border: none;
+      margin: 0 5px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .navbar button:hover {
+      background: #d9e5ff;
+    }
+
+    /* Przedmioty */
+    .subjects, .semesters {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 10px;
+    }
+    .subjects button, .semesters button {
+      background: #eee;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .subjects button.active, .semesters button.active {
+      background: #2d6cdf;
+      color: white;
+    }
+
+    /* Tabela */
+    table {
+      width: 96%;
+      margin: 0 auto 30px auto;
+      border-collapse: collapse;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    th, td {
+      border: 1px solid #ccc;
+      text-align: center;
+      padding: 5px;
+    }
+    th {
+      background: #2d6cdf;
+      color: white;
+      padding: 5px;
+    }
+    select {
+      width: 45px;
+      padding: 3px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    /* Kolory ocen */
+    .grade-6 { background: #a6f5a6; }     /* jasny zielony */
+    .grade-5 { background: #3cb371; color: white; } /* ciemny zielony */
+    .grade-4 { background: #7fbfff; }     /* niebieski */
+    .grade-3 { background: #ffb84d; }     /* pomarańczowy */
+    .grade-2 { background: #c080ff; color: white; } /* fioletowy */
+    .grade-1 { background: #ff7f7f; }     /* czerwony */
+  </style>
+</head>
+<body>
+
+  <!-- Pasek nawigacyjny -->
+  <div class="navbar">
+    <button onclick="location.href='20250821_frekwencja.html'">Frekwencja</button>
+    <button onclick="location.href='20250821_oceny.html'">Oceny</button>
+    <button onclick="location.href='20250821_sprawdziany.html'">Sprawdziany i Kartkówki</button>
+    <button onclick="location.href='20250821_pochwaly.html'">Pochwały</button>
+    <button onclick="location.href='20250821_uwagi.html'">Uwagi</button>
+    <button onclick="location.href='20250821_ocenakoncowa.html'">Ocena Końcowa</button>
+  </div>
+
+  <!-- Przedmioty -->
+  <div class="subjects" id="subjects"></div>
+
+  <!-- Semestry -->
+  <div class="semesters">
+    <button id="sem1">Semestr 1</button>
+    <button id="sem2">Semestr 2</button>
+  </div>
+
+  <!-- Tabela ocen -->
+  <table id="gradesTable">
+    <thead>
+      <tr>
+        <th>Imię i Nazwisko</th>
+        <!-- 20 ocen -->
+        <th colspan="20">Oceny</th>
+        <th>Średnia</th>
+        <th>Średnia Roczna</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>Bocian Bolek</td></tr>
+      <tr><td>Borsuk Bartek</td></tr>
+      <tr><td>Czekoladka Celinka</td></tr>
+      <tr><td>Frytki Filip</td></tr>
+      <tr><td>Krem Krzyś</td></tr>
+      <tr><td>Lis Lucek</td></tr>
+      <tr><td>Meduza Milena</td></tr>
+      <tr><td>Pies Dżi-Pi-Es</td></tr>
+      <tr><td>Piesek Piotrek</td></tr>
+      <tr><td>Sarenka Hania</td></tr>
+      <tr><td>Sówka Zosia</td></tr>
+      <tr><td>Ważka Wiola</td></tr>
+      <tr><td>Zając Zuzia</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    const students = ["Bocian Bolek", "Borsuk Bartek", "Czekolada Celinka", "Frytki Filip", "Krem Krzyś", "Lis Lucek", "Meduza Milena", "Pies Dżi-Pi-Es", "Piesek Piotrek", "Sarenka Hania", "Sówka Zosia", "Ważka Wiola", "Zając Zuzia"];
+    const subjects = ["Biologia","Geografia","Historia","Informatyka","Język angielski","Język polski","Matematyka","Muzyka","Plastyka","Religia","Technika","Wychowanie Fizyczne"];
+    const gradeValues = ["","6","6-","5+","5","5-","4+","4","4-","3+","3","3-","2+","2","2-","1+","1","+","-"];
+    const gradePoints = {"6":6,"6-":5.75,"5+":5.25,"5":5,"5-":4.75,"4+":4.25,"4":4,"4-":3.75,"3+":3.25,"3":3,"3-":2.75,"2+":2.25,"2":2,"2-":1.75,"1+":1.25,"1":1};
+
+    let currentSubject = localStorage.getItem("currentSubject") || "Biologia";
+    let currentSemester = localStorage.getItem("currentSemester") || "1";
+
+    // Przyciski przedmiotów
+    const subjDiv = document.getElementById("subjects");
+    subjects.forEach(subj=>{
+      let btn=document.createElement("button");
+      btn.textContent=subj;
+      if(subj===currentSubject) btn.classList.add("active");
+      btn.onclick=()=>{currentSubject=subj;localStorage.setItem("currentSubject",subj);updateSubjectButtons();renderTable();};
+      subjDiv.appendChild(btn);
+    });
+
+    function updateSubjectButtons(){
+      document.querySelectorAll(".subjects button").forEach(b=>b.classList.remove("active"));
+      document.querySelectorAll(".subjects button").forEach(b=>{if(b.textContent===currentSubject)b.classList.add("active");});
+    }
+
+    // Przyciski semestrów
+    const sem1=document.getElementById("sem1");
+    const sem2=document.getElementById("sem2");
+    function updateSemButtons(){
+      sem1.classList.toggle("active",currentSemester==="1");
+      sem2.classList.toggle("active",currentSemester==="2");
+    }
+    sem1.onclick=()=>{currentSemester="1";localStorage.setItem("currentSemester","1");updateSemButtons();renderTable();};
+    sem2.onclick=()=>{currentSemester="2";localStorage.setItem("currentSemester","2");updateSemButtons();renderTable();};
+    updateSemButtons();
+
+    // Generowanie selectów w tabeli
+    const tbody=document.querySelector("#gradesTable tbody");
+    function renderTable(){
+      tbody.innerHTML="";
+      students.forEach(st=>{
+        let tr=document.createElement("tr");
+        let tdName=document.createElement("td");
+        tdName.textContent=st;
+        tr.appendChild(tdName);
+        for(let i=0;i<20;i++){
+          let td=document.createElement("td");
+          let sel=document.createElement("select");
+          gradeValues.forEach(v=>{
+            let o=document.createElement("option");
+            o.value=v;o.textContent=v;
+            sel.appendChild(o);
+          });
+          sel.onchange=()=>{saveGrades();colorCell(sel);updateAverages();};
+          td.appendChild(sel);
+          tr.appendChild(td);
+        }
+        let tdAvg=document.createElement("td");
+        let tdYear=document.createElement("td");
+        tr.appendChild(tdAvg);tr.appendChild(tdYear);
+        tbody.appendChild(tr);
+      });
+      loadGrades();
+      updateAverages();
+    }
+
+    // Klucz storage
+    function getKey(subj,sem){return "grades_"+subj+"_sem"+sem;}
+
+    // Zapisywanie ocen
+    function saveGrades(){
+      let data={};
+      tbody.querySelectorAll("tr").forEach(tr=>{
+        let name=tr.cells[0].textContent;
+        let vals=[];
+        for(let i=1;i<=20;i++){
+          vals.push(tr.cells[i].querySelector("select").value);
+        }
+        data[name]=vals;
+      });
+      localStorage.setItem(getKey(currentSubject,currentSemester),JSON.stringify(data));
+    }
+
+    // Ładowanie ocen
+    function loadGrades(){
+      let data=JSON.parse(localStorage.getItem(getKey(currentSubject,currentSemester))||"{}");
+      tbody.querySelectorAll("tr").forEach(tr=>{
+        let name=tr.cells[0].textContent;
+        if(data[name]){
+          data[name].forEach((val,i)=>{
+            let sel=tr.cells[i+1].querySelector("select");
+            sel.value=val;
+            colorCell(sel);
+          });
+        }
+      });
+    }
+
+    // Kolorowanie ocen
+    function colorCell(sel){
+      let td=sel.parentElement;
+      td.className="";
+      if(sel.value.startsWith("6")) td.classList.add("grade-6");
+      else if(sel.value.startsWith("5")) td.classList.add("grade-5");
+      else if(sel.value.startsWith("4")) td.classList.add("grade-4");
+      else if(sel.value.startsWith("3")) td.classList.add("grade-3");
+      else if(sel.value.startsWith("2")) td.classList.add("grade-2");
+      else if(sel.value.startsWith("1")) td.classList.add("grade-1");
+    }
+
+    // Obliczanie średnich
+    function updateAverages(){
+      tbody.querySelectorAll("tr").forEach(tr=>{
+        let vals=[];
+        for(let i=1;i<=20;i++){
+          let v=tr.cells[i].querySelector("select").value;
+          if(gradePoints[v]) vals.push(gradePoints[v]);
+        }
+        let avg=vals.length? (vals.reduce((a,b)=>a+b,0)/vals.length).toFixed(2):"-";
+        tr.cells[21].textContent=avg;
+
+        // średnia roczna
+        let otherSem=currentSemester==="1"?"2":"1";
+        let data1=JSON.parse(localStorage.getItem(getKey(currentSubject,"1"))||"{}");
+        let data2=JSON.parse(localStorage.getItem(getKey(currentSubject,"2"))||"{}");
+        let vals1=(data1[tr.cells[0].textContent]||[]).map(v=>gradePoints[v]).filter(Boolean);
+        let vals2=(data2[tr.cells[0].textContent]||[]).map(v=>gradePoints[v]).filter(Boolean);
+        let all=[...vals1,...vals2];
+        let yearAvg=all.length?(all.reduce((a,b)=>a+b,0)/all.length).toFixed(2):"-";
+        tr.cells[22].textContent=yearAvg;
+      });
+    }
+
+    // Start
+    renderTable();
+  </script>
+</body>
+</html>
