@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Dziennik</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Pasek nawigacyjny */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      background: #2d6cdf;
+      padding: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+    .navbar button {
+      background: white;
+      border: none;
+      margin: 0 5px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .navbar button:hover {
+      background: #d9e5ff;
+    }
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 10px;
+    }
+    .tabs button {
+      background: #eee;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+    .tabs button.active {
+      background: #2d6cdf;
+      color: white;
+    }
+    .content {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .praise-block, .stat-block {
+      border: 1px solid #ccc; border-radius: 8px;
+      padding: 10px; margin-bottom: 10px; background: #fafafa;
+    }
+    .praise-block strong { 
+        display: block; 
+        margin-bottom: 5px; 
+    }
+    .form-group { 
+        margin-bottom: 15px; 
+    }
+    label { display: block; 
+        margin-bottom: 5px; 
+        font-weight: bold; 
+    }
+    input, select, textarea {
+      width: 100%; 
+      padding: 8px; 
+      border: 1px solid #ccc; 
+      border-radius: 5px;
+      margin-bottom: 7px;
+    }
+    button.save-btn {
+      background: #4CAF50; 
+      color: white; 
+      border: none;
+      padding: 10px 20px; 
+      border-radius: 5px; 
+      cursor: pointer;
+    }
+    button.save-btn:hover { 
+        background: #45a049; 
+    }
+    .no-data { 
+        text-align: center; 
+        color: #777; 
+        font-style: italic; 
+    }
+    ul { 
+        margin: 0; 
+        padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <button onclick="location.href='20250821_frekwencja.html'">Frekwencja</button>
+    <button onclick="location.href='20250821_oceny.html'">Oceny</button>
+    <button onclick="location.href='20250821_sprawdziany.html'">Sprawdziany i Kartkówki</button>
+    <button onclick="location.href='20250821_pochwaly.html'">Pochwały</button>
+    <button onclick="location.href='20250821_uwagi.html'">Uwagi</button>
+    <button onclick="location.href='20250821_ocenakoncowa.html'">Ocena Końcowa</button>
+  </div>
+
+  <div class="tabs">
+    <button id="praiseBtn" class="active" onclick="showTab('praise')">Pochwały</button>
+    <button id="statsBtn" onclick="showTab('stats')">Statystyki</button>
+    <button id="addBtn" onclick="showTab('add')">Dodaj Pochwałę</button>
+  </div>
+
+  <div class="content" id="content"></div>
+
+  <script>
+    const students = [
+      "Bocian Bolek", "Borsuk Bartek", "Czekolada Celinka", "Frytki Filip",
+      "Krem Krzyś", "Lis Lucek", "Meduza Milena", "Pies Dżi-Pi-Es",
+      "Piesek Piotrek", "Sarenka Hania", "Sówka Zosia", "Ważka Wiola", "Zając Zuzia"
+    ];
+
+    let praises = JSON.parse(localStorage.getItem("praises")) || [];
+
+    function savePraises() {
+      localStorage.setItem("praises", JSON.stringify(praises));
+    }
+
+    function showTab(tab) {
+      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById(tab + "Btn").classList.add("active");
+      let content = document.getElementById("content");
+      content.innerHTML = "";
+
+      if (tab === "praise") showPraises(content);
+      else if (tab === "stats") showStats(content);
+      else if (tab === "add") showAddForm(content);
+    }
+
+    function showPraises(container) {
+      let filter = document.createElement("select");
+      filter.innerHTML = `<option value="all">Wszystko</option>` +
+        students.map(s => `<option value="${s}">${s}</option>`).join("");
+      filter.onchange = () => renderPraises(container, filter.value);
+      container.appendChild(filter);
+      renderPraises(container, "all");
+    }
+
+    function renderPraises(container, filter) {
+      let list = [...praises].sort((a, b) => new Date(b.date) - new Date(a.date));
+      let filtered = filter === "all" ? list : list.filter(p => p.students.includes(filter));
+      let wrapper = document.createElement("div");
+
+      if (filtered.length === 0) {
+        wrapper.innerHTML = "<p class='no-data'>Brak danych</p>";
+      } else {
+        filtered.forEach(p => {
+          let div = document.createElement("div");
+          div.className = "praise-block";
+          div.innerHTML = `
+            <strong>${p.students.join(", ")}</strong>
+            Data: ${p.date}<br>
+            Temat: ${p.topic}<br>
+            ${p.description ? "Opis: " + p.description : ""}
+          `;
+          wrapper.appendChild(div);
+        });
+      }
+      let old = container.querySelector(".praise-list");
+      if (old) old.remove();
+      wrapper.className = "praise-list";
+      container.appendChild(wrapper);
+    }
+
+    function showStats(container) {
+      let counts = {};
+      students.forEach(s => counts[s] = []);
+      praises.forEach(p => {
+        p.students.forEach(s => counts[s].push(p.topic));
+      });
+
+      let sorted = Object.entries(counts).sort((a, b) => b[1].length - a[1].length);
+
+      if (sorted.every(([_, arr]) => arr.length === 0)) {
+        container.innerHTML = "<p class='no-data'>Brak danych</p>";
+        return;
+      }
+
+      sorted.forEach(([student, topics]) => {
+        let div = document.createElement("div");
+        div.className = "stat-block";
+        div.innerHTML = `
+          <strong>${student}</strong><br>
+          Pochwały: ${topics.length}
+        `;
+        if (topics.length > 0) {
+          let ul = document.createElement("ul");
+          topics.forEach(t => {
+            let li = document.createElement("li");
+            li.textContent = t;
+            ul.appendChild(li);
+          });
+          div.appendChild(ul);
+        }
+        container.appendChild(div);
+      });
+    }
+
+    function showAddForm(container) {
+      let form = document.createElement("div");
+      form.innerHTML = `
+        <div class="form-group">
+          <label>Ilu uczniów:</label>
+          <input type="number" id="studentCount" min="1" max="13" value="1">
+        </div>
+        <div id="studentSelects"></div>
+        <div class="form-group">
+          <label>Temat:</label>
+          <input type="text" id="praiseTopic">
+        </div>
+        <div class="form-group">
+          <label>Opis:</label>
+          <textarea id="praiseDescription"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Data:</label>
+          <input type="date" id="praiseDate">
+        </div>
+        <button class="save-btn" onclick="addPraise()">Zapisz</button>
+      `;
+      container.appendChild(form);
+
+      // generuj listy rozwijane
+      document.getElementById("studentCount").addEventListener("input", generateStudentSelects);
+      generateStudentSelects();
+    }
+
+    function generateStudentSelects() {
+      let count = parseInt(document.getElementById("studentCount").value) || 1;
+      if (count > 13) count = 13;
+      let container = document.getElementById("studentSelects");
+      container.innerHTML = "";
+      for (let i = 0; i < count; i++) {
+        let div = document.createElement("div");
+        div.className = "form-group";
+        div.innerHTML = `
+          <label>Uczeń ${i+1}:</label>
+          <select class="praiseStudent">
+            <option value="">-- wybierz ucznia --</option>
+            ${students.map(s => `<option value="${s}">${s}</option>`).join("")}
+          </select>
+        `;
+        container.appendChild(div);
+      }
+    }
+
+    function addPraise() {
+        let selected = Array.from(document.querySelectorAll(".praiseStudent"))
+            .map(s => s.value).filter(v => v);
+        let topic = document.getElementById("praiseTopic").value;
+        let description = document.getElementById("praiseDescription").value;
+        let date = document.getElementById("praiseDate").value;
+
+        if (selected.length === 0 || !topic || !date) {
+            alert("Wypełnij wszystkie obowiązkowe pola!");
+            return;
+        }
+
+        // sprawdzanie powtórzeń
+        let duplicates = selected.filter((s, i) => selected.indexOf(s) !== i);
+        if (duplicates.length > 0) {
+            alert("Nie możesz wybrać tego samego ucznia więcej niż raz!");
+            return;
+        }
+
+        praises.push({ students: selected, topic, description, date });
+        savePraises();
+        showTab("praise");
+    }
+
+    // domyślnie pokazuje pochwały
+    showTab("praise");
+  </script>
+</body>
+</html>
