@@ -1,0 +1,325 @@
+<!DOCTYPE html><html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Liga Sierpniowa</title>
+  <style>
+    :root {
+      --bg: #0f172a;           /* granat / tło */
+      --card: #111827;         /* ciemna karta */
+      --muted: #94a3b8;        /* opis / etykiety */
+      --text: #e5e7eb;         /* główny tekst */
+      --accent: #22c55e;       /* zielony akcent */
+      --accent-2: #3b82f6;     /* niebieski akcent */
+      --danger: #ef4444;       /* czerwony (anuluj) */
+      --shadow: 0 6px 20px rgba(0,0,0,.35);
+      --radius: 18px;
+    }* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; }
+body {
+  margin: 0;
+  background: radial-gradient(1200px 800px at 50% -200px, #1f2937 0%, var(--bg) 40%);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, Noto Sans, sans-serif;
+  line-height: 1.4;
+}
+
+/* Górna nawigacja */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+  padding: 12px; backdrop-filter: blur(6px);
+  background: rgba(2,6,23,.6);
+  border-bottom: 1px solid rgba(148,163,184,.15);
+}
+
+.title {
+  grid-column: 1 / -1;
+  font-weight: 800; letter-spacing: .3px; text-align: center;
+  font-size: 20px; color: #fff;
+}
+
+.tab-btn {
+  appearance: none; border: 0; outline: 0; cursor: pointer;
+  padding: 12px 10px; border-radius: var(--radius);
+  background: var(--card); color: var(--text); font-weight: 700;
+  box-shadow: var(--shadow);
+  transition: transform .06s ease, background .2s ease, color .2s ease;
+}
+.tab-btn:active { transform: scale(.98); }
+.tab-btn.active { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%); color: #031315; }
+
+/* Główna zawartość */
+.wrap { padding: 16px; max-width: 900px; margin: 0 auto; }
+
+/* Selektor kolejki */
+.round-picker { display: flex; gap: 10px; align-items: center; margin: 10px 0 18px; }
+.round-label { color: var(--muted); font-weight: 600; }
+select.round {
+  width: 100%; padding: 12px; border-radius: 14px; border: 1px solid rgba(148,163,184,.25);
+  background: var(--card); color: var(--text); font-weight: 700; box-shadow: var(--shadow);
+}
+
+/* Karty meczów */
+.match-card {
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+  border: 1px solid rgba(148,163,184,.15);
+  border-radius: var(--radius);
+  padding: 12px; margin: 12px 0; box-shadow: var(--shadow);
+}
+.teams {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center;
+  font-weight: 800; letter-spacing: .2px; font-size: 16px;
+}
+.vs { color: var(--muted); font-weight: 700; }
+
+.result-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.btn {
+  appearance: none; border: 0; outline: 0; cursor: pointer; padding: 10px 12px;
+  border-radius: 12px; font-weight: 800; background: #0b1220; color: var(--text);
+  border: 1px solid rgba(148,163,184,.2);
+  transition: transform .06s ease, background .2s ease, border-color .2s ease;
+}
+.btn:active { transform: scale(.98); }
+.btn.selected { background: rgba(34,197,94,.15); border-color: var(--accent); }
+
+/* Tabela ligowa */
+.table-card { background: var(--card); border: 1px solid rgba(148,163,184,.15); border-radius: var(--radius); box-shadow: var(--shadow); }
+table { width: 100%; border-collapse: collapse; overflow: hidden; border-radius: var(--radius); }
+thead { background: rgba(148,163,184,.1); color: #eaf2ff; }
+th, td { padding: 12px; text-align: left; }
+th:nth-child(1), td:nth-child(1) { width: 54px; text-align: center; }
+tr + tr td { border-top: 1px solid rgba(148,163,184,.12); }
+
+.muted { color: var(--muted); font-size: 13px; }
+
+/* Desktop drobne poprawki */
+@media (min-width: 640px) {
+  .title { font-size: 22px; }
+  .teams { font-size: 18px; }
+}
+
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="title">Liga Sierpniowa</div>
+    <button id="tab-matches" class="tab-btn active">Mecze</button>
+    <button id="tab-table" class="tab-btn">Tabela</button>
+  </div>  <div class="wrap">
+    <!-- Widok: Mecze -->
+    <section id="view-matches">
+      <div class="round-picker">
+        <span class="round-label">Wybierz kolejkę:</span>
+        <select id="round-select" class="round"></select>
+      </div>
+      <div id="matches-list"></div>
+      <p class="muted">Wynik wybierasz jako <strong>1–0</strong> (wygrywa pierwszy z pary) lub <strong>0–1</strong> (wygrywa drugi). Zmiana zapisywana jest automatycznie.</p>
+    </section><!-- Widok: Tabela -->
+<section id="view-table" style="display:none">
+  <div class="table-card">
+    <table id="league-table">
+      <thead>
+        <tr>
+          <th>M</th>
+          <th>Drużyna</th>
+          <th>Pkt</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  <p class="muted">Sortowanie: punkty malejąco, przy równej liczbie punktów – alfabetycznie.</p>
+</section>
+
+  </div>  <script>
+    // === USTAWIENIA ===
+    const STORAGE_RESULTS_KEY = 'wyniki_sierpien_2025'; // wymagany klucz dla wyników
+    const STORAGE_FIXTURES_KEY = 'terminarz_sierpien_2025'; // aby zachować wylosowany terminarz
+
+    const TEAMS = [
+      'Young Boys', 'Piast Gliwice', 'Sparta Praga', 'West Ham',
+      'Girona', 'Raków Częstochowa', 'Atalanta', 'Szachtar'
+    ];
+
+    // === POMOCNICZE: losowanie i terminarz (metoda "kołowa") ===
+    function shuffle(array) {
+      const a = array.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function generateRoundRobin(teams) {
+      // Zakładamy parzystą liczbę drużyn (tu: 8). Jedna runda = n-1 kolejek.
+      const n = teams.length;
+      const rounds = n - 1;
+      const arr = teams.slice();
+      // Metoda kołowa: pierwszy indeks stały, reszta rotuje
+      const fixed = arr[0];
+      let rotating = arr.slice(1);
+      const fixtures = [];
+
+      for (let r = 0; r < rounds; r++) {
+        const roundPairs = [];
+        const left = [fixed, ...rotating.slice(0, (n/2) - 1)];
+        const right = rotating.slice((n/2) - 1).slice().reverse();
+        for (let i = 0; i < n/2; i++) {
+          const home = left[i];
+          const away = right[i];
+          roundPairs.push([home, away]);
+        }
+        fixtures.push(roundPairs);
+        // rotacja (bez pierwszego stałego)
+        rotating = [rotating[rotating.length - 1], ...rotating.slice(0, rotating.length - 1)];
+      }
+      return fixtures; // [ [ [A,B], [C,D], ... ],  ... ]
+    }
+
+    function getOrCreateFixtures() {
+      const saved = localStorage.getItem(STORAGE_FIXTURES_KEY);
+      if (saved) {
+        try { return JSON.parse(saved); } catch(e) {}
+      }
+      const shuffled = shuffle(TEAMS);
+      const fixtures = generateRoundRobin(shuffled);
+      localStorage.setItem(STORAGE_FIXTURES_KEY, JSON.stringify(fixtures));
+      return fixtures;
+    }
+
+    // === WYNIKI ===
+    function loadResults() {
+      const raw = localStorage.getItem(STORAGE_RESULTS_KEY);
+      if (!raw) return {};
+      try { return JSON.parse(raw) || {}; } catch(e) { return {}; }
+    }
+    function saveResults(results) {
+      localStorage.setItem(STORAGE_RESULTS_KEY, JSON.stringify(results));
+    }
+
+    // result value: 1 => 1-0 (wygrywa pierwszy), -1 => 0-1 (wygrywa drugi)
+
+    // === INTERFEJS MECZÓW ===
+    const fixtures = getOrCreateFixtures();
+    const results = loadResults();
+
+    const roundSelect = document.getElementById('round-select');
+    const matchesList = document.getElementById('matches-list');
+
+    function populateRoundSelect() {
+      roundSelect.innerHTML = '';
+      const total = fixtures.length; // 7 kolejek
+      for (let i = 0; i < total; i++) {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = `Kolejka ${i+1}`;
+        roundSelect.appendChild(opt);
+      }
+    }
+
+    function matchKey(roundIdx, matchIdx) { return `r${roundIdx}_m${matchIdx}`; }
+
+    function renderRound(roundIdx) {
+      matchesList.innerHTML = '';
+      const round = fixtures[roundIdx];
+      round.forEach(([home, away], i) => {
+        const key = matchKey(roundIdx, i);
+        const selected = results[key]; // 1 lub -1
+
+        const card = document.createElement('div');
+        card.className = 'match-card';
+
+        const teams = document.createElement('div');
+        teams.className = 'teams';
+        teams.innerHTML = `<div>${home}</div><div class="vs">vs</div><div style="text-align:right">${away}</div>`;
+        card.appendChild(teams);
+
+        const btns = document.createElement('div');
+        btns.className = 'result-buttons';
+
+        const btnHome = document.createElement('button');
+        btnHome.className = 'btn' + (selected === 1 ? ' selected' : '');
+        btnHome.textContent = '1–0';
+        btnHome.addEventListener('click', () => {
+          results[key] = 1; saveResults(results); renderRound(roundIdx); renderTable();
+        });
+
+        const btnAway = document.createElement('button');
+        btnAway.className = 'btn' + (selected === -1 ? ' selected' : '');
+        btnAway.textContent = '0–1';
+        btnAway.addEventListener('click', () => {
+          results[key] = -1; saveResults(results); renderRound(roundIdx); renderTable();
+        });
+
+        btns.appendChild(btnHome);
+        btns.appendChild(btnAway);
+        card.appendChild(btns);
+
+        matchesList.appendChild(card);
+      });
+    }
+
+    // === TABELA ===
+    const tableBody = document.querySelector('#league-table tbody');
+
+    function computePoints() {
+      const pts = Object.fromEntries(TEAMS.map(t => [t, 0]));
+      fixtures.forEach((round, rIdx) => {
+        round.forEach(([home, away], mIdx) => {
+          const key = matchKey(rIdx, mIdx);
+          const res = results[key];
+          if (res === 1) pts[home] += 3;
+          else if (res === -1) pts[away] += 3;
+        });
+      });
+      return pts;
+    }
+
+    function renderTable() {
+      const pts = computePoints();
+      const rows = Object.keys(pts).map(name => ({ name, pts: pts[name] }));
+      rows.sort((a, b) => {
+        if (b.pts !== a.pts) return b.pts - a.pts; // punkty malejąco
+        return a.name.localeCompare(b.name, 'pl', { sensitivity: 'base' }); // alfabetycznie
+      });
+      tableBody.innerHTML = '';
+      rows.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${idx+1}</td><td>${row.name}</td><td><strong>${row.pts}</strong></td>`;
+        tableBody.appendChild(tr);
+      });
+    }
+
+    // === ZAKŁADKI ===
+    const tabMatches = document.getElementById('tab-matches');
+    const tabTable = document.getElementById('tab-table');
+    const viewMatches = document.getElementById('view-matches');
+    const viewTable = document.getElementById('view-table');
+
+    function activateTab(tab) {
+      if (tab === 'matches') {
+        tabMatches.classList.add('active');
+        tabTable.classList.remove('active');
+        viewMatches.style.display = '';
+        viewTable.style.display = 'none';
+      } else {
+        tabTable.classList.add('active');
+        tabMatches.classList.remove('active');
+        viewTable.style.display = '';
+        viewMatches.style.display = 'none';
+      }
+    }
+
+    tabMatches.addEventListener('click', () => activateTab('matches'));
+    tabTable.addEventListener('click', () => { activateTab('table'); renderTable(); });
+
+    // === START ===
+    populateRoundSelect();
+    roundSelect.addEventListener('change', () => renderRound(parseInt(roundSelect.value, 10)));
+    roundSelect.value = '0';
+    renderRound(0);
+    renderTable();
+  </script></body>
+</html>
