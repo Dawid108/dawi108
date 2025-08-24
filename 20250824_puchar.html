@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Puchar</title>
+  <style>
+    :root{
+      --bg: #0a0f1f;
+      --bg-2: #101425;
+      --card: rgba(255,255,255,.06);
+      --text: #f5f6fa;
+      --muted: #b7b9d6;
+      --accent: #6ee7ff;
+      --accent-2:#8fffbc;
+      --shadow: 0 8px 20px rgba(0,0,0,.3);
+      --radius: 18px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; color:var(--text); background:
+        radial-gradient(1500px 800px at 80% -20%, #22386e 0%, transparent 70%),
+        radial-gradient(1200px 700px at -10% 120%, #16413f 0%, transparent 65%),
+        linear-gradient(145deg, #0a0f1f, #101425 70%);
+      font: 500 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      overflow-x:hidden;
+    }
+
+    .wrap{max-width:1200px; margin:0 auto; padding:16px;}
+    header{
+      position:sticky; top:0; z-index:50; backdrop-filter: blur(10px);
+      background: rgba(15,18,38,.8);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .header-inner{display:flex; align-items:center; justify-content:center; padding:14px 16px;}
+    h1{
+      margin:0; font-size: clamp(22px, 4.8vw, 36px);
+      background: linear-gradient(90deg, #fff, var(--accent));
+      -webkit-background-clip:text; 
+      color:transparent;
+      text-shadow: 0 2px 24px rgba(110,231,255,.2);
+    }
+
+    .stages{ display:flex; gap:8px; overflow:auto hidden; padding:10px 16px; justify-content:center; }
+    .btn{ --pad-x:14px; --pad-y:10px;
+      appearance:none; border:1px solid rgba(255,255,255,.14);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color:var(--text); padding:var(--pad-y) var(--pad-x); border-radius:999px; cursor:pointer;
+      font-weight:600; transition: transform .12s ease, background .2s ease;
+    }
+    .btn:hover{ transform: translateY(-1px) }
+    .btn.active{ outline:2px solid var(--accent); outline-offset:2px }
+    .btn.primary{ background: linear-gradient(90deg, rgba(110,231,255,.9), rgba(143,255,188,.9)); color:#0a0f1f; }
+    .btn.locked{ border-style:dashed }
+
+    .board{ padding:16px; }
+    .col{ max-width:600px; margin:0 auto; }
+    .col-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+    .col-title{ font-weight:800; text-transform:uppercase; font-size:14px; color:var(--muted) }
+    .chip{ font-size:11px; padding:6px 10px; border-radius:999px; background: rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12) }
+    .chip.ok{ background: rgba(143,255,188,.16); border-color: rgba(143,255,188,.35); color:#caffdd }
+
+    .match{ background: var(--card); border:1px solid rgba(255,255,255,.08); border-radius: var(--radius);
+      padding:8px; margin:10px 0; box-shadow: var(--shadow); }
+    .match.locked{ opacity:.85 }
+    .team{ display:flex; align-items:center; justify-content:space-between; gap:8px;
+      border-radius:12px; padding:10px 12px; cursor:pointer; border:1px solid transparent; margin:6px 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02));
+    }
+    .team:hover{ background: rgba(255,255,255,.06) }
+    .team.win{ border-color: var(--accent); background: linear-gradient(90deg, rgba(110,231,255,.15), rgba(255,255,255,0)); }
+    .team.lose{ opacity:.6 }
+
+    .trophy-wrap{ text-align:center; margin:22px 0 10px }
+    .trophy{ font-size: clamp(48px, 14vw, 120px); filter: drop-shadow(0 10px 30px rgba(255,215,0,.35)); }
+    .champion{ text-align:center; font-weight:900; font-size: clamp(18px,4.2vw,28px); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner wrap">
+      <h1>Puchar</h1>
+    </div>
+    <div class="stages" id="stagesBar" aria-label="Etapy pucharu"></div>
+  </header>
+
+  <main class="wrap board">
+    <div class="col" id="roundContent"></div>
+    <div id="finalCelebration"></div>
+  </main>
+
+<script>
+(function(){
+  const STORAGE_KEY = 'puchar_2025_klub';
+  const STAGE_LABELS = ["1/64","1/32","1/16","1/8","1/4","1/2","Finał"];
+  const TEAMS = ["Din. Tirana","Egnatia","Inter Escaldes","Arsenal","Chelsea","Brighton","Brentford","Fulham","Crystal Palace","West Ham","Tottenham","Ipswich","Millwall","Watford","Charlton","QPR","Stevenage","Mansfield","Wimbledon","Luton","Leyton Orient","Cambridge Utd","Sturm Graz","Rapid Wiedeń","Wolfsberger","Austria Wiedeń","Borac Banja Luka","Dinamo Zagrzeb","Hajduk Split","Buducnost","Slavia Praga","Sigma Ołomuniec","Banik Ostrawa","Sparta Praga","FC Viktoria Pilzno","Jablonec","Al Ahly","Lyon","Strasbourg","Panetolikos","Barcelona","Espanyol","Girona","Vaduz","Shkendija","Rabotnicki","Union Berlin","St. Pauli","VfB Stuttgart","SC Freiburg","FC Augsburg","Heidenheim","RB Lipsk","TSG Hoffenheim","Hertha Berlin","Dresden","1. FC Nurnberg","Brann","Fredrikstad","Molde","Lech Poznań","Jagiellonia Białystok","Raków Częstochowa","Legia Warszawa","Pogoń Szczecin","Cracovia","Motor Lublin","GKS Katowice","Górnik Zabrze","Piast Gliwice","Korona Kielce","Radomiak Radom","Widzew Łódź","Lechia Gdańsk","Zagłębie Lubin","Stal Mielec","Śląsk Wrocław","Puszcza Niepołomice","Wisła Płock","Bruk-Bet T.","Arka Gdynia","Wisła Kraków","Miedź Legnica","Polonia Warszawa","GKS Tychy","Znicz Pruszków","Górnik Łęczna","Ruch Chorów","ŁKS Łódź","Stal Rzeszów","Chrobry Głogów","Odra Opole","Pogoń Siedlce","KKS Kalisz","Warta Poznań","Stal Stalowa Wola","Polonia Bytom","Pogoń Grodzisk Mazowiecki","KS Wieczysta Kraków","Błyskawica","Sokół Chwaliszew","Astra Krotoszyn","Nacional","Crvena Zvezda","Partizan","Slovan Bratysława","Zilina","Celje","Basel","Young Boys","Servette","Lausanne","Lugano","Malmo FF","Hacken","Mjallby","Esperance Tunis","Alanyaspor","Dynamo Kijów","Szachtar Donieck","Polissia Żytomierz","Cremonese","Inter Mediolan","AC Milan","Atalanta","Juventus","Torino","Como"];
+
+  let state = null;
+  const shuffle = arr => { const a = arr.slice(); for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]] } return a; };
+  const save = ()=> localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  const load = ()=> { try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) }catch{ return null } };
+
+  function init(){
+    const saved = load();
+    if(saved && saved.rounds && saved.rounds[0].length===64){ state=saved; } else {
+      const first=[]; const draw=shuffle(TEAMS);
+      for(let i=0;i<draw.length;i+=2){ first.push({a:draw[i], b:draw[i+1], w:null}); }
+      state={ rounds:[first], locked:[false], current:0, champion:null };
+      save();
+    }
+    renderAll();
+  }
+
+  const stagesBar=document.getElementById('stagesBar');
+  const roundContent=document.getElementById('roundContent');
+  const finalCelebration=document.getElementById('finalCelebration');
+
+  function renderAll(){
+    renderStages();
+    renderRound();
+    renderFinal();
+  }
+
+  function renderStages(){
+    stagesBar.innerHTML='';
+    for(let i=0;i<state.rounds.length;i++){
+      const btn=document.createElement('button');
+      btn.className='btn'+(state.current===i?' active':'')+(state.locked[i]?' locked':'');
+      btn.textContent=STAGE_LABELS[i];
+      btn.addEventListener('click',()=>{ state.current=i; save(); renderAll(); });
+      stagesBar.appendChild(btn);
+    }
+    const last=state.rounds.length-1;
+    if(state.locked[last] && last<STAGE_LABELS.length-1){
+      const next=document.createElement('button');
+      next.className='btn primary'; next.textContent=STAGE_LABELS[last+1];
+      next.addEventListener('click',()=>makeNextRound());
+      stagesBar.appendChild(next);
+    }
+  }
+
+  function renderRound(){
+    roundContent.innerHTML='';
+    const matches=state.rounds[state.current];
+    const col=document.createElement('div');
+    const head=document.createElement('div'); head.className='col-head';
+    const title=document.createElement('div'); title.className='col-title'; title.textContent=STAGE_LABELS[state.current];
+    const status=document.createElement('div'); const done=matches.filter(m=>m.w!==null).length;
+    status.innerHTML=`<span class="chip ${state.locked[state.current]?'ok':''}">${done}/${matches.length} wyłonionych</span>`;
+    head.appendChild(title); head.appendChild(status); col.appendChild(head);
+
+    matches.forEach((m,i)=>{
+      const card=document.createElement('div'); card.className='match'+(state.locked[state.current]?' locked':'');
+      const tA=teamRow(m.a,i,0,m.w);
+      const tB=teamRow(m.b,i,1,m.w);
+      card.appendChild(tA); card.appendChild(tB);
+      col.appendChild(card);
+    });
+    roundContent.appendChild(col);
+  }
+
+  function teamRow(name,mIndex,side,winner){
+    const el=document.createElement('div');
+    el.className='team'+(winner===null?'':winner===side?' win':' lose');
+    el.textContent=name;
+    el.addEventListener('click',()=>onPick(mIndex,side));
+    if(state.locked[state.current]) el.style.pointerEvents='none';
+    return el;
+  }
+
+  function onPick(mIndex,side){
+    if(state.locked[state.current]) return;
+    const match=state.rounds[state.current][mIndex];
+    match.w=side;
+    if(state.rounds[state.current].every(x=>x.w!==null)){ state.locked[state.current]=true; }
+    save(); renderAll();
+  }
+
+  function makeNextRound(){
+    const last=state.rounds.length-1;
+    if(!state.locked[last]) return;
+    const winners=state.rounds[last].map(m=>m.w===0?m.a:m.b);
+    if(winners.length===1){ state.champion=winners[0]; save(); renderAll(); return; }
+    const shuffled=shuffle(winners);
+    const next=[]; for(let i=0;i<shuffled.length;i+=2){ next.push({a:shuffled[i],b:shuffled[i+1],w:null}); }
+    state.rounds.push(next); state.locked.push(false); state.current=state.rounds.length-1;
+    save(); renderAll();
+  }
+
+  function renderFinal(){
+    finalCelebration.innerHTML='';
+    const last=state.rounds.length-1;
+    if(STAGE_LABELS[last]!=='Finał') return;
+    const fin=state.rounds[last][0];
+    if(fin.w!==null){
+      const winner=fin.w===0?fin.a:fin.b;
+      state.champion=winner; save();
+      const wrap=document.createElement('div'); wrap.className='trophy-wrap';
+      wrap.innerHTML=`<div class="trophy">🏆</div><div class="champion"><strong>${winner}</strong></div>`;
+      finalCelebration.appendChild(wrap);
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
