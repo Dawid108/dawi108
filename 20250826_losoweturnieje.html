@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Losowe Turnieje Piłkarskie</title>
+<style>
+  /* --- Mobile-first, clean & pleasant style --- */
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --accent:#06b6d4;
+    --muted:#94a3b8;
+    --glass: rgba(255,255,255,0.03);
+    --round:14px;
+    --gap:12px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: linear-gradient(180deg,#071023 0%, #07182a 60%);
+    color:#e6eef6;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:18px;
+  }
+
+  header{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:14px;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .logo .dot{
+    width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);
+    display:flex;align-items:center;justify-content:center;font-weight:700;
+    box-shadow:0 6px 18px rgba(7,22,39,0.6);
+  }
+  h1{font-size:16px;margin:0}
+  .sub{font-size:12px;color:var(--muted)}
+
+  /* Nav */
+  nav{
+    display:flex;
+    gap:8px;
+    margin-top:10px;
+    margin-bottom:18px;
+  }
+  .btn{
+    background:var(--glass);
+    border:1px solid rgba(255,255,255,0.04);
+    padding:8px 12px;border-radius:10px;cursor:pointer;
+    font-weight:600;font-size:13px;color:var(--muted);
+    box-shadow:0 6px 14px rgba(2,6,23,0.6);
+  }
+  .btn.active{
+    background:linear-gradient(90deg,var(--accent),#7c3aed);
+    color:#021826;
+    box-shadow:0 10px 30px rgba(7,22,39,0.6);
+  }
+  main{
+    display:block;
+    gap:16px;
+  }
+
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:12px;border-radius:var(--round);box-shadow:0 6px 30px rgba(2,6,23,0.6);
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  /* Table in Tabela and Ultra */
+  table{width:100%;border-collapse:collapse;font-size:14px}
+  th,td{padding:10px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.03)}
+  th{font-size:13px;color:var(--muted);font-weight:700}
+  tr:last-child td{border-bottom:none}
+  .center{text-align:center}
+  .muted{color:var(--muted);font-size:13px}
+
+  /* Matches list */
+  .round-select, .team-name {
+    width:100%;
+    padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);
+    background:transparent;color:inherit;font-size:14px;
+  }
+  .match{
+    display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:10px;margin-top:8px;
+    background:rgba(255,255,255,0.015);
+  }
+  .match .names{display:flex;gap:8px;align-items:center}
+  .match .names .team{min-width:110px}
+  .win{font-weight:800;color:var(--accent);background:rgba(6,182,212,0.08);padding:6px 8px;border-radius:8px}
+  .btn-score{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);cursor:pointer;background:transparent}
+  .btn-score.active{background:rgba(7,10,16,0.6);border-color:rgba(255,255,255,0.06)}
+  .small{font-size:12px;color:var(--muted)}
+
+  /* Turnieje blocks */
+  .t-list{display:grid;grid-template-columns:1fr;gap:10px}
+  @media(min-width:720px){ .t-list{grid-template-columns:repeat(2,1fr)} }
+  .t-block{padding:12px;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.017),rgba(0,0,0,0.02));border:1px solid rgba(255,255,255,0.03)}
+  .t-block.selected{outline:3px solid rgba(6,182,212,0.12)}
+  .t-block .t-name{font-weight:800}
+  .t-block .t-sub{font-size:13px;color:var(--muted);margin-top:6px}
+
+  /* New turniej form */
+  .form-row{display:flex;gap:8px;align-items:center}
+  input[type="text"]{flex:1;padding:10px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+  .create-btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;background:linear-gradient(90deg,var(--accent),#7c3aed);color:#021826;font-weight:800}
+
+  /* helper */
+  .no-data{padding:26px;text-align:center;color:var(--muted);font-weight:700}
+  footer{margin-top:18px;text-align:center;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="dot">⚽</div>
+      <div>
+        <h1>Losowe Turnieje</h1>
+      </div>
+    </div>
+    <div class="sub">8 drużyn · 7 kolejek · 3pkt za zwycięstwo</div>
+  </header>
+
+  <nav id="nav">
+    <button class="btn" data-view="table" id="nav-table">Tabela</button>
+    <button class="btn" data-view="matches" id="nav-matches">Mecze</button>
+    <button class="btn" data-view="tournaments" id="nav-tournaments">Turnieje</button>
+    <button class="btn" data-view="ultra" id="nav-ultra">Ultra</button>
+    <button class="btn" data-view="new" id="nav-new">Nowy</button>
+  </nav>
+
+  <main id="app">
+    <!-- dynamic content inserted here -->
+  </main>
+
+  <footer class="muted">Stworzono dla Ciebie — miłej zabawy!</footer>
+
+<script>
+/* ====== Data model & persistence ====== */
+const STORAGE_KEY = 'losowe_turnieje_2526';
+
+const ALL_TEAMS = [
+"Arsenal","Chelsea","Tottenham","Barcelona","Inter Mediolan","AC Milan","Atalanta","Juventus","Brighton","Brentford","Fulham","Crystal Palace",
+"West Ham","Sturm Graz","Slavia Praga","Lyon","Strasbourg","Espanyol","Girona","Union Berlin","VfB Stuttgart","SC Freiburg","FC Augsburg","RB Lipsk",
+"TSG Hoffenheim","Lech Poznań","Crvena Zvezda","Basel","Torino","Como","Din. Tirana","Rapid Wiedeń","Wolfsberger","Dinamo Zagrzeb","Sigma Ołomuniec",
+"Banik Ostrawa","Sparta Praga","FC Viktoria Pilzno","Shkendija","St. Pauli","Heidenheim","Brann","Fredrikstad","Jagiellonia Białystok","Raków Częstochowa",
+"Legia Warszawa","Pogoń Szczecin","Cracovia","Motor Lublin","GKS Katowice","Górnik Zabrze","Piast Gliwice","Korona Kielce","Radomiak Radom","Widzew Łódź",
+"Lechia Gdańsk","Zagłębie Lubin","Slovan Bratysława","Celje","Young Boys","Servette","Lausanne","Malmo FF","Hacken","Dynamo Kijów","Szachtar Donieck",
+"Polissia Żytomierz","Cremonese","Egnatia","Inter Escaldes","Ipswich","Millwall","Watford","Charlton","QPR","Austria Wiedeń","Borac Banja Luka","Hajduk Split",
+"Buducnost","Jablonec","Al Ahly","Panetolikos","Vaduz","Rabotnicki","Hertha Berlin","Dresden","1. FC Nurnberg","Molde","Stal Mielec","Śląsk Wrocław",
+"Puszcza Niepołomice","Wisła Płock","Bruk-Bet T.","Arka Gdynia","Wisła Kraków","Miedź Legnica","Polonia Warszawa","GKS Tychy","Górnik Łęczna","Ruch Chorów",
+"ŁKS Łódź","Nacional","Partizan","Zilina","Lugano","Mjallby","Esperance Tunis","Alanyaspor","Stevenage","Mansfield","Wimbledon","Luton","Leyton Orient",
+"Cambridge Utd","Znicz Pruszków","Stal Rzeszów","Chrobry Głogów","Odra Opole","Pogoń Siedlce","KKS Kalisz","Warta Poznań","Stal Stalowa Wola","Polonia Bytom",
+"Pogoń Grodzisk Mazowiecki","KS Wieczysta Kraków","Błyskawica","Sokół Chwaliszew","Astra Krotoszyn"
+];
+
+// load/save
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return { tournaments: [], selectedId: null, lastView: 'table' };
+    return JSON.parse(raw);
+  }catch(e){
+    console.error('load error', e);
+    return { tournaments: [], selectedId: null, lastView: 'table' };
+  }
+}
+function saveState(state){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+/* ====== Round-robin scheduler (circle method) for even number of teams ====== */
+function buildRoundsFromTeams(teamNames){
+  // expects array length 8 -> returns array of 7 rounds, each round has array of 4 matches {home,away,result:null/'home'/'away'}
+  const n = teamNames.length;
+  if(n % 2 !== 0) throw new Error('teams must be even');
+  const teams = teamNames.slice();
+  const fixed = teams[0];
+  const others = teams.slice(1);
+  const rounds = [];
+  for(let r=0;r<n-1;r++){
+    const pairs = [];
+    const arr = [fixed].concat(others);
+    for(let i=0;i<n/2;i++){
+      const a = arr[i];
+      const b = arr[n-1-i];
+      pairs.push({home:a, away:b, result:null});
+    }
+    rounds.push({matches:pairs});
+    // rotate others
+    others.unshift(others.pop());
+  }
+  return rounds;
+}
+
+/* ====== Utilities ====== */
+function uid(prefix='id'){
+  return prefix + '_' + Math.random().toString(36).slice(2,9);
+}
+function nowTs(){ return Date.now(); }
+
+/* ====== Core logic: create new tournament ====== */
+function createTournament(name){
+  // choose 8 unique random teams
+  const pool = ALL_TEAMS.slice();
+  const chosen = [];
+  for(let i=0;i<8;i++){
+    const idx = Math.floor(Math.random()*pool.length);
+    chosen.push(pool.splice(idx,1)[0]);
+  }
+  const rounds = buildRoundsFromTeams(chosen);
+  return {
+    id: uid('t'),
+    name: name,
+    createdAt: nowTs(),
+    teams: chosen.map(t => ({name:t})), // teams list (names)
+    rounds: rounds, // rounds with matches (result null initially)
+  };
+}
+
+/* ====== Scoring and checks ====== */
+function computeTableForTournament(t){
+  // returns array [{name, points}] sorted desc points
+  const pts = {};
+  for(const team of t.teams) pts[team.name]=0;
+  for(const round of t.rounds){
+    for(const m of round.matches){
+      if(m.result === 'home') pts[m.home]+=3;
+      else if(m.result === 'away') pts[m.away]+=3;
+    }
+  }
+  const rows = Object.keys(pts).map(name => ({name, pts: pts[name]}));
+  rows.sort((a,b)=> b.pts - a.pts || a.name.localeCompare(b.name));
+  return rows;
+}
+function allMatchesPlayed(t){
+  for(const r of t.rounds) for(const m of r.matches) if(!m.result) return false;
+  return true;
+}
+function getWinnerOfTournament(t){
+  if(!allMatchesPlayed(t)) return null;
+  const table = computeTableForTournament(t);
+  // winner is first in table
+  return table[0].name;
+}
+
+/* ====== Application state & rendering ====== */
+let state = loadState();
+if(!state.lastView) state.lastView = 'table';
+if(!state.tournaments) state.tournaments = [];
+if(!state.selectedId && state.tournaments.length) state.selectedId = state.tournaments[state.tournaments.length-1].id;
+saveState(state);
+
+const appEl = document.getElementById('app');
+const navButtons = document.querySelectorAll('#nav .btn');
+
+function setActiveNav(view){
+  navButtons.forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+  state.lastView = view;
+  saveState(state);
+}
+function getSelectedTournament(){
+  return state.tournaments.find(x=>x.id===state.selectedId) || null;
+}
+
+/* ====== UI Renderers ====== */
+function render(){
+  const view = state.lastView || 'table';
+  setActiveNav(view);
+  if(view==='table') renderTableView();
+  else if(view==='matches') renderMatchesView();
+  else if(view==='tournaments') renderTournamentsView();
+  else if(view==='ultra') renderUltraView();
+  else if(view==='new') renderNewView();
+}
+
+/* ---------- Tabela ---------- */
+function renderTableView(){
+  const t = getSelectedTournament();
+  const wrapper = document.createElement('div');
+  if(!t){ wrapper.innerHTML = `<div class="card no-data">Brak Danych</div>`; appEl.innerHTML=''; appEl.appendChild(wrapper); return; }
+  const title = document.createElement('div');
+  title.className='card';
+  title.innerHTML = `<div style="font-weight:800">${escapeHtml(t.name)}</div><div class="small muted" style="margin-top:6px">Turniej utworzony: ${new Date(t.createdAt).toLocaleString()}</div>`;
+  wrapper.appendChild(title);
+
+  const tableCard = document.createElement('div');
+  tableCard.className='card';
+  const tableRows = computeTableForTournament(t).map((row, idx) => {
+    return `<tr>
+      <td style="width:48px">${idx+1}</td>
+      <td>${escapeHtml(row.name)}</td>
+      <td style="width:90px">${row.pts}</td>
+    </tr>`;
+  }).join('');
+  tableCard.innerHTML = `<table>
+    <thead><tr><th>M</th><th>Drużyna</th><th>Pkt</th></tr></thead>
+    <tbody>${tableRows}</tbody>
+  </table>`;
+  wrapper.appendChild(tableCard);
+  appEl.innerHTML=''; appEl.appendChild(wrapper);
+}
+
+/* ---------- Mecze ---------- */
+function renderMatchesView(){
+  const t = getSelectedTournament();
+  if(!t){ appEl.innerHTML = `<div class="card no-data">Brak Danych</div>`; return; }
+  const wrapper = document.createElement('div');
+
+  const title = document.createElement('div');
+  title.className='card';
+  title.innerHTML = `<div style="font-weight:800">${escapeHtml(t.name)}</div><div class="small muted" style="margin-top:6px">Wybierz kolejkę i kliknij zwycięzcę (1-0 lub 0-1). Kliknij ponownie, aby cofnąć.</div>`;
+  wrapper.appendChild(title);
+
+  const selectCard = document.createElement('div');
+  selectCard.className='card';
+  const roundOptions = t.rounds.map((r, idx) => `<option value="${idx}">Kolejka ${idx+1}</option>`).join('');
+  selectCard.innerHTML = `<select class="round-select" id="round-select">${roundOptions}</select>`;
+  wrapper.appendChild(selectCard);
+
+  const matchesCard = document.createElement('div');
+  matchesCard.className='card';
+  matchesCard.id='matches-card';
+  wrapper.appendChild(matchesCard);
+
+  appEl.innerHTML=''; appEl.appendChild(wrapper);
+
+  const roundSelect = document.getElementById('round-select');
+  roundSelect.value = 0;
+  function renderMatchesFor(roundIndex){
+    const card = document.getElementById('matches-card');
+    card.innerHTML = '';
+    const round = t.rounds[roundIndex];
+    for(let mi=0;mi<round.matches.length;mi++){
+      const m = round.matches[mi];
+      const mEl = document.createElement('div');
+      mEl.className='match';
+      const left = document.createElement('div');
+      left.className='names';
+      left.innerHTML = `<div class="team">${escapeHtml(m.home)}</div><div class="small muted">vs</div><div class="team">${escapeHtml(m.away)}</div>`;
+      const right = document.createElement('div');
+      right.style.display='flex'; right.style.gap='8px'; right.style.alignItems='center';
+
+      const btnHome = document.createElement('button');
+      btnHome.className='btn-score';
+      btnHome.textContent = '1-0';
+      btnHome.title = m.home;
+      const btnAway = document.createElement('button');
+      btnAway.className='btn-score';
+      btnAway.textContent = '0-1';
+      btnAway.title = m.away;
+
+      // highlight winner
+      if(m.result === 'home'){ btnHome.classList.add('active'); btnHome.innerHTML = `<span class="win">${escapeHtml(m.home)}</span>`; }
+      if(m.result === 'away'){ btnAway.classList.add('active'); btnAway.innerHTML = `<span class="win">${escapeHtml(m.away)}</span>`; }
+
+      // click handlers: toggle
+      btnHome.addEventListener('click', ()=>{
+        if(m.result === 'home'){ m.result = null; }
+        else { m.result = 'home'; }
+        saveState(state); renderMatchesFor(roundIndex); // rerender matches & later tables reflect
+      });
+      btnAway.addEventListener('click', ()=>{
+        if(m.result === 'away'){ m.result = null; }
+        else { m.result = 'away'; }
+        saveState(state); renderMatchesFor(roundIndex);
+      });
+
+      right.appendChild(btnHome);
+      right.appendChild(btnAway);
+
+      // show current score-like label
+      const status = document.createElement('div');
+      const scoreLabel = m.result ? (m.result==='home' ? `${m.home} 1 - 0 ${m.away}` : `${m.home} 0 - 1 ${m.away}`) : '—';
+      status.innerHTML = `<div class="small muted">${scoreLabel}</div>`;
+      right.appendChild(status);
+
+      mEl.appendChild(left);
+      mEl.appendChild(right);
+      card.appendChild(mEl);
+    }
+
+    // After each change, recompute and save state
+    saveState(state);
+  }
+
+  roundSelect.addEventListener('change', ()=> renderMatchesFor(Number(roundSelect.value)));
+  renderMatchesFor(0);
+}
+
+/* ---------- Turnieje (lista) ---------- */
+function renderTournamentsView(){
+  const wrapper = document.createElement('div');
+  const title = document.createElement('div');
+  title.className='card';
+  title.innerHTML = `<div style="font-weight:800">Turnieje</div><div class="small muted" style="margin-top:6px">Wybierz turniej aby ustawić go jako aktywny.</div>`;
+  wrapper.appendChild(title);
+
+  if(state.tournaments.length===0){
+    wrapper.innerHTML += `<div class="card no-data">Brak Danych</div>`;
+    appEl.innerHTML=''; appEl.appendChild(wrapper); return;
+  }
+
+  const listCard = document.createElement('div');
+  listCard.className='card';
+  listCard.innerHTML = `<div class="t-list" id="t-list"></div>`;
+  wrapper.appendChild(listCard);
+  appEl.innerHTML=''; appEl.appendChild(wrapper);
+
+  const container = document.getElementById('t-list');
+
+  // sort newest -> oldest
+  const tlist = state.tournaments.slice().sort((a,b)=> b.createdAt - a.createdAt);
+  for(const t of tlist){
+    const tb = document.createElement('div');
+    tb.className = 't-block' + (t.id === state.selectedId ? ' selected' : '');
+    const winner = getWinnerOfTournament(t);
+    tb.innerHTML = `<div class="t-name">${escapeHtml(t.name)}</div>
+      <div class="t-sub">${new Date(t.createdAt).toLocaleString()}</div>
+      <div class="t-sub" style="margin-top:8px">Wygrany: ${winner ? escapeHtml(winner) : '<span class="muted">—</span>'}</div>`;
+    tb.addEventListener('click', ()=>{
+      state.selectedId = t.id;
+      saveState(state);
+      render(); // update highlight & other views
+    });
+    container.appendChild(tb);
+  }
+}
+
+/* ---------- Ultra ---------- */
+function renderUltraView(){
+  if(state.tournaments.length===0){ appEl.innerHTML = `<div class="card no-data">Brak Danych</div>`; return; }
+  const wrapper = document.createElement('div');
+  const title = document.createElement('div');
+  title.className='card';
+  title.innerHTML = `<div style="font-weight:800">Ultra Tabela</div><div class="small muted" style="margin-top:6px">Suma punktów ze wszystkich turniejów i liczba wygranych turniejów.</div>`;
+  wrapper.appendChild(title);
+
+  // aggregate
+  const agg = {}; // name -> {wins, pts}
+  for(const t of state.tournaments){
+    // compute points in this tournament
+    const pts = {};
+    for(const team of t.teams) pts[team.name]=0;
+    for(const r of t.rounds) for(const m of r.matches){
+      if(m.result==='home') pts[m.home]+=3;
+      else if(m.result==='away') pts[m.away]+=3;
+    }
+    // add to agg
+    for(const name of Object.keys(pts)){
+      if(!agg[name]) agg[name]={wins:0, pts:0};
+      agg[name].pts += pts[name];
+    }
+    const winner = getWinnerOfTournament(t);
+    if(winner){
+      if(!agg[winner]) agg[winner]={wins:0, pts:0};
+      agg[winner].wins += 1;
+    }
+  }
+
+  // make rows
+  const rows = Object.keys(agg).map(name => ({name, wins:agg[name].wins, pts:agg[name].pts}));
+  rows.sort((a,b) => b.wins - a.wins || b.pts - a.pts || a.name.localeCompare(b.name));
+
+  const tableCard = document.createElement('div');
+  tableCard.className='card';
+  const tableRows = rows.map((r, idx) => `<tr>
+    <td style="width:48px">${idx+1}</td>
+    <td>${escapeHtml(r.name)}</td>
+    <td style="width:90px">${r.wins}</td>
+    <td style="width:110px">${r.pts}</td>
+  </tr>`).join('');
+  tableCard.innerHTML = `<table>
+    <thead><tr><th>M</th><th>Drużyna</th><th>Win</th><th>Pkt</th></tr></thead>
+    <tbody>${tableRows}</tbody></table>`;
+  wrapper.appendChild(tableCard);
+  appEl.innerHTML=''; appEl.appendChild(wrapper);
+}
+
+/* ---------- Nowy Turniej ---------- */
+function renderNewView(){
+  const wrapper = document.createElement('div');
+  const title = document.createElement('div');
+  title.className='card';
+  title.innerHTML = `<div style="font-weight:800">Nowy Turniej</div><div class="small muted" style="margin-top:6px">Podaj nazwę (4–30 znaków), utwórz losowy turniej z 8 drużyn.</div>`;
+  wrapper.appendChild(title);
+
+  const formCard = document.createElement('div');
+  formCard.className='card';
+  formCard.innerHTML = `<div style="display:flex;gap:8px;align-items:center">
+    <input id="new-name" type="text" placeholder="Nazwa turnieju (maks 30 znaków)" maxlength="30" />
+    <button id="create-btn" class="create-btn">Stwórz</button>
+  </div>
+  <div class="small muted" style="margin-top:8px">Po utworzeniu turniej pojawi się w zakładce "Turnieje" i zostanie wybrany.</div>`;
+  wrapper.appendChild(formCard);
+  appEl.innerHTML=''; appEl.appendChild(wrapper);
+
+  const nameInput = document.getElementById('new-name');
+  const createBtn = document.getElementById('create-btn');
+
+  createBtn.addEventListener('click', ()=>{
+    const name = nameInput.value.trim();
+    if(name.length < 4){ alert('Nazwa musi mieć co najmniej 4 znaki.'); return; }
+    if(name.length > 30){ alert('Nazwa max 30 znaków.'); return; }
+    const t = createTournament(name);
+    state.tournaments.push(t);
+    state.selectedId = t.id;
+    state.lastView = 'tournaments';
+    saveState(state);
+    render();
+  });
+}
+
+/* ====== Navigation events ====== */
+document.getElementById('nav').addEventListener('click', (ev)=>{
+  const btn = ev.target.closest('.btn');
+  if(!btn) return;
+  const view = btn.dataset.view;
+  state.lastView = view;
+  saveState(state);
+  render();
+});
+
+/* ====== helper escape (avoid HTML injection) ====== */
+function escapeHtml(s){
+  return (s+'').replace(/[&<>"']/g, (c)=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ====== Initial render & ensure UI highlights ====== */
+render();
+
+/* ====== Keep UI responsive to changes in data (like after saving results) ====== */
+window.addEventListener('storage', ()=>{
+  // if localStorage changed in other tab, reload internal state and rerender
+  state = loadState();
+  render();
+});
+</script>
+</body>
+</html>
