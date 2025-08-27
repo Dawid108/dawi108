@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Ranking Drużyn</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --muted:#9aa7bf;
+    --accent:#7dd3fc;
+    --accent-2:#60a5fa;
+    --glass: rgba(255,255,255,0.03);
+    --row-even: rgba(255,255,255,0.02);
+    --radius:16px;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+    background: linear-gradient(180deg,#071022 0%, #081226 60%);
+    color:#e6eef8;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+  }
+
+  .wrap{
+    max-width:1100px;
+    margin:18px auto;
+    padding:14px;
+  }
+
+  header.app-header{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin-bottom:12px;
+  }
+
+  .logo {
+    width:56px;
+    height:56px;
+    border-radius:12px;
+    background: linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 8px 20px rgba(35,99,165,0.18), inset 0 -6px 12px rgba(255,255,255,0.04);
+    flex:0 0 56px;
+  }
+  .logo span{
+    font-weight:700;
+    color:#082235;
+    font-size:20px;
+    letter-spacing:0.4px;
+  }
+
+  .title {
+    display:flex;
+    flex-direction:column;
+  }
+  .title h1{
+    margin:0;
+    font-size:18px;
+    letter-spacing:0.2px;
+  }
+  .title p{
+    margin:2px 0 0 0;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  .controls{
+    display:flex;
+    gap:8px;
+    margin:10px 0 16px 0;
+    align-items:center;
+  }
+
+  .search {
+    flex:1;
+    background:var(--glass);
+    border-radius:12px;
+    padding:10px 12px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+    box-shadow: 0 4px 10px rgba(2,6,23,0.6);
+  }
+  .search input{
+    background:transparent;
+    border:0;
+    outline:0;
+    color:inherit;
+    font-size:15px;
+    width:100%;
+  }
+  .badge {
+    background:rgba(255,255,255,0.04);
+    padding:8px 10px;
+    border-radius:999px;
+    display:inline-flex;
+    align-items:center;
+    font-weight:600;
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  /* Card containing table */
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius: var(--radius);
+    padding:10px;
+    box-shadow: 0 12px 30px rgba(4,10,23,0.6);
+    backdrop-filter: blur(6px);
+  }
+
+  /* responsive table wrapper */
+  .table-wrap{
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+    border-radius: 12px;
+    margin-top:6px;
+    border:1px solid rgba(255,255,255,0.03);
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:900px; /* allow horizontal scroll on small devices */
+    font-size:13px;
+  }
+  thead th{
+    position:sticky;
+    top:0;
+    background:linear-gradient(180deg, rgba(10,14,22,0.85), rgba(8,10,16,0.9));
+    color:var(--accent);
+    padding:10px 12px;
+    text-align:left;
+    font-weight:700;
+    border-bottom:1px solid rgba(255,255,255,0.04);
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  thead th .col-title{
+    display:inline-block;
+  }
+  thead th .sort-ind{ 
+    display:inline-block;
+    width:10px;
+    margin-left:8px;
+    opacity:0.7;
+  }
+
+  tbody td{
+    padding:10px 12px;
+    border-bottom:1px solid rgba(255,255,255,0.02);
+    vertical-align:middle;
+    white-space:nowrap;
+  }
+  tbody tr:nth-child(even){
+    background:var(--row-even);
+  }
+  tbody tr:hover{
+    background: linear-gradient(90deg, rgba(125,211,252,0.03), rgba(96,165,250,0.02));
+  }
+
+  .team{
+    display:flex;
+    gap:10px;
+    align-items:center;
+  }
+  .team .dot{
+    width:34px; height:34px; border-radius:8px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; color:var(--muted); font-size:12px;
+    flex-shrink:0;
+  }
+  .team strong{ display:block; font-weight:600; color:#e9f6ff; font-size:13px; }
+  .team small{ display:block; color:var(--muted); font-size:11px; margin-top:2px; }
+
+  /* Mobile adjustments */
+  @media (max-width:520px){
+    .wrap{ padding:12px; margin:8px; }
+    .logo{ width:48px; height:48px; border-radius:10px; }
+    thead th{ font-size:12px; padding:8px 8px; }
+    tbody td{ padding:8px; font-size:12px; }
+    .team .dot { width:30px; height:30px; font-size:11px; }
+    .title h1{ font-size:16px; }
+  }
+
+  /* small helper */
+  .muted{ color:var(--muted); font-size:12px; }
+  .tiny{ font-size:11px; color:var(--muted); }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="app-header">
+      <div class="logo" aria-hidden><span>RD</span></div>
+      <div class="title">
+        <h1>Ranking Drużyn</h1>
+        <p>Pełna tabela — przesuń w lewo/prawo, kliknij nagłówek, aby sortować.</p>
+      </div>
+    </header>
+
+    <div class="controls">
+      <div class="search" title="Szukaj drużyny">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.8"><path d="M21 21l-4.35-4.35" stroke="#cfeefb" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="11" cy="11" r="6" stroke="#cfeefb" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <input id="search" placeholder="Szukaj drużyny (np. Lech, Barcelona)..." />
+      </div>
+      <div class="badge" id="count">153</div>
+    </div>
+
+    <div class="card">
+      <div class="table-wrap" role="region" aria-label="Tabela rankingowa">
+        <table id="rankTable">
+          <thead>
+            <tr>
+              <th data-key="lp">Lp. <span class="sort-ind">↕</span></th>
+              <th data-key="druzyna">Drużyna <span class="sort-ind">↕</span></th>
+              <th data-key="suma">Suma <span class="sort-ind">↕</span></th>
+              <th data-key="ekstra">Ekstra <span class="sort-ind">↕</span></th>
+              <th data-key="puch">Puch <span class="sort-ind">↕</span></th>
+              <th data-key="lpcol">LP <span class="sort-ind">↕</span></th>
+              <th data-key="ml">ML <span class="sort-ind">↕</span></th>
+              <th data-key="super">Super <span class="sort-ind">↕</span></th>
+              <th data-key="rank">Rank <span class="sort-ind">↕</span></th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Data rows inserted here -->
+            <!-- I'll include all rows from your dataset -->
+<tr><td>1.</td><td class="team"><div class="dot">1</div><div><strong>Barcelona</strong><small class="tiny">—</small></div></td><td>3082</td><td>166</td><td>70</td><td>46</td><td>0</td><td>1800</td><td>1000</td></tr>
+<tr><td>2.</td><td class="team"><div class="dot">2</div><div><strong>Lech Poznań</strong><small class="tiny">—</small></div></td><td>2937</td><td>1125</td><td>395</td><td>327</td><td>0</td><td>90</td><td>1000</td></tr>
+<tr><td>3.</td><td class="team"><div class="dot">3</div><div><strong>Legia Warszawa</strong></div></td><td>2762</td><td>985</td><td>475</td><td>242</td><td>0</td><td>60</td><td>1000</td></tr>
+<tr><td>4.</td><td class="team"><div class="dot">4</div><div><strong>Chelsea</strong></div></td><td>2522</td><td>120</td><td>60</td><td>42</td><td>0</td><td>1300</td><td>1000</td></tr>
+<tr><td>5.</td><td class="team"><div class="dot">5</div><div><strong>Jagiellonia Białystok</strong></div></td><td>2347</td><td>865</td><td>230</td><td>222</td><td>0</td><td>30</td><td>1000</td></tr>
+<tr><td>6.</td><td class="team"><div class="dot">6</div><div><strong>Wisła Kraków</strong></div></td><td>2287</td><td>839</td><td>240</td><td>208</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>7.</td><td class="team"><div class="dot">7</div><div><strong>Cracovia</strong></div></td><td>2240</td><td>764</td><td>245</td><td>201</td><td>0</td><td>30</td><td>1000</td></tr>
+<tr><td>8.</td><td class="team"><div class="dot">8</div><div><strong>Lechia Gdańsk</strong></div></td><td>2218</td><td>710</td><td>270</td><td>208</td><td>0</td><td>30</td><td>1000</td></tr>
+<tr><td>9.</td><td class="team"><div class="dot">9</div><div><strong>Śląsk Wrocław</strong></div></td><td>2203</td><td>792</td><td>180</td><td>201</td><td>0</td><td>30</td><td>1000</td></tr>
+<tr><td>10.</td><td class="team"><div class="dot">10</div><div><strong>Zagłębie Lubin</strong></div></td><td>2119</td><td>754</td><td>205</td><td>160</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>11.</td><td class="team"><div class="dot">11</div><div><strong>Górnik Zabrze</strong></div></td><td>2097</td><td>735</td><td>185</td><td>177</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>12.</td><td class="team"><div class="dot">12</div><div><strong>Inter</strong></div></td><td>2000</td><td>40</td><td>40</td><td>21</td><td>0</td><td>800</td><td>1000</td></tr>
+<tr><td>13.</td><td class="team"><div class="dot">13</div><div><strong>Szachtar</strong></div></td><td>2000</td><td>54</td><td>10</td><td>29</td><td>0</td><td>800</td><td>1000</td></tr>
+<tr><td>14.</td><td class="team"><div class="dot">14</div><div><strong>Slovan Bratysława</strong></div></td><td>2000</td><td>0</td><td>25</td><td>34</td><td>0</td><td>300</td><td>1000</td></tr>
+<tr><td>15.</td><td class="team"><div class="dot">15</div><div><strong>Sparta Praga</strong></div></td><td>2000</td><td>0</td><td>20</td><td>16</td><td>0</td><td>300</td><td>1000</td></tr>
+<tr><td>16.</td><td class="team"><div class="dot">16</div><div><strong>Young Boys</strong></div></td><td>2000</td><td>0</td><td>10</td><td>7</td><td>0</td><td>300</td><td>1000</td></tr>
+<tr><td>17.</td><td class="team"><div class="dot">17</div><div><strong>AC Milan</strong></div></td><td>2000</td><td>57</td><td>20</td><td>18</td><td>0</td><td>200</td><td>1000</td></tr>
+<tr><td>18.</td><td class="team"><div class="dot">18</div><div><strong>Arsenal</strong></div></td><td>2000</td><td>58</td><td>60</td><td>42</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>19.</td><td class="team"><div class="dot">19</div><div><strong>Sturm Graz</strong></div></td><td>2000</td><td>0</td><td>5</td><td>4</td><td>0</td><td>100</td><td>1000</td></tr>
+<tr><td>20.</td><td class="team"><div class="dot">20</div><div><strong>Girona</strong></div></td><td>2000</td><td>0</td><td>5</td><td>15</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>21.</td><td class="team"><div class="dot">21</div><div><strong>Piast Gliwice</strong></div></td><td>1900</td><td>592</td><td>155</td><td>153</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>22.</td><td class="team"><div class="dot">22</div><div><strong>Pogoń Szczecin</strong></div></td><td>1897</td><td>597</td><td>140</td><td>160</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>23.</td><td class="team"><div class="dot">23</div><div><strong>Slavia Praga</strong></div></td><td>1800</td><td>64</td><td>5</td><td>33</td><td>0</td><td>300</td><td>1000</td></tr>
+<tr><td>24.</td><td class="team"><div class="dot">24</div><div><strong>Dynamo Kijów</strong></div></td><td>1800</td><td>22</td><td>5</td><td>20</td><td>0</td><td>200</td><td>1000</td></tr>
+<tr><td>25.</td><td class="team"><div class="dot">25</div><div><strong>Tottenham</strong></div></td><td>1800</td><td>148</td><td>20</td><td>33</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>26.</td><td class="team"><div class="dot">26</div><div><strong>Ruch Chorzów</strong></div></td><td>1761</td><td>424</td><td>215</td><td>122</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>27.</td><td class="team"><div class="dot">27</div><div><strong>Korona Kielce</strong></div></td><td>1732</td><td>523</td><td>125</td><td>84</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>28.</td><td class="team"><div class="dot">28</div><div><strong>Arka Gdynia</strong></div></td><td>1641</td><td>250</td><td>255</td><td>76</td><td>0</td><td>60</td><td>1000</td></tr>
+<tr><td>29.</td><td class="team"><div class="dot">29</div><div><strong>Rapid Wiedeń</strong></div></td><td>1600</td><td>18</td><td>15</td><td>66</td><td>0</td><td>50</td><td>1000</td></tr>
+<tr><td>30.</td><td class="team"><div class="dot">30</div><div><strong>St. Gallen</strong></div></td><td>1600</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+<tr><td>31.</td><td class="team"><div class="dot">31</div><div><strong>Błyskawica</strong></div></td><td>1597</td><td>361</td><td>120</td><td>116</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>32.</td><td class="team"><div class="dot">32</div><div><strong>Raków Częstochowa</strong></div></td><td>1573</td><td>279</td><td>150</td><td>84</td><td>0</td><td>60</td><td>1000</td></tr>
+<tr><td>33.</td><td class="team"><div class="dot">33</div><div><strong>Astra Krotoszyn</strong></div></td><td>1491</td><td>231</td><td>80</td><td>180</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>34.</td><td class="team"><div class="dot">34</div><div><strong>Basel</strong></div></td><td>1455</td><td>0</td><td>5</td><td>0</td><td>0</td><td>450</td><td>1000</td></tr>
+<tr><td>35.</td><td class="team"><div class="dot">35</div><div><strong>GKS Bełchatów</strong></div></td><td>1425</td><td>278</td><td>75</td><td>72</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>36.</td><td class="team"><div class="dot">36</div><div><strong>Polonia Warszawa</strong></div></td><td>1377</td><td>218</td><td>100</td><td>59</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>37.</td><td class="team"><div class="dot">37</div><div><strong>Podbeskidzie B-B</strong></div></td><td>1365</td><td>214</td><td>115</td><td>36</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>38.</td><td class="team"><div class="dot">38</div><div><strong>Wisła Płock</strong></div></td><td>1332</td><td>256</td><td>50</td><td>26</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>39.</td><td class="team"><div class="dot">39</div><div><strong>Warta Poznań</strong></div></td><td>1286</td><td>197</td><td>45</td><td>44</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>40.</td><td class="team"><div class="dot">40</div><div><strong>Widzew Łódź</strong></div></td><td>1284</td><td>174</td><td>75</td><td>35</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>41.</td><td class="team"><div class="dot">41</div><div><strong>Zawisza Bydgoszcz</strong></div></td><td>1202</td><td>84</td><td>85</td><td>3</td><td>0</td><td>30</td><td>1000</td></tr>
+<tr><td>42.</td><td class="team"><div class="dot">42</div><div><strong>ŁKS Łódź</strong></div></td><td>1194</td><td>113</td><td>55</td><td>26</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>43.</td><td class="team"><div class="dot">43</div><div><strong>Górnik Łęczna</strong></div></td><td>1192</td><td>120</td><td>65</td><td>7</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>44.</td><td class="team"><div class="dot">44</div><div><strong>Polonia Bytom</strong></div></td><td>1189</td><td>127</td><td>25</td><td>37</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>45.</td><td class="team"><div class="dot">45</div><div><strong>Bruk-Bet T.</strong></div></td><td>1186</td><td>124</td><td>40</td><td>22</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>46.</td><td class="team"><div class="dot">46</div><div><strong>Vardar</strong></div></td><td>1180</td><td>0</td><td>0</td><td>0</td><td>0</td><td>180</td><td>1000</td></tr>
+<tr><td>47.</td><td class="team"><div class="dot">47</div><div><strong>Miedź Legnica</strong></div></td><td>1153</td><td>40</td><td>105</td><td>8</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>48.</td><td class="team"><div class="dot">48</div><div><strong>West Ham</strong></div></td><td>1142</td><td>0</td><td>10</td><td>32</td><td>0</td><td>100</td><td>1000</td></tr>
+<tr><td>49.</td><td class="team"><div class="dot">49</div><div><strong>Odra Wodzisław</strong></div></td><td>1135</td><td>88</td><td>30</td><td>17</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>50.</td><td class="team"><div class="dot">50</div><div><strong>Austria Wiedeń</strong></div></td><td>1132</td><td>36</td><td>15</td><td>31</td><td>0</td><td>50</td><td>1000</td></tr>
+<tr><td>51.</td><td class="team"><div class="dot">51</div><div><strong>Tirana</strong></div></td><td>1120</td><td>0</td><td>0</td><td>0</td><td>0</td><td>120</td><td>1000</td></tr>
+<tr><td>52.</td><td class="team"><div class="dot">52</div><div><strong>Zagłębie Sosnowiec</strong></div></td><td>1118</td><td>45</td><td>70</td><td>3</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>53.</td><td class="team"><div class="dot">53</div><div><strong>Zurich</strong></div></td><td>1105</td><td>0</td><td>5</td><td>0</td><td>0</td><td>100</td><td>1000</td></tr>
+<tr><td>54.</td><td class="team"><div class="dot">54</div><div><strong>Groclin Grodzisk Wlkp.</strong></div></td><td>1102</td><td>60</td><td>30</td><td>12</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>55.</td><td class="team"><div class="dot">55</div><div><strong>Sarajevo</strong></div></td><td>1090</td><td>0</td><td>0</td><td>0</td><td>0</td><td>90</td><td>1000</td></tr>
+<tr><td>56.</td><td class="team"><div class="dot">56</div><div><strong>Sandecja Nowy Sącz</strong></div></td><td>1083</td><td>33</td><td>45</td><td>5</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>57.</td><td class="team"><div class="dot">57</div><div><strong>Chojniczanka</strong></div></td><td>1070</td><td>0</td><td>70</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>58.</td><td class="team"><div class="dot">58</div><div><strong>Bytovia Bytów</strong></div></td><td>1065</td><td>0</td><td>65</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>59.</td><td class="team"><div class="dot">59</div><div><strong>GKS Tychy</strong></div></td><td>1065</td><td>0</td><td>65</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>60.</td><td class="team"><div class="dot">60</div><div><strong>Stal Stalowa Wola</strong></div></td><td>1065</td><td>0</td><td>65</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>61.</td><td class="team"><div class="dot">61</div><div><strong>Stal Mielec</strong></div></td><td>1064</td><td>25</td><td>35</td><td>4</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>62.</td><td class="team"><div class="dot">62</div><div><strong>Partizani</strong></div></td><td>1060</td><td>0</td><td>0</td><td>0</td><td>0</td><td>60</td><td>1000</td></tr>
+<tr><td>63.</td><td class="team"><div class="dot">63</div><div><strong>Puszcza Niepołomice</strong></div></td><td>1060</td><td>0</td><td>60</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>64.</td><td class="team"><div class="dot">64</div><div><strong>Rabotnicki</strong></div></td><td>1060</td><td>0</td><td>0</td><td>0</td><td>0</td><td>60</td><td>1000</td></tr>
+<tr><td>65.</td><td class="team"><div class="dot">65</div><div><strong>Wigry Suwałki</strong></div></td><td>1055</td><td>0</td><td>55</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>66.</td><td class="team"><div class="dot">66</div><div><strong>Odra Opole</strong></div></td><td>1050</td><td>0</td><td>50</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>67.</td><td class="team"><div class="dot">67</div><div><strong>Olimpia Grudziądz</strong></div></td><td>1050</td><td>0</td><td>50</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>68.</td><td class="team"><div class="dot">68</div><div><strong>Błękitni Stargard</strong></div></td><td>1045</td><td>0</td><td>45</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>69.</td><td class="team"><div class="dot">69</div><div><strong>Chrobry Głogów</strong></div></td><td>1045</td><td>0</td><td>45</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>70.</td><td class="team"><div class="dot">70</div><div><strong>GKS Katowice</strong></div></td><td>1041</td><td>0</td><td>35</td><td>6</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>71.</td><td class="team"><div class="dot">71</div><div><strong>Din. Tirana</strong></div></td><td>1040</td><td>0</td><td>0</td><td>0</td><td>0</td><td>40</td><td>1000</td></tr>
+<tr><td>72.</td><td class="team"><div class="dot">72</div><div><strong>Flota Świnoujście</strong></div></td><td>1040</td><td>0</td><td>40</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>73.</td><td class="team"><div class="dot">73</div><div><strong>Stomil Olsztyn</strong></div></td><td>1040</td><td>0</td><td>40</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>74.</td><td class="team"><div class="dot">74</div><div><strong>Piast Kobylin</strong></div></td><td>1036</td><td>0</td><td>5</td><td>31</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>75.</td><td class="team"><div class="dot">75</div><div><strong>Pilzno</strong></div></td><td>1035</td><td>0</td><td>15</td><td>20</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>76.</td><td class="team"><div class="dot">76</div><div><strong>Ruch Zdzieszowice</strong></div></td><td>1035</td><td>0</td><td>35</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>77.</td><td class="team"><div class="dot">77</div><div><strong>Alanyaspor</strong></div></td><td>1033</td><td>0</td><td>15</td><td>18</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>78.</td><td class="team"><div class="dot">78</div><div><strong>Dolcan Ząbki</strong></div></td><td>1030</td><td>0</td><td>30</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>79.</td><td class="team"><div class="dot">79</div><div><strong>GKS Jastrzębie</strong></div></td><td>1030</td><td>0</td><td>30</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>80.</td><td class="team"><div class="dot">80</div><div><strong>Gryf Wejherowo</strong></div></td><td>1030</td><td>0</td><td>30</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>81.</td><td class="team"><div class="dot">81</div><div><strong>Teuta</strong></div></td><td>1030</td><td>0</td><td>0</td><td>0</td><td>0</td><td>30</td><td>1000</td></tr>
+<tr><td>82.</td><td class="team"><div class="dot">82</div><div><strong>Znicz Pruszków</strong></div></td><td>1030</td><td>0</td><td>30</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>83.</td><td class="team"><div class="dot">83</div><div><strong>Makedonija GP</strong></div></td><td>1030</td><td>0</td><td>0</td><td>0</td><td>0</td><td>30</td><td>1000</td></tr>
+<tr><td>84.</td><td class="team"><div class="dot">84</div><div><strong>Shkupi</strong></div></td><td>1030</td><td>0</td><td>0</td><td>0</td><td>0</td><td>30</td><td>1000</td></tr>
+<tr><td>85.</td><td class="team"><div class="dot">85</div><div><strong>Petrzalka</strong></div></td><td>1030</td><td>0</td><td>0</td><td>0</td><td>0</td><td>30</td><td>1000</td></tr>
+<tr><td>86.</td><td class="team"><div class="dot">86</div><div><strong>Hajduk Split</strong></div></td><td>1025</td><td>0</td><td>20</td><td>5</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>87.</td><td class="team"><div class="dot">87</div><div><strong>Radomiak Radom</strong></div></td><td>1023</td><td>0</td><td>20</td><td>3</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>88.</td><td class="team"><div class="dot">88</div><div><strong>Brentford</strong></div></td><td>1020</td><td>0</td><td>20</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>89.</td><td class="team"><div class="dot">89</div><div><strong>KKS Kalisz</strong></div></td><td>1020</td><td>0</td><td>20</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>90.</td><td class="team"><div class="dot">90</div><div><strong>KSZO Ostrowiec</strong></div></td><td>1020</td><td>0</td><td>20</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>91.</td><td class="team"><div class="dot">91</div><div><strong>Motor Lublin</strong></div></td><td>1020</td><td>0</td><td>20</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>92.</td><td class="team"><div class="dot">92</div><div><strong>Okocimski Brzesko</strong></div></td><td>1020</td><td>0</td><td>20</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>93.</td><td class="team"><div class="dot">93</div><div><strong>Rozwój Katowice</strong></div></td><td>1020</td><td>0</td><td>20</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>94.</td><td class="team"><div class="dot">94</div><div><strong>Stal Sanok</strong></div></td><td>1020</td><td>0</td><td>20</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>95.</td><td class="team"><div class="dot">95</div><div><strong>Monastir</strong></div></td><td>1015</td><td>0</td><td>10</td><td>5</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>96.</td><td class="team"><div class="dot">96</div><div><strong>Olimpia Elbląg</strong></div></td><td>1015</td><td>0</td><td>15</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>97.</td><td class="team"><div class="dot">97</div><div><strong>Pogoń Siedlce</strong></div></td><td>1015</td><td>0</td><td>15</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>98.</td><td class="team"><div class="dot">98</div><div><strong>Start Otwock</strong></div></td><td>1015</td><td>0</td><td>15</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>99.</td><td class="team"><div class="dot">99</div><div><strong>Stilon Gorzów</strong></div></td><td>1015</td><td>0</td><td>15</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>100.</td><td class="team"><div class="dot">100</div><div><strong>Wisła Puławy</strong></div></td><td>1015</td><td>0</td><td>15</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>101.</td><td class="team"><div class="dot">101</div><div><strong>Antalyaspor</strong></div></td><td>1013</td><td>0</td><td>5</td><td>8</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>102.</td><td class="team"><div class="dot">102</div><div><strong>Andorra</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>103.</td><td class="team"><div class="dot">103</div><div><strong>Górnik Wałbrzych</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>104.</td><td class="team"><div class="dot">104</div><div><strong>Kmita Zabierzów</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>105.</td><td class="team"><div class="dot">105</div><div><strong>Lechia Zielona Góra</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>106.</td><td class="team"><div class="dot">106</div><div><strong>Limanovia</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>107.</td><td class="team"><div class="dot">107</div><div><strong>MKS Kluczbork</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>108.</td><td class="team"><div class="dot">108</div><div><strong>Nielba Wągrowiec</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>109.</td><td class="team"><div class="dot">109</div><div><strong>Ostrovia Ostrów Wlkp.</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>110.</td><td class="team"><div class="dot">110</div><div><strong>Promień Opalenica</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>111.</td><td class="team"><div class="dot">111</div><div><strong>Resovia Rzeszów</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>112.</td><td class="team"><div class="dot">112</div><div><strong>Siarka Tarnobrzeg</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>113.</td><td class="team"><div class="dot">113</div><div><strong>Świt Nowy Dwór</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>114.</td><td class="team"><div class="dot">114</div><div><strong>Wda Świecie</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>115.</td><td class="team"><div class="dot">115</div><div><strong>Wisła Sandomierz</strong></div></td><td>1010</td><td>0</td><td>10</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>116.</td><td class="team"><div class="dot">116</div><div><strong>Biały Orzeł Koźmin Wlkp.</strong></div></td><td>1007</td><td>0</td><td>0</td><td>7</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>117.</td><td class="team"><div class="dot">117</div><div><strong>Zakynthos</strong></div></td><td>1006</td><td>0</td><td>5</td><td>1</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>118.</td><td class="team"><div class="dot">118</div><div><strong>Carina Gubin</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>119.</td><td class="team"><div class="dot">119</div><div><strong>Charlton</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>120.</td><td class="team"><div class="dot">120</div><div><strong>Chełmianka Chełm</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>121.</td><td class="team"><div class="dot">121</div><div><strong>Crvena zvezda</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>122.</td><td class="team"><div class="dot">122</div><div><strong>Crystal Palace</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>123.</td><td class="team"><div class="dot">123</div><div><strong>Dąb Dębno</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>124.</td><td class="team"><div class="dot">124</div><div><strong>Espanyol</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>125.</td><td class="team"><div class="dot">125</div><div><strong>Fulham</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>126.</td><td class="team"><div class="dot">126</div><div><strong>Garbarnia Kraków</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>127.</td><td class="team"><div class="dot">127</div><div><strong>Hetman Zamość</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>128.</td><td class="team"><div class="dot">128</div><div><strong>Huragan Morąg</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>129.</td><td class="team"><div class="dot">129</div><div><strong>Jeziorak Iława</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>130.</td><td class="team"><div class="dot">130</div><div><strong>Legionowo</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>131.</td><td class="team"><div class="dot">131</div><div><strong>Luboński</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>132.</td><td class="team"><div class="dot">132</div><div><strong>Luton</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>133.</td><td class="team"><div class="dot">133</div><div><strong>Millwall</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>134.</td><td class="team"><div class="dot">134</div><div><strong>Olimpia Zambrów</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>135.</td><td class="team"><div class="dot">135</div><div><strong>Pelikan Łowicz</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>136.</td><td class="team"><div class="dot">136</div><div><strong>Piotrków Trybunalski</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>137.</td><td class="team"><div class="dot">137</div><div><strong>Pogoń Oleśnica</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>138.</td><td class="team"><div class="dot">138</div><div><strong>Polonia Słubice</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>139.</td><td class="team"><div class="dot">139</div><div><strong>Polonia Środa Wlkp.</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>140.</td><td class="team"><div class="dot">140</div><div><strong>QPR</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>141.</td><td class="team"><div class="dot">141</div><div><strong>Rekord Bielsko-Biała</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>142.</td><td class="team"><div class="dot">142</div><div><strong>ROW Rybnik</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>143.</td><td class="team"><div class="dot">143</div><div><strong>Ruch Radzionków</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>144.</td><td class="team"><div class="dot">144</div><div><strong>Sokół Ostróda</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>145.</td><td class="team"><div class="dot">145</div><div><strong>Stal Brzeg</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>146.</td><td class="team"><div class="dot">146</div><div><strong>Stal Rzeszów</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>147.</td><td class="team"><div class="dot">147</div><div><strong>Starogard Gdański</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>148.</td><td class="team"><div class="dot">148</div><div><strong>Ślęza Wrocław</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>149.</td><td class="team"><div class="dot">149</div><div><strong>Świt Szczecin</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>150.</td><td class="team"><div class="dot">150</div><div><strong>Unia Janikowo</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>151.</td><td class="team"><div class="dot">151</div><div><strong>Unia Skierniewice</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>152.</td><td class="team"><div class="dot">152</div><div><strong>Ursus Warszawa</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>153.</td><td class="team"><div class="dot">153</div><div><strong>Victoria Koronowo</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+<tr><td>154.</td><td class="team"><div class="dot">154</div><div><strong>Wieczysta Kraków</strong></div></td><td>1005</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>1000</td></tr>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <p class="muted tiny" style="margin-top:10px">Poruszaj tabelą palcem po szerokości na małych ekranach. Kliknij nagłówek, aby posortować kolumnę.</p>
+  </div>
+
+<script>
+  // Simple client-side search + count
+  (function(){
+    const search = document.getElementById('search');
+    const tbody = document.querySelector('#rankTable tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    const count = document.getElementById('count');
+
+    function updateCount(visible){
+      count.textContent = visible + ' / ' + rows.length;
+    }
+    updateCount(rows.length);
+
+    search.addEventListener('input', function(){
+      const q = this.value.trim().toLowerCase();
+      let visible = 0;
+      rows.forEach(r=>{
+        const teamCell = r.querySelector('.team strong').textContent.toLowerCase();
+        const allText = r.textContent.toLowerCase();
+        if(q === '' || teamCell.includes(q) || allText.includes(q)){
+          r.style.display = '';
+          visible++;
+        } else {
+          r.style.display = 'none';
+        }
+      });
+      updateCount(visible);
+    });
+
+    // Sort functionality
+    const headers = Array.from(document.querySelectorAll('thead th'));
+    let sortState = { idx: null, dir: 1 }; // dir: 1 asc, -1 desc
+
+    function getCellValue(row, idx){
+      const cell = row.children[idx];
+      // For team column, take the strong text
+      if(idx===1){
+        return cell.querySelector('strong').textContent.trim();
+      }
+      const txt = cell.textContent.trim().replace(/[^\d\-\.]/g,'');
+      const num = parseFloat(txt);
+      return isNaN(num) ? txt.toLowerCase() : num;
+    }
+
+    headers.forEach((th, idx)=>{
+      th.addEventListener('click', ()=>{
+        // toggle sort
+        if(sortState.idx === idx) sortState.dir *= -1;
+        else { sortState.idx = idx; sortState.dir = 1; }
+        // build sorted array from visible rows only
+        const visibleRows = rows.filter(r => r.style.display !== 'none');
+        visibleRows.sort((a,b)=>{
+          const A = getCellValue(a, idx);
+          const B = getCellValue(b, idx);
+          if(typeof A === 'number' && typeof B === 'number') return (A-B)*sortState.dir;
+          if(A < B) return -1*sortState.dir;
+          if(A > B) return 1*sortState.dir;
+          return 0;
+        });
+        // re-append in order
+        visibleRows.forEach(r => tbody.appendChild(r));
+        // update sort indicators
+        headers.forEach(h=>{
+          const ind = h.querySelector('.sort-ind');
+          ind.textContent = '↕'; ind.style.opacity = 0.6;
+        });
+        const indicator = th.querySelector('.sort-ind');
+        indicator.textContent = sortState.dir === 1 ? '▲' : '▼';
+        indicator.style.opacity = 1;
+      });
+    });
+
+    // touch hint (optional)
+    let touched=false;
+    document.addEventListener('touchstart', ()=>touched=true,{passive:true});
+  })();
+</script>
+</body>
+</html>
