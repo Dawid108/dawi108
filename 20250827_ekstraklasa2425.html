@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Liga piłkarska (24 drużyny) – sezon 24/25</title>
-  <style>
+<style>
     :root{
       --bg:#0f172a; /* slate-900 */
       --card:#111827ee; /* gray-900 */
@@ -82,7 +82,7 @@
     .pill[data-type="H"]{ box-shadow: 0 0 0 1px rgba(59,130,246,.35) inset; }
     .pill[data-type="D"]{ box-shadow: 0 0 0 1px rgba(245,158,11,.35) inset; }
     .pill[data-type="A"]{ box-shadow: 0 0 0 1px rgba(34,197,94,.35) inset; }
-    .pill.active{ background:linear-gradient(180deg,#96b7e7,#0f53f3); transform:translateY(-1px); }
+    .pill.active{ background:linear-gradient(180deg,#1f2937,#0b1222); transform:translateY(-1px); }
 
     .footer-note{ color:var(--muted); font-size:12px; padding:10px 14px; }
 
@@ -97,7 +97,7 @@
   </style>
 </head>
 <body>
-  <header>
+<header>
     <div class="topbar">
       <div class="title">Liga piłkarska 24/25 – 24 drużyny</div>
       <div class="spacer"></div>
@@ -135,21 +135,21 @@
           <label for="roundSelect">Kolejka</label>
           <select id="roundSelect" aria-label="Wybierz kolejkę"></select>
         </div>
+        <button class="btn-reset" id="resetBtn" title="Wyczyść wszystkie wyniki">Wyczyść wyniki</button>
       </div>
       <div id="matchesWrap"></div>
-      <div class="footer-note">Dotknij wynik, aby ustawić: <b>1–0</b> (gospodarz), <b>1–1</b> (remis), <b>0–1</b> (gość).</div>
+      <div class="footer-note">Dotknij wynik, aby ustawić: <b>1–0</b> (gospodarz), <b>1–1</b> (remis), <b>0–1</b> (gość). Dane zapisywane są w <code>localStorage</code> pod kluczem <code>liga_pilka_2425</code>.</div>
     </section>
   </main>
 
   <script>
   (function(){
-    const STORAGE_KEY = 'liga_pilka_2425';
+    const STORAGE_KEY = 'liga_pilka3_2425';
     const state = loadState();
 
     const teams = state.teams;
     const fixtures = state.fixtures; // [round][match] -> {home, away, result}
 
-    // Elements
     const btnTabela = document.getElementById('btnTabela');
     const btnMecze  = document.getElementById('btnMecze');
     const viewTabela= document.getElementById('viewTabela');
@@ -160,13 +160,11 @@
     const matchesWrap = document.getElementById('matchesWrap');
     const resetBtn = document.getElementById('resetBtn');
 
-    // Init UI
     buildRoundSelect();
     renderTable();
     renderMatches(state.lastRound || 0);
     applyInitialView();
 
-    // Event bindings
     btnTabela.addEventListener('click', ()=>switchView('tabela'));
     btnMecze.addEventListener('click', ()=>switchView('mecze'));
     roundSelect.addEventListener('change', ()=>{
@@ -183,55 +181,66 @@
       }
     });
 
-    // Functions
     function loadState(){
       const defaultTeams = [
         "Lech Poznań","Jagiellonia Białystok","Śląsk Wrocław","Cracovia","Zagłębie Lubin","Górnik Zabrze","Pogoń Szczecin","Błyskawica","Raków Częstochowa","Astra Krotoszyn","Barcelona","Tottenham","Chelsea","Arsenal","AC Milan","Inter Mediolan","Atalanta","Juventus","Dinamo Zagrzeb","VfB Stuttgart","Sparta Praga","RB Lipsk","Girona","Young Boys"
       ];
       let parsed=null;
       try{ parsed = JSON.parse(localStorage.getItem(STORAGE_KEY)||'null'); }catch(e){ parsed=null }
-      if(parsed && parsed.teams?.length===24 && parsed.fixtures?.length===46){
+      if(parsed && parsed.teams?.length===defaultTeams.length && isValidFixtures(parsed.fixtures, defaultTeams.length)){
         return parsed;
       }
-      // Fresh init
       const fx = generateFixtures(defaultTeams.length);
-      const state = { teams: defaultTeams, fixtures: fx, lastView: 'tabela', lastRound: 0 };
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      return state;
+      const stateObj = { teams: defaultTeams, fixtures: fx, lastView: 'tabela', lastRound: 0 };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(stateObj));
+      return stateObj;
+    }
+
+    function isValidFixtures(fixtures, n){
+      if(!Array.isArray(fixtures)) return false;
+      if(fixtures.length !== 2*(n-1)) return false;
+      const perRound = n/2;
+      for(const round of fixtures){
+        if(!Array.isArray(round) || round.length !== perRound) return false;
+        const seen = new Set();
+        for(const m of round){
+          if(typeof m.home!=='number' || typeof m.away!=='number') return false;
+          if(seen.has(m.home) || seen.has(m.away)) return false;
+          seen.add(m.home); seen.add(m.away);
+        }
+      }
+      return true;
+    }
+
+    function generateFixtures(n){
+      const rounds = n - 1;
+      const perRound = n / 2;
+      const players = Array.from({length:n}, (_,i)=>i);
+
+      const single = [];
+      for(let r=0; r<rounds; r++){
+        const matches = [];
+        for(let i=0; i<perRound; i++){
+          const home = players[i];
+          const away = players[n-1-i];
+          if(i===0 && r%2===1){
+            matches.push({home: away, away: home, result: null});
+          } else {
+            matches.push({home, away, result: null});
+          }
+        }
+        single.push(matches);
+        const fixed = players[0];
+        const rest = players.slice(1);
+        rest.unshift(rest.pop());
+        players.splice(1, rest.length, ...rest);
+      }
+
+      const mirror = single.map(round => round.map(m => ({home: m.away, away: m.home, result: null})));
+      return [...single, ...mirror];
     }
 
     function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-
-    function generateFixtures(n){
-      // Circle method for single round-robin; then mirror for double (home/away swap)
-      const arr = Array.from({length:n}, (_,i)=>i);
-      const rounds = n-1; // 23
-      const perRound = n/2; // 12
-      const list = [];
-      let left = arr.slice(0, n/2);
-      let right = arr.slice(n/2).reverse();
-
-      for(let r=0; r<rounds; r++){
-        const matches = [];
-        for(let i=0;i<perRound;i++){
-          let home, away;
-          // Alternate home advantage to avoid bias
-          if(r%2===0){ home = left[i]; away = right[i]; }
-          else{ home = right[i]; away = left[i]; }
-          matches.push({home, away, result: null});
-        }
-        list.push(matches);
-        // rotate (keep first of left fixed)
-        const l0 = left[0];
-        const lRest = left.slice(1);
-        const rRest = right.slice();
-        left = [l0, rRest[0], ...lRest.slice(0, lRest.length-0)];
-        right = [...rRest.slice(1), lRest[lRest.length-1]];
-      }
-      // Mirror (swap home/away)
-      const mirror = list.map(round => round.map(m => ({home: m.away, away: m.home, result: null})));
-      return [...list, ...mirror]; // 46 rounds
-    }
 
     function buildRoundSelect(){
       roundSelect.innerHTML = '';
@@ -282,17 +291,14 @@
         el.innerHTML = `
           <div class="teams">${label}</div>
           <div class="outcome" role="group" aria-label="Wynik meczu">
-            <div class="pill ${m.result==='1-0'?'active':''}" data-type="H" data-value="1-0" title="Wygrana gospodarzy">1–0</div>
-            <div class="pill ${m.result==='1-1'?'active':''}" data-type="D" data-value="1-1" title="Remis">1–1</div>
-            <div class="pill ${m.result==='0-1'?'active':''}" data-type="A" data-value="0-1" title="Wygrana gości">0–1</div>
+            <div class="pill ${m.result==='1-0'?'active':''}" data-type="H" data-value="1-0">1–0</div>
+            <div class="pill ${m.result==='1-1'?'active':''}" data-type="D" data-value="1-1">1–1</div>
+            <div class="pill ${m.result==='0-1'?'active':''}" data-type="A" data-value="0-1">0–1</div>
           </div>`;
-        // Handlers
         el.querySelectorAll('.pill').forEach(p=>{
           p.addEventListener('click', ()=>{
             const val = p.getAttribute('data-value');
-            // Toggle: clicking active clears result
             const isActive = p.classList.contains('active');
-            // clear all
             el.querySelectorAll('.pill').forEach(x=>x.classList.remove('active'));
             if(isActive){
               fixtures[roundIdx][i].result = null;
@@ -329,7 +335,6 @@
     }
 
     function applyInitialView(){
-      // Domyślnie Tabela; jeśli w storage zapisano ostatni widok, użyj go
       if(state.lastView==='mecze') switchView('mecze'); else switchView('tabela');
     }
   })();
