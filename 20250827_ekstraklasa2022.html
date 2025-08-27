@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ekstraklasa 2022</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f4f4f4;
+        color: #333;
+    }
+    header {
+        background: #007bff;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        font-size: 1.8em;
+        font-weight: bold;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    .table-container {
+        margin: 10px;
+        background: white;
+        border-radius: 8px;
+        overflow-x: auto;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 700px; /* wymusza przewijanie w poziomie na telefonach */
+    }
+    th, td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #ddd;
+    }
+    th {
+        background: #007bff;
+        color: white;
+        font-size: 14px;
+        position: sticky;
+        top: 55px;
+    }
+    tr:nth-child(even) {
+        background: #f9f9f9;
+    }
+    tr:hover {
+        background: #eef6ff;
+    }
+    @media (max-width: 768px) {
+        th, td {
+            padding: 8px;
+            font-size: 12px;
+        }
+    }
+</style>
+</head>
+<body>
+
+<header>Ekstraklasa 2022</header>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Lp.</th>
+                <th>Drużyna</th>
+                <th>Pkt</th>
+                <th>Z</th>
+                <th>R</th>
+                <th>P</th>
+                <th>Bramki</th>
+                <th>RB</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>Lech Poznań</td><td>89</td><td>27</td><td>8</td><td>3</td><td>81:34</td><td>47</td></tr>
+            <tr><td>2</td><td>Błyskawica</td><td>82</td><td>25</td><td>7</td><td>6</td><td>81:32</td><td>49</td></tr>
+            <tr><td>3</td><td>Zagłębie Lubin</td><td>76</td><td>23</td><td>7</td><td>8</td><td>66:36</td><td>30</td></tr>
+            <tr><td>4</td><td>Cracovia</td><td>73</td><td>21</td><td>10</td><td>7</td><td>74:37</td><td>37</td></tr>
+            <tr><td>5</td><td>Jagiellonia Białystok</td><td>72</td><td>20</td><td>12</td><td>6</td><td>63:40</td><td>23</td></tr>
+            <tr><td>6</td><td>Górnik Zabrze</td><td>71</td><td>21</td><td>8</td><td>9</td><td>66:44</td><td>22</td></tr>
+            <tr><td>7</td><td>Astra Krotoszyn</td><td>66</td><td>19</td><td>9</td><td>10</td><td>60:47</td><td>13</td></tr>
+            <tr><td>8</td><td>Raków Częstochowa</td><td>65</td><td>20</td><td>5</td><td>13</td><td>52:41</td><td>11</td></tr>
+            <tr><td>9</td><td>Pogoń Szczecin</td><td>64</td><td>18</td><td>10</td><td>10</td><td>65:39</td><td>26</td></tr>
+            <tr><td>10</td><td>Warta Poznań</td><td>57</td><td>17</td><td>6</td><td>15</td><td>53:47</td><td>6</td></tr>
+            <tr><td>11</td><td>Śląsk Wrocław</td><td>56</td><td>14</td><td>14</td><td>10</td><td>51:40</td><td>11</td></tr>
+            <tr><td>12</td><td>Wisła Kraków</td><td>51</td><td>14</td><td>9</td><td>15</td><td>50:57</td><td>-7</td></tr>
+            <tr><td>13</td><td>Lechia Gdańsk</td><td>48</td><td>14</td><td>6</td><td>18</td><td>50:58</td><td>-8</td></tr>
+            <tr><td>14</td><td>Slavia Praga</td><td>36</td><td>10</td><td>6</td><td>22</td><td>37:56</td><td>-19</td></tr>
+            <tr><td>15</td><td>Piast Gliwice</td><td>36</td><td>9</td><td>9</td><td>20</td><td>45:65</td><td>-20</td></tr>
+            <tr><td>16</td><td>Legia Warszawa</td><td>34</td><td>9</td><td>7</td><td>22</td><td>41:66</td><td>-25</td></tr>
+            <tr><td>17</td><td>Szachtar</td><td>29</td><td>7</td><td>8</td><td>23</td><td>44:75</td><td>-31</td></tr>
+            <tr><td>18</td><td>Wisła Płock</td><td>29</td><td>9</td><td>2</td><td>27</td><td>32:81</td><td>-49</td></tr>
+            <tr><td>19</td><td>Dynamo Kijów</td><td>22</td><td>6</td><td>4</td><td>28</td><td>25:72</td><td>-47</td></tr>
+            <tr><td>20</td><td>Austria Wiedeń</td><td>9</td><td>2</td><td>3</td><td>33</td><td>20:89</td><td>-69</td></tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
