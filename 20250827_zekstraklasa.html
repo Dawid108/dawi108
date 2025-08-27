@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Zwycięscy Ekstraklasy</title>
+  <style>
+    /* ====== Prosty, przyjemny styl – mobil first ====== */
+    :root{
+      --bg:#f7fafc;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --brand:#0ea5e9;        /* błękit */
+      --brand-2:#22d3ee;      /* jaśniejszy akcent */
+      --border:#e5e7eb;
+      --radius:16px;
+      --shadow:0 6px 24px rgba(2,8,23,.06);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(34,211,238,.15), transparent 60%),
+                  radial-gradient(1000px 500px at 100% 0, rgba(14,165,233,.12), transparent 60%),
+                  var(--bg);
+      color:var(--text);
+      line-height:1.45;
+    }
+
+    .wrapper{
+      max-width:1100px;
+      margin: clamp(12px,3vw,28px) auto;
+      padding: 0 clamp(12px,3vw,24px);
+    }
+
+    header{
+      text-align:center;
+      margin-bottom:18px;
+    }
+    .title{
+      font-size: clamp(26px, 5vw, 40px);
+      font-weight:800;
+      letter-spacing:.2px;
+      margin:0 0 8px;
+      background: linear-gradient(90deg, var(--brand), var(--brand-2));
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+    }
+    .subtitle{
+      margin:0;
+      font-size:clamp(13px,2.6vw,15px);
+      color:var(--muted);
+    }
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:12px;
+      margin:14px 0 22px;
+    }
+
+    .card h2{
+      font-size:clamp(17px,3.8vw,20px);
+      margin:2px 0 10px;
+      font-weight:700;
+      color:#0f172a;
+    }
+
+    /* Kontener przewijania dla małych ekranów */
+    .table-scroll{
+      overflow:auto;
+      border-radius:calc(var(--radius) - 6px);
+      border:1px solid var(--border);
+    }
+
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      min-width: 560px; /* pozwala przewinąć na bardzo małych ekranach */
+      font-size:clamp(13px,3.4vw,15px);
+      background:white;
+    }
+
+    thead th{
+      position:sticky;
+      top:0;
+      z-index:1;
+      background: linear-gradient(0deg, #e0f2fe, #bae6fd);
+      color:#0c4a6e;
+      text-align:left;
+      font-weight:700;
+      border-bottom:1px solid var(--border);
+      padding:10px 12px;
+      white-space:nowrap;
+    }
+
+    tbody td{
+      padding:10px 12px;
+      border-bottom:1px solid var(--border);
+      vertical-align:top;
+      white-space:nowrap;
+    }
+
+    tbody tr:nth-child(odd){ background:#fafcff; }
+    tbody tr:hover{ background:#f0f9ff; }
+
+    /* Węższe kolumny dla liczbowych */
+    .col-nr{ width:56px; text-align:right;}
+    .col-z{ width:52px; text-align:right;}
+    .center { text-align:center; }
+
+    /* Delikatne kapsułki z latami */
+    .year{
+      display:inline-block;
+      padding:.14rem .5rem;
+      margin:.12rem .2rem .12rem 0;
+      border:1px solid #e2e8f0;
+      border-radius:999px;
+      font-size:.92em;
+      background:#f8fafc;
+    }
+
+    footer{
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      margin:28px 0 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <header>
+      <h1 class="title">Zwycięscy Ekstraklasy</h1>
+      <p class="subtitle">Zestawienie klubów i mistrzów rok po roku</p>
+    </header>
+
+    <!-- ====== TABELA 1 ====== -->
+    <section class="card">
+      <h2>Zestawienie klubów</h2>
+      <div class="table-scroll">
+        <table aria-label="Zestawienie klubów – mistrzostwa">
+          <thead>
+            <tr>
+              <th class="col-nr">Lp.</th>
+              <th>Drużyna</th>
+              <th class="col-z">Z</th>
+              <th class="center">Rok</th>
+              <th class="center">2</th>
+              <th class="center">3</th>
+              <th class="center">4</th>
+              <th class="center">5</th>
+              <th class="center">6</th>
+              <th class="center">7</th>
+              <th class="center">8</th>
+              <th class="center">9</th>
+              <th class="center">10</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-nr">1.</td>
+              <td>Lech Poznań</td>
+              <td class="col-z">10</td>
+              <td><span class="year">2008</span></td>
+              <td><span class="year">2009</span></td>
+              <td><span class="year">2010</span></td>
+              <td><span class="year">2013</span></td>
+              <td><span class="year">2014</span></td>
+              <td><span class="year">2015</span></td>
+              <td><span class="year">2017</span></td>
+              <td><span class="year">2018</span></td>
+              <td><span class="year">2020</span></td>
+              <td><span class="year">2022</span></td>
+            </tr>
+            <tr>
+              <td class="col-nr">2.</td>
+              <td>Błyskawica</td>
+              <td class="col-z">3</td>
+              <td><span class="year">2021</span></td>
+              <td><span class="year">2023</span></td>
+              <td><span class="year">2024</span></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-nr">3.</td>
+              <td>Śląsk Wrocław</td>
+              <td class="col-z">2</td>
+              <td><span class="year">2011</span></td>
+              <td><span class="year">2012</span></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-nr">4.</td>
+              <td>Piast Gliwice</td>
+              <td class="col-z">2</td>
+              <td><span class="year">2016</span></td>
+              <td><span class="year">2019</span></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+            <tr>
+              <td class="col-nr">5.</td>
+              <td>Barcelona</td>
+              <td class="col-z">1</td>
+              <td><span class="year">2025</span></td>
+              <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ====== TABELA 2 ====== -->
+    <section class="card">
+      <h2>Mistrzowie rok po roku</h2>
+      <div class="table-scroll">
+        <table aria-label="Mistrzowie rok po roku">
+          <thead>
+            <tr>
+              <th style="width:110px">Rok</th>
+              <th>Drużyna</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>2025</td><td>Barcelona</td></tr>
+            <tr><td>2024</td><td>Błyskawica</td></tr>
+            <tr><td>2023</td><td>Błyskawica</td></tr>
+            <tr><td>2022</td><td>Lech Poznań</td></tr>
+            <tr><td>2021</td><td>Błyskawica</td></tr>
+            <tr><td>2020</td><td>Lech Poznań</td></tr>
+            <tr><td>2019</td><td>Piast Gliwice</td></tr>
+            <tr><td>2018</td><td>Lech Poznań</td></tr>
+            <tr><td>2017</td><td>Lech Poznań</td></tr>
+            <tr><td>2016</td><td>Piast Gliwice</td></tr>
+            <tr><td>2015</td><td>Lech Poznań</td></tr>
+            <tr><td>2014</td><td>Lech Poznań</td></tr>
+            <tr><td>2013</td><td>Lech Poznań</td></tr>
+            <tr><td>2012</td><td>Śląsk Wrocław</td></tr>
+            <tr><td>2011</td><td>Śląsk Wrocław</td></tr>
+            <tr><td>2010</td><td>Lech Poznań</td></tr>
+            <tr><td>2009</td><td>Lech Poznań</td></tr>
+            <tr><td>2008</td><td>Lech Poznań</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>© Zestawienie pomocnicze • widok responsywny</footer>
+  </div>
+</body>
+</html>
