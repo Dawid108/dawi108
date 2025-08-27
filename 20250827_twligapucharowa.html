@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Tabela Wszechczasów Ligi Pucharowej</title>
+<style>
+  :root{
+    --bg:#f5f8fb;
+    --card:#fff;
+    --accent:#0b72ff;
+    --muted:#6b7280;
+    --stripe:#f1f6ff;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:linear-gradient(180deg,var(--bg),#eef6ff 60%);
+    color:#0b1220;
+    padding:12px;
+  }
+
+  header{
+    background:linear-gradient(90deg,var(--accent),#2aa3ff);
+    color:white;
+    padding:14px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 6px 20px rgba(11,114,255,0.12);
+    position:sticky;
+    top:12px;
+    z-index:20;
+    font-weight:700;
+    font-size:18px;
+    line-height:1.1;
+  }
+
+  .table-wrap{
+    margin-top:12px;
+    background:var(--card);
+    border-radius:12px;
+    padding:10px;
+    box-shadow:0 8px 24px rgba(15,23,42,0.06);
+    overflow:auto; /* horizontal scroll on small screens */
+  }
+
+  table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:1200px; /* ensure horizontal scroll on phones */
+    font-size:13px;
+  }
+
+  thead th{
+    position:sticky;
+    top:0;
+    background:linear-gradient(180deg,#fff,#f7fbff);
+    padding:10px 8px;
+    text-align:center;
+    font-weight:700;
+    border-bottom:1px solid #e6eefc;
+    z-index:10;
+    white-space:nowrap;
+  }
+
+  tbody td{
+    padding:8px 8px;
+    border-bottom:1px solid #f0f5ff;
+    vertical-align:middle;
+    white-space:nowrap;
+  }
+
+  tbody tr:nth-child(even){ background:var(--stripe); }
+  tbody tr:hover{ background:#eef6ff; }
+
+  th:first-child, td:first-child{
+    text-align:right;
+    padding-right:12px;
+    width:48px;
+  }
+  th:nth-child(2), td:nth-child(2){
+    text-align:left;
+    padding-left:10px;
+    min-width:220px;
+  }
+
+  .hint{
+    text-align:center;
+    color:var(--muted);
+    font-size:13px;
+    margin-top:10px;
+  }
+
+  @media (max-width:420px){
+    header{font-size:16px}
+    table{min-width:1000px}
+    thead th, tbody td{padding:6px; font-size:12px}
+    th:nth-child(2), td:nth-child(2){min-width:180px}
+  }
+</style>
+</head>
+<body>
+
+<header>Tabela Wszechczasów Ligi Pucharowej</header>
+
+<div class="table-wrap" role="region" aria-label="Tabela Wszechczasów">
+  <table>
+    <thead>
+      <tr>
+        <th>Lp.</th>
+        <th>Drużyna</th>
+        <th>Suma</th>
+        <th>2008</th><th>2009</th><th>2010</th><th>2011</th><th>2012</th><th>2013</th><th>2014</th><th>2015</th><th>2016</th><th>2017</th><th>2018</th><th>2019</th><th>2020</th><th>2021</th><th>2022</th><th>2023</th><th>2024</th><th>2025</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1.</td><td>Lech Poznań</td><td>328</td><td>20</td><td>20</td><td>20</td><td>18</td><td>19</td><td>20</td><td>20</td><td>17</td><td>19</td><td>20</td><td>17</td><td>19</td><td>22</td><td>23</td><td>17</td><td>16</td><td>1</td></tr>
+      <tr><td>2.</td><td>Legia Warszawa</td><td>242</td><td>18</td><td>18</td><td>17</td><td>17</td><td>18</td><td>19</td><td>19</td><td>18</td><td>19</td><td>17</td><td>16</td><td>8</td><td>17</td><td>12</td><td>6</td><td>3</td><td>0</td></tr>
+      <tr><td>3.</td><td>Jagiellonia Białystok</td><td>222</td><td>7</td><td>13</td><td>10</td><td>16</td><td>10</td><td>11</td><td>13</td><td>19</td><td>11</td><td>20</td><td>18</td><td>15</td><td>11</td><td>10</td><td>11</td><td>8</td><td>19</td></tr>
+      <tr><td>4.</td><td>Wisła Kraków</td><td>208</td><td>19</td><td>19</td><td>19</td><td>20</td><td>15</td><td>14</td><td>16</td><td>14</td><td>10</td><td>16</td><td>12</td><td>6</td><td>7</td><td>9</td><td>7</td><td>5</td><td>0</td></tr>
+      <tr><td>5.</td><td>Lechia Gdańsk</td><td>208</td><td>0</td><td>9</td><td>13</td><td>13</td><td>8</td><td>15</td><td>17</td><td>16</td><td>16</td><td>14</td><td>7</td><td>19</td><td>15</td><td>19</td><td>18</td><td>6</td><td>3</td></tr>
+      <tr><td>6.</td><td>Cracovia</td><td>201</td><td>16</td><td>7</td><td>8</td><td>10</td><td>7</td><td>10</td><td>8</td><td>11</td><td>18</td><td>13</td><td>6</td><td>18</td><td>16</td><td>17</td><td>16</td><td>14</td><td>6</td></tr>
+      <tr><td>7.</td><td>Śląsk Wrocław</td><td>201</td><td>0</td><td>16</td><td>12</td><td>19</td><td>20</td><td>18</td><td>14</td><td>17</td><td>13</td><td>10</td><td>4</td><td>0</td><td>12</td><td>8</td><td>8</td><td>13</td><td>17</td></tr>
+      <tr><td>8.</td><td>Astra Krotoszyn</td><td>180</td><td>13</td><td>6</td><td>11</td><td>3</td><td>0</td><td>13</td><td>11</td><td>12</td><td>15</td><td>8</td><td>10</td><td>13</td><td>8</td><td>20</td><td>20</td><td>12</td><td>5</td></tr>
+      <tr><td>9.</td><td>Górnik Zabrze</td><td>177</td><td>14</td><td>4</td><td>0</td><td>15</td><td>13</td><td>16</td><td>12</td><td>13</td><td>6</td><td>5</td><td>17</td><td>9</td><td>6</td><td>7</td><td>12</td><td>15</td><td>13</td></tr>
+      <tr><td>10.</td><td>Zagłębie Lubin</td><td>160</td><td>9</td><td>3</td><td>0</td><td>5</td><td>12</td><td>12</td><td>6</td><td>8</td><td>20</td><td>9</td><td>11</td><td>12</td><td>9</td><td>13</td><td>9</td><td>11</td><td>11</td></tr>
+      <tr><td>11.</td><td>Pogoń Szczecin</td><td>160</td><td>0</td><td>0</td><td>0</td><td>4</td><td>0</td><td>7</td><td>15</td><td>15</td><td>14</td><td>11</td><td>5</td><td>11</td><td>13</td><td>18</td><td>21</td><td>16</td><td>10</td></tr>
+      <tr><td>12.</td><td>Piast Gliwice</td><td>153</td><td>0</td><td>11</td><td>3</td><td>0</td><td>6</td><td>17</td><td>10</td><td>9</td><td>7</td><td>7</td><td>8</td><td>20</td><td>14</td><td>11</td><td>14</td><td>7</td><td>9</td></tr>
+      <tr><td>13.</td><td>Ruch Chorzów</td><td>122</td><td>15</td><td>10</td><td>18</td><td>11</td><td>17</td><td>9</td><td>18</td><td>10</td><td>12</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>14.</td><td>Błyskawica</td><td>116</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>20</td><td>24</td><td>24</td><td>24</td><td>24</td><td>0</td></tr>
+      <tr><td>15.</td><td>Korona Kielce</td><td>84</td><td>4</td><td>0</td><td>14</td><td>7</td><td>14</td><td>8</td><td>7</td><td>6</td><td>9</td><td>12</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>16.</td><td>Raków Częstochowa</td><td>84</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>7</td><td>5</td><td>23</td><td>22</td><td>19</td><td>8</td><td>0</td></tr>
+      <tr><td>17.</td><td>Arka Gdynia</td><td>76</td><td>0</td><td>8</td><td>7</td><td>6</td><td>4</td><td>0</td><td>5</td><td>7</td><td>8</td><td>18</td><td>9</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>18.</td><td>GKS Bełchatów</td><td>72</td><td>17</td><td>17</td><td>16</td><td>12</td><td>5</td><td>3</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>19.</td><td>Barcelona</td><td>69</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>23</td><td>23</td><td>23</td></tr>
+      <tr><td>20.</td><td>Rapid Wiedeń</td><td>66</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>19</td><td>10</td><td>18</td><td>15</td><td>4</td><td>0</td><td>0</td></tr>
+      <tr><td>21.</td><td>Chelsea</td><td>66</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>22</td><td>20</td><td>24</td><td>0</td></tr>
+      <tr><td>22.</td><td>Arsenal</td><td>62</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>20</td><td>22</td><td>20</td><td>0</td></tr>
+      <tr><td>23.</td><td>Polonia Warszawa</td><td>59</td><td>5</td><td>14</td><td>6</td><td>14</td><td>16</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>24.</td><td>Tottenham</td><td>55</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>21</td><td>12</td><td>22</td><td>0</td></tr>
+      <tr><td>25.</td><td>West Ham</td><td>46</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>18</td><td>14</td><td>14</td><td>0</td></tr>
+      <tr><td>26.</td><td>Warta Poznań</td><td>44</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>21</td><td>13</td><td>9</td><td>1</td><td>0</td></tr>
+      <tr><td>27.</td><td>Inter</td><td>42</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>21</td><td>21</td></tr>
+      <tr><td>28.</td><td>Polonia Bytom</td><td>37</td><td>8</td><td>12</td><td>15</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>29.</td><td>AC Milan</td><td>37</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>18</td><td>19</td><td>0</td></tr>
+      <tr><td>30.</td><td>Podbeskidzie B-B</td><td>36</td><td>0</td><td>0</td><td>1</td><td>0</td><td>9</td><td>6</td><td>9</td><td>5</td><td>3</td><td>0</td><td>0</td><td>0</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>31.</td><td>Widzew Łódź</td><td>35</td><td>2</td><td>0</td><td>5</td><td>8</td><td>11</td><td>5</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>32.</td><td>Slovan Bratysława</td><td>34</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>14</td><td>16</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>33.</td><td>Slavia Praga</td><td>33</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>16</td><td>15</td><td>2</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>34.</td><td>Piast Kobylin</td><td>31</td><td>6</td><td>15</td><td>9</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>35.</td><td>Austria Wiedeń</td><td>31</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>15</td><td>14</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>36.</td><td>Szachtar</td><td>29</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>17</td><td>10</td><td>2</td><td>0</td><td>0</td></tr>
+      <tr><td>37.</td><td>ŁKS Łódź</td><td>26</td><td>12</td><td>2</td><td>0</td><td>9</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>38.</td><td>Wisła Płock</td><td>26</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>0</td><td>6</td><td>13</td><td>2</td><td>0</td><td>2</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>39.</td><td>Bruk-Bet Termalica</td><td>22</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>5</td><td>15</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>40.</td><td>Pilzno</td><td>20</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>6</td><td>10</td><td>4</td><td>0</td><td>0</td></tr>
+      <tr><td>41.</td><td>Dynamo Kijów</td><td>20</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>19</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>42.</td><td>Alanyaspor</td><td>18</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>10</td><td>5</td><td>1</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>43.</td><td>Brighton</td><td>18</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>18</td></tr>
+      <tr><td>44.</td><td>Odra Wodzisław</td><td>17</td><td>10</td><td>5</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>45.</td><td>Girona</td><td>17</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>15</td><td>2</td><td>0</td></tr>
+      <tr><td>46.</td><td>Brentford</td><td>17</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>17</td></tr>
+      <tr><td>47.</td><td>Sparta Praga</td><td>16</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>14</td><td>2</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>48.</td><td>Fulham</td><td>16</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>16</td></tr>
+      <tr><td>49.</td><td>Crystal Palace</td><td>15</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>15</td></tr>
+      <tr><td>50.</td><td>Lyon</td><td>13</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>13</td></tr>
+      <tr><td>51.</td><td>Groclin Grodzisk Wlkp.</td><td>12</td><td>11</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>52.</td><td>VfB Stuttgart</td><td>12</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>12</td></tr>
+      <tr><td>53.</td><td>SC Freiburg</td><td>11</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>11</td></tr>
+      <tr><td>54.</td><td>RB Lipsk</td><td>10</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>10</td></tr>
+      <tr><td>55.</td><td>FC Augsburg</td><td>9</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>9</td></tr>
+      <tr><td>56.</td><td>Miedź Legnica</td><td>8</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>0</td><td>2</td><td>0</td><td>0</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>57.</td><td>Antalyaspor</td><td>8</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>5</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>58.</td><td>Union Berlin</td><td>8</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>8</td></tr>
+      <tr><td>59.</td><td>St. Pauli</td><td>8</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>7</td></tr>
+      <tr><td>60.</td><td>Biały Orzeł Koźmin Wlkp.</td><td>7</td><td>3</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>61.</td><td>Górnik Łęczna</td><td>7</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4</td><td>0</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>62.</td><td>Young Boys</td><td>7</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>7</td><td>0</td></tr>
+      <tr><td>63.</td><td>GKS Katowice</td><td>6</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>64.</td><td>TSG Hoffenheim</td><td>6</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>6</td></tr>
+      <tr><td>65.</td><td>Monastir</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>66.</td><td>Sandecja Nowy Sącz</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>67.</td><td>Hajduk Split</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>68.</td><td>Atalanta</td><td>5</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>5</td></tr>
+      <tr><td>69.</td><td>Stal Mielec</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>70.</td><td>Sturm Graz</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4</td><td>0</td></tr>
+      <tr><td>71.</td><td>Como</td><td>4</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>4</td></tr>
+      <tr><td>72.</td><td>Zagłębie Sosnowiec</td><td>3</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>73.</td><td>Zawisza Bydgoszcz</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>2</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>74.</td><td>Radomiak Radom</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+      <tr><td>75.</td><td>Torino</td><td>3</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>3</td></tr>
+      <tr><td>76.</td><td>Zakynthos</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="hint">Przeciągnij w bok, aby zobaczyć wszystkie sezony →</div>
+
+</body>
+</html>
