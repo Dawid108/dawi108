@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>INF03 – Testy</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20250830_testy.json">
   <style>
     :root{
       --bg:#0f1226; /* przyjemne, ciemne tło */
@@ -64,7 +66,8 @@
     .answer{
       width:100%; text-align:left; padding:14px 14px; border-radius:16px; border:1px solid rgba(255,255,255,.08);
       background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.015));
-      cursor:pointer; font-weight:700; position:relative; transition: transform .05s ease;
+      cursor:pointer; font-weight:700; position:relative; transition: transform .05s ease; font-size: 18px;
+      color: #6ee7ff;
     }
     .answer:active{ transform: scale(.99) }
     .answer .prefix{ opacity:.8; margin-right:8px; color:var(--accent) }
@@ -114,8 +117,6 @@
       <div class="footer"><span id="progress">Pytanie 0/0</span><span id="difficulty"></span></div>
     </div>
   </div>
-
-  <!-- Modal wyników / startu -->
   <div class="modal-backdrop" id="modal">
     <div class="modal">
       <h1>INF03 – Testy</h1>
@@ -153,6 +154,162 @@
      *   poprawna_odpowiedz: string, bledne_odpowiedzi: [string,string,string] }
      */
     const easy = [
+        {
+            pytanie: 'Którego polecenia nalezy użyć, aby wyraz TEKST został wyświetleny w kolorze czarnym w oknie przeglądarki internetowej?',
+            poprawna_odpowiedz: '<font color="#000000"> TEKST </font>',
+            bledne_odpowiedzi: ['<body color="black"> TEKST </font>', '<font color="czarny"> TEKST </font>', '<body bgcolor="black"> TEKST </body>']
+        },
+        {
+            pytanie: 'W poleceniach, których celem jest odtwarzanie na stronie internetowej dźwięku jako podkładu muzycznego NIE wykorzystuje się atrybutu',
+            poprawna_odpowiedz: 'href="C:/100.wav"',
+            bledne_odpowiedzi: ['loop="10"', 'balance="-10"', 'volume="-100"']
+        },
+        {
+            pytanie: 'Jakiego znacznika należy użyć, aby przejść do kolejnej linii tekstu, nie tworząc akapitu na stronie internetowej?',
+            poprawna_odpowiedz: '<br>',
+            bledne_odpowiedzi: ['<p>', '</b>', '</br>']
+        },
+        {
+            pytanie: 'Kaskadowe arkusze stylów tworzy się w celu',
+            poprawna_odpowiedz: 'ułatwienia formatowania strony',
+            bledne_odpowiedzi: ['nadpisywania wartości znaczników już ustawionych na stronie', 'połączenia struktury dokumentu strony z właściwą formą jego prezentacji', 'blokowania jakichkolwiek zmian w wartościach znaczników już przypisanych w pliku CSS']
+        },
+        {
+            pytanie: 'W podanej regule CSS: h1 {color: blue} h1 oznacza',
+            poprawna_odpowiedz: 'selektor',
+            bledne_odpowiedzi: ['klasę', 'wartość', 'deklarację']
+        },
+        {
+            pytanie: 'Edytor spełniający założenia WYSIWYG musi umożliwiać',
+            poprawna_odpowiedz: 'uzyskanie zbliżonego wyniku tworzenej strony do jej obrazu w przegladarce interenetowej',
+            bledne_odpowiedzi: ['tworzenie podstawowej grafiki wektorowej', 'publikację strony na serwerze poprzez wbudowanego klienta FTP', 'obróbkę plików dźwiękowych przed umieszczeniem ich na stronie internetowej']
+        },
+        {
+            pytanie: 'Do graficznego tworzenia stron internetowych należy wykorzystać.',
+            poprawna_odpowiedz: 'program typu WYSIWYG',
+            bledne_odpowiedzi: ['edytor CSS', 'przeglądarkę internetową', 'program MS Office Picture Manager']
+        },
+        {
+            pytanie: 'W procesie walidacji stron internetowych nie bada się',
+            poprawna_odpowiedz: 'źródła pochodzenia narzędzi edytorskich',
+            bledne_odpowiedzi: ['działania linków', 'błędów składni kodu', 'zgodności z przeglądarkami']
+        },
+        {
+            pytanie: 'Model opisu przestrzeni barw o parametrach: odcień, nasycenie i jasność, to',
+            poprawna_odpowiedz: 'HSV',
+            bledne_odpowiedzi: ['RGB', 'CMY', 'CMYK']
+        },
+        {
+            pytanie: 'Wskaż model barw, który stosuje się do wyświetlania kolorów na ekranie monitora komputerowego',
+            poprawna_odpowiedz: 'RGB',
+            bledne_odpowiedzi: ['HLS', 'CMY', 'CMYK']
+        },
+        {
+            pytanie: 'Który parametr obiektu graficznego ulegnie zmianie po modyfikacji wartości kanału alfa?',
+            poprawna_odpowiedz: 'Przezroczystość',
+            bledne_odpowiedzi: ['Nasycenie barw', 'Ostrość krawędzi', 'Kolejność wyświetlenia pikseli']
+        },
+        {
+            pytanie: 'Jakiego formatu należy użyć do zapisu obrazu z kompresją stratną?',
+            poprawna_odpowiedz: 'JPEG',
+            bledne_odpowiedzi: ['GIF', 'PNG', 'PCX']
+        },
+        {
+            pytanie: 'Najprostszy sposób zamiany obiektu oznaczonego cyfrą 1 na obiekt oznaczony cyfrą 2 polega na',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1756568286/pytanie13_tqc9br.png',
+            poprawna_odpowiedz: 'geometrycznym transformowaniu obiektu',
+            bledne_odpowiedzi: ['animowaniu obiektu', 'zmianie warstwy obiektu', 'narysowaniu docelowego obiektu']
+        },
+        {
+            pytanie: 'Jak nazywa się proces przedstawienia, we właściwej dla danego środowiska formie, informacji zawartej w dokumencie elektronicznym?',
+            poprawna_odpowiedz: 'Renderowanie',
+            bledne_odpowiedzi: ['Mapowanie', 'Rasteryzacja', 'Teksturowanie']
+        },
+        {
+            pytanie: 'Proces filtracji sygnału wejściowego w dziedzinie czasu, obejmujący zasadę superpozycji, związany jest filtrem',
+            poprawna_odpowiedz: 'liniowym',
+            bledne_odpowiedzi: ['przyczynowym', 'niezmiennym w czasie', 'o skończonej odpowiedzi impulsowej']
+        },
+        {
+            pytanie: 'Jak nazywa się podzbiór strukturalnego języka zapytań, związany z formułowaniem zapytań do bazy danych za pomocą polecenia SELECT?',
+            poprawna_odpowiedz: 'SQL DQL (ang. Data Query Language)',
+            bledne_odpowiedzi: ['SQL DML (ang. Data Manipulation Language)', 'SQL DDL (ang. Data Definition Language)', 'SQL DCL (ang. Data Control Language)']
+        },
+        {
+            pytanie: 'Jakie sa nazwy typowych poleceń języka zapytań SQL, związane z wykonywaniem operacji na danych SQL DML (np.: umieszczanie danych w bazie, kasowanie dokonywanie zmian w danych)?',
+            poprawna_odpowiedz: 'DELETE, INSERT, UPDATE',
+            bledne_odpowiedzi: ['SELECT, SELECT INTO', 'ALTER, CREATE, DROP', 'DENY, GRANT, REVOKE']
+        },
+        {
+            pytanie: 'Jak posortowana będzie lista, utworzona ze wszystkich kolumn tabeli uczniowie i zawierająca uczniów ze średnią większą od 5, która zostanie zwrócona jako wynik przedstawionego zapytania?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1756568513/pytani18_bccyl4.png',
+            poprawna_odpowiedz: 'Malejąco według parametru klasa',
+            bledne_odpowiedzi: ['Rosnąca według parametru klasa', 'Rosnaco według parametru srednia', 'Malejąco według parametru srednia']
+        },
+        {
+            pytanie: 'Według którego parametru oraz dla ilu tabel zostaną zwrócone wiersze na liście w wyniku przedstawionego zapytania?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1756568615/pytanie19_inphzq.png',
+            poprawna_odpowiedz: 'Według parametru nr_id dla wszystkich tabel',
+            bledne_odpowiedzi: ['Według parametru wyrob_id wyłącznie dla trzech tabel', 'Według parametru wyrob_id dla wyłącznie dla trzech tabel', 'Według parametru nr_id wyłącznie dla trzech tabel']
+        },
+        {
+            pytanie: 'Który z obiektów relacyjnej bazy danych, będący kodem języka SQL, może być wywoływany w zapytaniach modyfikujących kolumny danych widoczne jako tabela, bez względu na to czy jest tworzony programowo, czy dynamicznie?',
+            poprawna_odpowiedz: 'Funkcja zdefiniowana',
+            bledne_odpowiedzi: ['Reguła', 'Wyzwalacz', 'Procedura składowa']
+        },
+        {
+            pytanie: 'Jak nazywa się element bazy danych, za pomocą którego można jedynie odczytać dane z bazy, prezentując je w postaci tekstu lub wykresu?',
+            poprawna_odpowiedz: 'Raport',
+            bledne_odpowiedzi: ['Tabela', 'Zapytanie', 'Formularz']
+        },
+        {
+            pytanie: 'Jakiego typu specjalizowane oprogramowanie narzędziowe należy zainstalować, aby umożliwić wykonywanie jego użytkownikowi operacji na zgromadzonych danych?',
+            poprawna_odpowiedz: 'System Zarządzania Bazą Danych (SZBD)',
+            bledne_odpowiedzi: ['Klucz obcy', 'Obiektowy System Zarządzania Bazą Danych', 'Otwarty mechanizm komunikacji bazy danych']
+        },
+        {
+            pytanie: 'Co należy zastosować w organizacji danych, aby zapytania w bazie danych były wykonywane szybciej?',
+            poprawna_odpowiedz: 'Indeksy',
+            bledne_odpowiedzi: ['Reguły', 'Wartości domyślne', 'Klucze podstawowe']
+        },
+        {
+            pytanie: 'W programie Microsoft Access formą zabezpieczeń dostępu do danych związaną z tabelą i kwerendą jest',
+            poprawna_odpowiedz: 'przypisanie uprawnień',
+            bledne_odpowiedzi: ['stosowanie makr', 'określanie przestrzeni tabel', 'wprowadzenie limitów przestrzeni dyskowej']
+        },
+        {
+            pytanie: 'Które z wymienionych osób odpowiadają za przygotowanie systemu bazy danych do pracy produkcyjnej w sposób ciągły, zarządzanie użytkownikami i instalowanie nowych wersji systemu bazodanowego?',
+            poprawna_odpowiedz: 'Administratorzy systemu bazy danych',
+            bledne_odpowiedzi: ['Projektanci narzędzi deweloperskich', 'Administratorzy serwerów i sieci komputerowych', 'Projektanci i programiści Systemu Zarządzania Bazą Danych.']
+        },
+        {
+            pytanie: 'Z jakimi mechanizmami nadawania zabezpieczeń, dającymi możliwości wykonywania operacji na bazie danych, związane są zagadnienia zarządzania kontami, użytkownikami i uprawnieniami?',
+            poprawna_odpowiedz: 'Z przywilejami systemowymi',
+            bledne_odpowiedzi: ['Z regułami', 'Z atrybutami', 'Z przywilejami obiektowymi']
+        },
+        {
+            pytanie: 'Metoda udostępniania bazy danych w programie Microsoft Access, dotycząca wszystkich obiektów bazy umieszczonych na dysku sieciowym i używanych jednocześnie przez różne osoby nosi nazwę',
+            poprawna_odpowiedz: 'folderu sieciowego',
+            bledne_odpowiedzi: ['serwera bazy danych', 'dzielonej bazy danych', 'witryny programu SharePoint']
+        },
+        {
+            pytanie: 'Jakie należy posiadać uprawnienia, aby wykonać i odtworzyć kopię zapasową bazy danych Microsoft SQL Server 2005 Express?',
+            poprawna_odpowiedz: 'Administrator systemu',
+            bledne_odpowiedzi: ['Users', 'Security users', 'Użytkownik lokalny']
+        },
+        {
+            pytanie: 'Typ zmiennej w języku JavaScript',
+            poprawna_odpowiedz: 'następuje poprzez przypisanie wartości',
+            bledne_odpowiedzi: ['nie występuje', 'jest tylko jeden', 'musi być zadeklarowany na początku skryptu']
+        },
+        {
+            pytanie: 'Zmienne typu int odnoszą się do liczb',
+            poprawna_odpowiedz: 'całkowitych',
+            bledne_odpowiedzi: ['naturalnych', 'w notacji stałoprzecinkowej', 'w notacji zmiennoprzecinkowej']
+        }
+    ];
+
+    const medium = [
       {
         pytanie: 'Którego polecenia nalezy użyć, aby wyraz TEKST został wyświetlony w kolorze czarnym w oknie przeglądarki internetowej?',
         poprawna_odpowiedz: '<font color="#000000"> TEKST </font>',
@@ -163,18 +320,15 @@
         kod: 'SELECT *\n    FROM uczniowie\n    WHERE srednia > 5\n    ORDER BY klasa DESC;',
         poprawna_odpowiedz: 'Malejąco według parametru klasa',
         bledne_odpowiedzi: ['Rosnąca według parametru klasa','Rosnaco według parametru srednia','Malejąco według parametru srednia']
-      }
+      },
     ];
 
-    const medium = [
+    const hard = [
       {
         pytanie: 'W poleceniach, których celem jest odtwarzanie na stronie internetowej dźwięku jako podkładu muzycznego NIE wykorzystuje się atrybutu',
         poprawna_odpowiedz: 'href="C:/100.wav"',
         bledne_odpowiedzi: ['loop="10"','balance="-10"','volume="-100"']
-      }
-    ];
-
-    const hard = [
+      },
       {
         pytanie: 'Które z wymienionych osób odpowiadają za przygotowanie systemu bazy danych do pracy produkcyjnej w sposób ciągły, zarządzanie użytkownikami i instalowanie nowych wersji systemu bazodanowego?',
         zdjecie: 'pytanie4.png', // opcjonalny plik – jeśli brak, pokaże się alt
@@ -331,7 +485,7 @@
       setTimeout(()=>{
         if(lives <= 0){ endGame('Koniec gry – brak żyć.'); return; }
         idx += 1; renderCurrent();
-      }, 600);
+      }, 2000);
     }
 
     function endGame(reason){
