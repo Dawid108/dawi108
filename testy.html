@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>INF03 – Testy</title>
+  <style>
+    :root{
+      --bg:#0f1226; /* przyjemne, ciemne tło */
+      --card:#171a36;
+      --accent:#6ee7ff;
+      --accent-2:#a78bfa;
+      --text:#eaf2ff;
+      --muted:#9aa4c7;
+      --danger:#ff6b6b;
+      --success:#6bff95;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% -10%, #1d2248, transparent),
+                  radial-gradient(900px 700px at 120% 10%, #1c2b4f, transparent),
+                  var(--bg);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+    .app{
+      width:min(900px, 100%);
+    }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:12px;
+      font-weight:700; letter-spacing:.3px;
+    }
+    .pill{
+      background:linear-gradient(135deg, rgba(110,231,255,.2), rgba(167,139,250,.15));
+      border:1px solid rgba(255,255,255,.08);
+      padding:10px 14px; border-radius:999px; backdrop-filter: blur(6px);
+      display:flex; align-items:center; gap:8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+    .pill .label{color:var(--muted); font-weight:600}
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px; padding:18px; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .question{ margin-bottom:14px; }
+    .question h2{ margin:0 0 10px 0; font-size:20px; font-weight:800; }
+    .question small{ color:var(--muted); font-weight:600 }
+
+    .media{ margin:12px 0; display:grid; gap:10px }
+    .media img{ width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.08); }
+    pre{ margin:0; padding:12px; border-radius:12px; overflow:auto; border:1px solid rgba(255,255,255,.08);
+         background: #0b0e22; color:#dbe7ff; font-size:14px; line-height:1.4 }
+
+    .answers{ display:grid; gap:10px }
+    .answer{
+      width:100%; text-align:left; padding:14px 14px; border-radius:16px; border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.015));
+      cursor:pointer; font-weight:700; position:relative; transition: transform .05s ease;
+    }
+    .answer:active{ transform: scale(.99) }
+    .answer .prefix{ opacity:.8; margin-right:8px; color:var(--accent) }
+
+    .answer.correct{ outline:2px solid rgba(107,255,149,.5); background: rgba(107,255,149,.08) }
+    .answer.wrong{ outline:2px solid rgba(255,107,107,.5); background: rgba(255,107,107,.08) }
+
+    .footer{ display:flex; justify-content:space-between; align-items:center; margin-top:14px; color:var(--muted); font-weight:600 }
+
+    .modal-backdrop{
+      position:fixed; inset:0; display:grid; place-items:center;
+      background: rgba(5, 8, 20, .6); backdrop-filter: blur(6px);
+      z-index:50;
+    }
+    .modal{
+      width:min(520px, 92%);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius:24px; padding:22px; text-align:center; 
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+    .modal h1{ margin:0 0 12px 0; font-size:28px }
+    .score-line{ font-size:18px; margin:8px 0; }
+    .cta{
+      margin-top:14px; padding:12px 16px; border-radius:999px; font-weight:800; border:1px solid rgba(255,255,255,.18);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#0b0e22; cursor:pointer;
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+    }
+
+    @media (hover:hover){
+      .answer:hover{ border-color: rgba(255,255,255,.2) }
+      .cta:hover{ filter:brightness(1.05) }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="pill" id="lifePill"><span class="label">Życia:</span> <span id="lives">3</span> <span id="timerWrap" style="display:none">&nbsp;&nbsp;|&nbsp;&nbsp;<span class="label">Czas:</span> <span id="timer">05:00</span></span></div>
+      <div class="pill"><span class="label">Punkty:</span> <span id="points">0</span></div>
+    </div>
+
+    <div class="card">
+      <div class="question" id="question"></div>
+      <div class="media" id="media"></div>
+      <div class="answers" id="answers"></div>
+      <div class="footer"><span id="progress">Pytanie 0/0</span><span id="difficulty"></span></div>
+    </div>
+  </div>
+
+  <!-- Modal wyników / startu -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <h1>INF03 – Testy</h1>
+      <div class="score-line">Twój Wynik: <strong id="lastScore">0</strong></div>
+      <div class="score-line">Twój Rekord: <strong id="bestScore">0</strong></div>
+      <button class="cta" id="newGameBtn">Nowa Gra</button>
+    </div>
+  </div>
+
+  <script>
+    // ====== NARZĘDZIA ======
+    const storageKey = 'inf03_game_2526';
+    const recordKey = storageKey + '_record';
+    const lastKey = storageKey + '_last';
+
+    const $ = sel => document.querySelector(sel);
+    const escapeHTML = (str) => String(str)
+      .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+      .replaceAll('"','&quot;').replaceAll("'",'&#39;');
+
+    // Prosty shuffle (Fisher–Yates)
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+
+    // ====== PYTANIA ======
+    /**
+     * Każdy obiekt pytania:
+     * { pytanie: string, zdjecie?: string, kod?: string,
+     *   poprawna_odpowiedz: string, bledne_odpowiedzi: [string,string,string] }
+     */
+    const easy = [
+      {
+        pytanie: 'Którego polecenia nalezy użyć, aby wyraz TEKST został wyświetlony w kolorze czarnym w oknie przeglądarki internetowej?',
+        poprawna_odpowiedz: '<font color="#000000"> TEKST </font>',
+        bledne_odpowiedzi: ['<body color="black"> TEKST </font>', '<font color="czarny"> TEKST </font>', '<body bgcolor="black"> TEKST </body>']
+      },
+      {
+        pytanie: 'Jak posortowana będzie lista, utworzona ze wszystkich kolumn tabeli uczniowie i zawierająca uczniów ze średnią większą od 5, która zostanie zwrócona jako wynik przedstawionego zapytania?',
+        kod: 'SELECT *\n    FROM uczniowie\n    WHERE srednia > 5\n    ORDER BY klasa DESC;',
+        poprawna_odpowiedz: 'Malejąco według parametru klasa',
+        bledne_odpowiedzi: ['Rosnąca według parametru klasa','Rosnaco według parametru srednia','Malejąco według parametru srednia']
+      }
+    ];
+
+    const medium = [
+      {
+        pytanie: 'W poleceniach, których celem jest odtwarzanie na stronie internetowej dźwięku jako podkładu muzycznego NIE wykorzystuje się atrybutu',
+        poprawna_odpowiedz: 'href="C:/100.wav"',
+        bledne_odpowiedzi: ['loop="10"','balance="-10"','volume="-100"']
+      }
+    ];
+
+    const hard = [
+      {
+        pytanie: 'Które z wymienionych osób odpowiadają za przygotowanie systemu bazy danych do pracy produkcyjnej w sposób ciągły, zarządzanie użytkownikami i instalowanie nowych wersji systemu bazodanowego?',
+        zdjecie: 'pytanie4.png', // opcjonalny plik – jeśli brak, pokaże się alt
+        poprawna_odpowiedz: 'Administratorzy systemu bazy danych',
+        bledne_odpowiedzi: ['Projektanci narzędzi deweloperskich','Administratorzy serwerów i sieci komputerowych','Projektanci i programiści Systemu Zarządzania Bazą Danych']
+      }
+    ];
+
+    // ====== STAN GRY ======
+    let points = 0;
+    let lives = 3;
+    let queue = []; // kolejka pytań (najpierw E, potem M, potem H – każda część przetasowana)
+    let idx = 0;    // indeks aktualnego pytania
+
+    // Timer dla trudnych pytań (start przy pierwszym trudnym)
+    const HARD_SECONDS = 5*60; // 5 minut
+    let hardStarted = false;
+    let remaining = HARD_SECONDS;
+    let timerId = null;
+
+    // ====== UI HOOKS ======
+    const $question = $('#question');
+    const $media = $('#media');
+    const $answers = $('#answers');
+    const $points = $('#points');
+    const $lives = $('#lives');
+    const $progress = $('#progress');
+    const $difficulty = $('#difficulty');
+    const $timerWrap = $('#timerWrap');
+    const $timer = $('#timer');
+
+    const $modal = $('#modal');
+    const $lastScore = $('#lastScore');
+    const $bestScore = $('#bestScore');
+    const $newGameBtn = $('#newGameBtn');
+
+    // ====== MODAL / PERSIST ======
+    function loadScores(){
+      const best = Number(localStorage.getItem(recordKey) || 0);
+      const last = Number(localStorage.getItem(lastKey) || 0);
+      $bestScore.textContent = best;
+      $lastScore.textContent = last;
+    }
+
+    function saveLastAndMaybeRecord(score){
+      localStorage.setItem(lastKey, String(score));
+      const best = Number(localStorage.getItem(recordKey) || 0);
+      if(score > best){ localStorage.setItem(recordKey, String(score)); }
+    }
+
+    function showModal(){
+      loadScores();
+      $modal.style.display = 'grid';
+    }
+    function hideModal(){
+      $modal.style.display = 'none';
+    }
+
+    // ====== LOGIKA GRY ======
+    function startGame(){
+      // reset stanu
+      points = 0; lives = 3; idx = 0; hardStarted = false; remaining = HARD_SECONDS;
+      $points.textContent = '0';
+      $lives.textContent = '3';
+      stopTimer();
+      $timerWrap.style.display = 'none';
+      updateTimerUI();
+
+      // budujemy kolejkę: E (shuffle), potem M (shuffle), potem H (shuffle)
+      const e = shuffle(easy);
+      const m = shuffle(medium);
+      const h = shuffle(hard);
+      queue = [ ...e.map(q=>({...q, level:'Łatwe'})), ...m.map(q=>({...q, level:'Średnie'})), ...h.map(q=>({...q, level:'Trudne'})) ];
+
+      renderCurrent();
+    }
+
+    function renderCurrent(){
+      if(lives<=0){ return endGame('Koniec gry – brak żyć.'); }
+      if(idx >= queue.length){ return endGame('Brawo! Odpowiedziałeś na wszystkie pytania.'); }
+
+      const q = queue[idx];
+
+      // jeśli wchodzimy w sekcję trudne – start czasu (jednorazowo)
+      if(!hardStarted && q.level==='Trudne'){
+        hardStarted = true;
+        remaining = HARD_SECONDS;
+        $timerWrap.style.display = '';
+        startTimer();
+      }
+
+      $difficulty.textContent = q.level;
+      $progress.textContent = `Pytanie ${idx+1}/${queue.length}`;
+
+      // Treść pytania
+      const num = idx+1; // numer pokazowy
+      $question.innerHTML = `<h2>${num}. ${escapeHTML(q.pytanie)}</h2>`;
+
+      // Media: obraz i/lub kod
+      $media.innerHTML = '';
+      if(q.zdjecie){
+        const img = document.createElement('img');
+        img.src = q.zdjecie; img.alt = 'Ilustracja do pytania';
+        $media.appendChild(img);
+      }
+      if(q.kod){
+        const pre = document.createElement('pre');
+        pre.innerHTML = `<code>${escapeHTML(q.kod)}</code>`;
+        $media.appendChild(pre);
+      }
+
+      // Odpowiedzi – 4 sztuki, zawsze różna kolejność
+      const variants = shuffle([
+        { text:q.poprawna_odpowiedz, correct:true },
+        ...q.bledne_odpowiedzi.map(t=>({text:t, correct:false}))
+      ]);
+
+      $answers.innerHTML = '';
+      const labels = ['A','B','C','D'];
+      variants.forEach((v,i)=>{
+        const btn = document.createElement('button');
+        btn.className = 'answer';
+        btn.innerHTML = `<span class="prefix">${labels[i]}.</span> <span>${escapeHTML(v.text)}</span>`;
+        btn.addEventListener('click',()=>handleAnswer(btn, v.correct));
+        $answers.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(el, isCorrect){
+      // Zablokuj dalsze kliki dla bieżącego zestawu
+      Array.from(document.querySelectorAll('.answer')).forEach(b=>b.disabled = true);
+
+      if(isCorrect){
+        points += 1; $points.textContent = String(points);
+        el.classList.add('correct');
+      }else{
+        lives -= 1; $lives.textContent = String(lives);
+        el.classList.add('wrong');
+      }
+
+      // Pokaż poprawną, jeśli zaznaczono błędną
+      if(!isCorrect){
+        const answers = Array.from(document.querySelectorAll('.answer'));
+        const correctBtn = answers.find(b=>/prefix"\>.[^<]*<\/span>\s*<span>([\s\S]*)<\/span>/.test(b.innerHTML) ? false : false);
+        // zamiast sprytnego regexu, po prostu sprawdzimy względem danych
+        const q = queue[idx];
+        answers.forEach(b=>{
+          const text = b.textContent.replace(/^\s*[ABCD]\.\s*/,'').trim();
+          if(text === q.poprawna_odpowiedz){ b.classList.add('correct'); }
+        });
+      }
+
+      // przejście dalej po krótkiej pauzie
+      setTimeout(()=>{
+        if(lives <= 0){ endGame('Koniec gry – brak żyć.'); return; }
+        idx += 1; renderCurrent();
+      }, 600);
+    }
+
+    function endGame(reason){
+      stopTimer();
+      saveLastAndMaybeRecord(points);
+      loadScores();
+      // Opcjonalnie można wyświetlić reason w modalu (tu: sam wynik/rekord wg wymagań)
+      showModal();
+    }
+
+    // ====== TIMER (tylko dla trudnych) ======
+    function startTimer(){
+      stopTimer();
+      timerId = setInterval(()=>{
+        remaining -= 1; 
+        if(remaining <= 0){ remaining = 0; updateTimerUI(); endGame('Koniec czasu.'); return; }
+        updateTimerUI();
+      }, 1000);
+      updateTimerUI();
+    }
+    function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
+    function updateTimerUI(){
+      const m = Math.floor(remaining/60).toString().padStart(2,'0');
+      const s = Math.floor(remaining%60).toString().padStart(2,'0');
+      $timer.textContent = `${m}:${s}`;
+    }
+
+    // ====== INIT ======
+    window.addEventListener('load', ()=>{
+      loadScores();
+      showModal();
+    });
+
+    $newGameBtn.addEventListener('click', ()=>{
+      hideModal();
+      startGame();
+    });
+  </script>
+</body>
+</html>
