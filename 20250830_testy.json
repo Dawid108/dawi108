@@ -1,0 +1,15 @@
+{
+  "name": "Testy",
+  "short_name": "Testy",
+  "start_url": "https://dawid108.github.io/dawi108/testy.html",
+  "display": "standalone",
+  "background_color": "#00aef0",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "dawi108.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
