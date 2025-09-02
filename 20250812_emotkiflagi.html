@@ -334,6 +334,7 @@
   {emoji:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', pl:'Anglia', en:'England', others:['Londyn','english','kane']},
   {emoji:'🏴󠁧󠁢󠁷󠁬󠁳󠁿', pl:'Walia', en:'Wales', others:['Cardiff','walie','bale']},
   {emoji:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', pl:'Szkocja', en:'Scotland', others:['Edynburg','scottish','scot']},
+  {emoji:'🇵🇼', pl:'Palau', en:'Palau', others:['Ngerulmud','palauan','palao']},
   {emoji:'🇿🇼', pl:'Zimbabwe', en:'Zimbabwe', others:['Harare','zimbabwean','zimbabue']}
      ],
      hard:[
@@ -372,7 +373,6 @@
   {emoji:'🇵🇫', pl:'Polinezja Francuska', en:'French Polynesia', others:['Papeete','tahitian','polinesia', 'francja']},
   {emoji:'🇵🇲', pl:'Saint-Pierre i Miquelon', en:'Saint Pierre and Miquelon', others:['Saint-Pierre','spm','miquelon', 'pierre', 'miquelon']},
   {emoji:'🇵🇳', pl:'Pitcairn', en:'Pitcairn Islands', others:['Adamstown','pitcairner','pitcarn']},
-  {emoji:'🇵🇼', pl:'Palau', en:'Palau', others:['Ngerulmud','palauan','palao']},
   {emoji:'🇸🇭', pl:'Wyspa Świętej Heleny', en:'Saint Helena', others:['Jamestown','st helena','saint helena', 'wsh', 'helena']},
   {emoji:'🇸🇽', pl:'Sint Maarten', en:'Sint Maarten', others:['Philipsburg','dutch sint maarten','st maarten', 'maarten', 'martin']},
   {emoji:'🇸🇿', pl:'Eswatini', en:'Eswatini', others:['Mbabane','swazi','swaziland']},
@@ -529,7 +529,7 @@
         .filter(Boolean).map(normalizeAnswer);
       if(accepted.includes(answer)){
         score += 1;
-        const bonus = (roundCount === 1) ? 5 : 1;
+        const bonus = (roundCount === 1) ? 4 : 1;
         timeLeft += bonus;
         updateHUD();
         guessInput.value = '';
