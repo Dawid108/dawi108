@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zdarzenia</title>
+    <style>
+        div{
+            width: 25px;
+            height: 25px;
+            margin: 5px;
+            float: left;
+        }
+        #czerwony {
+            background-color: red;
+        }
+        #zielony {
+            background-color: rgb(0, 255, 0);
+        }
+        #niebieski {
+            background-color: #0000ff;
+        }
+        #czarny {
+            background-color: black;
+        }
+        #gruby, #chudy {
+            border: 1px solid black;
+            text-align: center;
+            line-height: 25px;
+        }
+        #ramka {
+            border: 1px dotted crimson;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        Podaj tekst: <input type="text" id="tekst">
+        <input type="button" id="wyslij" value="Wyślij">
+        <input type="reset" value="Wyczyść">
+    </form>
+    <br><h3 id="wynik"></h3><br>
+
+    <div id="czerwony"></div>
+    <div id="zielony"></div>
+    <div id="niebieski"></div>
+    <div id="czarny"></div>
+    <div id="gruby"><strong>B</strong></div>
+    <div id="chudy">B</div>
+    <div id="ramka"></div>
+    <br><br>
+    <p id="kuryswa">Kliknij mnie, a pochylę tekst.</p>
+    <p id="wyprostuj">Kliknij mnie, a wyprostuje tekst.</p>
+    <p id="powieksz">Kliknij mnie, a powiększę trzykrotnie tekst.</p>
+    
+
+    <script>
+        let tekst = document.getElementById("tekst");
+        let wyslij = document.getElementById("wyslij");
+        let wynik = document.getElementById("wynik");
+        let czerwony = document.getElementById("czerwony");
+        let zielony = document.getElementById("zielony");
+        let niebieski = document.getElementById("niebieski");
+        let czarny = document.getElementById("czarny");
+        let kuryswa = document.getElementById("kuryswa");
+        let wyprostuj = document.getElementById("wyprostuj");
+        let gruby = document.getElementById("gruby");
+        let chudy = document.getElementById("chudy");
+        let powieksz = document.getElementById("powieksz");
+        let ramka = document.getElementById("ramka");
+
+        function przenies_tekst() {
+            wynik.innerHTML = tekst.value;
+        }
+
+        function na_czerwony(){
+            wynik.style.color = "red";
+        }
+
+        function na_zielony(){
+            wynik.style.color = "lime";
+        }
+
+        function na_niebieski(){
+            wynik.style.color = "blue";
+        }
+
+        function na_czarny(){
+            wynik.style.color = "black";
+        }
+
+        function pochyl() {
+            wynik.style.fontStyle = "italic";
+        }
+
+        function prosty() {
+            wynik.style.fontStyle = "normal"
+        }
+
+        function grubini() {
+            wynik.style.fontWeight = "bold";
+        }
+        
+        function chudini() {
+            wynik.style.fontWeight = "normal";
+        }
+
+        function czcionka() {
+            wynik.style.fontFamily = "Webdings";
+        }
+
+        function powiekszini() {
+            wynik.style.fontSize = "300%";
+        }
+        
+        function zrob_ramke() {
+            wynik.style.border = "1px dotted crimson";
+        }
+
+        czerwony.addEventListener("click", na_czerwony);
+        zielony.addEventListener("click", na_zielony);
+        niebieski.addEventListener("click", na_niebieski);
+        czarny.addEventListener("click", na_czarny);
+        wyslij.addEventListener("click", przenies_tekst);
+        kuryswa.addEventListener("click", pochyl);
+        wyprostuj.addEventListener("click", prosty);
+        gruby.addEventListener("click", grubini);
+        chudy.addEventListener("click", chudini);
+        wynik.addEventListener("dblclick", czcionka);
+        powieksz.addEventListener("click", powiekszini);
+        ramka.addEventListener("click", zrob_ramke);
+    </script>
+</body>
+</html>
