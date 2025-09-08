@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pozytywizm — Zeszyt</title>
+  <style>
+    :root{
+      --bg:#fbfbfd; --card:#ffffff; --accent:#2b7a78; --muted:#6b6b6b; --glass: rgba(43,122,120,0.06);
+      --radius:14px; --gap:14px; --max-width:900px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; color:#123; -webkit-font-smoothing:antialiased;
+      display:flex; align-items:flex-start; justify-content:center; padding:18px; background-color: #f2f7f6;
+    }
+    .app{width:100%; max-width:var(--max-width);}
+
+    header{display:flex; gap:10px; justify-content:center; margin-bottom:14px}
+    .tab-btn{flex:1; min-width:0; padding:10px 12px; border-radius:12px; background:var(--card); border:1px solid rgba(0,0,0,0.04); font-weight:600; text-align:center}
+    .tab-btn.active{background:linear-gradient(90deg,var(--accent),#4aa9a6); color:white; box-shadow:0 6px 18px rgba(43,122,120,0.12)}
+
+    .viewer{background:transparent; display:flex; flex-direction:column; gap:12px}
+    .carousel-wrap{position:relative; overflow:hidden}
+    .carousel{display:flex; transition:transform 320ms ease; touch-action:pan-y}
+    .card{flex:0 0 100%; padding:18px; border-radius:16px; background:var(--card); box-shadow:0 8px 30px rgba(14,34,34,0.06); border:1px solid rgba(0,0,0,0.03)}
+
+    .lesson-head{display:flex; justify-content:space-between; align-items:center}
+    .lesson-title{font-size:18px; font-weight:700; font-family: 'Merriweather', serif}
+    .lesson-sub{font-size:13px; color:var(--muted)}
+    .topic{font-size:16px; margin-top:8px; text-decoration:underline; font-weight:600}
+    .note{margin-top:10px; line-height:1.5; font-size:15px}
+    .lesson-foot{margin-top:14px; color:var(--muted); font-size:13px; display:flex; justify-content:space-between; align-items:center}
+
+    .note ol{padding-left:20px; margin:8px 0}
+    .note > ol > li {
+        list-style-type: decimal;
+        margin: 6px 0;
+    }
+    .note ol ol > li {
+        list-style-type: lower-alpha;
+    }
+    .note ul{padding-left:22px; margin:8px 0}
+    .note ul li{margin:6px 0}
+    .note ol.alpha{list-style-type:lower-alpha}
+    .note ul.disc{list-style-type:disc}
+
+    .note table{width:100%; border-collapse:collapse; margin:8px 0}
+    .note table th, .note table td{border:1px solid #e6e6e6; padding:6px; text-align:left}
+    .note table th{background:var(--glass); font-weight:700}
+
+    .list-view .lesson-row{background:var(--card); border-radius:12px; padding:12px; margin-bottom:12px; box-shadow:0 6px 18px rgba(16,24,24,0.04)}
+    hr.sep{border:none; border-top:1px solid rgba(0,0,0,0.06); margin:10px 0}
+
+    @media(min-width:700px){ body{padding:28px} }
+    .note code{background:#f4f7f6;padding:2px 6px;border-radius:6px;font-family:monospace}
+  </style>
+</head>
+<body>
+  <div class="app" role="application">
+    <header>
+      <button class="tab-btn" data-tab="Zeszyt">Zeszyt</button>
+      <button class="tab-btn" data-tab="Moje">Moje</button>
+      <button class="tab-btn" data-tab="Lekcje">Lekcje</button>
+    </header>
+
+    <main>
+      <section id="zeszyt" class="viewer" aria-hidden>
+        <div class="carousel-wrap">
+          <div class="carousel" id="carousel"></div>
+        </div>
+      </section>
+
+      <section id="moje" class="list-view" aria-hidden></section>
+      <section id="lekcje" class="list-view" aria-hidden></section>
+    </main>
+
+    <div style="height:24px"></div>
+  </div>
+
+  <script>
+    const lessons = [
+      {
+        category: 'Zeszyt,Lekcje',
+        date: '2025-09-03',
+        topic: 'Wiadomości wprowadzające do epoki pozytywizmu.',
+        note: `
+  <ol>
+    <li>
+      <strong>Pozytywizm</strong> – pojęcie pochodzi od łacińskiego słowa <em>positivus</em> 
+      i oznacza: oparty na faktach, uzasadniony, użyteczny. 
+      Jest to kierunek w filozofii i literaturze, zapoczątkowany przez Augusta Comte’a 
+      w II połowie XIX wieku. Nazwa epoki została przyjęta od kierunku filozoficznego, 
+      a główne hasło epoki to: <em>„Wiedzieć, aby przewidywać, aby móc”</em>.
+    </li>
+
+    <li>
+      <strong>Czas trwania epoki:</strong>
+      <ol type="a">
+        <li>Początek: 1864 – upadek powstania styczniowego.</li>
+        <li>Koniec: lata 1890–1895 – pojawienie się nowego pokolenia artystów.</li>
+      </ol>
+    </li>
+
+    <li>
+      <strong>Podstawowe kierunki w sztuce pozytywizmu:</strong>
+      <ol type="a">
+        <li>
+          <strong>Realizm</strong> – podstawowy kierunek w sztuce pozytywizmu, 
+          charakteryzujący się jak najwierniejszym odwzorowaniem rzeczywistości 
+          w dziele sztuki (np. w literaturze).
+        </li>
+        <li>
+          <strong>Naturalizm</strong> – kierunek w sztuce pozytywizmu, 
+          wiernie odtwarzający ludzką naturę, ukazujący m.in. brzydotę człowieka, starość itp.
+        </li>
+      </ol>
+    </li>
+
+    <li>
+      <strong>Podstawowe społeczne hasła pozytywizmu:</strong>
+      <ol type="a">
+        <li>
+          <strong>Praca organiczna</strong> – pogląd zakładający, że społeczeństwo funkcjonuje 
+          i rozwija się jak żywy organizm, a instytucje i grupy społeczne są ze sobą powiązane 
+          jak organy w ludzkim organizmie.
+        </li>
+        <li>
+          <strong>Praca u podstaw</strong> – praca z najniższymi warstwami społecznymi 
+          poprzez podstawową edukację i podniesienie poziomu kultury, np. zakładanie szkół wiejskich, 
+          aby osoby mieszkające na wsi nauczyć elementarnej wiedzy – czytania i pisania.
+        </li>
+        <li>
+          <strong>Asymilacja Żydów</strong> – przystosowanie i stworzenie warunków do życia 
+          dla ludności żydowskiej poprzez włączenie jej do społeczeństwa polskiego 
+          z zachowaniem odrębności kulturowej i religijnej. 
+          Przeciwieństwem asymilacji jest antysemityzm.
+        </li>
+        <li>
+          <strong>Emancypacja kobiet</strong> – ruch społeczny dążący do równouprawnienia kobiet 
+          i mężczyzn, np. poprzez przygotowanie kobiet do pracy zawodowej.
+        </li>
+      </ol>
+    </li>
+
+    <li>
+      <strong>Filozofie pozytywistyczne:</strong>
+      <ol type="a">
+        <li>
+          <strong>Auguste Comte</strong> – twórca scjentyzmu, głosił hasło, 
+          że wiedzę o rzeczywistości dostarcza człowiekowi nauka, 
+          zwłaszcza nauki przyrodnicze i socjologia.
+        </li>
+        <li>
+          <strong>Herbert Spencer</strong> – popularyzator ewolucjonizmu Karola Darwina, 
+          twierdził, że tak jak człowiek rozwija się i doskonali, 
+          tak dzięki niemu rozwija się również całe społeczeństwo – twórca organicyzmu.
+        </li>
+      </ol>
+    </li>
+  </ol>
+        `
+      },
+      {
+        category: 'Moje,Zeszyt',
+        date: '2025-09-07',
+        topic: 'Przedstawiciele pozytywizmu',
+        note: `
+          <p>Wybrani twórcy:</p>
+          <ul>
+            <li><b>Eliza Orzeszkowa</b> — "Marta" (tematy społeczne)</li>
+            <li><b>Bolesław Prus</b> — "Lalka" (analiza społeczeństwa)</li>
+            <li><b>Maria Konopnicka</b> — liryka i tematy społeczne</li>
+          </ul>
+        `
+      },
+      {
+        category: 'Lekcje',
+        date: '2025-09-09',
+        topic: 'Język i styl w pozytywizmie',
+        note: `
+          <p>Charakterystyka języka:</p>
+          <ol>
+            <li>jasny i komunikatywny;</li>
+            <li>użycie środków realistycznych;</li>
+            <li>częste opisy społeczne i dokumentalne.</li>
+          </ol>
+          <p>Przykład tabelaryczny:</p>
+          <table>
+            <tr><th>Cecha</th><th>Przykład</th></tr>
+            <tr><td>Realizm</td><td>Opis pracy wiejskiej</td></tr>
+            <tr><td>Intencja edukacyjna</td><td>Prace o reformie</td></tr>
+          </table>
+        `
+      }
+    ];
+
+    let currentTab = localStorage.getItem('tab') || 'Zeszyt';
+    let zeszytIndex = Number(localStorage.getItem('zeszytIndex') || 0);
+
+    function filterBy(tab){
+      return lessons.filter(l => l.category.split(',').map(s=>s.trim()).includes(tab));
+    }
+
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = { Zeszyt: document.getElementById('zeszyt'), Moje: document.getElementById('moje'), Lekcje: document.getElementById('lekcje') };
+
+    function setTab(tab){
+      currentTab = tab;
+      localStorage.setItem('tab', tab);
+      tabs.forEach(b=> b.classList.toggle('active', b.dataset.tab===tab));
+      for(const k in sections){ sections[k].ariaHidden = k===tab ? 'false' : 'true'; sections[k].style.display = (k===tab) ? '' : 'none'; }
+      if(tab==='Zeszyt') renderCarousel(); else { renderList(tab) }
+    }
+
+    function renderCarousel(){
+      const arr = filterBy('Zeszyt');
+      const carousel = document.getElementById('carousel');
+      carousel.innerHTML = '';
+      if(arr.length===0){ carousel.innerHTML = '<div class="card"><p class="lesson-sub">Brak lekcji w kategorii Zeszyt.</p></div>'; return }
+
+      arr.forEach((l, idx)=>{
+        const card = document.createElement('article');
+        card.className = 'card';
+        card.setAttribute('data-idx', idx);
+        card.innerHTML = `
+          <div class="lesson-head">
+            <div><div class="lesson-title">Lekcja <span class="lesson-num">${idx+1}</span></div>
+                 <div class="lesson-sub">${l.date}</div>
+            </div>
+            <div class="lesson-sub">kategoria: ${escapeHtml(l.category)}</div>
+          </div>
+          <div class="topic">${escapeHtml(l.topic)}</div>
+          <div class="note" tabindex="0">${l.note}</div>
+          <div class="lesson-foot">
+            <div>#{idx+1}/${arr.length}</div>
+          </div>
+        `;
+
+        const noteEl = card.querySelector('.note');
+        noteEl.dataset.original = noteEl.innerHTML;
+        noteEl.addEventListener('dblclick', ()=> toggleInitials(noteEl));
+
+        carousel.appendChild(card);
+      });
+
+      const total = arr.length;
+      if(zeszytIndex >= total) zeszytIndex = 0;
+      updateCarouselPosition();
+    }
+
+    function renderList(tab){
+      const container = sections[tab.toString().replace(' ', '')] || sections[tab];
+      const arr = filterBy(tab);
+      container.innerHTML = '';
+      if(arr.length===0){ container.innerHTML = '<p class="lesson-sub">Brak lekcji w tej kategorii.</p>'; return }
+      arr.forEach((l, idx)=>{
+        const div = document.createElement('div'); div.className='lesson-row';
+        div.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700">Lekcja ${idx+1}</div><div class="lesson-sub">${l.date}</div></div>
+          <div class="topic">${escapeHtml(l.topic)}</div>
+          <div class="note">${l.note}</div>
+        `;
+        container.appendChild(div);
+        const hr = document.createElement('hr'); hr.className='sep'; container.appendChild(hr);
+      })
+    }
+
+    function shiftZeszyt(dir){
+      const arr = filterBy('Zeszyt');
+      if(arr.length===0) return;
+      zeszytIndex = (zeszytIndex + dir + arr.length) % arr.length;
+      localStorage.setItem('zeszytIndex', zeszytIndex);
+      updateCarouselPosition();
+    }
+
+    function updateCarouselPosition(){
+      const carousel = document.getElementById('carousel');
+      const w = carousel.clientWidth || document.querySelector('.card')?.clientWidth || window.innerWidth;
+      carousel.style.transform = `translateX(${-zeszytIndex * w}px)`;
+      const cards = carousel.querySelectorAll('.card');
+      cards.forEach(c=>{ const i = Number(c.dataset.idx); const foot = c.querySelector('.lesson-foot div'); if(foot) foot.textContent = `${i+1}/${cards.length}`; });
+    }
+
+    let startX=0, currentX=0, isDragging=false;
+    const carouselWrap = document.querySelector('.carousel-wrap');
+    carouselWrap.addEventListener('touchstart', (e)=>{
+      if(currentTab!=='Zeszyt') return;
+      startX = e.touches[0].clientX; isDragging=true;
+    }, {passive:true});
+    carouselWrap.addEventListener('touchmove', (e)=>{
+      if(!isDragging) return; currentX = e.touches[0].clientX; }, {passive:true});
+    carouselWrap.addEventListener('touchend', ()=>{
+      if(!isDragging) return; const dx = currentX - startX; isDragging=false; if(Math.abs(dx) < 30) return; if(dx < 0) shiftZeszyt(1); else shiftZeszyt(-1);
+    });
+
+    window.addEventListener('keydown', (e)=>{
+      if(currentTab!=='Zeszyt') return;
+      if(e.key==='ArrowRight') shiftZeszyt(1);
+      if(e.key==='ArrowLeft') shiftZeszyt(-1);
+    });
+
+    function toggleInitials(noteEl){
+      if(noteEl.dataset.state === 'initials'){
+        noteEl.innerHTML = noteEl.dataset.original; noteEl.dataset.state = 'normal';
+        return;
+      }
+      noteEl.dataset.original = noteEl.innerHTML;
+      const clone = noteEl.cloneNode(true);
+      traverseAndReplaceText(clone);
+      noteEl.innerHTML = clone.innerHTML;
+      noteEl.dataset.state = 'initials';
+    }
+
+    function traverseAndReplaceText(node){
+      for(let i=0;i<node.childNodes.length;i++){
+        const cn = node.childNodes[i];
+        if(cn.nodeType === Node.TEXT_NODE){
+          const txt = cn.textContent.replace(/\S+/g, function(word){
+            const m = word.match(/[\p{L}\p{N}]+/u);
+            if(!m) return word;
+            const first = m[0].charAt(0).toUpperCase();
+            return first;
+          });
+          cn.textContent = txt;
+        } else if(cn.nodeType === Node.ELEMENT_NODE){
+          traverseAndReplaceText(cn);
+        }
+      }
+    }
+
+    function escapeHtml(str){ return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+    tabs.forEach(b=> b.addEventListener('click', ()=> setTab(b.dataset.tab)));
+    setTab(currentTab);
+    window.addEventListener('resize', ()=> updateCarouselPosition());
+
+    const observer = new MutationObserver(()=>{ localStorage.setItem('zeszytIndex', zeszytIndex); });
+    observer.observe(document.getElementById('carousel'), {childList:true});
+    renderList('Moje'); renderList('Lekcje');
+  </script>
+</body>
+</html>
