@@ -155,190 +155,6 @@
      */
     const easy = [
         {
-            pytanie: 'Jaka wartość zostanie wypisana na standardowym wyjściu dla zamieszczonego w ramce fragmentu programu napisanego w języku C++',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092119/pyt71_ua0zvi.png',
-            poprawna_odpowiedz: '3',
-            bledne_odpowiedzi: ['0', '2', '32']
-        },
-        {
-            pytanie: 'Wskaż stwierdzenie, które nie jest prawdziwe dla następującej definicji funkcji w języku C++?',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092236/pyt72_bufs96.png',
-            poprawna_odpowiedz: 'Funkcja zwraca wartość',
-            bledne_odpowiedzi: ['Funkcja nie zwraca wartości', 'Funkcja posiada dwa parametry', 'Funkcja odwołuje się do parametrów przez referencję']
-        },
-        {
-            pytanie: 'Element zadeklarowany w języku C++ double *x; to',
-            poprawna_odpowiedz: 'Wskaźnik',
-            bledne_odpowiedzi: ['Parametr formalny typu rzeczywistego', 'Zmienna rzeczywista', 'Zmienna całkowita']
-        },
-        {
-            pytanie: 'Wskaż prawidłową kolejność tworzenia aplikacji',
-            poprawna_odpowiedz: 'Analiza wymagań klienta, specyfikacja wymagań tworzenie, testy, wdrażanie',
-            bledne_odpowiedzi: ['Specyfikacja wymagań, analiza wymagań klienta, tworzenie, wdrażanie,testy', 'Tworzenie, analiza wymagań klienta, specyfikacja wymagań, wdrażanie, testy', 'Analiza wymagań klienta, specyfikacja wymagań, tworzenie, wdrażanie, testy']
-        },
-        {
-            pytanie: 'Jaką wartość zwróci funkcja zao zdefiniowana w języku C++, wywołana z aktualnym parametrem 3.55',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092393/pyt75_f8rdbe.png',
-            poprawna_odpowiedz: '4',
-            bledne_odpowiedzi: ['3', '3.5', '4.05']
-        },
-        {
-            pytanie: 'Proces tłumaczenia kodu źródłowego pisanego przez programistę na zrozumiały dla komputera kod maszynowy to',
-            poprawna_odpowiedz: 'kompilowanie',
-            bledne_odpowiedzi: ['debugowanie', 'uruchamianie', 'implementowanie']
-        },
-        {
-            pytanie: 'Które ze stwierdzeń, w odniesieniu do zamieszczonej w ramce definicji funkcji, jest poprawne?',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092527/pyt77_u2r3a1.png',
-            poprawna_odpowiedz: 'Wczytanie tekstu zakończy się, gdy tekst będzie się składał przynajmniej z 3 znaków',
-            bledne_odpowiedzi: ['Pętla wykona się tylko raz', 'Funkcja posiada pętlę powtarzającą się 3 razy', 'Tekst będzie wczytywany do momentu podania liczby większej niż 3']
-        },
-        {
-            pytanie: 'Po wykonaniu zamieszczonego w ramce skryptu napisanego w języku JavaScript w przeglądarce zostanie wypisana wartość',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092664/pyt78_nkvhdh.png',
-            poprawna_odpowiedz: '12,5',
-            bledne_odpowiedzi: ['12,4', '15,4', '15,5']
-        },
-        {
-            pytanie: 'Poprzez deklarację var x="true"; w języku JavieScript tworzy się zmienną typu',
-            poprawna_odpowiedz: 'String (ciąg znaków)',
-            bledne_odpowiedzi: ['Logicznego', 'Liczbowego', 'Nieokreślonego (undefined)']
-        },
-        {
-            pytanie: 'Platforma wspierająca programowanie w technologii .NET to',
-            poprawna_odpowiedz: 'framework',
-            bledne_odpowiedzi: ['db2', 'eclipse', 'middleware']
-        },
-        {
-            pytanie: 'Proces, w którym wykrywa się i usuwa błędy w kodzie źródłowym programów, to',
-            poprawna_odpowiedz: 'Debugowanie',
-            bledne_odpowiedzi: ['Kompilowanie', 'standaryzacja', 'Normalizacja']
-        },
-        {
-            pytanie: 'Aby ustawić tło na stronie www należy użyć polecenia',
-            poprawna_odpowiedz: '<body bgcolor=""> </body>',
-            bledne_odpowiedzi: ['<background=""> </background>', '<bgcolor=""> </bgcolor>', '<body background=""> </body>']
-        },
-        {
-            pytanie: 'Parametr face znacznika <font> służy do określenia',
-            poprawna_odpowiedz: 'nazwy czcionki',
-            bledne_odpowiedzi: ['barwy czcionki', 'efektów czcionki', 'wielkości czcionki']
-        },
-        {
-            pytanie: 'Kodowanie w standardzie ISO-8859-2 stosowane jest w celu poprawnego wyświetlenia',
-            poprawna_odpowiedz: 'polskich liter, takich jak: ś, ć, ń, ó, ą',
-            bledne_odpowiedzi: ['symboli matematycznych', 'znaków specjalnych dla języka kodu strony', 'znaków zarezerwowanych dla języka opisu strony']
-        },
-        {
-            pytanie: 'Zamieszczony w ramce kod wyświetla tabelę składajacą się z',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757093026/pyt85_vexiwq.png',
-            poprawna_odpowiedz: 'jednego wiersza i dwóch kolumn',
-            bledne_odpowiedzi: ['dwóch wierszy i dwóch kolumn', 'dwóch wierszy i jednej kolumny', 'jednego wiersza i jednej kolumny']
-        },
-        {
-            pytanie: 'W języku JavaScript, aby wydzielić fragment napisu znajdujący się pomiędzy wskazanymi przez parametr indeksami należy użyć metody',
-            poprawna_odpowiedz: 'slice()',
-            bledne_odpowiedzi: ['replace()', 'trim()', 'concat()']
-        },
-        {
-            pytanie: 'Które polecenie w CSS służy do załączenia zewnętrznego arkusza stylów?',
-            poprawna_odpowiedz: 'import',
-            bledne_odpowiedzi: ['open', 'require', 'include']
-        },
-        {
-            pytanie: 'Selektor CSS a:link {color:red} zawarty w kaskadowych arkuszach stylów definiuje',
-            poprawna_odpowiedz: 'pseudoklasę',
-            bledne_odpowiedzi: ['klasę', 'identyfikator', 'pseudoelement']
-        },
-        {
-            pytanie: 'Jak nazywa się edytor wspomagający tworzenie stron internetowych, którego sposób działania można w polskim tłumaczeniu określić jako: otrzymujesz to, co widzisz?',
-            poprawna_odpowiedz: 'WYSIWYG',
-            bledne_odpowiedzi: ['IDE', 'WEB STUDIO', 'VISUAL EDITOR']
-        },
-        {
-            pytanie: 'Kolor 255 12 12 w modelu RGB na stronie www powinien być zapisany w postaci',
-            poprawna_odpowiedz: '#FF0C0C',
-            bledne_odpowiedzi: ['#2551212', '#EE0C0C', '#AB1A1D']
-        },
-        {
-            pytanie: 'CMYK to zestaw czterech podstawowych kolorów farb drukarskich:',
-            poprawna_odpowiedz: 'turkusowego, purpurowego, żółtego, czarnego',
-            bledne_odpowiedzi: ['turkusowego, błękitnego, białego, różowego', 'turkusowego, purpurowego, białego, czarnego', 'czerwonego, purpurowego, żółtego, szarego']
-        },
-        {
-            pytanie: 'Cechą formatu PNG jest',
-            poprawna_odpowiedz: 'bezstratna kompresja',
-            bledne_odpowiedzi: ['obsługa animacji', 'brak obsługi kanału alfa', 'reprezentacja grafiki wektorowej']
-        },
-        {
-            pytanie: 'Saturacja koloru nazywana jest inaczej',
-            poprawna_odpowiedz: 'nasyceniem koloru',
-            bledne_odpowiedzi: ['jasnością koloru', 'dopełnieniem koloru', 'przezroczystością koloru']
-        },
-        {
-            pytanie: 'Kanał alfa służy do zdefiniowania',
-            poprawna_odpowiedz: 'przezroczystość obiektu graficznego',
-            bledne_odpowiedzi: ['jasności i kontrastu kolorów', 'zaznaczonego fragmentu obiektu graficznego', 'podstawowych parametrów obiektu graficznego']
-        },
-        {
-            pytanie: 'Częstotliwość próbkowania ma wpływ na',
-            poprawna_odpowiedz: 'jakość cyfrowego dzwięku',
-            bledne_odpowiedzi: ['jakość analogowego dzwięku', 'amplitudę fali dźwiękowej utworu', 'skalę głośności zapisanego utworu']
-        },
-        {
-            pytanie: 'Wysokość dźwięku zależy od',
-            poprawna_odpowiedz: 'częstotliwości drgania fali akustycznej',
-            bledne_odpowiedzi: ['siły wzbudzenia drgania', 'sposobu pobudzania drgania', 'czasu drgania źródła dzwięku']
-        },
-        {
-            pytanie: 'Typ stało-znakowy w języku SQL to',
-            poprawna_odpowiedz: 'char',
-            bledne_odpowiedzi: ['text', 'time', 'bool']
-        },
-        {
-            pytanie: 'Operator arytmetyczny modulo w języku SQL to',
-            poprawna_odpowiedz: '%',
-            bledne_odpowiedzi: ['/', '||', '&']
-        },
-        {
-            pytanie: 'Polecenie w języku SQL ALTER TABLE USA... ma za zadanie',
-            poprawna_odpowiedz: 'modyfikację tabeli USA',
-            bledne_odpowiedzi: ['usunięcie tabeli USA', 'nadpisanie starej tabeli USA', 'utworzenie nowej tabeli USA']
-        },
-        {
-            pytanie: 'Kod: SELECT imie, pesel, wiek FROM dane WHERE wiek IN (18,30) spowoduje wybranie:',
-            poprawna_odpowiedz: 'imion, numerów PESEL i wieku osób w wieku równym 18 lub 30 lat',
-            bledne_odpowiedzi: ['imion, nazwisk i numerów PESEL osób w wieku poniżej 18 lat', 'imion, numerów PESEL i wieku osób z przedziału od 18 do 30 lat', 'imion, numerów PESEL i wieku osób posiadających powyżej 30 lat']
-        },
-        {
-            pytanie: 'Aby policzyć wszystkie wiersze tabeli Koty należy użyć polecenia:',
-            poprawna_odpowiedz: 'SELECT COUNT(*) FROM Koty',
-            bledne_odpowiedzi: ['SELECT ROWNUM() FROM Koty', 'SELECT COUNT(Koty) AS ROWNUM', 'SELECT COUNT(ROWNUM) FROM Koty']
-        },
-        {
-            pytanie: 'Aby podczas tworzenia tabeli utworzyć klucz obcy na wielu kolumnach, należy użyć polecenia',
-            poprawna_odpowiedz: 'CONSTRAINT fk_osoba_uczen FOREIGN KEY (nazwisko, imie) REFERENCES osoby (nazwisko,imie)',
-            bledne_odpowiedzi: ['CONSTRAINT(nazwisko,imie) FOREIGN KEY REFERENCES osoby (nazwisko, imie)', 'CONSTRAINT(nazwisko,imie) FOREIGN REFERENCES KEY osoby (nazwisko, imie)', 'CONSTRAINT fk_osoba_uczen FOREIGN KEY ON (nazwisko, imie) REFERENCES osoby (nazwisko,imie)']
-        },
-        {
-            pytanie: 'W algebrze relacji operacja selekcji polega na',
-            poprawna_odpowiedz: 'wybraniu krotek spełniających określone warunki',
-            bledne_odpowiedzi: ['wyelminowaniu pustych wierszy', 'wybraniu krotek niezawierających wartości NULL', 'wyelminowaniu krotek z powtarzającymi się polami']
-        },
-        {
-            pytanie: 'Relacja w bazach danych jest',
-            poprawna_odpowiedz: 'logicznym połączeniem tabel',
-            bledne_odpowiedzi: ['kluczem głównym w relacji tabel', 'algebraicznym połączeniem tabel', 'połączeniem dwóch pól jednej tabeli']
-        },
-        {
-            pytanie: 'Wskaż poprawną kolejność etapów projektowania relacyjnej bazy danych',
-            poprawna_odpowiedz: 'Określenie zbioru danych, Selekcja, Określenie kluczy podstawowych tabel, Określenie relacji',
-            bledne_odpowiedzi: ['Selekcja, Określenie relacji, Określenie kluczy podstawowych tabel, Określenie zbioru danych', 'Określenie relacji, Określenie kluczy podstawowych tabel, Selekcja, Określenie zbioru danych', 'Określenie kluczy podstawowych tabel, Określenie zbioru danych, Selekcja, Określenie relacji']
-        }
-    ];
-
-    const medium = [
-        {
             pytanie: 'Formularze do obsługi baz danych tworzy się w celu',
             poprawna_odpowiedz: 'wygodniejszego wprowadzania, edytowania i usuwania danych',
             bledne_odpowiedzi: ['raportowania danych', 'wyszukiwania wierszy spełniających dane kryteria', 'wprowadzenia powiązań w relacyjnych bazach danych']
@@ -523,12 +339,15 @@
         }
     ];
 
-    const hard = [
+    const medium = [
         {
             pytanie: 'Którego polecenia nalezy użyć, aby wyraz TEKST został wyświetleny w kolorze czarnym w oknie przeglądarki internetowej?',
             poprawna_odpowiedz: '<font color="#000000"> TEKST </font>',
             bledne_odpowiedzi: ['<body color="black"> TEKST </font>', '<font color="czarny"> TEKST </font>', '<body bgcolor="black"> TEKST </body>']
-        },
+        }
+    ];
+
+    const hard = [
         {
             pytanie: 'W poleceniach, których celem jest odtwarzanie na stronie internetowej dźwięku jako podkładu muzycznego NIE wykorzystuje się atrybutu',
             poprawna_odpowiedz: 'href="C:/100.wav"',
@@ -889,6 +708,187 @@
             pytanie: 'Które ze stwierdzeń dotyczących języków programowania NIE jest prawdziwe',
             poprawna_odpowiedz: 'SQL jest językiem programowania strukturalnego',
             bledne_odpowiedzi: ['C++ jest językiem obiektowym', 'JavaScript jest językiem skryptowym', 'PHP jest językiem do tworzenia stron w czasie rzeczywistym']
+        },
+        {
+            pytanie: 'Jaka wartość zostanie wypisana na standardowym wyjściu dla zamieszczonego w ramce fragmentu programu napisanego w języku C++',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092119/pyt71_ua0zvi.png',
+            poprawna_odpowiedz: '3',
+            bledne_odpowiedzi: ['0', '2', '32']
+        },
+        {
+            pytanie: 'Wskaż stwierdzenie, które nie jest prawdziwe dla następującej definicji funkcji w języku C++?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092236/pyt72_bufs96.png',
+            poprawna_odpowiedz: 'Funkcja zwraca wartość',
+            bledne_odpowiedzi: ['Funkcja nie zwraca wartości', 'Funkcja posiada dwa parametry', 'Funkcja odwołuje się do parametrów przez referencję']
+        },
+        {
+            pytanie: 'Element zadeklarowany w języku C++ double *x; to',
+            poprawna_odpowiedz: 'Wskaźnik',
+            bledne_odpowiedzi: ['Parametr formalny typu rzeczywistego', 'Zmienna rzeczywista', 'Zmienna całkowita']
+        },
+        {
+            pytanie: 'Wskaż prawidłową kolejność tworzenia aplikacji',
+            poprawna_odpowiedz: 'Analiza wymagań klienta, specyfikacja wymagań tworzenie, testy, wdrażanie',
+            bledne_odpowiedzi: ['Specyfikacja wymagań, analiza wymagań klienta, tworzenie, wdrażanie,testy', 'Tworzenie, analiza wymagań klienta, specyfikacja wymagań, wdrażanie, testy', 'Analiza wymagań klienta, specyfikacja wymagań, tworzenie, wdrażanie, testy']
+        },
+        {
+            pytanie: 'Jaką wartość zwróci funkcja zao zdefiniowana w języku C++, wywołana z aktualnym parametrem 3.55',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092393/pyt75_f8rdbe.png',
+            poprawna_odpowiedz: '4',
+            bledne_odpowiedzi: ['3', '3.5', '4.05']
+        },
+        {
+            pytanie: 'Proces tłumaczenia kodu źródłowego pisanego przez programistę na zrozumiały dla komputera kod maszynowy to',
+            poprawna_odpowiedz: 'kompilowanie',
+            bledne_odpowiedzi: ['debugowanie', 'uruchamianie', 'implementowanie']
+        },
+        {
+            pytanie: 'Które ze stwierdzeń, w odniesieniu do zamieszczonej w ramce definicji funkcji, jest poprawne?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092527/pyt77_u2r3a1.png',
+            poprawna_odpowiedz: 'Wczytanie tekstu zakończy się, gdy tekst będzie się składał przynajmniej z 3 znaków',
+            bledne_odpowiedzi: ['Pętla wykona się tylko raz', 'Funkcja posiada pętlę powtarzającą się 3 razy', 'Tekst będzie wczytywany do momentu podania liczby większej niż 3']
+        },
+        {
+            pytanie: 'Po wykonaniu zamieszczonego w ramce skryptu napisanego w języku JavaScript w przeglądarce zostanie wypisana wartość',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757092664/pyt78_nkvhdh.png',
+            poprawna_odpowiedz: '12,5',
+            bledne_odpowiedzi: ['12,4', '15,4', '15,5']
+        },
+        {
+            pytanie: 'Poprzez deklarację var x="true"; w języku JavieScript tworzy się zmienną typu',
+            poprawna_odpowiedz: 'String (ciąg znaków)',
+            bledne_odpowiedzi: ['Logicznego', 'Liczbowego', 'Nieokreślonego (undefined)']
+        },
+        {
+            pytanie: 'Platforma wspierająca programowanie w technologii .NET to',
+            poprawna_odpowiedz: 'framework',
+            bledne_odpowiedzi: ['db2', 'eclipse', 'middleware']
+        },
+        {
+            pytanie: 'Proces, w którym wykrywa się i usuwa błędy w kodzie źródłowym programów, to',
+            poprawna_odpowiedz: 'Debugowanie',
+            bledne_odpowiedzi: ['Kompilowanie', 'standaryzacja', 'Normalizacja']
+        },
+        {
+            pytanie: 'Aby ustawić tło na stronie www należy użyć polecenia',
+            poprawna_odpowiedz: '<body bgcolor=""> </body>',
+            bledne_odpowiedzi: ['<background=""> </background>', '<bgcolor=""> </bgcolor>', '<body background=""> </body>']
+        },
+        {
+            pytanie: 'Parametr face znacznika <font> służy do określenia',
+            poprawna_odpowiedz: 'nazwy czcionki',
+            bledne_odpowiedzi: ['barwy czcionki', 'efektów czcionki', 'wielkości czcionki']
+        },
+        {
+            pytanie: 'Kodowanie w standardzie ISO-8859-2 stosowane jest w celu poprawnego wyświetlenia',
+            poprawna_odpowiedz: 'polskich liter, takich jak: ś, ć, ń, ó, ą',
+            bledne_odpowiedzi: ['symboli matematycznych', 'znaków specjalnych dla języka kodu strony', 'znaków zarezerwowanych dla języka opisu strony']
+        },
+        {
+            pytanie: 'Zamieszczony w ramce kod wyświetla tabelę składajacą się z',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757093026/pyt85_vexiwq.png',
+            poprawna_odpowiedz: 'jednego wiersza i dwóch kolumn',
+            bledne_odpowiedzi: ['dwóch wierszy i dwóch kolumn', 'dwóch wierszy i jednej kolumny', 'jednego wiersza i jednej kolumny']
+        },
+        {
+            pytanie: 'W języku JavaScript, aby wydzielić fragment napisu znajdujący się pomiędzy wskazanymi przez parametr indeksami należy użyć metody',
+            poprawna_odpowiedz: 'slice()',
+            bledne_odpowiedzi: ['replace()', 'trim()', 'concat()']
+        },
+        {
+            pytanie: 'Które polecenie w CSS służy do załączenia zewnętrznego arkusza stylów?',
+            poprawna_odpowiedz: 'import',
+            bledne_odpowiedzi: ['open', 'require', 'include']
+        },
+        {
+            pytanie: 'Selektor CSS a:link {color:red} zawarty w kaskadowych arkuszach stylów definiuje',
+            poprawna_odpowiedz: 'pseudoklasę',
+            bledne_odpowiedzi: ['klasę', 'identyfikator', 'pseudoelement']
+        },
+        {
+            pytanie: 'Jak nazywa się edytor wspomagający tworzenie stron internetowych, którego sposób działania można w polskim tłumaczeniu określić jako: otrzymujesz to, co widzisz?',
+            poprawna_odpowiedz: 'WYSIWYG',
+            bledne_odpowiedzi: ['IDE', 'WEB STUDIO', 'VISUAL EDITOR']
+        },
+        {
+            pytanie: 'Kolor 255 12 12 w modelu RGB na stronie www powinien być zapisany w postaci',
+            poprawna_odpowiedz: '#FF0C0C',
+            bledne_odpowiedzi: ['#2551212', '#EE0C0C', '#AB1A1D']
+        },
+        {
+            pytanie: 'CMYK to zestaw czterech podstawowych kolorów farb drukarskich:',
+            poprawna_odpowiedz: 'turkusowego, purpurowego, żółtego, czarnego',
+            bledne_odpowiedzi: ['turkusowego, błękitnego, białego, różowego', 'turkusowego, purpurowego, białego, czarnego', 'czerwonego, purpurowego, żółtego, szarego']
+        },
+        {
+            pytanie: 'Cechą formatu PNG jest',
+            poprawna_odpowiedz: 'bezstratna kompresja',
+            bledne_odpowiedzi: ['obsługa animacji', 'brak obsługi kanału alfa', 'reprezentacja grafiki wektorowej']
+        },
+        {
+            pytanie: 'Saturacja koloru nazywana jest inaczej',
+            poprawna_odpowiedz: 'nasyceniem koloru',
+            bledne_odpowiedzi: ['jasnością koloru', 'dopełnieniem koloru', 'przezroczystością koloru']
+        },
+        {
+            pytanie: 'Kanał alfa służy do zdefiniowania',
+            poprawna_odpowiedz: 'przezroczystość obiektu graficznego',
+            bledne_odpowiedzi: ['jasności i kontrastu kolorów', 'zaznaczonego fragmentu obiektu graficznego', 'podstawowych parametrów obiektu graficznego']
+        },
+        {
+            pytanie: 'Częstotliwość próbkowania ma wpływ na',
+            poprawna_odpowiedz: 'jakość cyfrowego dzwięku',
+            bledne_odpowiedzi: ['jakość analogowego dzwięku', 'amplitudę fali dźwiękowej utworu', 'skalę głośności zapisanego utworu']
+        },
+        {
+            pytanie: 'Wysokość dźwięku zależy od',
+            poprawna_odpowiedz: 'częstotliwości drgania fali akustycznej',
+            bledne_odpowiedzi: ['siły wzbudzenia drgania', 'sposobu pobudzania drgania', 'czasu drgania źródła dzwięku']
+        },
+        {
+            pytanie: 'Typ stało-znakowy w języku SQL to',
+            poprawna_odpowiedz: 'char',
+            bledne_odpowiedzi: ['text', 'time', 'bool']
+        },
+        {
+            pytanie: 'Operator arytmetyczny modulo w języku SQL to',
+            poprawna_odpowiedz: '%',
+            bledne_odpowiedzi: ['/', '||', '&']
+        },
+        {
+            pytanie: 'Polecenie w języku SQL ALTER TABLE USA... ma za zadanie',
+            poprawna_odpowiedz: 'modyfikację tabeli USA',
+            bledne_odpowiedzi: ['usunięcie tabeli USA', 'nadpisanie starej tabeli USA', 'utworzenie nowej tabeli USA']
+        },
+        {
+            pytanie: 'Kod: SELECT imie, pesel, wiek FROM dane WHERE wiek IN (18,30) spowoduje wybranie:',
+            poprawna_odpowiedz: 'imion, numerów PESEL i wieku osób w wieku równym 18 lub 30 lat',
+            bledne_odpowiedzi: ['imion, nazwisk i numerów PESEL osób w wieku poniżej 18 lat', 'imion, numerów PESEL i wieku osób z przedziału od 18 do 30 lat', 'imion, numerów PESEL i wieku osób posiadających powyżej 30 lat']
+        },
+        {
+            pytanie: 'Aby policzyć wszystkie wiersze tabeli Koty należy użyć polecenia:',
+            poprawna_odpowiedz: 'SELECT COUNT(*) FROM Koty',
+            bledne_odpowiedzi: ['SELECT ROWNUM() FROM Koty', 'SELECT COUNT(Koty) AS ROWNUM', 'SELECT COUNT(ROWNUM) FROM Koty']
+        },
+        {
+            pytanie: 'Aby podczas tworzenia tabeli utworzyć klucz obcy na wielu kolumnach, należy użyć polecenia',
+            poprawna_odpowiedz: 'CONSTRAINT fk_osoba_uczen FOREIGN KEY (nazwisko, imie) REFERENCES osoby (nazwisko,imie)',
+            bledne_odpowiedzi: ['CONSTRAINT(nazwisko,imie) FOREIGN KEY REFERENCES osoby (nazwisko, imie)', 'CONSTRAINT(nazwisko,imie) FOREIGN REFERENCES KEY osoby (nazwisko, imie)', 'CONSTRAINT fk_osoba_uczen FOREIGN KEY ON (nazwisko, imie) REFERENCES osoby (nazwisko,imie)']
+        },
+        {
+            pytanie: 'W algebrze relacji operacja selekcji polega na',
+            poprawna_odpowiedz: 'wybraniu krotek spełniających określone warunki',
+            bledne_odpowiedzi: ['wyelminowaniu pustych wierszy', 'wybraniu krotek niezawierających wartości NULL', 'wyelminowaniu krotek z powtarzającymi się polami']
+        },
+        {
+            pytanie: 'Relacja w bazach danych jest',
+            poprawna_odpowiedz: 'logicznym połączeniem tabel',
+            bledne_odpowiedzi: ['kluczem głównym w relacji tabel', 'algebraicznym połączeniem tabel', 'połączeniem dwóch pól jednej tabeli']
+        },
+        {
+            pytanie: 'Wskaż poprawną kolejność etapów projektowania relacyjnej bazy danych',
+            poprawna_odpowiedz: 'Określenie zbioru danych, Selekcja, Określenie kluczy podstawowych tabel, Określenie relacji',
+            bledne_odpowiedzi: ['Selekcja, Określenie relacji, Określenie kluczy podstawowych tabel, Określenie zbioru danych', 'Określenie relacji, Określenie kluczy podstawowych tabel, Selekcja, Określenie zbioru danych', 'Określenie kluczy podstawowych tabel, Określenie zbioru danych, Selekcja, Określenie relacji']
         }
     ];
 
