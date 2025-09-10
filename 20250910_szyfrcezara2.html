@@ -1,0 +1,227 @@
+<!DOCTYPE html><html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Szyfr Cezara — wersja obiektowa</title>
+  <style>
+    :root {
+      --bg: #f4f6fb;
+      --card: #ffffff;
+      --accent: #3b82f6;
+      --muted: #6b7280;
+      --radius: 14px;
+    }
+    * {
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #dbeafe 0%, #f4f6fb 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .card {
+      background: var(--card);
+      width: 100%;
+      max-width: 820px;
+      border-radius: var(--radius);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      padding: 26px;
+      animation: fadeIn 0.6s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 22px;
+      color: #1e3a8a;
+    }
+    p.lead {
+      margin: 0 0 18px;
+      color: var(--muted);
+    }
+    .row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .col {
+      flex: 1 1 220px;
+      min-width: 220px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    textarea, input[type="number"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      transition: border-color 0.3s ease;
+    }
+    textarea:focus, input[type="number"]:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+    button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #2563eb;
+    }
+    button.secondary {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .output {
+      margin-top: 16px;
+    }
+    .hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 8px;
+    }
+    footer {
+      margin-top: 14px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>Szyfr Cezara (OOP)</h1>
+    <p class="lead">Podaj tekst, wybierz przesunięcie i zaszyfruj/odszyfruj. Litery są szyfrowane, spacje i znaki specjalne zostają.</p><div class="row">
+  <div class="col">
+    <label for="inputText">Tekst wejściowy</label>
+    <textarea id="inputText" placeholder="Wpisz tekst...">ala ma kota</textarea>
+  </div>
+
+  <div style="width:160px;display:flex;flex-direction:column;gap:10px;">
+    <div>
+      <label for="shift">Przesunięcie (0–25)</label>
+      <input id="shift" type="number" min="0" max="25" value="3" />
+    </div>
+
+    <div style="margin-top:auto;display:flex;flex-direction:column;gap:8px;">
+      <button id="encodeBtn">Zaszyfruj →</button>
+      <button id="decodeBtn" class="secondary">← Odszyfruj</button>
+    </div>
+  </div>
+</div>
+
+<div class="output">
+  <label for="result">Wynik</label>
+  <textarea id="result" readonly></textarea>
+
+  <div class="controls">
+    <button id="copyBtn" class="secondary">Kopiuj</button>
+    <button id="clearBtn" class="secondary">Wyczyść</button>
+  </div>
+
+  <p class="hint">Uwaga: przesunięcie większe niż 25 zostanie zredukowane modulo 26.</p>
+</div>
+
+<footer>Przykład obiektowej implementacji szyfru Cezara</footer>
+
+  </main>  <script>
+    class CaesarCipher {
+      constructor(shift = 3) {
+        this.shift = ((shift % 26) + 26) % 26;
+      }
+
+      shiftChar(ch, shift) {
+        const A = 'A'.charCodeAt(0);
+        const Z = 'Z'.charCodeAt(0);
+        const a = 'a'.charCodeAt(0);
+        const z = 'z'.charCodeAt(0);
+
+        const code = ch.charCodeAt(0);
+
+        if (code >= A && code <= Z) {
+          return String.fromCharCode(A + (code - A + shift + 26) % 26);
+        }
+        if (code >= a && code <= z) {
+          return String.fromCharCode(a + (code - a + shift + 26) % 26);
+        }
+        return ch;
+      }
+
+      encode(text) {
+        return [...text].map(ch => this.shiftChar(ch, this.shift)).join('');
+      }
+
+      decode(text) {
+        return [...text].map(ch => this.shiftChar(ch, -this.shift)).join('');
+      }
+    }
+
+    // Elementy DOM
+    const inputText = document.getElementById('inputText');
+    const shiftInput = document.getElementById('shift');
+    const resultArea = document.getElementById('result');
+    const encodeBtn = document.getElementById('encodeBtn');
+    const decodeBtn = document.getElementById('decodeBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+
+    function getCipher() {
+      return new CaesarCipher(Number(shiftInput.value));
+    }
+
+    encodeBtn.addEventListener('click', () => {
+      const cipher = getCipher();
+      resultArea.value = cipher.encode(inputText.value);
+    });
+
+    decodeBtn.addEventListener('click', () => {
+      const cipher = getCipher();
+      resultArea.value = cipher.decode(inputText.value);
+    });
+
+    copyBtn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(resultArea.value);
+        copyBtn.textContent = 'Skopiowano!';
+        setTimeout(() => (copyBtn.textContent = 'Kopiuj'), 1200);
+      } catch (e) {
+        resultArea.select();
+        document.execCommand('copy');
+      }
+    });
+
+    clearBtn.addEventListener('click', () => {
+      inputText.value = '';
+      resultArea.value = '';
+    });
+  </script></body>
+</html>
