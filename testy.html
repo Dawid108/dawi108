@@ -155,187 +155,183 @@
      */
     const easy = [
         {
-            pytanie: 'Formularze do obsługi baz danych tworzy się w celu',
-            poprawna_odpowiedz: 'wygodniejszego wprowadzania, edytowania i usuwania danych',
-            bledne_odpowiedzi: ['raportowania danych', 'wyszukiwania wierszy spełniających dane kryteria', 'wprowadzenia powiązań w relacyjnych bazach danych']
+            pytanie: 'Prosta animacja może być zapisana w formacie',
+            poprawna_odpowiedz: 'GIF',
+            bledne_odpowiedzi: ['PSD', 'BMP', 'TIFF']
         },
         {
-            pytanie: 'Integralność referencyjna w modelu relacyjnych baz danych oznacza, że',
-            poprawna_odpowiedz: 'wartość klucza obcego w danej tabeli musi być albo równa wartości klucza głównego w tabeli z nia powiązanej albo równa wartości NULL',
-            bledne_odpowiedzi: ['wartość klucza głównego oraz klucza obcego nie jest pusta', 'klucz główny lub klucz obcy nie zawierają wartości NULL', 'każdemu kluczowi głównemu odpowiada dokładnie jeden klucz obcy w tabeli lub tabelach powiązanych']
+            pytanie: 'Która z instrukcji umożliwia wysłanie tekstu do przeglądarki?',
+            poprawna_odpowiedz: 'echo',
+            bledne_odpowiedzi: ['exit', 'break', 'type']
         },
         {
-            pytanie: 'Deklaracja w języku JavaScript: var x=true; powoduje, że zmienna x jest typu',
-            poprawna_odpowiedz: 'logicznego',
-            bledne_odpowiedzi: ['liczbowego', 'ciąg znaków', 'wyliczeniowego']
+            pytanie: 'Aby stworzyć tabelę w bazie danych, należy zastosować polecenie SQL',
+            poprawna_odpowiedz: 'CREATE TABLE',
+            bledne_odpowiedzi: ['ADD TABLE', 'NEW TABLE', 'PLUS TABLE']
         },
         {
-            pytanie: 'Obiekt typu array w języku Javascript służy do przechowywania',
-            poprawna_odpowiedz: 'wielu wartości dowolnego typu',
-            bledne_odpowiedzi: ['wielu wartości lub funkcji', 'wielu wartości wyłącznie liczbowych', 'wielu wartości wyłącznie tekstowych']
+            pytanie: 'Zdarzenie JavaScript, będące reakcją na pojedynczo kliknięty dowolny element strony, nosi nazwę',
+            poprawna_odpowiedz: 'onClick',
+            bledne_odpowiedzi: ['onDblClick', 'onLoad', 'onKeyDown']
         },
         {
-            pytanie: 'Ukrywanie pewnych pól lub metod obiektów danej klasy tak, aby były one dostępne tylko metodom wewnętrznym tej klasy lub funkcjom zaprzyjaźnionym, to',
-            poprawna_odpowiedz: 'hermetyzacja',
-            bledne_odpowiedzi: ['polimorfizm', 'konkatenacja', 'dziedziczenie']
+            pytanie: 'W skład typowego frameworka wchodzą',
+            poprawna_odpowiedz: 'zarządzanie komunikacją z bazą danych, mechanizm uruchamiania i przetwarzania akcji',
+            bledne_odpowiedzi: ['domena i obsługa błędów', 'obsługa formularzy i wbudowany serwer', 'mechanizm uruchamiania i przetwarzania akcji, oraz certyfikat http']
         },
         {
-            pytanie: 'Odwoływanie funkcji do samej siebie to',
-            poprawna_odpowiedz: 'rekurencja',
-            bledne_odpowiedzi: ['iteracja', 'hermetyzacja', 'dziedziczenie']
+            pytanie: 'W celu stworzenia relacji wiele do wielu łączącej tabele A i B wystarczy, że',
+            poprawna_odpowiedz: 'zdefiniuje się trzecią tabelę z kluczami obcymi do tabel A i B',
+            bledne_odpowiedzi: ['tabela A będzie zawierała te same pola co tabela B', 'wiele rekordów z tabeli A zduplikuje się w tabeli B', 'tabelę A połączy się z tabelą B poprzez zdefiniowanie kluczy obcych']
         },
         {
-            pytanie: 'W języku PHP zmienna $_GET jest zmienną',
-            poprawna_odpowiedz: 'predefiniowaną, używaną do przekazywania danych do skryptów PHP poprzez adres strony',
-            bledne_odpowiedzi: ['predefiniowaną, używaną do gromadzenia wartości formularza po nagłówkach zlecenia HTTP (danych z formularza nie można zobaczyć w adresie)', 'zdefiniowaną przez twórcę strony, służącą do przekazywania danych z formularza przez adres strony', 'zwykłą, zdefiniowaną przez twórcę strony']
+            pytanie: 'W celu zapewnienia spójności danych w bazie programu Microsoft Access należy skorzystać',
+            poprawna_odpowiedz: 'z więzów integralności',
+            bledne_odpowiedzi: ['z kwerendy aktualizującej', 'z defragmentacji bazy', 'z archiwizacji bazy']
         },
         {
-            pytanie: 'W języku PHP w instrukcji switch musi występować',
-            poprawna_odpowiedz: 'konstrukcja switch(wyrażenie)',
-            bledne_odpowiedzi: ['instrukcja default', 'przynajmniej dwie instrukcje case', 'instrukcja break po każdej instrukcji case']
+            pytanie: 'W załączonym fragmencie kodu CSS kolor jest zapisany w postaci',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757685304/pyt148_g8buov.png',
+            poprawna_odpowiedz: 'szesnastkowej',
+            bledne_odpowiedzi: ['HSL', 'dziesiętnej', 'CMYK']
         },
         {
-            pytanie: 'Konstruktor w języku PHP jest metodą o nazwie',
-            poprawna_odpowiedz: '_construct',
-            bledne_odpowiedzi: ['_new', '_open', '_create']
+            pytanie: 'W języku skryptowym JavaScript zmienne mogą być deklarowane',
+            poprawna_odpowiedz: 'w momencie pierwszego użycia zmiennej',
+            bledne_odpowiedzi: ['tylko na początku skryptu', 'tylko jeśli podamy typ zmiennej i jej nazwę', 'zawsze z poprzedzającym nazwę znakiem $']
         },
         {
-            pytanie: 'Debugger to program służący do',
-            poprawna_odpowiedz: 'wyszukiwania błędów w kodzie programu',
-            bledne_odpowiedzi: ['badania właściwości programu', 'sprawdzania szybkości programu', 'zoptymalizowanie pamięci używanej przez aplikację']
+            pytanie: 'W językach programowania zmienna typu integer służy do przechowywania',
+            poprawna_odpowiedz: 'liczby całkowitej',
+            bledne_odpowiedzi: ['znaku', 'liczby rzeczywistej', 'wartości logicznej']
         },
         {
-            pytanie: 'Kod zamieszczony w ramce spowoduje wypisanie liczb',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757093985/pyt116_e7lp8y.png',
-            poprawna_odpowiedz: '2 4 6 8 10',
-            bledne_odpowiedzi: ['2 4 6 8', '1 3 5 7 9', '1 2 3 4 5 6 7 8 9 10']
+            pytanie: 'Jeśli rozmiar pliku graficznego jest zbyt duży do publikacji w Internecie, należy',
+            poprawna_odpowiedz: 'zmniejszyć jego rozdzielczość',
+            bledne_odpowiedzi: ['dodać kanał alfa', 'zwiększyć jego głębię kolorów', 'zapisać w formacie BMP']
         },
         {
-            pytanie: 'Który kod jest alternatywny do kodu zamieszczonego w ramce?',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757094210/pyt117_puwytc.png',
-            poprawna_odpowiedz: 'A',
-            bledne_odpowiedzi: ['B', 'C', 'D']
+            pytanie: 'Które z poleceń umożliwia dodanie kolumny zadaniekompletne do tabeli zadania?',
+            poprawna_odpowiedz: 'ALTER TABLE zadania ADD COLUMN zadaniekompletne int',
+            bledne_odpowiedzi: ['ADD COLUMN zadaniekompletne WITH zadania', 'CREATEINDEX zadania ADD COLUMN zadaniekompletne int', 'INSERT INTO zadania VALUES zadaniakompletne']
         },
         {
-            pytanie: 'Zamieszczony w ramce fragment skryptu w języku JavaScript',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757094663/pyt118_ybo5yt.png',
-            poprawna_odpowiedz: 'przypisze zmiennej s długość napisu ze zmiennej t',
-            bledne_odpowiedzi: ['przypisze zmienniej s zmienną t', 'wyświetli długość napisu ze zmiennej t', 'przypisze zmiennej s fragment napisu ze zmiennej t, o określonej przez zmienną length długości']
+            pytanie: 'W bazie danych, w celu uporządkowania listy uczniów według roku urodzenia, należy użyć polecenia',
+            poprawna_odpowiedz: 'SELECT imie,nazwisko,klasa from uczniowie order by rok_urodzenia',
+            bledne_odpowiedzi: ['SELECT imie,nazwisko,klasa from uczniowie group by rok_urodzenia', 'SELECT imie,nazwisko,klasa from uczniowie order by nazwisko', 'SELECT imie,nazwisko,klasa from uczniowie where rok_urodzenia = 1994']
         },
         {
-            pytanie: 'Zamieszczony w ramce fragment kodu w JavaScript wypisze',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757094780/pyt119_vnm10y.png',
-            poprawna_odpowiedz: '"ze"',
-            bledne_odpowiedzi: ['"wo"', '"owodzeni"', '"wodzenia"']
+            pytanie: 'Wskaż dwa sposoby zabezpieczenia bazy danych Microsoft Access',
+            poprawna_odpowiedz: 'Ustalanie hasła do otwarcia bazy danych oraz zabezpieczeń na poziomie użytkownika',
+            bledne_odpowiedzi: ['Zaszyfrowanie pliku bazy danych oraz SMSy z kodem autoryzującym', 'Funkcje anonimowe oraz ustalenie hasła otwarcia bazy danych', 'Ustalenie zabezpieczeń na poziomie użytkownika oraz sesji']
         },
         {
-            pytanie: 'Który fragment kodu JavaScript zwróci wartość true?',
-            poprawna_odpowiedz: '"def" > "abc"',
-            bledne_odpowiedzi: ['"a" > "b"', '"ab" > "c"', '"abc" > "def"']
+            pytanie: 'W zamieszczonym przykładzie pseudoklasa hover sprawi, że styl pogrubiony będzie przypisany',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757685592/pyt155_b0acma.png',
+            poprawna_odpowiedz: 'odnośnikowi, w momencie kiedy najechał na niego kursor myszy',
+            bledne_odpowiedzi: ['wszystkim odnośnikom nieodwiedzonym', 'każdemu odnośnikowi niezależnie od aktualnego stanu', 'wszystkim odnośnikom odwiedzonym']
         },
         {
-            pytanie: 'W kodzie PHP znak "//" oznacza',
-            poprawna_odpowiedz: 'początek komentarza jednoliniowego',
-            bledne_odpowiedzi: ['początek skryptu', 'operator alernatywy', 'operator dzielenia całkowitego']
+            pytanie: 'Certyfikat SSL jest stosowany do',
+            poprawna_odpowiedz: 'zidentyfikowania właściciela domeny',
+            bledne_odpowiedzi: ['zapisania danych o sesjach tworzonych w witrynie', 'deszyfracji transmitowanych danych', 'blokowania szkodliwego oprogramowania w witrynie']
         },
         {
-            pytanie: 'Zapisując hasło użytkownika serwisu WWW (np. bankowości internetowej), w celu jego zabezpieczenia przed odtajnieniem, zwykle używa się funkcji',
-            poprawna_odpowiedz: 'klucza',
-            bledne_odpowiedzi: ['cyklometrycznych', 'abstrakcyjnych', 'mieszających']
+            pytanie: 'W języku SQL przywilej SELECT polecenia GRANT pozwala użytkownikowi baz danych na',
+            poprawna_odpowiedz: 'odczyt danych z tabeli',
+            bledne_odpowiedzi: ['tworzenie tabeli', 'usunięcie danych z tabeli', 'modyfikowanie danych w tabeli']
         },
         {
-            pytanie: 'W celu określenia wysokości obrazka wyświetlonego na stronie WWW należy wykorzystać właściwość CSS o nazwie',
-            poprawna_odpowiedz: 'height',
-            bledne_odpowiedzi: ['width', 'padding', 'margin']
+            pytanie: 'W języku HTML atrybut alt znacznika img jest wykorzystywany w celu zdefiniowania',
+            poprawna_odpowiedz: 'tekstu, który będzie wyświetlony, jeśli nie może być wyświetlona grafika',
+            bledne_odpowiedzi: ['ścieżki i nazwy pliku źródłowego grafiki', 'podpisu, który zostanie wyświetlony pod grafiką', 'atrybutów grafiki, takich jak rozmiar, obramowanie, wyrównanie']
         },
         {
-            pytanie: 'Aby ustawić czcionkę Verdana w kodzie CSS, należy wykorzystać właściwość',
-            poprawna_odpowiedz: 'font-family: Verdana;',
-            bledne_odpowiedzi: ['font-style: Verdana;', 'font-name: Verdana;', 'font-weight: Verdana;']
+            pytanie: 'Warunek zapisany językiem PHP wypisze liczbę, gdy',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757685745/pyt159_cznj0k.png',
+            poprawna_odpowiedz: 'jest ona parzysta',
+            bledne_odpowiedzi: ['jest ona liczbą pierwszą', 'wynik dzielenia liczby przez 2 jest równy 0', 'jest ona dodatnia']
         },
         {
-            pytanie: 'Funkcja zapisana językiem PHP służy do',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757095208/pyt125_o6vmmr.png',
-            poprawna_odpowiedz: 'pobrania danych z bazy danych',
-            bledne_odpowiedzi: ['połączenia z bazą danych', 'ustawienia hasła do bazy danych', 'zabezpieczenia bazy danych']
+            pytanie: 'Analizując przedstawiony kod zapisany w języku HTML, można stwierdzić, że w przeglądarce',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757685808/pyt160_wvtm8m.png',
+            poprawna_odpowiedz: 'blok B będzie oddalony od bloku A o 20 px',
+            bledne_odpowiedzi: ['zostanie ustawiony dolny margines dla bloku B', 'blok A będzie przesunięty w lewo o 20 px', 'bloki A i B będą nachodzić na siebie.']
         },
         {
-            pytanie: 'Kwerenda pozwalająca na wprowadzenie zmian w wielu rekordach lub przeniesienie wielu rekordów przy użyciu pojedynczej operacji, nosi nazwę kwerendy',
-            poprawna_odpowiedz: 'funkcjonalnej',
-            bledne_odpowiedzi: ['krzyżowej', 'wybierającej', 'parametrycznej']
+            pytanie: 'Baza danych zawiera tabelę o nazwie pracownicy o polach: nazwisko, imie, pensja, wiek. Jak wygląda składnia polecenia wyznaczającego średnią pensję pracowników?',
+            poprawna_odpowiedz: 'select AVG (pensja) from pracownicy',
+            bledne_odpowiedzi: ['select AVG (nazwisko) into pensja', 'select VAR (pracownicy) into pensja', 'select VAR (pensja) from nazwisko']
         },
         {
-            pytanie: 'Wskaż rezultat działania fragmentu kodu JavaScript',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757095384/pyt127_qlukau.png',
-            poprawna_odpowiedz: 'Dodanie akapitu na koniec strony',
-            bledne_odpowiedzi: ['Usunięcie akapitu ze strony', 'Wyświetlenie okna dialogowego z napisem akapit', 'Dodanie akapitu na początku strony']
+            pytanie: 'Do reprezentacji liczb zmiennoprzecinkowych w języku C stosowany jest typ',
+            poprawna_odpowiedz: 'double',
+            bledne_odpowiedzi: ['int', 'bool', 'char']
         },
         {
-            pytanie: 'Fizyczny model replikacji bazy danych przedstawiony na rysunku jest modelem',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757095465/pyt128_fgij8x.png',
-            poprawna_odpowiedz: 'centralnego wydawcy',
-            bledne_odpowiedzi: ['rozproszonym', 'centralnego subskrybenta', 'równorzędnym']
+            pytanie: 'Polecenie SQL o treści: UPDATE artykuly SET cena = cena * 0.7 WHERE kod = 2; oznacza',
+            poprawna_odpowiedz: 'w tabeli artykuly obniża wartość każdego pola cena dla którego pole kod jest równe 2',
+            bledne_odpowiedzi: ['w tabeli artykuly obniża wartość każdego pola cena o 30% dla wszystkich artykułów', 'wprowadzenie w tabeli artykuly nowych pól cena i kod', 'wprowadzenie w tabeli artykuly pola o nazwie cena ze znacznikiem kod']
         },
         {
-            pytanie: 'Za pomocą którego protokołu należy wysłać pliki na serwer WWW?',
-            poprawna_odpowiedz: 'FTP',
-            bledne_odpowiedzi: ['DHCP', 'POP3', 'DNS']
+            pytanie: 'Do edycji grafiki wektorowej stosuje się program',
+            poprawna_odpowiedz: 'Corel Draw',
+            bledne_odpowiedzi: ['Paint', 'Audacity', 'Wordpad']
         },
         {
-            pytanie: 'Wynikiem działania zamieszczonej pętli zapisanej językiem PHP jest wypisanie kolejnych liczb',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757095551/pyt131_kw2ph6.png',
-            poprawna_odpowiedz: 'od 10 do 1',
-            bledne_odpowiedzi: ['od 1 do 10', 'od 10 do 2', 'od 2 do 10']
+            pytanie: 'W programowaniu obiektowym mechanizm współdzielenia pól i metod klasy w taki sposób, że klasa pochodna zawiera metody zdefiniowane w klasie bazowej nazywa się',
+            poprawna_odpowiedz: 'dziedziczeniem',
+            bledne_odpowiedzi: ['hermetyzacją', 'wirtualizacją', 'polimorfizmem']
         },
         {
-            pytanie: 'Które z poleceń naprawi uszkodzoną tabelę w języku SQL?',
-            poprawna_odpowiedz: 'REPAIR TABLE tblname',
-            bledne_odpowiedzi: ['REGENERATE TABLE tbl_name', 'OPTIMIZE TABLE tbl_name', 'ANALYZE TABLE tbl_name']
+            pytanie: 'Który z wymienionych znaczników języka HTML nie jest stosowany w celu formatowania tekstu?',
+            poprawna_odpowiedz: '<div>',
+            bledne_odpowiedzi: ['<em>', '<sub>', '<strong>']
         },
         {
-            pytanie: 'Który z wymienionych formatów plików graficznych obsługuje przezroczystość?',
-            poprawna_odpowiedz: 'PNG',
-            bledne_odpowiedzi: ['JPG', 'NEF', 'BMP']
+            pytanie: 'Aby zdefiniować w języku HTML listę nienumerowaną, należy użyć znacznika',
+            poprawna_odpowiedz: '<ul>',
+            bledne_odpowiedzi: ['<dd>', '<dt>', '<ol>']
         },
         {
-            pytanie: 'Który zapis stylu CSS ustawi tło bloku na kolor niebieski?',
-            poprawna_odpowiedz: 'div {background-color: blue;}',
-            bledne_odpowiedzi: ['div {shadow: blue;}', 'div {border-color: blue;}', 'div {color: blue;}']
+            pytanie: 'W języku CSS właściwość font-size przyjmuje, według słów kluczowych, wartości',
+            poprawna_odpowiedz: 'ze zbioru xx-small, x-small, medium, large, x-large, xx-large',
+            bledne_odpowiedzi: ['tylko big i small', 'wyłączenie small, medium, large', 'jedynie small, smaller,large, larger']
         },
         {
-            pytanie: 'Domyślna nazwa pliku konfiguracyjnego serwera Apache to',
-            poprawna_odpowiedz: '.htaccess',
-            bledne_odpowiedzi: ['.configuration', 'configuration.php', 'htaccess.cnf']
+            pytanie: 'W języku CSS, w celu zdefiniowania wewnętrznego górnego marginesu, czyli odstepu między elementem a otaczającym go obramowaniem, należy użyć polecenia',
+            poprawna_odpowiedz: 'padding-top',
+            bledne_odpowiedzi: ['outline-top', 'border-top', 'local-top']
         },
         {
-            pytanie: 'Organizacja zajmująca się ustalaniem standardu dla języka HTML nosi nazwę',
-            poprawna_odpowiedz: 'W3C',
-            bledne_odpowiedzi: ['ISO', 'NASK', 'WYSIWYG']
+            pytanie: 'Funkcja edytor WYSIWYG Adobe Dreamweaver służy do',
+            poprawna_odpowiedz: 'wyświetlania interaktywnego drzewa struktury HTML dla zawartości statycznej i dynamicznej',
+            bledne_odpowiedzi: ['definiowania kaskadowych arkuszy stylów dołączonych do witryny', 'formatowanie tekstu przy pomocy dostępnych znaczników', 'tworzenia szablonu strony internetowej']
         },
         {
-            pytanie: 'Który z wymienionych systemów nie jest systemem CMS?',
-            poprawna_odpowiedz: 'Adobe Flash',
-            bledne_odpowiedzi: ['Joomla', 'WordPress', 'Drupal']
+            pytanie: 'Aby witryna internetowa prawidłowo skalowała się w urządzeniach mobilnych, należy wielkość czcionki zdefiniować',
+            poprawna_odpowiedz: 'w procentach',
+            bledne_odpowiedzi: ['w pikselach', 'w milimetrach', 'tylko znacznikami big i small']
         },
         {
-            pytanie: 'Która ze zdefiniowanych funkcji w języku PHP jako wynik zwraca połowę kwadratu wartości przekazanej?',
-            poprawna_odpowiedz: 'function licz($a) { return $a*$a/2; }',
-            bledne_odpowiedzi: ['function licz($a) { echo $a*$a/2; }', 'function licz($a) { return $a/2; }', 'function licz($a) { echo $a/2; }']
+            pytanie: 'Znacznik meta języka HTML należy umieścić',
+            poprawna_odpowiedz: 'w części nagłówkowej witryny internetowej',
+            bledne_odpowiedzi: ['pomiędzy znacznikami body', 'pomiędzy znacznikami paragrafu', 'w stopce witryny internetowej']
         },
         {
-            pytanie: 'W strukturalnych językach programowania w celu przechowania informacji o 50 uczniach (ich imionach, nazwiskach, średniej ocen) należy użyć',
-            poprawna_odpowiedz: 'tablicy 50 elementów o składowych strukturalnych',
-            bledne_odpowiedzi: ['struktury 50 elementów o składowych typu tablicowego', 'tablicy 50 elementów o składowych łańcuchowych', 'klasy 50 elementów typu tablicowego']
+            pytanie: 'Prawidłowy, zgodny ze standardem języka XHTML, zapis samozamykającego się znacznika odpowiadającego za łamanie linii ma postać',
+            poprawna_odpowiedz: '<br />',
+            bledne_odpowiedzi: ['</ br>', '</br/>', '<br> </br>']
         },
         {
-            pytanie: 'Aby zobaczyć wyniki działania skryptu napisanego w języku PHP, będącego elementem strony WWW, musi być on',
-            poprawna_odpowiedz: 'zinterpretowany po stronie serwera',
-            bledne_odpowiedzi: ['skompilowany po stronie klienta', 'skompilowany po stronie serwera', 'zinterpretowany po stronie klienta']
+            pytanie: 'Najprostszą i najmniej pracochłonną metodą przetestowania działania witryny internetowej w wielu przeglądarkach i ich różnych wersjach jest',
+            poprawna_odpowiedz: 'skorzystanie z emulatora przeglądarek internetowych np. Browser Sandbox',
+            bledne_odpowiedzi: ['skorzystanie z walidatora języka HTML', 'zainstalowanie na kilku komputerach różnych przeglądarek i testowanie witryny', 'testowanie witryny w programie Internet Explorer, zakładając kompatybilność innych przeglądarek']
         },
         {
-            pytanie: 'Projektowanie logicznego układu witryny polega na',
-            poprawna_odpowiedz: 'rozmieszczeniu elementów w konkretnych miejscach witryny',
-            bledne_odpowiedzi: ['opracowaniu zestawu grafik dla witryny', 'zdefiniowaniu treści witryny', 'ustaleniu adresów URL dla podstron witryny']
+            pytanie: 'Aby przenieść witrynę na serwer, można skorzystać z oprogramowania',
+            poprawna_odpowiedz: 'FileZilla',
+            bledne_odpowiedzi: ['Bugzilla', 'Go!Zilla', 'CloneZilla']
         }
     ];
 
@@ -889,6 +885,189 @@
             pytanie: 'Wskaż poprawną kolejność etapów projektowania relacyjnej bazy danych',
             poprawna_odpowiedz: 'Określenie zbioru danych, Selekcja, Określenie kluczy podstawowych tabel, Określenie relacji',
             bledne_odpowiedzi: ['Selekcja, Określenie relacji, Określenie kluczy podstawowych tabel, Określenie zbioru danych', 'Określenie relacji, Określenie kluczy podstawowych tabel, Selekcja, Określenie zbioru danych', 'Określenie kluczy podstawowych tabel, Określenie zbioru danych, Selekcja, Określenie relacji']
+        },
+        {
+            pytanie: 'Formularze do obsługi baz danych tworzy się w celu',
+            poprawna_odpowiedz: 'wygodniejszego wprowadzania, edytowania i usuwania danych',
+            bledne_odpowiedzi: ['raportowania danych', 'wyszukiwania wierszy spełniających dane kryteria', 'wprowadzenia powiązań w relacyjnych bazach danych']
+        },
+        {
+            pytanie: 'Integralność referencyjna w modelu relacyjnych baz danych oznacza, że',
+            poprawna_odpowiedz: 'wartość klucza obcego w danej tabeli musi być albo równa wartości klucza głównego w tabeli z nia powiązanej albo równa wartości NULL',
+            bledne_odpowiedzi: ['wartość klucza głównego oraz klucza obcego nie jest pusta', 'klucz główny lub klucz obcy nie zawierają wartości NULL', 'każdemu kluczowi głównemu odpowiada dokładnie jeden klucz obcy w tabeli lub tabelach powiązanych']
+        },
+        {
+            pytanie: 'Deklaracja w języku JavaScript: var x=true; powoduje, że zmienna x jest typu',
+            poprawna_odpowiedz: 'logicznego',
+            bledne_odpowiedzi: ['liczbowego', 'ciąg znaków', 'wyliczeniowego']
+        },
+        {
+            pytanie: 'Obiekt typu array w języku Javascript służy do przechowywania',
+            poprawna_odpowiedz: 'wielu wartości dowolnego typu',
+            bledne_odpowiedzi: ['wielu wartości lub funkcji', 'wielu wartości wyłącznie liczbowych', 'wielu wartości wyłącznie tekstowych']
+        },
+        {
+            pytanie: 'Ukrywanie pewnych pól lub metod obiektów danej klasy tak, aby były one dostępne tylko metodom wewnętrznym tej klasy lub funkcjom zaprzyjaźnionym, to',
+            poprawna_odpowiedz: 'hermetyzacja',
+            bledne_odpowiedzi: ['polimorfizm', 'konkatenacja', 'dziedziczenie']
+        },
+        {
+            pytanie: 'Odwoływanie funkcji do samej siebie to',
+            poprawna_odpowiedz: 'rekurencja',
+            bledne_odpowiedzi: ['iteracja', 'hermetyzacja', 'dziedziczenie']
+        },
+        {
+            pytanie: 'W języku PHP zmienna $_GET jest zmienną',
+            poprawna_odpowiedz: 'predefiniowaną, używaną do przekazywania danych do skryptów PHP poprzez adres strony',
+            bledne_odpowiedzi: ['predefiniowaną, używaną do gromadzenia wartości formularza po nagłówkach zlecenia HTTP (danych z formularza nie można zobaczyć w adresie)', 'zdefiniowaną przez twórcę strony, służącą do przekazywania danych z formularza przez adres strony', 'zwykłą, zdefiniowaną przez twórcę strony']
+        },
+        {
+            pytanie: 'W języku PHP w instrukcji switch musi występować',
+            poprawna_odpowiedz: 'konstrukcja switch(wyrażenie)',
+            bledne_odpowiedzi: ['instrukcja default', 'przynajmniej dwie instrukcje case', 'instrukcja break po każdej instrukcji case']
+        },
+        {
+            pytanie: 'Konstruktor w języku PHP jest metodą o nazwie',
+            poprawna_odpowiedz: '_construct',
+            bledne_odpowiedzi: ['_new', '_open', '_create']
+        },
+        {
+            pytanie: 'Debugger to program służący do',
+            poprawna_odpowiedz: 'wyszukiwania błędów w kodzie programu',
+            bledne_odpowiedzi: ['badania właściwości programu', 'sprawdzania szybkości programu', 'zoptymalizowanie pamięci używanej przez aplikację']
+        },
+        {
+            pytanie: 'Kod zamieszczony w ramce spowoduje wypisanie liczb',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757093985/pyt116_e7lp8y.png',
+            poprawna_odpowiedz: '2 4 6 8 10',
+            bledne_odpowiedzi: ['2 4 6 8', '1 3 5 7 9', '1 2 3 4 5 6 7 8 9 10']
+        },
+        {
+            pytanie: 'Który kod jest alternatywny do kodu zamieszczonego w ramce?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757094210/pyt117_puwytc.png',
+            poprawna_odpowiedz: 'A',
+            bledne_odpowiedzi: ['B', 'C', 'D']
+        },
+        {
+            pytanie: 'Zamieszczony w ramce fragment skryptu w języku JavaScript',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757094663/pyt118_ybo5yt.png',
+            poprawna_odpowiedz: 'przypisze zmiennej s długość napisu ze zmiennej t',
+            bledne_odpowiedzi: ['przypisze zmienniej s zmienną t', 'wyświetli długość napisu ze zmiennej t', 'przypisze zmiennej s fragment napisu ze zmiennej t, o określonej przez zmienną length długości']
+        },
+        {
+            pytanie: 'Zamieszczony w ramce fragment kodu w JavaScript wypisze',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757094780/pyt119_vnm10y.png',
+            poprawna_odpowiedz: '"ze"',
+            bledne_odpowiedzi: ['"wo"', '"owodzeni"', '"wodzenia"']
+        },
+        {
+            pytanie: 'Który fragment kodu JavaScript zwróci wartość true?',
+            poprawna_odpowiedz: '"def" > "abc"',
+            bledne_odpowiedzi: ['"a" > "b"', '"ab" > "c"', '"abc" > "def"']
+        },
+        {
+            pytanie: 'W kodzie PHP znak "//" oznacza',
+            poprawna_odpowiedz: 'początek komentarza jednoliniowego',
+            bledne_odpowiedzi: ['początek skryptu', 'operator alernatywy', 'operator dzielenia całkowitego']
+        },
+        {
+            pytanie: 'Zapisując hasło użytkownika serwisu WWW (np. bankowości internetowej), w celu jego zabezpieczenia przed odtajnieniem, zwykle używa się funkcji',
+            poprawna_odpowiedz: 'klucza',
+            bledne_odpowiedzi: ['cyklometrycznych', 'abstrakcyjnych', 'mieszających']
+        },
+        {
+            pytanie: 'W celu określenia wysokości obrazka wyświetlonego na stronie WWW należy wykorzystać właściwość CSS o nazwie',
+            poprawna_odpowiedz: 'height',
+            bledne_odpowiedzi: ['width', 'padding', 'margin']
+        },
+        {
+            pytanie: 'Aby ustawić czcionkę Verdana w kodzie CSS, należy wykorzystać właściwość',
+            poprawna_odpowiedz: 'font-family: Verdana;',
+            bledne_odpowiedzi: ['font-style: Verdana;', 'font-name: Verdana;', 'font-weight: Verdana;']
+        },
+        {
+            pytanie: 'Funkcja zapisana językiem PHP służy do',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757095208/pyt125_o6vmmr.png',
+            poprawna_odpowiedz: 'pobrania danych z bazy danych',
+            bledne_odpowiedzi: ['połączenia z bazą danych', 'ustawienia hasła do bazy danych', 'zabezpieczenia bazy danych']
+        },
+        {
+            pytanie: 'Kwerenda pozwalająca na wprowadzenie zmian w wielu rekordach lub przeniesienie wielu rekordów przy użyciu pojedynczej operacji, nosi nazwę kwerendy',
+            poprawna_odpowiedz: 'funkcjonalnej',
+            bledne_odpowiedzi: ['krzyżowej', 'wybierającej', 'parametrycznej']
+        },
+        {
+            pytanie: 'Wskaż rezultat działania fragmentu kodu JavaScript',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757095384/pyt127_qlukau.png',
+            poprawna_odpowiedz: 'Dodanie akapitu na koniec strony',
+            bledne_odpowiedzi: ['Usunięcie akapitu ze strony', 'Wyświetlenie okna dialogowego z napisem akapit', 'Dodanie akapitu na początku strony']
+        },
+        {
+            pytanie: 'Fizyczny model replikacji bazy danych przedstawiony na rysunku jest modelem',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757095465/pyt128_fgij8x.png',
+            poprawna_odpowiedz: 'centralnego wydawcy',
+            bledne_odpowiedzi: ['rozproszonym', 'centralnego subskrybenta', 'równorzędnym']
+        },
+        {
+            pytanie: 'Za pomocą którego protokołu należy wysłać pliki na serwer WWW?',
+            poprawna_odpowiedz: 'FTP',
+            bledne_odpowiedzi: ['DHCP', 'POP3', 'DNS']
+        },
+        {
+            pytanie: 'Wynikiem działania zamieszczonej pętli zapisanej językiem PHP jest wypisanie kolejnych liczb',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757095551/pyt131_kw2ph6.png',
+            poprawna_odpowiedz: 'od 10 do 1',
+            bledne_odpowiedzi: ['od 1 do 10', 'od 10 do 2', 'od 2 do 10']
+        },
+        {
+            pytanie: 'Które z poleceń naprawi uszkodzoną tabelę w języku SQL?',
+            poprawna_odpowiedz: 'REPAIR TABLE tblname',
+            bledne_odpowiedzi: ['REGENERATE TABLE tbl_name', 'OPTIMIZE TABLE tbl_name', 'ANALYZE TABLE tbl_name']
+        },
+        {
+            pytanie: 'Który z wymienionych formatów plików graficznych obsługuje przezroczystość?',
+            poprawna_odpowiedz: 'PNG',
+            bledne_odpowiedzi: ['JPG', 'NEF', 'BMP']
+        },
+        {
+            pytanie: 'Który zapis stylu CSS ustawi tło bloku na kolor niebieski?',
+            poprawna_odpowiedz: 'div {background-color: blue;}',
+            bledne_odpowiedzi: ['div {shadow: blue;}', 'div {border-color: blue;}', 'div {color: blue;}']
+        },
+        {
+            pytanie: 'Domyślna nazwa pliku konfiguracyjnego serwera Apache to',
+            poprawna_odpowiedz: '.htaccess',
+            bledne_odpowiedzi: ['.configuration', 'configuration.php', 'htaccess.cnf']
+        },
+        {
+            pytanie: 'Organizacja zajmująca się ustalaniem standardu dla języka HTML nosi nazwę',
+            poprawna_odpowiedz: 'W3C',
+            bledne_odpowiedzi: ['ISO', 'NASK', 'WYSIWYG']
+        },
+        {
+            pytanie: 'Który z wymienionych systemów nie jest systemem CMS?',
+            poprawna_odpowiedz: 'Adobe Flash',
+            bledne_odpowiedzi: ['Joomla', 'WordPress', 'Drupal']
+        },
+        {
+            pytanie: 'Która ze zdefiniowanych funkcji w języku PHP jako wynik zwraca połowę kwadratu wartości przekazanej?',
+            poprawna_odpowiedz: 'function licz($a) { return $a*$a/2; }',
+            bledne_odpowiedzi: ['function licz($a) { echo $a*$a/2; }', 'function licz($a) { return $a/2; }', 'function licz($a) { echo $a/2; }']
+        },
+        {
+            pytanie: 'W strukturalnych językach programowania w celu przechowania informacji o 50 uczniach (ich imionach, nazwiskach, średniej ocen) należy użyć',
+            poprawna_odpowiedz: 'tablicy 50 elementów o składowych strukturalnych',
+            bledne_odpowiedzi: ['struktury 50 elementów o składowych typu tablicowego', 'tablicy 50 elementów o składowych łańcuchowych', 'klasy 50 elementów typu tablicowego']
+        },
+        {
+            pytanie: 'Aby zobaczyć wyniki działania skryptu napisanego w języku PHP, będącego elementem strony WWW, musi być on',
+            poprawna_odpowiedz: 'zinterpretowany po stronie serwera',
+            bledne_odpowiedzi: ['skompilowany po stronie klienta', 'skompilowany po stronie serwera', 'zinterpretowany po stronie klienta']
+        },
+        {
+            pytanie: 'Projektowanie logicznego układu witryny polega na',
+            poprawna_odpowiedz: 'rozmieszczeniu elementów w konkretnych miejscach witryny',
+            bledne_odpowiedzi: ['opracowaniu zestawu grafik dla witryny', 'zdefiniowaniu treści witryny', 'ustaleniu adresów URL dla podstron witryny']
         }
     ];
 
