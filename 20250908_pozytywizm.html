@@ -353,16 +353,32 @@
       cards.forEach(c=>{ const i = Number(c.dataset.idx); const foot = c.querySelector('.lesson-foot div'); if(foot) foot.textContent = `${i+1}/${cards.length}`; });
     }
 
-    let startX=0, currentX=0, isDragging=false;
-    const carouselWrap = document.querySelector('.carousel-wrap');
+    let startX=0, startY=0, currentX=0, currentY=0, isDragging=false;
+    
     carouselWrap.addEventListener('touchstart', (e)=>{
       if(currentTab!=='Zeszyt') return;
-      startX = e.touches[0].clientX; isDragging=true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      isDragging = true;
     }, {passive:true});
+    
     carouselWrap.addEventListener('touchmove', (e)=>{
-      if(!isDragging) return; currentX = e.touches[0].clientX; }, {passive:true});
+      if(!isDragging) return;
+      currentX = e.touches[0].clientX;
+      currentY = e.touches[0].clientY;
+    }, {passive:true});
+    
     carouselWrap.addEventListener('touchend', ()=>{
-      if(!isDragging) return; const dx = currentX - startX; isDragging=false; if(Math.abs(dx) < 30) return; if(dx < 0) shiftZeszyt(1); else shiftZeszyt(-1);
+      if(!isDragging) return;
+      const dx = currentX - startX;
+      const dy = currentY - startY;
+      isDragging = false;
+    
+      // sprawdzamy czy ruch był bardziej w poziomie czy w pionie
+      if (Math.abs(dx) < 30 || Math.abs(dx) < Math.abs(dy)) return;
+    
+      if (dx < 0) shiftZeszyt(1);   // w lewo → następna lekcja
+      else shiftZeszyt(-1);         // w prawo → poprzednia lekcja
     });
 
     window.addEventListener('keydown', (e)=>{
