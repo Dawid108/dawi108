@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Funkcje Tekstu</title>
+  <link rel="icon" href="dawi108.png" type="image/png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f9f9f9;
+      color: #333;
+    }
+
+    h2 {
+      margin-top: 40px;
+      text-align: center;
+      color: #444;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .example {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+      text-align: center;
+      transition: transform 0.3s;
+    }
+
+    .example:hover {
+      transform: scale(1.05);
+    }
+
+    .code {
+      font-family: monospace;
+      background: #eee;
+      padding: 6px 10px;
+      border-radius: 8px;
+      display: inline-block;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .code:hover {
+      background: #dcdcdc;
+    }
+
+    .wynik {
+      margin-top: 12px;
+      padding: 8px;
+      border: 1px dashed #bbb;
+      border-radius: 6px;
+      min-height: 30px;
+    }
+
+    /* Responsywność */
+    @media (max-width: 600px) {
+      body {
+        margin: 10px;
+      }
+      h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 style="text-align:center;">Przykłady funkcji tekstu w JavaScript</h1>
+
+  <!-- Funkcje tekstowe -->
+  <h2>1. wynik.style.color</h2>
+  <div class="container" id="color-examples"></div>
+
+  <h2>2. wynik.style.fontStyle</h2>
+  <div class="container" id="fontStyle-examples"></div>
+
+  <h2>3. wynik.style.fontWeight</h2>
+  <div class="container" id="fontWeight-examples"></div>
+
+  <h2>4. wynik.style.fontFamily</h2>
+  <div class="container" id="fontFamily-examples"></div>
+
+  <h2>5. wynik.style.fontSize</h2>
+  <div class="container" id="fontSize-examples"></div>
+
+  <h2>6. wynik.style.border</h2>
+  <div class="container" id="border-examples"></div>
+
+  <h2>7. wynik.style.textDecoration</h2>
+  <div class="container" id="textDecoration-examples"></div>
+
+  <h2>8. wynik.style.textAlign</h2>
+  <div class="container" id="textAlign-examples"></div>
+
+  <h2>9. wynik.style.backgroundColor</h2>
+  <div class="container" id="backgroundColor-examples"></div>
+
+  <h2>10. wynik.style.textTransform</h2>
+  <div class="container" id="textTransform-examples"></div>
+
+  <h2>11. wynik.style.textShadow</h2>
+  <div class="container" id="textShadow-examples"></div>
+
+  <!-- Zdarzenia -->
+  <h2>Funkcje Zdarzeń</h2>
+  <div class="container" id="events-examples"></div>
+
+<script>
+  // Funkcja pomocnicza do tworzenia przykładów
+  function createExample(containerId, codeText, action) {
+    const container = document.getElementById(containerId);
+    const div = document.createElement("div");
+    div.className = "example";
+
+    const code = document.createElement("div");
+    code.className = "code";
+    code.textContent = codeText;
+
+    const wynik = document.createElement("div");
+    wynik.className = "wynik";
+    wynik.textContent = "Przykładowy tekst";
+
+    code.addEventListener("click", () => action(wynik));
+
+    div.appendChild(code);
+    div.appendChild(wynik);
+    container.appendChild(div);
+  }
+
+  // Tworzenie przykładów
+  const colors = ["red", "blue", "green", "purple", "orange"];
+  colors.forEach(c => createExample("color-examples", `wynik.style.color = "${c}"`, el => el.style.color = c));
+
+  const fontStyles = ["italic", "normal", "oblique", "inherit", "initial"];
+  fontStyles.forEach(fs => createExample("fontStyle-examples", `wynik.style.fontStyle = "${fs}"`, el => el.style.fontStyle = fs));
+
+  const fontWeights = ["bold", "lighter", "normal", "bolder", "900"];
+  fontWeights.forEach(fw => createExample("fontWeight-examples", `wynik.style.fontWeight = "${fw}"`, el => el.style.fontWeight = fw));
+
+  const fontFamilies = ["serif", "sans-serif", "monospace", "cursive", "fantasy"];
+  fontFamilies.forEach(ff => createExample("fontFamily-examples", `wynik.style.fontFamily = "${ff}"`, el => el.style.fontFamily = ff));
+
+  const fontSizes = ["12px", "20px", "28px", "36px", "48px"];
+  fontSizes.forEach(fs => createExample("fontSize-examples", `wynik.style.fontSize = "${fs}"`, el => el.style.fontSize = fs));
+
+  const borders = ["1px solid black", "2px dashed red", "3px dotted blue", "4px double green", "5px groove purple"];
+  borders.forEach(b => createExample("border-examples", `wynik.style.border = "${b}"`, el => el.style.border = b));
+
+  const decorations = ["underline", "overline", "line-through", "none", "underline overline"];
+  decorations.forEach(d => createExample("textDecoration-examples", `wynik.style.textDecoration = "${d}"`, el => el.style.textDecoration = d));
+
+  const aligns = ["left", "center", "right", "justify", "start"];
+  aligns.forEach(a => createExample("textAlign-examples", `wynik.style.textAlign = "${a}"`, el => el.style.textAlign = a));
+
+  const backgrounds = ["yellow", "lightblue", "lightgreen", "pink", "lightgray"];
+  backgrounds.forEach(bg => createExample("backgroundColor-examples", `wynik.style.backgroundColor = "${bg}"`, el => el.style.backgroundColor = bg));
+
+  const transforms = ["uppercase", "lowercase", "capitalize", "none", "full-width"];
+  transforms.forEach(t => createExample("textTransform-examples", `wynik.style.textTransform = "${t}"`, el => el.style.textTransform = t));
+
+  const shadows = ["2px 2px 5px gray", "3px 3px 6px red", "1px 1px 3px blue", "4px 4px 8px green", "5px 5px 10px purple"];
+  shadows.forEach(s => createExample("textShadow-examples", `wynik.style.textShadow = "${s}"`, el => el.style.textShadow = s));
+
+  // Zdarzenia
+  function createEventExample(text, eventType, action) {
+    const container = document.getElementById("events-examples");
+    const div = document.createElement("div");
+    div.className = "example";
+
+    const wynik = document.createElement("div");
+    wynik.className = "wynik";
+    wynik.textContent = text;
+
+    wynik.addEventListener(eventType, () => action(wynik));
+
+    div.appendChild(wynik);
+    container.appendChild(div);
+  }
+
+  createEventExample("Kliknij mnie a zmienię kolor!", "click", el => el.style.color = "blue");
+  createEventExample("Najedź myszką a dodam ramkę!", "mouseover", el => el.style.border = "2px solid red");
+  createEventExample("Kliknij dwa razy a zrobię się duży!", "dblclick", el => el.style.fontSize = "30px");
+  createEventExample("Zabierz myszkę a wrócę do normy!", "mouseout", el => el.style.backgroundColor = "white");
+  createEventExample("Naciśnij dowolny klawisz!", "keydown", el => el.style.textTransform = "uppercase");
+</script>
+</body>
+</html>
