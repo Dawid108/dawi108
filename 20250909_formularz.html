@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularz</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <form>
+        <p>Podaj swoje imię: <input type="text" size="40" id="imie"></p>
+        <p><input type="text" id="przezwisko" placeholder="Wpisz swoje przezwisko"></p>
+        <p>Podaj rok urodzenia Twojej mamy: <input type="number" min="1901" max="2008" value="1980"></p>
+        <p>Powiedz kilka słów o sobie<br>
+        <textarea cols="80" rows="5" id="o_sobie">Urodziłem się</textarea></p>
+        <fieldset>
+            <legend>Wykształcenie</legend>
+            <label><input type="radio" name="wyksztalcenie" class="wyksztalcenie" value="1">podstawowe</label><br>
+            <label><input type="radio" name="wyksztalcenie" class="wyksztalcenie" value="2">zawodowe</label><br>
+            <label><input type="radio" name="wyksztalcenie" class="wyksztalcenie" value="3" checked>średnie</label><br>
+            <label><input type="radio" name="wyksztalcenie" class="wyksztalcenie" value="4">wyższe</label><br>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend>Wiek</legend>
+            <label><input type="radio" name="wiek" class="wiek" value="3">16-17 lat</label><br>
+            <label><input type="radio" name="wiek" class="wiek" value="4" checked>18-50 lat</label><br>
+            <label><input type="radio" name="wiek" class="wiek" value="2">51-65 lat</label><br>
+            <label><input type="radio" name="wiek" class="wiek" value="1">powyżej 65 lat</label><br>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend>Hobby</legend>
+            <label><input type="checkbox" name="hobby" class="hobby" value="2" checked>czytanie książek</label><br>
+            <label><input type="checkbox" name="hobby" class="hobby" value="1">sport</label><br>
+            <label><input type="checkbox" name="hobby" class="hobby" value="1">taniec</label><br>
+            <label><input type="checkbox" name="hobby" class="hobby" value="0">oglądanie telewizji</label><br>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend>Ile godzin śpisz w nocy?</legend>
+            <select name="sen">
+                <option class="sen" value="1">powyżej 8</option>
+                <option class="sen" value="2" selected>7-8</option>
+                <option class="sen" value="1">5-6</option>
+                <option class="sen" value="1">mniej niż 5</option>
+            </select>
+        </fieldset>
+        <br>
+        <fieldset>
+            <legend>Wybierz cechę charakteru, która najbardziej do Ciebie pasuje.</legend>
+            <select name="charakter" multiple>
+                <optgroup label="negatywne">
+                    <option class="charakter" value="-2">Lenistwo</option>
+                    <option class="charakter" value="-1">Spóźnialstwo</option>
+                    <option class="charakter" value="0">Ślamazarność</option>
+                </optgroup>
+                <optgroup label="pozytywne">
+                    <option class="charakter" value="1">Punktualność</option>
+                    <option class="charakter" value="2">Pracowitość</option>
+                    <option class="charakter" value="1">Lojalność</option>
+                </optgroup>
+            </select>
+        </fieldset>
+        <br>
+        <input type="button" value="Wyślij" id="wyslij">
+        <input type="reset" value="Wyczyść"><br>
+    </form>
+    <p id="wynik"></p>
+    <script>
+        let wynik = document.getElementById("wynik");
+        let wyslij = document.getElementById("wyslij");
+        let imie = document.getElementById("imie");
+        let kolekcja_wyksztalcenie = document.getElementsByClassName("wyksztalcenie");
+        let kolekcja_wiek = document.getElementsByClassName("wiek");
+        let kolekcja_hobby = document.getElementsByClassName("hobby");
+        let kolekcja_sen = document.getElementsByClassName("sen");
+        let kolekcja_charakter = document.getElementsByClassName("charakter");
+        let pkt = 0;
+
+        function obliczenia(){
+            let pkt_wyksztalcenie = 0;
+            let pkt_wiek = 0;
+            let pkt_hobby = 0;
+            let pkt_sen = 0;
+            let pkt_charakter = 0;
+
+            for (i=0; i<=kolekcja_wyksztalcenie.length-1; i++){
+                if (kolekcja_wyksztalcenie[i].checked){
+                    pkt_wyksztalcenie = Number(kolekcja_wyksztalcenie[i].value);
+                }
+            }
+
+            for (i=0; i<=kolekcja_wiek.length-1; i++){
+                if (kolekcja_wiek[i].checked){
+                    pkt_wiek = Number(kolekcja_wiek[i].value);
+                }
+            }
+
+            for (i=0; i<=kolekcja_hobby.length-1; i++){
+                if (kolekcja_hobby[i].checked){
+                    pkt_hobby += Number(kolekcja_hobby[i].value);
+                }
+            }
+
+            for (i=0; i<=kolekcja_sen.length-1; i++){
+                if (kolekcja_sen[i].selected){
+                    pkt_sen = Number(kolekcja_sen[i].value);
+                }
+            }
+
+            for (i=0; i<=kolekcja_charakter.length-1; i++){
+                if (kolekcja_charakter[i].selected){
+                    pkt_charakter += Number(kolekcja_charakter[i].value);
+                }
+            }
+            
+            pkt = pkt_wyksztalcenie + pkt_wiek + pkt_hobby + pkt_sen + pkt_charakter;
+            odp = imie.value + " masz " + pkt + " pkt.";
+            wynik.innerHTML = odp;
+        }
+
+        wyslij.addEventListener("click", obliczenia);
+    </script>
+</body>
+</html>
