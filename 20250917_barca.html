@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newcastle - Barcelona</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <style>
+        body {
+            width: 350px;
+            text-align: center;
+            margin: 0 auto;
+            background-color: lightgray;
+            font-size: 150%;
+        }
+        h3 {
+            display: inline;
+            font-weight: 300;
+        }
+        div {
+            width: 25px;
+            height: 25px;
+            border: 1px solid black;
+            margin: 10px;
+        }
+        #coloraqua, #colorgray, #colorwhite {
+            float: left;
+        }
+        #colorblue, #colorred, #coloryellow {
+            float: right;
+        }
+        #coloraqua {
+            background-color: aqua;
+        }
+        #colorgray {
+            background-color: gray;
+        }
+        #colorwhite {
+            background-color: white;
+        }
+        #colorblue {
+            background-color: blue;
+        }
+        #colorred {
+            background-color: red;
+        }
+        #coloryellow {
+            background-color: yellow;
+        }
+        #golen {
+            width: 25px;
+            height: 25px;
+        }
+        #goleb {
+            width: 25px;
+            height: 25px;
+        }
+    </style>
+</head>
+<body>
+    <p id="kto">Kto wygra?</p>
+    <h3 id="newcastle">Newcastle </h3><h3 id="wynik"></h3><h3 id="barcelona"> Barcelona</h3>
+    <br>
+    <div id="coloraqua"></div><div id="colorgray"></div><div id="colorwhite"></div>
+    <div id="colorblue"></div><div id="colorred"></div><div id="coloryellow"></div>
+    <br>
+    <form>
+        <p id="jaki">Jaki będzie wynik?</p>
+        <h3 id="newcastle2">Newcastle </h3><input type="number" id="golen" min="0" max="9"><h3> - </h3><input type="number" id="goleb" min="0" max="9"><h3 id="barcelona2"> Barcelona</h3>
+        <input type="button" id="zapisz" value="Zapisz">
+    </form>
+    <br>
+    <form>
+        <fieldset>
+            <legend>Kto strzeli gola?</legend>
+            <input type="text" id="strzelec" max="45">
+            <input type="button" id="dodaj" value="Dodaj">
+        </fieldset>
+    </form>
+    <br>
+    <p id="strzelcy"></p>
+    <script>
+        let kto = document.getElementById("kto");
+        let newcastle = document.getElementById("newcastle");
+        let wynik = document.getElementById("wynik");
+        let barcelona = document.getElementById("barcelona");
+        let coloraqua = document.getElementById("coloraqua");
+        let colorgray = document.getElementById("colorgray");
+        let colorwhite = document.getElementById("colorwhite");
+        let colorblue = document.getElementById("colorblue");
+        let colorred = document.getElementById("colorred");
+        let coloryellow = document.getElementById("coloryellow");
+        let jaki = document.getElementById("jaki");
+        let newcastle2 = document.getElementById("newcastle2");
+        let golen = document.getElementById("golen");
+        let goleb = document.getElementById("goleb");
+        let barcelona2 = document.getElementById("barcelona2");
+        let zapisz = document.getElementById("zapisz");
+        let strzelec = document.getElementById("strzelec");
+        let strzelcy = document.getElementById("strzelcy");
+        let dodaj = document.getElementById("dodaj");
+        vs = "-";
+        wynik.innerHTML = vs;
+        lista = "Gola strzelą: ";
+
+        function f_kto() {
+            kto.style.border = "1px dotted crimson";
+        }
+        function f_newcastle() {
+            newcastle.style.fontWeight = "900";
+        }
+        function f_barcelona(){
+            barcelona.style.fontWeight = "900";
+        }
+        function f_aqua() {
+            newcastle.style.color = "aqua";
+        }
+        function f_gray() {
+            newcastle.style.color = "gray";
+        }
+        function f_white() {
+            newcastle.style.color = "white";
+        }
+        function f_blue() {
+            barcelona.style.color = "blue";
+        }
+        function f_red() {
+            barcelona.style.color = "red";
+        }
+        function f_yellow(){
+            barcelona.style.color = "yellow";
+        }
+        function f_jaki(){
+            jaki.style.border = "5px double blue";
+        }
+        function f_wynik(){
+            vs = golen.value + " - " + goleb.value;
+            wynik.innerHTML = vs;
+        }
+        function dodaj_strzelca(){
+            lista += strzelec.value + ", ";
+            strzelcy.innerHTML = lista;
+            strzelcy.style.textTransform = "capitalize";
+        }
+        function skresl(){
+            newcastle2.style.textDecoration = "line-through";
+            newcastle2.style.textShadow = "2px 2px 2px gray";
+            newcastle2.style.border = "3px dotted aqua";
+        }
+        function barcadbl(){
+            barcelona2.style.color = "red";
+            barcelona2.style.backgroundColor = "yellow";
+            barcelona2.style.border = "3px dashed blue";
+        }
+        function maszyna(){
+            strzelcy.style.fontFamily = "Courier New";
+        }
+
+        kto.addEventListener("mouseenter", f_kto);
+        newcastle.addEventListener("click", f_newcastle);
+        barcelona.addEventListener("click", f_barcelona);
+        coloraqua.addEventListener("click", f_aqua);
+        colorgray.addEventListener("click", f_gray);
+        colorwhite.addEventListener("click", f_white);
+        colorblue.addEventListener("click", f_blue);
+        colorred.addEventListener("click", f_red);
+        coloryellow.addEventListener("click", f_yellow);
+        jaki.addEventListener("mouseenter", f_jaki);
+        zapisz.addEventListener("click", f_wynik);
+        dodaj.addEventListener("click", dodaj_strzelca);
+        newcastle2.addEventListener("dblclick", skresl);
+        barcelona2.addEventListener("dblclick", barcadbl);
+        strzelcy.addEventListener("dblclick", maszyna);
+    </script>
+</body>
+</html>
