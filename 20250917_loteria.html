@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Loteria 6 z 49</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #d4d4d4;
+      font-family: Consolas, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #4cafef;
+      margin-bottom: 10px;
+    }
+    .console {
+      background: #2d2d2d;
+      border-radius: 10px;
+      padding: 20px;
+      width: 90%;
+      max-width: 800px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.7);
+      margin-bottom: 20px;
+    }
+    button {
+      background: #4cafef;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      font-size: 14px;
+      margin: 10px 0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #007acc;
+    }
+    input {
+      padding: 8px;
+      border-radius: 5px;
+      border: none;
+      margin-right: 10px;
+      width: 80px;
+      text-align: center;
+    }
+    pre {
+      background: #111;
+      padding: 15px;
+      border-radius: 10px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .copy-block {
+      position: relative;
+      width: 90%;
+      max-width: 800px;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #007acc;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Loteria liczbowa (6 z 49)</h1>
+
+  <div class="console">
+    <label>Ile zestawów wylosować?</label>
+    <input type="number" id="ilosc" min="1" value="5">
+    <button onclick="start()">Generuj</button>
+
+    <div id="wyniki"></div>
+    <div id="statystyka"></div>
+  </div>
+
+  <h2>Kod w Pythonie:</h2>
+  <div class="copy-block">
+    <button class="copy-btn" onclick="kopiuj()">Kopiuj</button>
+    <pre id="python-code">
+import random
+
+def generuj_losowania(n):
+    wyniki = []
+    for _ in range(n):
+        zestaw = random.sample(range(1, 50), 6)
+        zestaw.sort()
+        wyniki.append(zestaw)
+    return wyniki
+
+def wypisz_losowania(wyniki):
+    for i, zestaw in enumerate(wyniki, start=1):
+        print(f"Losowanie {i}: {', '.join(map(str, zestaw))}")
+
+def policz_wystapienia(wyniki):
+    wystapienia = [0] * 50
+    for zestaw in wyniki:
+        for liczba in zestaw:
+            wystapienia[liczba] += 1
+    return wystapienia
+
+def wypisz_wystapienia(wystapienia):
+    for liczba in range(1, 50):
+        print(f"Wystąpienia liczby {liczba}: {wystapienia[liczba]}")
+
+def main():
+    print("Program: Loteria liczbowa (6 z 49)")
+    n = int(input("Ile zestawów wylosować? "))
+    wyniki = generuj_losowania(n)
+    print("\nZestawy wylosowanych liczb:")
+    wypisz_losowania(wyniki)
+    wystapienia = policz_wystapienia(wyniki)
+    print("\nStatystyka wystąpień:")
+    wypisz_wystapienia(wystapienia)
+
+if __name__ == "__main__":
+    main()</pre>
+  </div>
+
+  <script>
+    function start() {
+      let n = parseInt(document.getElementById("ilosc").value);
+      if (isNaN(n) || n < 1) {
+        alert("Podaj poprawną liczbę losowań!");
+        return;
+      }
+
+      let wyniki = [];
+      for (let i = 0; i < n; i++) {
+        let zestaw = [];
+        while (zestaw.length < 6) {
+          let liczba = Math.floor(Math.random() * 49) + 1;
+          if (!zestaw.includes(liczba)) {
+            zestaw.push(liczba);
+          }
+        }
+        zestaw.sort((a, b) => a - b);
+        wyniki.push(zestaw);
+      }
+
+      let wynikiDiv = document.getElementById("wyniki");
+      wynikiDiv.innerHTML = "<h3>Zestawy wylosowanych liczb:</h3>";
+      wyniki.forEach((zestaw, i) => {
+        wynikiDiv.innerHTML += "Losowanie " + (i+1) + ": " + zestaw.join(", ") + "<br>";
+      });
+
+      let wystapienia = new Array(50).fill(0);
+      wyniki.forEach(zestaw => {
+        zestaw.forEach(liczba => {
+          wystapienia[liczba]++;
+        });
+      });
+
+      let statDiv = document.getElementById("statystyka");
+      statDiv.innerHTML = "<h3>Statystyka wystąpień:</h3>";
+      for (let i = 1; i <= 49; i++) {
+        statDiv.innerHTML += "Wystąpienia liczby " + i + ": " + wystapienia[i] + "<br>";
+      }
+    }
+
+    function kopiuj() {
+      let kod = document.getElementById("python-code").innerText;
+      navigator.clipboard.writeText(kod).then(() => {
+        alert("Kod został skopiowany!");
+      });
+    }
+  </script>
+
+</body>
+</html>
