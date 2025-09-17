@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formularze 2</title>
+</head>
+<body>
+    <form>
+        <label>Podaj imię i nazwisko: <input type="text" id="imie" max="50"></label><br>
+        <label>Podaj wiek: <input type="number" id="wiek" min="0" max="150"></label><br>
+        Napisz cos o swojej ulubionej książce: <br>
+        <textarea id="opis" cols="80" rows="5">Moim ulubionym autorem jest</textarea>
+        <fieldset>
+            <legend>Ile książek czytasz w roku?</legend>
+            <label><input type="radio" name ="ilosc" class="ilosc" value="zero">zero</label><br>
+            <label><input type="radio" name ="ilosc" class="ilosc" value="1-5" checked>1-5</label><br>
+            <label><input type="radio" name ="ilosc" class="ilosc" value="6-10">6-10</label><br>
+            <label><input type="radio" name ="ilosc" class="ilosc" value="powyzej 10">powyżej 10</label>
+        </fieldset>
+        <fieldset>
+            <legend>Jaki jest ulubiony gatunek książek?</legend>
+            <label><input type="checkbox" name="gatunek" class="gatunek" value="sci-fi">sci-fi</label><br>
+            <label><input type="checkbox" name="gatunek" class="gatunek" value="przygodowe">przygodowe</label><br>
+            <label><input type="checkbox" name="gatunek" class="gatunek" value="historyczne" checked>historyczne</label><br>
+            <label><input type="checkbox" name="gatunek" class="gatunek" value="romanse">romanse</label><br>
+            <label><input type="checkbox" name="gatunek" class="gatunek" value="kryminały">kryminały</label>
+        </fieldset>
+        <fieldset>
+            <legend>Skąd pochodzą twoje książki</legend>
+            <select name="pochodzenie" multiple>
+                <optgroup label="pozytywne działania">
+                    <option class="pochodzenie" value="kupuję" selected>kupuję</option>
+                    <option class="pochodzenie" value="wypożyczam">wypożyczam</option>
+                    <option class="pochodzenie" value="dostaję w prezencie">dostaję w prezencie</option>
+                </optgroup>
+                <optgroup label="negatywne działania (niezalecane!)">
+                    <option class="pochodzenie" value="kradnę">kradnę</option>
+                </optgroup>
+            </select>
+        </fieldset>
+        <input type="button" id="wyslij" value="Wyślij dane">
+        <input type="reset" value="Wyczyść">
+        <p id="wynik"></p>
+    </form>
+    <script>
+        let imie = document.getElementById("imie");
+        let wiek = document.getElementById("wiek");
+        let opis = document.getElementById("opis");
+        let ilosc = document.getElementsByClassName("ilosc");
+        let gatunek = document.getElementsByClassName("gatunek");
+        let pochodzenie = document.getElementsByClassName("pochodzenie");
+        let wyslij = document.getElementById("wyslij");
+        let wynik = document.getElementById("wynik");
+        let tekst;
+
+        function wyswietl(){
+            tekst = "Masz na imię " + imie.value + " i masz " + wiek.value + " lat. <br>Oto co nam powiedziałeś o swoim ulubionym autorze: " + opis.value + ". <br>Rocznie czytasz: ";
+
+            for (i=0; i<=ilosc.length-1; i++){
+                if (ilosc[i].checked){
+                    tekst = tekst + ilosc[i].value + " książek.<br>Twoje ulubione gatunki to: ";
+                }
+            }
+
+            for (i=0; i<gatunek.length-1; i++){
+                if (gatunek[i].checked){
+                    tekst = tekst + gatunek[i].value + ", ";
+                }
+            }
+
+            tekst = tekst + "<br>Moje książki: "
+
+            for (i=0; i<=pochodzenie.length-1; i++){
+                if (pochodzenie[i].selected) {
+                    tekst = tekst + pochodzenie[i].value + ", ";
+                }
+            }
+
+            wynik.innerHTML = tekst;
+        }
+
+        wyslij.addEventListener("click", wyswietl);
+    </script>
+</body>
+</html>
