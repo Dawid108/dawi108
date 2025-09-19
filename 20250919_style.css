@@ -32,8 +32,8 @@ select {
 main {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 5px;
-  padding: 5px;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 /* Blok notatki */
