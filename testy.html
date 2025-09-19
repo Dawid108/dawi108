@@ -155,187 +155,370 @@
      */
     const easy = [
         {
-            pytanie: 'Kolor zapisany kodem RGB, o wartości rgb(255, 128, 16) w kodzie szesnastkowym będzie miał wartość:',
-            poprawna_odpowiedz: '#ff8010',
-            bledne_odpowiedzi: ['#008010', '#ff0f10', '#ff8011']
+            pytanie: 'Aby uzyskać efekt rozstrzelenia liter w selektorze CSS, należy użyć właściwości',
+            poprawna_odpowiedz: 'letter-spacing',
+            bledne_odpowiedzi: ['letter-transform', 'text-decoration', 'text-space']
         },
         {
-            pytanie: 'Plik graficzny należy zapisać w formacie GIF, jeżeli',
-            poprawna_odpowiedz: 'jest potrzeba zapisu obrazu lub animacji',
-            bledne_odpowiedzi: ['jest to grafika wektorowa', 'jest to obraz stereoskopowy', 'jest potrzeba zapisu obrazu bez kompresji']
+            pytanie: 'Blok deklaracji postaci background-attachment: scroll powoduje, że',
+            poprawna_odpowiedz: 'tło strony będzie przewijane razem z tekstem',
+            bledne_odpowiedzi: ['grafika tła będzie powtarzana (kafelki)', 'tło strony będzie stałe, a tekst będzie się przewijał', 'grafika tła będzie wyświetlona w prawym górnym rogu strony']
         },
         {
-            pytanie: 'Aby dopasować dźwięk do danego poziomu głośności, należy użyć efektu',
-            poprawna_odpowiedz: 'normalizacji',
-            bledne_odpowiedzi: ['wyciszenia', 'podbicia basów', 'usuwania szumów']
+            pytanie: 'Ikona, która wyświetlona jest przed adresem, w polu adresowym przeglądarki internetowej lub przy tytule otwartej karty przeglądarki nosi nazwę',
+            poprawna_odpowiedz: 'favicon',
+            bledne_odpowiedzi: ['iConji', 'webicon', 'emoticon']
         },
         {
-            pytanie: 'Instrukcja DROP języka SQL ma za zadanie',
-            poprawna_odpowiedz: 'usunąć istniejący obiekt',
-            bledne_odpowiedzi: ['zmienić parametry obiektu', 'zaktualizować dane obiektu', 'dodać nowy obiekt']
+            pytanie: 'Aby poprawnie zdefiniować hierarchiczną strukturę tekstu witryny internetowej, należy zastosować',
+            poprawna_odpowiedz: 'znaczniki <h1>, <h2> oraz <p>',
+            bledne_odpowiedzi: ['znacznik <div>', 'znaczniki <frame> i <table>', 'znacznik <p> z formatowaniem']
         },
         {
-            pytanie: 'Baza danych zawiera tabelę uczniowie z polami: imie, nazwisko, klasa. Aby odnaleźć imiona i nazwiska tych uczniów, których nazwiska rozpoczynają się literą M, należy zastosować polecenie SQL',
-            poprawna_odpowiedz: 'SELECT nazwisko, imie FROM uczniowie WHERE nazwisko LIKE "M%";',
-            bledne_odpowiedzi: ['SELECT nazwisko, imie FROM uczniowie WHERE nazwisko IN "M%";', 'SELECT nazwisko, imie FROM uczniowie ORDER BY nazwisko = "M%";', 'SELECT nazwisko, imie FROM uczniowie ORDER BY nazwisko IN "M%";']
+            pytanie: 'Która z reguł walidacji strony internetowej jest błędna?',
+            poprawna_odpowiedz: 'Jeżeli w instrukcji używa się kilku atrybutów, ich kolejność powinna być zgodna z alfabetem, np. <img alt="...." src="...." />',
+            bledne_odpowiedzi: ['Wyłączanie znaczników musi następować w odwrotnej kolejności, niż były one włączane, np. <p>....<big>...</big></p>', 'Znaczniki, oprócz samozamykających się, działają do momentu ich wyłączenia znakiem "/", np. <p>...</p>', 'W znacznikach nie są rozróżniane wielkie i małe litery, np. <p> i <P> to ten sam znacznik']
         },
         {
-            pytanie: 'Baza danych zawiera tabele z polami: . Aby wyświetlić wszystkie nazwy artykułów wyłącznie typu pralka, dla których cena jest z przedziału 1000 PLN i 1500 PLN, należy zastosować polecenie',
-            poprawna_odpowiedz: 'SELECT nazwa FROM artykuly WHERE typ="pralka" AND cena BETWEEN 1000 AND 1500;',
-            bledne_odpowiedzi: ['SELECT nazwa FROM artykuly WHERE typ="pralka" AND cena FROM 1000 TO 1500;', 'SELECT nazwa FROM artykuly WHERE typ="pralka" OR cena BETWEEN 1000 OR 1500;', 'SELECT nazwa FROM artykuly WHERE typ="pralka" OR cena BETWEEN 1000 AND 1500;']
+            pytanie: 'Oznaczenie barwy w postaci #ff00e0 jest równoważne zapisowi',
+            poprawna_odpowiedz: 'rgb(255,0,224)',
+            bledne_odpowiedzi: ['rgb(f,0,e0)', 'rgb(ff,0,e0)', 'rgb(255,0,128)']
         },
         {
-            pytanie: 'Wartość pola tabeli pełniącego rolę klucza podstawowego',
-            poprawna_odpowiedz: 'musi być unikalna',
-            bledne_odpowiedzi: ['jest zawsze typu numerycznego', 'służy do szyfrowania zawartości tabeli', 'może przyjmować wartość pustą (NULL)']
+            pytanie: 'Formatem zapisu rastrowych plików graficznych z kompresją bezstratną jest',
+            poprawna_odpowiedz: 'PNG',
+            bledne_odpowiedzi: ['JNG', 'CDR', 'SVG']
         },
         {
-            pytanie: 'Aby utworzyć relację jeden do wielu, w tabeli po stronie , należy zdefiniować',
-            poprawna_odpowiedz: 'klucz obcy wskazujący na klucz podstawowy tabeli po stronie',
-            bledne_odpowiedzi: ['klucz obcy wskazujący na klucz obcy tabeli po stronie', 'klucz sztuczny odnoszący się do kluczy podstawowych obu tabel', 'klucz podstawowy wskazujący na klucz podstawowy tabeli po stronie']
+            pytanie: 'Podczas obróbki grafiki rastrowej w programie z obsługą kanałów dodanie kanału alfa oznacza',
+            poprawna_odpowiedz: 'dodanie warstwy z przezroczystością',
+            bledne_odpowiedzi: ['określenie poprawnego balansu bieli', 'zwiększenie głębi ostrości obrazu', 'wyostrzenie krawędzi obrazu']
         },
         {
-            pytanie: 'Narzędziem służącym do grupowania i prezentowania informacji z wielu rekordów w celu ich drukowania lub rozpowszechniania jest',
-            poprawna_odpowiedz: 'raport',
-            bledne_odpowiedzi: ['kwerenda', 'formularz', 'makropolecenie']
+            pytanie: 'Aby pozbyć się nienaturalnego odwzorowania ukośnych krawędzi linii w grafice rastrowej, czyli tak zwanego schodkowania, należy zastosować filtr',
+            poprawna_odpowiedz: 'antyaliasingu',
+            bledne_odpowiedzi: ['szumu', 'gradientu', 'pikselizacji']
         },
         {
-            pytanie: 'Aby uprościć wprowadzenie i edytowanie danych w tabeli, należy zdefiniować',
-            poprawna_odpowiedz: 'formularz',
-            bledne_odpowiedzi: ['kwerendę SELECT', 'raport', 'filtr']
+            pytanie: 'Formatem bezstratnej kompresji dźwięku jest',
+            poprawna_odpowiedz: 'FLAC',
+            bledne_odpowiedzi: ['MP3', 'AAC', 'WWA']
         },
         {
-            pytanie: 'Baza danych 6-letniej szkoły podstawowej zawiera tabelę z polami: . Wszyscy uczniowie klas 1-5 zdali do następnej klasy. Aby zwiększyć wartość w polu klasa o 1 należy użyć polecenia',
-            poprawna_odpowiedz: 'UPDATE szkola SET klasa=klasa+1 WHERE klasa>=1 AND klasa <=5;',
-            bledne_odpowiedzi: ['SELECT szkola FROM klasa=klasa+1 WHERE klasa >=1 AND klasa <=5;', 'SELECT nazwisko, imie FROM klasa=klasa+1 WHERE klasa>1 OR klasa <5;', 'UPDATE nazwisko, imie SET klasa=klasa+1 WHERE klasa>1 OR klasa<5;']
+            pytanie: 'W języku SQL polecenie INSERT INTO',
+            poprawna_odpowiedz: 'wprowadza dane do tabeli',
+            bledne_odpowiedzi: ['dodaje tabelę', 'dodaje pola do tabeli', 'aktualizuje rekordy określoną wartością']
         },
         {
-            pytanie: 'Uprawnienia obiektowe, nadawane użytkownikom serwera bazy danych, mogą pozwalać lub zabraniać',
-            poprawna_odpowiedz: 'wykonywać operacje na bazie, takie jak wstawanie lub modyfikowanie danych',
-            bledne_odpowiedzi: ['dziedziczyć uprawnienia', 'modyfikować role i konta użytkowników', 'wykonywać instrukcje, takie jak tworzenie kopii zapasowej']
+            pytanie: 'W języku SQL klauzula DISTINCT instrukcji SELECT sprawi, że zwrócone dane',
+            poprawna_odpowiedz: 'nie będą zawierały powtórzeń',
+            bledne_odpowiedzi: ['zostaną posortowane', 'będą spełniały określony warunek', 'będą pogrupowane według określonego pola']
         },
         {
-            pytanie: 'Przed wykonaniem kopii bezpieczeństwa bazy danych, tak aby kopia ta była poprawna i możliwa do późniejszego odtworzenia, należy sprawdzić',
-            poprawna_odpowiedz: 'spójność bazy danych',
-            bledne_odpowiedzi: ['możliwość udostępnienia bazy danych', 'prawa dostępu do serwera bazy danych', 'poprawność składni zapytań']
+            pytanie: 'Zdefiniowano bazę danych z tabelą sklepy o polach: nazwa, ulica, miasto, branza. Aby wyszukać wszystkie nazwy sklepów spożywczych zlokalizowanych wyłącznie we Wrocławiu, należy posłużyć się kwerendą:',
+            poprawna_odpowiedz: 'SELECT nazwa FROM sklepy WHERE branza="spozywczy" AND miasto="Wrocław";',
+            bledne_odpowiedzi: ['SELECT sklepy FROM nazwa WHERE branza="spożywczy" BETWEEN miasto="Wrocław";', 'SELECT sklepy FROM branza="spożywczy" WHERE miasto="Wrocław";', 'SELECT nazwa FROM sklepy WHERE branza="spozywczy" OR miasto="Wrocław";']
         },
         {
-            pytanie: 'W MS SQL Server polecenie RESTORE DATABASE służy do',
-            poprawna_odpowiedz: 'odtworzenia bazy danych z kopii bezpieczeństwa',
-            bledne_odpowiedzi: ['odświeżenia bazy danych z kontrolą więzów integralności', 'przebudowania bazy danych w oparciu o buforowane dane', 'usunięcia bazy danych z serwera centralnego subskrybenta']
+            pytanie: 'Zdefiniowano bazę danych z tabelą podzespoły o polach: model, producent, typ, cena. Aby wyświetlić wszystkie modele pamięci RAM firmy Kingston w kolejności od najtańszej do najdroższej, należy posłużyć się kwerendą:',
+            poprawna_odpowiedz: 'SELECT model FROM podzespoly WHERE typ="RAM" AND producent="Kingston" ORDER BY cena ASC;',
+            bledne_odpowiedzi: ['SELECT model FROM podzespoly WHERE typ="RAM" AND producent="Kingston" ORDER BY cena DESC;', 'SELECT model FROM podzespoly WHERE typ="RAM" OR producent="Kingston" ORDER BY cena DESC;', 'SELECT model FROM producent WHERE typ="RAM" OR producent="Kingston" ORDER BY podzespoly ASC;']
         },
         {
-            pytanie: 'W języku PHP zmienna typu float przyjmuje wartości',
-            poprawna_odpowiedz: 'zmiennoprzecinkowe',
-            bledne_odpowiedzi: ['logiczne', 'nieliczbowe', 'tylko całkowite']
+            pytanie: 'W celu przyspieszenia operacji na bazie danych należy do pól często wyszukiwanych lub sortowanych',
+            poprawna_odpowiedz: 'utworzyć indeks',
+            bledne_odpowiedzi: ['dodać klucz obcy', 'dodać więzy integralności', 'stworzyć osobną tabelę przechowującą tylko te pola']
         },
         {
-            pytanie: 'Dany jest fragment kodu PHP z zdeklarowaną zmienną typu tablicowego. W wyniku wykonania kodu zostanie wpisane imię',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757759665/pyt191_w848in.png',
-            poprawna_odpowiedz: 'Krzysztof',
-            bledne_odpowiedzi: ['Anna', 'Tomasz', 'Aleksandra']
+            pytanie: 'Jednoznacznym identyfikatorem rekordu w bazie danych jest pole',
+            poprawna_odpowiedz: 'klucza podstawowego',
+            bledne_odpowiedzi: ['klucza obcego', 'numeryczne', 'relacji']
         },
         {
-            pytanie: 'Przedstawiony kod języka PHP',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757759891/pyt192_bnebzj.png',
-            poprawna_odpowiedz: 'definiuje tablicę z trzema wartościami',
-            bledne_odpowiedzi: ['jest błędny, nieznany operator =>', 'definiuje tablicę z sześcioma wartościami', 'jest błędny, indeksami tablicy mogą być tylko liczby całkowite']
+            pytanie: 'Zdefiniowano bazę danych z tabelą mieszkancy o polach: nazwisko, imie, miasto. Następnie stworzono następujące zapytanie do bazy: SELECT nazwisko, imie FROM mieszkancy WHERE miasto="Poznań" UNION ALL SELECT nazwisko, imie FROM mieszkancy WHERE miasto="Kraków"; Wskaż zapytanie, które zwróci identyczne dane:',
+            poprawna_odpowiedz: 'SELECT nazwisko, imie FROM mieszkancy WHERE miasto="Poznań" OR miasto="Kraków";',
+            bledne_odpowiedzi: ['SELECT nazwisko, imie FROM mieszkancy AS "Poznań" OR "Kraków";', 'SELECT nazwisko, imie FROM mieszkancy WHERE miasto HAVING "Poznań" OR "Kraków";', 'SELECT nazwisko, imie FROM mieszkancy WHERE miasto BETWEEN "Poznań" OR "Kraków";']
         },
         {
-            pytanie: 'W języku JavaScript poprawnie nazwana zmienna to',
-            poprawna_odpowiedz: 'imie2',
-            bledne_odpowiedzi: ['#imie', 'imię2', 'imię%']
+            pytanie: 'W bazie danych sklepu istnieje tabela artykuly zawierająca pole o nazwie nowy. Aby to pole wypełnić wartościami TRUE dla każdego rekordu, należy zastosować kwerendę',
+            poprawna_odpowiedz: 'UPDATE artykuly SET nowy=TRUE;',
+            bledne_odpowiedzi: ['INSERT INTO artykuly VALUE nowy=TRUE;', 'UPDATE nowy FROM artykuly VALUE TRUE;', 'INSERT INTO nowy FROM artykuly SET TRUE;']
         },
         {
-            pytanie: 'Zakładając, że zmienne: a, b, c przechowują wartości numeryczne, wynikiem działania warunku będzie wypisanie liczby',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757759983/pyt194_ycpiwb.png',
-            poprawna_odpowiedz: 'największej',
-            bledne_odpowiedzi: ['najmniejszej', 'nieparzystej', 'parzystej']
+            pytanie: 'W MS SQL Server predefiniowana rola o nazwie dbcreator pozwala użytkownikowi na',
+            poprawna_odpowiedz: 'tworzenie, modyfikowanie, usuwanie i odzyskiwanie bazy danych',
+            bledne_odpowiedzi: ['zarządzanie plikami na dysku', 'zarządzanie bezpieczeństwem systemu', 'wykonywanie każdej operacji na serwerze i posiadanie prawa własności każdej bazy']
         },
         {
-            pytanie: 'Fragment kodu języku PHP ma następującą postać. Wynikiem działania pętli będzie wypisanie liczb:',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760132/pyt195_zxlwba.png',
-            poprawna_odpowiedz: '0,4,8,12,16,20',
-            bledne_odpowiedzi: ['0,1,2,3,4,5, 6,7,8,9,10, 11,12,13,14,15, 16,17,18,19,20', '0,1,2,3,4,5, 6,7,8,9, 10,11,12,13,14,15, 16,17,18,19', '0,4,8,12,16']
+            pytanie: 'Aby odebrać prawa dostępu do serwera MySQL, należy posłużyć się instrukcją',
+            poprawna_odpowiedz: 'REVOKE',
+            bledne_odpowiedzi: ['USAGE', 'GRANT', 'DELETE']
         },
         {
-            pytanie: 'Zadaniem funkcji zapisanej w języku PHP jest',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760198/pyt196_ybbccd.png',
-            poprawna_odpowiedz: 'Zwrócenie wartości 1, gdy liczba jest parzysta',
-            bledne_odpowiedzi: ['Wypisanie liczby parzystej', 'Wypisanie liczby nieparzystej', 'Zwrócenie wartości 0, gdy liczba jest parzysta']
+            pytanie: 'Za pomocą polecenia BACKUP LOG w MS SQL Server można',
+            poprawna_odpowiedz: 'wykonać kopię bezpieczeństwa dziennika transakcyjnego',
+            bledne_odpowiedzi: ['wykonać pełną kopię bezpieczeństwa', 'zalogować sie do kopii bezpieczeństwa', 'przeczytać komunikaty wygenerowane podczas tworzenia kopii']
         },
         {
-            pytanie: 'Wykonanie kodu JavaScript w przeglądarce wymaga',
-            poprawna_odpowiedz: 'interpretowania',
-            bledne_odpowiedzi: ['debugowania', 'kompilowania', 'zamiany na kod maszynowy']
+            pytanie: 'Polecenie DBCC CHECKDB("sklepAGD", Repair_fast) w MS SQL Server',
+            poprawna_odpowiedz: 'sprawdzi spójność bazy danych i naprawi uszkodzone indeksy',
+            bledne_odpowiedzi: ['sprawdzi spójność określonej tabeli', 'sprawdzi spójność bazy danych i wykona kopię bezpieczeństwa', 'sprawdzi spójność określonej tabeli i naprawi uszkodzone rekordy']
         },
         {
-            pytanie: 'Kod strony WWW napisanej w języku PHP',
-            poprawna_odpowiedz: 'jest wykonywany po stronie serwera',
-            bledne_odpowiedzi: ['jest wykonywany po stronie klienta', 'może być uruchomiony bez obsługi serwera WWW', 'jest przetwarzany na tych samych zasadach co JavaScript']
+            pytanie: 'Aby naprawić bazę danych w MySQL, należy użyć polecenia',
+            poprawna_odpowiedz: 'REPAIR',
+            bledne_odpowiedzi: ['FIX', 'UPDATE', 'CHANGE']
         },
         {
-            pytanie: 'Zakładając, że zmienna tablicowa $tab jest wypełniona liczbami naturalnymi, wynikiem programu będzie wypisanie',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760321/pyt199_cd0qry.png',
-            poprawna_odpowiedz: 'największego elementu tablicy',
-            bledne_odpowiedzi: ['najmniejszego elementu tablicy', 'elementu tablicy, który jest równy wartości $tab[0]', 'tych elementów, które są większe od zmiennej $liczba']
+            pytanie: 'Aby zdefiniować łamanie linii tekstu, np. w zmiennej napisowej, należy posłużyć się znakiem',
+            poprawna_odpowiedz: 'n',
+            bledne_odpowiedzi: ['slash', 'b', 't']
         },
         {
-            pytanie: 'Fragment kodu w języku JavaScript realizujący dodawanie dwóch liczb ma następującą postać. Aby dodawanie wykonane było po kliknięciu przycisku o nazwie , należy w wykropkowane miejsce wstawić',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760403/pyt201_uk73ng.png',
-            poprawna_odpowiedz: '<button onclick="return dodaj()">dodaj</button>',
-            bledne_odpowiedzi: ['<button onselect="return dodaj()">dodaj</button>', '<button onselect="return dodaj()">oblicz</button>', '<button onclick="return oblicz()">dodaj</button>']
+            pytanie: 'Dana jest tablica n-elementowa o nazwie t[n]. Zadaniem algorytmu zapisanego w postaci listy kroków jest wypisania sumy',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758290456/pyt235_x5jw0u.png',
+            poprawna_odpowiedz: 'co drugiego elementu tablicy',
+            bledne_odpowiedzi: ['n-elementów tablicy', 'sumy wszystkich elementów tablicy', 'sumy tych elementów tablicy, których wartości są nieparzyste']
         },
         {
-            pytanie: 'Komentarz w języku JavaScript rozpoczyna się od znaku lub znaków',
-            poprawna_odpowiedz: '//',
-            bledne_odpowiedzi: ['<!--', '<?', '#']
+            pytanie: 'Interpreter PHP wygeneruje błąd i nie wykona kodu, jeżeli programista:',
+            poprawna_odpowiedz: 'nie postawi średnika po wyrażeniu w instrukcji if, jeśli po nim nastąpiła sekcja else',
+            bledne_odpowiedzi: ['będzie pisał kod bez wcięć', 'będzie deklarował zmienne wewnątrz warunku', 'pobierze wartość z formularza, w którym pole input nie było wypełnione']
         },
         {
-            pytanie: 'Polecenie pg_connect języka PHP służy do połączenia z bazą',
-            poprawna_odpowiedz: 'PostgreSQL',
-            bledne_odpowiedzi: ['mySQL', 'MS SQL', 'MS ACCESS']
+            pytanie: 'Dana jest tablica o nazwie tab wypełniona liczbami całkowitymi różnymi od zera. Przedstawiony kod zapisany w języku PHP ma za zadanie:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758290564/pyt237_m2uxfn.png',
+            poprawna_odpowiedz: 'zamienić wszystkie elementy tablicy na liczby z przeciwnym znakiem',
+            bledne_odpowiedzi: ['obliczyć iloczyn wszystkich liczb w tablicy', 'obliczyć wartość bezwzględną elementów tablicy', 'zamienić elementy tablicy na wartości przechowywane w zmiennej liczba']
         },
         {
-            pytanie: 'Aby zamieścić aplikację PHP w internecie, należy jej pliki źródłowe skopiować na serwer za pomocą protokołu',
-            poprawna_odpowiedz: 'FTP',
-            bledne_odpowiedzi: ['HTTP', 'SMTP', 'NNTP']
+            pytanie: 'Warunek zapisany w JavaScript jest prawdziwy, gdy zmienna x przechowuje',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758290622/pyt238_xuvxig.png',
+            poprawna_odpowiedz: 'dowolną dodatnią wartość liczbową',
+            bledne_odpowiedzi: ['pusty napis', 'wartość nie liczbową', 'dowolną całkowitą wartość liczbową']
         },
         {
-            pytanie: 'Personalizowanie wyglądu strony dla danego użytkownika i jego identyfikacja w serwisie są możliwe dzięki mechanizmowi',
-            poprawna_odpowiedz: 'cookie',
-            bledne_odpowiedzi: ['obiektów DOM', 'łączenia z bazą', 'formularzy']
+            pytanie: 'Przedstawiona funkcja zapisana kodem JavaScript ma za zadanie:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758290685/pyt239_gtosyf.png',
+            poprawna_odpowiedz: 'zwrócić wynik potęgowania a^n',
+            bledne_odpowiedzi: ['wpisać kolejne liczby od a do n', 'wpisać wyniki mnożenia a przez n', 'zwrócić iloczyn kolejnych liczb od 1 do a']
         },
         {
-            pytanie: 'Automatyczna weryfikacja właściciela strony udostępnianej przez protokół HTTPS jest możliwa dzięki',
-            poprawna_odpowiedz: 'certyfikatowi SSL',
-            bledne_odpowiedzi: ['danym kontaktowym na stronie', 'kluczom prywatnym', 'danym whois']
+            pytanie: 'Program debugger służy do:',
+            poprawna_odpowiedz: 'analizy wykonywanego programu w celu lokalizacji błędów',
+            bledne_odpowiedzi: ['interpretacji kodu w wirtualnej maszynie Java', 'analizy kodu źródłowego w celu odnalezienia błędów składniowych', 'tłumaczenia kodu zapisanego językiem wyższego poziomu na język maszynowy']
         },
         {
-            pytanie: 'Do grupowania obszarów na poziomie bloków, które będą formatowane za pośrednictwem znaczników, należy użyć',
-            poprawna_odpowiedz: '<div>',
-            bledne_odpowiedzi: ['<p>', '<span>', '<param>']
+            pytanie: 'Funkcja phpinfo() pozwala na:',
+            poprawna_odpowiedz: 'uzyskanie informacji o środowisku pracy serwera obsługującego PHP',
+            bledne_odpowiedzi: ['debugowanie kodu PHP', 'zainicjowanie kodu w języku PHP', 'sprawdzanie wartości zmiennych użytych w kodzie PHP']
         },
         {
-            pytanie: 'Znacznik <i> języka HTML służy do',
-            poprawna_odpowiedz: 'zmiany kroju pisma na pochylony',
-            bledne_odpowiedzi: ['umieszczenia obrazka', 'zdefiniowania formularza', 'zdefiniowania nagłówka w tekście']
+            pytanie: 'Którego języka należy użyć, aby zapisać skrypt wykonywany po stronie klienta w przegladarce internetowej?',
+            poprawna_odpowiedz: 'JavaScript',
+            bledne_odpowiedzi: ['Perl', 'PHP', 'Python']
         },
         {
-            pytanie: 'Poniżej przedstawiono fragment kodu języka HTML. Jest on definicją listy:',
-            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760623/pyt208_uplnud.png',
-            poprawna_odpowiedz: 'C',
-            bledne_odpowiedzi: ['A', 'B', 'D']
+            pytanie: 'W języku PHP pobrano z bazy danych wyniki działania kwerendy za pomocą polecenia mysql_query(). Aby otrzymać ze zwróconej kwerendy wierszy danych, należy zastosować polecenie:',
+            poprawna_odpowiedz: 'mysql_fetch_row()',
+            bledne_odpowiedzi: ['mysql_field_len()', 'mysql_list_fields()', 'mysql_fetch_lengths()']
         },
         {
-            pytanie: 'Kod języka CSS można umieścić wewnątrz kodu HTML, posługując się znacznikiem',
-            poprawna_odpowiedz: '<style>',
-            bledne_odpowiedzi: ['<head>', '<meta>', '<body>']
+            pytanie: 'Błędy interpretacji kodu PHP są zapisane:',
+            poprawna_odpowiedz: 'w logu pod warunkiem ustawienia odpowiedniego parametru w pliku php.ini',
+            bledne_odpowiedzi: ['w podglądzie zdarzeń systemu Windows', 'w oknie edytora, w którym powstaje kod PHP', 'nigdzie, są ignorowanie przez przeglądarkę oraz interpreter kodu PHP']
         },
         {
-            pytanie: 'Chcąc zdefiniować formatowanie tabeli w języku CSS w taki sposób, aby wiersz, który jest aktualnie wskazywany kursorem myszy, został wyróżniony np. innym kolorem, należy zastosować',
-            poprawna_odpowiedz: 'pseudoklasę :hover',
-            bledne_odpowiedzi: ['pseudoklasę :visited', 'pseudoelement :first-line', 'nowy selektor klasy dla wiersza tabeli']
+            pytanie: 'Do uruchomienia systemu CMS Joomla! wymagane jest środowisko:',
+            poprawna_odpowiedz: 'Apache, PHP i MySQL',
+            bledne_odpowiedzi: ['PHP i MySQL', 'Apache i PHP', 'IIS, PERL i MySQL']
+        },
+        {
+            pytanie: 'W języku HTML, aby uzyskać następujący efekt pogrubienia, pochylenia lub zapisania w górnym indeksie należy zapisać kod:',
+            poprawna_odpowiedz: '<b>pogrubiony </b><i>pochylony</i> lub w <sup>górnym indeksie</sup>',
+            bledne_odpowiedzi: ['<i>pogrubiony <b>pochylony lub w </i><sup>górnym indeksie</sup>', '<i>pogrubiony </i><b>pochylony</b> lub w <sub>górnym indeksie</sub>', '<b>pogrubiony <i>pochylony</i></b> lub w <sub>górnym indeksie</sub>']
+        },
+        {
+            pytanie: 'W kodzie HTML zapisano w bloku tekst formatowany pewnym stylem. Aby wtrącić wewnątrz tekstu kilka słów formatowanych innym stylem, należy zastosować znacznik',
+            poprawna_odpowiedz: '<span>',
+            bledne_odpowiedzi: ['<hr>', '<table>', '<section>']
+        },
+        {
+            pytanie: 'Który z zapisów znacznika <meta> jest prawidłowy ze względu na wykorzystane atrybuty?',
+            poprawna_odpowiedz: '<meta name = "description" content = "Masz jakieś hobby? To jest strona dla Ciebie!">',
+            bledne_odpowiedzi: ['<meta background = blue>', '<meta name = "!DOCTYPE">', '<meta title = "Strona dla hobbystów">']
+        },
+        {
+            pytanie: 'Który z wymienionych znaczników należy do części <head> dokumentu HTML?',
+            poprawna_odpowiedz: '<title>',
+            bledne_odpowiedzi: ['<img>', '<span>', '<section>']
+        },
+        {
+            pytanie: 'W języku CSS poniższy zapis sprawi, że koloru zielonego będzie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758291532/pyt250_dmehr6.png',
+            poprawna_odpowiedz: 'tło tekstu nagłówka drugiego stopnia',
+            bledne_odpowiedzi: ['tło całej strony', 'czcionka nagłówka drugiego stopnia', 'czcionka każdego nagłówka na stronie']
+        },
+        {
+            pytanie: 'W języku CSS, aby formatować tekst poprzez przekreślenie, podkreślenie dolne lub górne, należy zastosować',
+            poprawna_odpowiedz: 'text-decoration',
+            bledne_odpowiedzi: ['text-align', 'text-indent', 'text-transform']
+        },
+        {
+            pytanie: 'W języku CSS poniższy zapis sprawi, że kolor żółty przyjmie czcionka',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758291696/pyt252_kw5sog.png',
+            poprawna_odpowiedz: 'odnośników, które otwierają sie w osobnej karcie',
+            bledne_odpowiedzi: ['tekstu paragrafu', 'każdego odnośnika', 'odnośników, które otwierają sie w tej samej karcie']
+        },
+        {
+            pytanie: 'W języku CSS poniższy zapis użyty na stronie, na której jest kilka paragrafów, a każdy z nich ma po kilka linii sprawi, że',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758291772/pyt253_k6rmzo.png',
+            poprawna_odpowiedz: 'pierwsza linia każdego paragrafu będzie miała większą czcionkę niż następne linie',
+            bledne_odpowiedzi: ['pierwsza linia każdego paragrafu będzie miała mniejszą czcionkę niż następne linie', 'pierwszy paragraf na stronie będzie w całości miał powiększoną czcionkę', 'całość tekstu paragrafu będzie powiększona o 150%']
+        },
+        {
+            pytanie: 'Który znacznik lub grupa znaczników nie są stosowane do definiowania struktury strony HTML?',
+            poprawna_odpowiedz: '<i>, <b>, <u>',
+            bledne_odpowiedzi: ['<header>, <footer>', '<section>', '<div>']
+        },
+        {
+            pytanie: 'Który z przedstawionych kodów HTML sformatuje tekst według wzoru? (uwaga: słowo "stacji" jest zapisane większą czcionką niż reszta słów w tej linii)',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758291997/pyt255_t7gyq6.png',
+            poprawna_odpowiedz: 'B',
+            bledne_odpowiedzi: ['A', 'C', 'D']
+        },
+        {
+            pytanie: 'Kolor zapisany w postaci szesnastkowej o wartości #11FE07 w kodzie RGB ma postać',
+            poprawna_odpowiedz: 'rgb(17,254,7)',
+            bledne_odpowiedzi: ['rgb(17,FE,7)', 'rgb(11,127,7)', 'rgb(17,255,7)']
+        },
+        {
+            pytanie: 'Które ze zdań jest prawdziwe w stosunku do grafiki rastrowej?',
+            poprawna_odpowiedz: 'Jest to prezentacja obrazu za pomocą pionowo-poziomej siatki odpowiednio kolorowanych pikseli na monitorze komputera, drukarce lub innym urządzeniu wyjściowym',
+            bledne_odpowiedzi: ['Podczas przekształcania polegającego na skalowaniu, skalowany obraz nie zmienia jakości', 'Zapisywany obraz jest opisywany za pośrednictwem figur geometrycznych umieszczonych w układzie współrzędnych', 'Grafika rastrowa nie jest zapisana w formacie WMF (ang. Windows Metafile Format - format metaplików w Windows)']
+        },
+        {
+            pytanie: 'Który z formatów grafiki jest najbardziej odpowiedni do zapisu obrazu z przezroczystością na potrzeby strony internetowej?',
+            poprawna_odpowiedz: 'PNG',
+            bledne_odpowiedzi: ['JPG', 'BMP', 'SVG']
+        },
+        {
+            pytanie: 'W czasie przetwarzania dźwięku, aby pozbyć się niechcianych odgłosów spowodowanych złą jakością mikrofonu, należy zastosować narzędzie',
+            poprawna_odpowiedz: 'usuwania szumów',
+            bledne_odpowiedzi: ['echa', 'obwiedni', 'wyciszenia']
+        },
+        {
+            pytanie: 'Aby obraz zmieniał się płynnie w filmie, liczba klatek (nieprzenikających się wzajemnie) na sekundę musi znajdować się przynajmniej w zakresie',
+            poprawna_odpowiedz: '24-30 fps',
+            bledne_odpowiedzi: ['16-19 fps', '20-23 fps', '31-36 fps']
+        },
+        {
+            pytanie: 'W poleceniu CREATE TABLE języku SQL atrybut określający, która kolumna tabeli jest kluczem podstawowym, to',
+            poprawna_odpowiedz: 'PRIMARY KEY',
+            bledne_odpowiedzi: ['UNIQUE', 'MAIN KEY', 'IDENTITY FIELD']
+        },
+        {
+            pytanie: 'Dana jest tabela psy o polach: imie, rasa, telefon_wlasciciela, rok_szczepienia. Aby wyszukać telefony właścicieli, których psy były szczepione przed 2015 rokiem, należy użyć polecenia SQL',
+            poprawna_odpowiedz: 'SELECT telefon_wlasciciela FROM psy WHERE rok_szczepienia < 2015',
+            bledne_odpowiedzi: ['SELECT psy FROM rok_szczepienia < 2015', 'SELECT imie, rasa FROM psy WHERE rok_szczepienia > 2015', 'SELECT telefon_wlasciciela FROM psy WHERE rok_szczepienia > 2015']
+        },
+        {
+            pytanie: 'Na rysunku została przedstawiona relacja jeden do wielu. Łączy ona',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758292313/PYT263_rhxu5c.png',
+            poprawna_odpowiedz: 'klucz obcy rezyserzy_id tabeli filmy z kluczem podstawowym id tabeli rezyserzy',
+            bledne_odpowiedzi: ['klucz obcy rezyserzy_id tabeli filmy z kluczem obcym id tabeli rezyserzy', 'klucz podstawowy id tabeli filmy z kluczem podstawowym id tabeli rezyserzy', 'klucz podstawowy id tabeli z kluczem obcym rezyserzy_id tabeli rezyserzy']
+        },
+        {
+            pytanie: 'W bazie danych sklepu spożywczego pod koniec dnia jest tworzony raport wyświetlający te produkty wraz z ich dostawcami, dla których stan magazynowy jest mniejszy niż 10 sztuk. Do zdefiniowania tego raportu posłużono się kwerendą',
+            poprawna_odpowiedz: 'SELECT',
+            bledne_odpowiedzi: ['UPDATE', 'INSERT INTO', 'CHECK TABLE']
+        },
+        {
+            pytanie: 'Wskaż polecenie SQL dodające pole miesiacSiewu do istniejącej tabeli rosliny',
+            poprawna_odpowiedz: 'ALTER TABLE rosliny ADD miesiacSiewu int',
+            bledne_odpowiedzi: ['UPDATE rosliny ADD miesiacSiewu int', 'CREATE TABLE rosliny {miesiacSiewu int}', 'INSERT INTO rosliny VALUES (miesiacSiewu int)']
+        },
+        {
+            pytanie: 'Polecenie serwera MySQL przedstawione poniżej sprawi, że użytkownikowi tkowal zostaną',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758292446/pyt266_hvmzal.png',
+            poprawna_odpowiedz: 'odebrane prawa usuwania i modyfikowania danych w tabeli pracownicy',
+            bledne_odpowiedzi: ['przydzielone prawa do usuwania i aktualizowania danych w tabeli pracownicy', 'odebrane prawa usuwanie i dodawania rekordów w tabeli pracownicy', 'przydzielone prawa wszelkiej zmiany struktury tabeli pracownicy']
+        },
+        {
+            pytanie: 'W serwerze MySQL nadanie roli o nazwie DBManager przyznaje użytkownikowi prawa umożliwiające',
+            poprawna_odpowiedz: 'wszelkie operacje na bazach danych serwera',
+            bledne_odpowiedzi: ['monitorowanie serwera', 'tworzenie użytkowników serwera i ustawianie im haseł', 'wszystkie operacje na bazach danych i użytkownikach serwera']
+        },
+        {
+            pytanie: 'W bazie danych wykonano następujące polecenie dotyczące praw użytkownika adam. Po wykonaniu poleceń użytkownik adam będzie miał prawa do',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758292560/pyt268_detmf9.png',
+            poprawna_odpowiedz: 'usunięcia tabeli lub jej rekordów',
+            bledne_odpowiedzi: ['aktualizowania danych i przeglądania tabeli klienci', 'tworzenia tabeli klienci i aktualizowania w niej danych', 'przeglądania tabeli klienci i wstawiania do niej sektorów']
+        },
+        {
+            pytanie: 'Wskaż poprawną zasadę dotyczącą spójności danych w bazie danych',
+            poprawna_odpowiedz: 'pole klucza podstawowego nie może być puste',
+            bledne_odpowiedzi: ['pole klucza obcego nie może być puste', 'pole klucza podstawowego musi posiadać utworzony indeks', 'w relacji 1..n pole klucza obcego jest połączone z polem klucza obcego innej tabeli']
+        },
+        {
+            pytanie: 'Aby naprawić uszkodzoną tabelę w MySQL, należy wydać polecenie',
+            poprawna_odpowiedz: 'REPAIR TABLE',
+            bledne_odpowiedzi: ['FIX TABLE', 'CHECK TABLE', 'RESOLVE TABLE']
+        },
+        {
+            pytanie: 'W formularzu dane z pola input o typie number zostały zapisane do zmiennej a, a następnie przetworzone w skrypcie JavaScript w następujący sposób. Zmienna z będzie typu',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758292830/pyt271_zuciq1.png',
+            poprawna_odpowiedz: 'zmiennoprzecinkowego',
+            bledne_odpowiedzi: ['NaN', 'napisowego', 'liczbowego, całkowitego']
+        },
+        {
+            pytanie: 'Aby w pliku z rozszerzeniem php umieścić kod w języku PHP należy użyć znaczników',
+            poprawna_odpowiedz: '<?php .......... ?>',
+            bledne_odpowiedzi: ['<php .......... />', '<php> ......... </php>', '<?php> ........ <php?>']
+        },
+        {
+            pytanie: 'Ile iteracji będzie miała pętla zapisana w języku PHP, zakładając, że zmienna sterująca nie jest modyfikowana we wnętrzu pętli?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758292932/pyt273_ngaumq.png',
+            poprawna_odpowiedz: '6',
+            bledne_odpowiedzi: ['0', '5', '10']
+        },
+        {
+            pytanie: 'W JavaScript wynik operacji jest równy wartości NaN, jeśli skrypt próbował wykonać',
+            poprawna_odpowiedz: 'działanie arytmetyczne, a zawartość zmiennej była napisem',
+            bledne_odpowiedzi: ['funkcję parseFloat zamiast parseInt na zmiennej liczbowej', 'działanie arytmetyczne na dwóch zmiennych liczbowych dodatnich', 'funkcję sprawdzającą długość napisu, a zawartość zmiennej była liczbą']
+        },
+        {
+            pytanie: 'W instrukcji warunkowej języka JavaScript należy sprawdzić przypadek, gdy wartość zmiennej a jest z przedziału (0, 100), natomiast wartość zmiennej b jest większa od zera. Warunek taki jest prawidłowo zapisany w nastepujący sposób',
+            poprawna_odpowiedz: 'if (a>0 && a<100 && b>0)',
+            bledne_odpowiedzi: ['if (a>0 || a<100 || b<0)', 'if ((a>0 || a<100) && b>0)', 'if ((a>0 && a<100) || b<0)']
+        },
+        {
+            pytanie: 'Dla dowolnego a z przedziału (0,99) zadaniem funkcji zapisanej w języku Java Script jest:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758293097/pyt276_iclnrk.png',
+            poprawna_odpowiedz: 'wypisanie liczb z przedziału a...100 i zwrócenie wartości zmiennej n',
+            bledne_odpowiedzi: ['zwrócenie liczb z przedziału a..99', 'wypisanie liczb z przedziału a..99 i zwrócenie wartości 100', 'wypisanie wartości zmiennej a oraz zwrócenie wartości zmiennej n']
+        },
+        {
+            pytanie: 'Zapis w języku JavaScript ma za zadanie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758293165/pyt277_o9ygix.png',
+            poprawna_odpowiedz: 'utworzenie obiektu napis1 klasy napisy',
+            bledne_odpowiedzi: ['utworzenie nowej klasy napis1.', 'wywołanie metody obiektu napisy', 'zadeklarowanie zmiennej napis1 i wywołanie funkcji, której argumentem jest napis1']
+        },
+        {
+            pytanie: 'Aby wykonać kod zapisany językiem PHP wystarczy, że w systemie zainstalowano',
+            poprawna_odpowiedz: 'serwer WWW z interpreterem PHP',
+            bledne_odpowiedzi: ['przeglądarkę internetową', 'serwer WWW z serwerem MySQL', 'serwer WWW, parser PHP oraz serwer MySQL']
+        },
+        {
+            pytanie: 'Pętla zapisana w języku PHP wstawi do tablicy liczby',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758293260/pyt279_bekf5d.png',
+            poprawna_odpowiedz: '0, 10, 20, 30, 40, 50, 60, 70, 80, 90',
+            bledne_odpowiedzi: ['0, 1, 2, 3, 4, 5, 6, 7, 8, 9', '0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10', '10, 20, 30, 40, 50, 60, 70, 80, 90, 100']
+        },
+        {
+            pytanie: 'Wymaganiem aplikacji internetowej jest, aby ta była wykonywana po stronie klienta. W którym języku należy zaimplementować tę aplikację?',
+            poprawna_odpowiedz: 'JavaScript',
+            bledne_odpowiedzi: ['Python', 'PHP', 'Perl']
         }
     ];
 
@@ -1251,6 +1434,189 @@
             pytanie: 'Aby przenieść witrynę na serwer, można skorzystać z oprogramowania',
             poprawna_odpowiedz: 'FileZilla',
             bledne_odpowiedzi: ['Bugzilla', 'Go!Zilla', 'CloneZilla']
+        },
+        {
+            pytanie: 'Kolor zapisany kodem RGB, o wartości rgb(255, 128, 16) w kodzie szesnastkowym będzie miał wartość:',
+            poprawna_odpowiedz: '#ff8010',
+            bledne_odpowiedzi: ['#008010', '#ff0f10', '#ff8011']
+        },
+        {
+            pytanie: 'Plik graficzny należy zapisać w formacie GIF, jeżeli',
+            poprawna_odpowiedz: 'jest potrzeba zapisu obrazu lub animacji',
+            bledne_odpowiedzi: ['jest to grafika wektorowa', 'jest to obraz stereoskopowy', 'jest potrzeba zapisu obrazu bez kompresji']
+        },
+        {
+            pytanie: 'Aby dopasować dźwięk do danego poziomu głośności, należy użyć efektu',
+            poprawna_odpowiedz: 'normalizacji',
+            bledne_odpowiedzi: ['wyciszenia', 'podbicia basów', 'usuwania szumów']
+        },
+        {
+            pytanie: 'Instrukcja DROP języka SQL ma za zadanie',
+            poprawna_odpowiedz: 'usunąć istniejący obiekt',
+            bledne_odpowiedzi: ['zmienić parametry obiektu', 'zaktualizować dane obiektu', 'dodać nowy obiekt']
+        },
+        {
+            pytanie: 'Baza danych zawiera tabelę uczniowie z polami: imie, nazwisko, klasa. Aby odnaleźć imiona i nazwiska tych uczniów, których nazwiska rozpoczynają się literą M, należy zastosować polecenie SQL',
+            poprawna_odpowiedz: 'SELECT nazwisko, imie FROM uczniowie WHERE nazwisko LIKE "M%";',
+            bledne_odpowiedzi: ['SELECT nazwisko, imie FROM uczniowie WHERE nazwisko IN "M%";', 'SELECT nazwisko, imie FROM uczniowie ORDER BY nazwisko = "M%";', 'SELECT nazwisko, imie FROM uczniowie ORDER BY nazwisko IN "M%";']
+        },
+        {
+            pytanie: 'Baza danych zawiera tabele z polami: . Aby wyświetlić wszystkie nazwy artykułów wyłącznie typu pralka, dla których cena jest z przedziału 1000 PLN i 1500 PLN, należy zastosować polecenie',
+            poprawna_odpowiedz: 'SELECT nazwa FROM artykuly WHERE typ="pralka" AND cena BETWEEN 1000 AND 1500;',
+            bledne_odpowiedzi: ['SELECT nazwa FROM artykuly WHERE typ="pralka" AND cena FROM 1000 TO 1500;', 'SELECT nazwa FROM artykuly WHERE typ="pralka" OR cena BETWEEN 1000 OR 1500;', 'SELECT nazwa FROM artykuly WHERE typ="pralka" OR cena BETWEEN 1000 AND 1500;']
+        },
+        {
+            pytanie: 'Wartość pola tabeli pełniącego rolę klucza podstawowego',
+            poprawna_odpowiedz: 'musi być unikalna',
+            bledne_odpowiedzi: ['jest zawsze typu numerycznego', 'służy do szyfrowania zawartości tabeli', 'może przyjmować wartość pustą (NULL)']
+        },
+        {
+            pytanie: 'Aby utworzyć relację jeden do wielu, w tabeli po stronie , należy zdefiniować',
+            poprawna_odpowiedz: 'klucz obcy wskazujący na klucz podstawowy tabeli po stronie',
+            bledne_odpowiedzi: ['klucz obcy wskazujący na klucz obcy tabeli po stronie', 'klucz sztuczny odnoszący się do kluczy podstawowych obu tabel', 'klucz podstawowy wskazujący na klucz podstawowy tabeli po stronie']
+        },
+        {
+            pytanie: 'Narzędziem służącym do grupowania i prezentowania informacji z wielu rekordów w celu ich drukowania lub rozpowszechniania jest',
+            poprawna_odpowiedz: 'raport',
+            bledne_odpowiedzi: ['kwerenda', 'formularz', 'makropolecenie']
+        },
+        {
+            pytanie: 'Aby uprościć wprowadzenie i edytowanie danych w tabeli, należy zdefiniować',
+            poprawna_odpowiedz: 'formularz',
+            bledne_odpowiedzi: ['kwerendę SELECT', 'raport', 'filtr']
+        },
+        {
+            pytanie: 'Baza danych 6-letniej szkoły podstawowej zawiera tabelę z polami: . Wszyscy uczniowie klas 1-5 zdali do następnej klasy. Aby zwiększyć wartość w polu klasa o 1 należy użyć polecenia',
+            poprawna_odpowiedz: 'UPDATE szkola SET klasa=klasa+1 WHERE klasa>=1 AND klasa <=5;',
+            bledne_odpowiedzi: ['SELECT szkola FROM klasa=klasa+1 WHERE klasa >=1 AND klasa <=5;', 'SELECT nazwisko, imie FROM klasa=klasa+1 WHERE klasa>1 OR klasa <5;', 'UPDATE nazwisko, imie SET klasa=klasa+1 WHERE klasa>1 OR klasa<5;']
+        },
+        {
+            pytanie: 'Uprawnienia obiektowe, nadawane użytkownikom serwera bazy danych, mogą pozwalać lub zabraniać',
+            poprawna_odpowiedz: 'wykonywać operacje na bazie, takie jak wstawanie lub modyfikowanie danych',
+            bledne_odpowiedzi: ['dziedziczyć uprawnienia', 'modyfikować role i konta użytkowników', 'wykonywać instrukcje, takie jak tworzenie kopii zapasowej']
+        },
+        {
+            pytanie: 'Przed wykonaniem kopii bezpieczeństwa bazy danych, tak aby kopia ta była poprawna i możliwa do późniejszego odtworzenia, należy sprawdzić',
+            poprawna_odpowiedz: 'spójność bazy danych',
+            bledne_odpowiedzi: ['możliwość udostępnienia bazy danych', 'prawa dostępu do serwera bazy danych', 'poprawność składni zapytań']
+        },
+        {
+            pytanie: 'W MS SQL Server polecenie RESTORE DATABASE służy do',
+            poprawna_odpowiedz: 'odtworzenia bazy danych z kopii bezpieczeństwa',
+            bledne_odpowiedzi: ['odświeżenia bazy danych z kontrolą więzów integralności', 'przebudowania bazy danych w oparciu o buforowane dane', 'usunięcia bazy danych z serwera centralnego subskrybenta']
+        },
+        {
+            pytanie: 'W języku PHP zmienna typu float przyjmuje wartości',
+            poprawna_odpowiedz: 'zmiennoprzecinkowe',
+            bledne_odpowiedzi: ['logiczne', 'nieliczbowe', 'tylko całkowite']
+        },
+        {
+            pytanie: 'Dany jest fragment kodu PHP z zdeklarowaną zmienną typu tablicowego. W wyniku wykonania kodu zostanie wpisane imię',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757759665/pyt191_w848in.png',
+            poprawna_odpowiedz: 'Krzysztof',
+            bledne_odpowiedzi: ['Anna', 'Tomasz', 'Aleksandra']
+        },
+        {
+            pytanie: 'Przedstawiony kod języka PHP',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757759891/pyt192_bnebzj.png',
+            poprawna_odpowiedz: 'definiuje tablicę z trzema wartościami',
+            bledne_odpowiedzi: ['jest błędny, nieznany operator =>', 'definiuje tablicę z sześcioma wartościami', 'jest błędny, indeksami tablicy mogą być tylko liczby całkowite']
+        },
+        {
+            pytanie: 'W języku JavaScript poprawnie nazwana zmienna to',
+            poprawna_odpowiedz: 'imie2',
+            bledne_odpowiedzi: ['#imie', 'imię2', 'imię%']
+        },
+        {
+            pytanie: 'Zakładając, że zmienne: a, b, c przechowują wartości numeryczne, wynikiem działania warunku będzie wypisanie liczby',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757759983/pyt194_ycpiwb.png',
+            poprawna_odpowiedz: 'największej',
+            bledne_odpowiedzi: ['najmniejszej', 'nieparzystej', 'parzystej']
+        },
+        {
+            pytanie: 'Fragment kodu języku PHP ma następującą postać. Wynikiem działania pętli będzie wypisanie liczb:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760132/pyt195_zxlwba.png',
+            poprawna_odpowiedz: '0,4,8,12,16,20',
+            bledne_odpowiedzi: ['0,1,2,3,4,5, 6,7,8,9,10, 11,12,13,14,15, 16,17,18,19,20', '0,1,2,3,4,5, 6,7,8,9, 10,11,12,13,14,15, 16,17,18,19', '0,4,8,12,16']
+        },
+        {
+            pytanie: 'Zadaniem funkcji zapisanej w języku PHP jest',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760198/pyt196_ybbccd.png',
+            poprawna_odpowiedz: 'Zwrócenie wartości 1, gdy liczba jest parzysta',
+            bledne_odpowiedzi: ['Wypisanie liczby parzystej', 'Wypisanie liczby nieparzystej', 'Zwrócenie wartości 0, gdy liczba jest parzysta']
+        },
+        {
+            pytanie: 'Wykonanie kodu JavaScript w przeglądarce wymaga',
+            poprawna_odpowiedz: 'interpretowania',
+            bledne_odpowiedzi: ['debugowania', 'kompilowania', 'zamiany na kod maszynowy']
+        },
+        {
+            pytanie: 'Kod strony WWW napisanej w języku PHP',
+            poprawna_odpowiedz: 'jest wykonywany po stronie serwera',
+            bledne_odpowiedzi: ['jest wykonywany po stronie klienta', 'może być uruchomiony bez obsługi serwera WWW', 'jest przetwarzany na tych samych zasadach co JavaScript']
+        },
+        {
+            pytanie: 'Zakładając, że zmienna tablicowa $tab jest wypełniona liczbami naturalnymi, wynikiem programu będzie wypisanie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760321/pyt199_cd0qry.png',
+            poprawna_odpowiedz: 'największego elementu tablicy',
+            bledne_odpowiedzi: ['najmniejszego elementu tablicy', 'elementu tablicy, który jest równy wartości $tab[0]', 'tych elementów, które są większe od zmiennej $liczba']
+        },
+        {
+            pytanie: 'Fragment kodu w języku JavaScript realizujący dodawanie dwóch liczb ma następującą postać. Aby dodawanie wykonane było po kliknięciu przycisku o nazwie , należy w wykropkowane miejsce wstawić',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760403/pyt201_uk73ng.png',
+            poprawna_odpowiedz: '<button onclick="return dodaj()">dodaj</button>',
+            bledne_odpowiedzi: ['<button onselect="return dodaj()">dodaj</button>', '<button onselect="return dodaj()">oblicz</button>', '<button onclick="return oblicz()">dodaj</button>']
+        },
+        {
+            pytanie: 'Komentarz w języku JavaScript rozpoczyna się od znaku lub znaków',
+            poprawna_odpowiedz: '//',
+            bledne_odpowiedzi: ['<!--', '<?', '#']
+        },
+        {
+            pytanie: 'Polecenie pg_connect języka PHP służy do połączenia z bazą',
+            poprawna_odpowiedz: 'PostgreSQL',
+            bledne_odpowiedzi: ['mySQL', 'MS SQL', 'MS ACCESS']
+        },
+        {
+            pytanie: 'Aby zamieścić aplikację PHP w internecie, należy jej pliki źródłowe skopiować na serwer za pomocą protokołu',
+            poprawna_odpowiedz: 'FTP',
+            bledne_odpowiedzi: ['HTTP', 'SMTP', 'NNTP']
+        },
+        {
+            pytanie: 'Personalizowanie wyglądu strony dla danego użytkownika i jego identyfikacja w serwisie są możliwe dzięki mechanizmowi',
+            poprawna_odpowiedz: 'cookie',
+            bledne_odpowiedzi: ['obiektów DOM', 'łączenia z bazą', 'formularzy']
+        },
+        {
+            pytanie: 'Automatyczna weryfikacja właściciela strony udostępnianej przez protokół HTTPS jest możliwa dzięki',
+            poprawna_odpowiedz: 'certyfikatowi SSL',
+            bledne_odpowiedzi: ['danym kontaktowym na stronie', 'kluczom prywatnym', 'danym whois']
+        },
+        {
+            pytanie: 'Do grupowania obszarów na poziomie bloków, które będą formatowane za pośrednictwem znaczników, należy użyć',
+            poprawna_odpowiedz: '<div>',
+            bledne_odpowiedzi: ['<p>', '<span>', '<param>']
+        },
+        {
+            pytanie: 'Znacznik <i> języka HTML służy do',
+            poprawna_odpowiedz: 'zmiany kroju pisma na pochylony',
+            bledne_odpowiedzi: ['umieszczenia obrazka', 'zdefiniowania formularza', 'zdefiniowania nagłówka w tekście']
+        },
+        {
+            pytanie: 'Poniżej przedstawiono fragment kodu języka HTML. Jest on definicją listy:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1757760623/pyt208_uplnud.png',
+            poprawna_odpowiedz: 'C',
+            bledne_odpowiedzi: ['A', 'B', 'D']
+        },
+        {
+            pytanie: 'Kod języka CSS można umieścić wewnątrz kodu HTML, posługując się znacznikiem',
+            poprawna_odpowiedz: '<style>',
+            bledne_odpowiedzi: ['<head>', '<meta>', '<body>']
+        },
+        {
+            pytanie: 'Chcąc zdefiniować formatowanie tabeli w języku CSS w taki sposób, aby wiersz, który jest aktualnie wskazywany kursorem myszy, został wyróżniony np. innym kolorem, należy zastosować',
+            poprawna_odpowiedz: 'pseudoklasę :hover',
+            bledne_odpowiedzi: ['pseudoklasę :visited', 'pseudoelement :first-line', 'nowy selektor klasy dla wiersza tabeli']
         }
     ];
 
