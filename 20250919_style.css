@@ -1,0 +1,79 @@
+/* Styl ogólny */
+body {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f7f9fc;
+  color: #333;
+}
+
+/* Nagłówek */
+header {
+  background: #4a90e2;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0 0 10px 0;
+  font-size: 1.8rem;
+}
+
+select {
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
+  outline: none;
+}
+
+/* Kontener notatek */
+main {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+/* Blok notatki */
+.note {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.note:hover {
+  transform: scale(1.02);
+}
+
+/* Nagłówki w notatce */
+.note h2 {
+  margin: 0;
+  color: #4a90e2;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.note .date {
+  text-align: center;
+  font-size: 0.8rem;
+  color: #777;
+  margin: 0.3rem 0;
+}
+
+.note .topic {
+  text-align: center;
+  font-size: 1rem;
+  margin: 0.5rem 0;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+/* Treść notatki */
+.note .content {
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
