@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Złota Piłka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f9f9f9;
+            color: #333;
+            margin: 20px;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            text-align: center;
+            color: #222;
+        }
+
+        form {
+            background: #fff;
+            padding: 20px;
+            margin: 20px auto;
+            max-width: 600px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        fieldset {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin: 15px 0;
+            padding: 15px;
+            background: #fafafa;
+        }
+
+        legend {
+            font-weight: bold;
+            color: #444;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        input[type="button"],
+        input[type="reset"] {
+            background: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            margin: 10px 5px 0 0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        input[type="reset"] {
+            background: #dc3545;
+        }
+
+        input[type="button"]:hover {
+            background: #0056b3;
+        }
+
+        input[type="reset"]:hover {
+            background: #a71d2a;
+        }
+
+        #wynik, #wynik2 {
+            text-align: center;
+            margin-top: 20px;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <h2>Złota Piłka</h2>
+    <form>
+        <label>Podaj swoje imię: <input type="text" id="imie" max="50" placeholder="Wpisz imie"></label>
+        <h3>Test Widzy</h3>
+        <label>W którym roku wręczono pierwszą Złotą Piłkę? <input type="number" min="1000" max="2025" id="pierwsza"></label>
+        <fieldset>
+            <legend>Kto zdobył pierwszą Złotą Piłkę?</legend>
+            <input type="radio" name="first" class="first" value="0">Alfredo Di Stéfano<br>
+            <input type="radio" name="first" class="first" value="1">Stanley Matthews<br>
+            <input type="radio" name="first" class="first" value="0">Raymond Kopa<br>
+            <input type="radio" name="first" class="first" value="0">Pele
+        </fieldset>
+        <fieldset>
+            <legend>Którzy piłkarze zdobyli Złotą Piłkę grając w FC Barcelona?</legend>
+            <input type="checkbox" name="najwiecej" class="najwiecej" value="1">Lionel Messi<br>
+            <input type="checkbox" name="najwiecej" class="najwiecej" value="1">Luis Suarez<br>
+            <input type="checkbox" name="najwiecej" class="najwiecej" value="1">Johan Cruyff<br>
+            <input type="checkbox" name="najwiecej" class="najwiecej" value="-2">Robert Lewandowski
+        </fieldset>
+        <fieldset>
+            <legend>Kto zdobył najwięcej Złotych Piłek</legend>
+            <select name="best">
+                <option class="best" value="8">Lionel Messi</option>
+                <option class="best" value="5">Cristiano Ronaldo</option>
+                <option class="best" value="3">Michel Platini</option>
+                <option class="best" value="3">Johan Cruyff</option>
+                <option class="best" value="3">Marco van Basten</option>
+                <option class="best" value="2">Franz Beckenbauer</option>
+                <option class="best" value="2">Ronaldo Nazário</option>
+                <option class="best" value="2">Alfredo Di Stéfano</option>
+                <option class="best" value="2">Kevin Keegan</option>
+                <option class="best" value="2">Karl-Heinz Rummenigge</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <legend>Kto w roku 2024 zdobył Złotą Piłkę?</legend>
+            <select name="poprzedni" multiple>
+                <optgroup label="Piłkarze">
+                    <option class="pilkarz" value="-1">Vinicius Jr</option>
+                    <option class="pilkarz" value="-1">Kylian Mbappe</option>
+                    <option class="pilkarz" value="1">Rodri</option>
+                </optgroup>
+                <optgroup label="Piłkarki">
+                    <option class="pilkarz" value="1">Aitana Bonmati</option>
+                    <option class="pilkarz" value="-1">Caroline Graham Hansen</option>
+                    <option class="pilkarz" value="-1">Salma Paralluelo</option>
+                </optgroup>
+            </select>
+        </fieldset><br>
+        <input type="button" id="zobacz" value="Zobacz wynik"><input type="reset" value="Wyczyść">
+    </form>
+    <h1 id="wynik"></h1>
+    <form>
+        <h2>Złota Piłka 2025</h2>
+        <label>Kto powinien wygrać Złotą Piłkę w tym roku?<br>
+        <input type="text" id="kto" max="90" placeholder="Wpisz piłkarza"></label><br><br>
+        Dlaczego ta osoba powinna dostać Złotą Piłkę?<br>
+        <textarea id="dlaczego"></textarea>
+        <fieldset>
+            <legend>Jaki klub w tym sezonie był najlepszy?</legend>
+            <input type="radio" name="klub" class="klub" value="PSG">PSG
+            <input type="radio" name="klub" class="klub" value="Barcelona">Barcelona
+            <input type="radio" name="klub" class="klub" value="Chelsea">Chelsea
+            <input type="radio" name="klub" class="klub" value="Liverpool">Liverpool
+            <input type="radio" name="klub" class="klub" value="Tottenham">Tottenham
+        </fieldset>
+        <fieldset>
+            <legend>Jakie nagrody Cię najbardziej interesują?</legend>
+            <input type="checkbox" name="nagrody" class="nagrody" value="Men’s Ballon d’Or">Men’s Ballon d’Or
+            <input type="checkbox" name="nagrody" class="nagrody" value="Women’s Ballon d’Or">Women’s Ballon d’Or
+            <input type="checkbox" name="nagrody" class="nagrody" value="Men’s Kopa Trophy">Men’s Kopa Trophy
+            <input type="checkbox" name="nagrody" class="nagrody" value="Women’s Kopa Trophy">Women’s Kopa Trophy<br>
+            <input type="checkbox" name="nagrody" class="nagrody" value="Men’s Yashin Trophy">Men’s Yashin Trophy
+            <input type="checkbox" name="nagrody" class="nagrody" value="Women’s Yashin Trophy">Women’s Yashin Trophy
+            <input type="checkbox" name="nagrody" class="nagrody" value="Men’s Gerd Müller Trophy">Men’s Gerd Müller Trophy
+            <input type="checkbox" name="nagrody" class="nagrody" value="Women’s Gerd Müller Trophy">Women’s Gerd Müller Trophy<br>
+            <input type="checkbox" name="nagrody" class="nagrody" value="Men’s Johan Cruyff Trophy">Men’s Johan Cruyff Trophy
+            <input type="checkbox" name="nagrody" class="nagrody" value="Women’s Johan Cruyff Trophy">Women’s Johan Cruyff Trophy
+            <input type="checkbox" name="nagrody" class="nagrody" value="Club of the Year (Men)">Club of the Year (Men)
+            <input type="checkbox" name="nagrody" class="nagrody" value="Club of the Year (Women)">Club of the Year (Women)
+        </fieldset>
+        <fieldset>
+            <legend>Najlepszy bramkarz sezonu 2024/2025</legend>
+                <select name="bramkarz">
+                    <option class="bramkarz" value="Gianluigi Donnarumma">Gianluigi Donnarumma</option>
+                    <option class="bramkarz" value="Wojciech Szczęsny">Wojciech Szczęsny</option>
+                    <option class="bramkarz" value="Thibaut Courtois">Thibaut Courtois</option>
+                    <option class="bramkarz" value="Robert Sanchez">Robert Sanchez</option>
+                    <option class="bramkarz" value="David Raya">David Raya</option>
+                    <option class="bramkarz" value="Yann Sommer">Yann Sommer</option>
+                </select>
+        </fieldset>
+        <fieldset>
+            <legend>Najlepszy Polski</legend>
+            <select name="polska" multiple>
+                <optgroup label="Piłkarz">
+                    <option class="polska" value="Robert Lewandowski">Robert Lewandowski</option>
+                    <option class="polska" value="Piotr Zieliński">Piotr Zieliński</option>
+                    <option class="polska" value="Wojciech Szczęsny">Wojciech Szczęsny</option>
+                    <option class="polska" value="Nicola Zalewski">Nicola Zalewski</option>
+                </optgroup>
+                <optgroup label="Klub">
+                    <option class="polski" value="Lech Poznań">Lech Poznań</option>
+                    <option class="polski" value="Jagiellonia Białystok">Jagiellonia Białystok</option>
+                    <option class="polski" value="Raków Częstochowa">Raków Częstochowa</option>
+                    <option class="polski" value="Legia Warszawa">Legia Warszawa</option>
+                </optgroup>
+            </select>
+        </fieldset>
+        <input type="button" id="zapisz" value="Zapisz"><input type="reset" value="Wyczyść">
+    </form>
+    <h1>Twoja opinia</h1>
+    <h3 id="wynik2"></h3>
+    <script>
+        let imie = document.getElementById("imie");
+        let pierwsza = document.getElementById("pierwsza");
+        let first = document.getElementsByClassName("first");
+        let najwiecej = document.getElementsByClassName("najwiecej");
+        let best = document.getElementsByClassName("best");
+        let pilkarz = document.getElementsByClassName("pilkarz");
+        let zobacz = document.getElementById("zobacz");
+        let wynik = document.getElementById("wynik");
+        let kto = document.getElementById("kto");
+        let dlaczego = document.getElementById("dlaczego");
+        let klub = document.getElementsByClassName("klub");
+        let nagrody = document.getElementsByClassName("nagrody");
+        let bramkarz = document.getElementsByClassName("bramkarz");
+        let polska = document.getElementsByClassName("polska");
+        let polski = document.getElementsByClassName("polski");
+        let zapisz = document.getElementById("zapisz");
+        let wynik2 = document.getElementById("wynik2");
+
+        function oblicz_wynik(){
+            let tekst = "";
+            let pkt = 0;
+
+            if (Number(pierwsza.value) === 1956){
+                pkt += 1;
+            }
+
+            for (i=0; i<=first.length-1; i++){
+                if(first[i].checked){
+                    pkt += Number(first[i].value); 
+                }
+            }
+
+            for (i=0; i<=najwiecej.length-1; i++){
+                if(najwiecej[i].checked){
+                    pkt += Number(najwiecej[i].value);
+                }
+            }
+
+            for (i=0; i<=best.length-1; i++){
+                if(best[i].selected){
+                    pkt += Number(best[i].value);
+                }
+            }
+
+            for (i=0; i<=pilkarz.length-1; i++){
+                if(pilkarz[i].selected){
+                    pkt += Number(pilkarz[i].value);
+                }
+            }
+
+            tekst = imie.value + " masz " + pkt + "/15 pkt.";
+            wynik.innerHTML = tekst;
+        }
+
+        function przwyidywania(){
+            let opis = "";
+
+            opis = "Najlepszym piłkarzem w poprzednim sezonie był " + kto.value + ", ponieważ " + dlaczego.value + "<br>Najlepszy klub to ";
+
+            for (i=0; i<=klub.length-1; i++){
+                if(klub[i].checked){
+                    opis += klub[i].value + ".";
+                }
+            }
+
+            opis += "<br>Interesują Cię nagrody: ";
+
+            for (i=0; i<=nagrody.length-1; i++){
+                if(nagrody[i].checked){
+                    opis += nagrody[i].value + ", ";
+                }
+            }
+
+            opis += "<br>Najlepszy bramkarz to: ";
+
+            for (i=0; i<=bramkarz.length-1; i++){
+                if(bramkarz[i].selected){
+                    opis += bramkarz[i].value;
+                }
+            }
+
+            opis += ".<br>Najlepszy Polski piłkarz to ";
+
+            for (i=0; i<=polska.length-1; i++){
+                if(polska[i].selected){
+                    opis += polska[i].value + ", ";
+                }
+            }
+
+            opis += "a najlepszy Polski klub to ";
+
+            for (i=0; i<=polski.length-1; i++){
+                if(polski[i].selected){
+                    opis += polski[i].value + ", ";
+                }
+            }
+
+            wynik2.innerHTML = opis;
+        }
+
+        zobacz.addEventListener("click", oblicz_wynik);
+        zapisz.addEventListener("click", przwyidywania);
+    </script>
+</body>
+</html>
