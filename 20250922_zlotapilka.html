@@ -288,6 +288,7 @@
                 }
             }
 
+            opis = opis.replace(/, $/, ".");
             opis += "<br>Najlepszy bramkarz to: ";
 
             for (i=0; i<=bramkarz.length-1; i++){
@@ -304,6 +305,7 @@
                 }
             }
 
+            opis = opis.replace(/, $/, ".");
             opis += "a najlepszy Polski klub to ";
 
             for (i=0; i<=polski.length-1; i++){
@@ -311,7 +313,7 @@
                     opis += polski[i].value + ", ";
                 }
             }
-
+            opis = opis.replace(/, $/, ".");
             wynik2.innerHTML = opis;
         }
 
