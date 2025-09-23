@@ -39,6 +39,30 @@
                 </optgroup>
             </select>
         </fieldset>
+        <fieldset>
+            <legend>Jaki są twoje ulubione ekranizacje filmowe?</legend>
+            <label><input type="checkbox" name="film" class="film" value="Iron Man">Iron Man</label><br>
+            <label><input type="checkbox" name="film" class="film" value="Kapitan Ameryka">Kapitan Ameryka</label><br>
+            <label><input type="checkbox" name="film" class="film" value="Thor">Thor</label><br>
+            <label><input type="checkbox" name="film" class="film" value="Czarna Pantera">Czarna Pantera</label><br>
+            <label><input type="checkbox" name="film" class="film" value="Niesamowity Hulk">Niesamowity Hulk</label>
+        </fieldset>
+        <fieldset>
+            <legend>Ile książek zawiera twój ksiegozbiór?</legend>
+            <select name="ksiegozbior">
+                <option class="ksiegozbior" value="0">0</option>
+                <option class="ksiegozbior" value="1-10">1-10</option>
+                <option class="ksiegozbior" value="11-49">11-49</option>
+                <option class="ksiegozbior" value="powyżej 50">powyżej 50</option>
+            </select>
+        </fieldset>
+        <fieldset>
+            <legend>Jak szybko czytasz książki (ile stron na godzinę)?</legend>
+            <label><input type="radio" name="szybko" class="szybko" value="1-5 stron">1-5 stron</label><br>
+            <label><input type="radio" name="szybko" class="szybko" value="6-10 stron">6-10 stron</label><br>
+            <label><input type="radio" name="szybko" class="szybko" value="11-20 stron">11-20 stron</label><br>
+            <label><input type="radio" name="szybko" class="szybko" value="ponad 20 stron">ponad 20 stron</label>
+        </fieldset>
         <input type="button" id="wyslij" value="Wyślij dane">
         <input type="reset" value="Wyczyść">
         <p id="wynik"></p>
@@ -50,6 +74,9 @@
         let ilosc = document.getElementsByClassName("ilosc");
         let gatunek = document.getElementsByClassName("gatunek");
         let pochodzenie = document.getElementsByClassName("pochodzenie");
+        let film = document.getElementsByClassName("film");
+        let ksiegozbior = document.getElementsByClassName("ksiegozbior");
+        let szybko = document.getElementsByClassName("szybko");
         let wyslij = document.getElementById("wyslij");
         let wynik = document.getElementById("wynik");
         let tekst;
@@ -69,6 +96,7 @@
                 }
             }
 
+            tekst = tekst.replace(/, $/, ".");
             tekst = tekst + "<br>Moje książki: "
 
             for (i=0; i<=pochodzenie.length-1; i++){
@@ -76,6 +104,34 @@
                     tekst = tekst + pochodzenie[i].value + ", ";
                 }
             }
+
+            tekst = tekst.replace(/, $/, ".");
+            tekst += "<br>Moje ulubione ekranizacje filmowe to: ";
+
+            for(i=0; i<=film.length-1; i++){
+                if (film[i].checked){
+                    tekst += film[i].value + ", ";
+                }
+            }
+
+            tekst = tekst.replace(/, $/, ".");
+            tekst += "<br>Mój księgozbiór zawiera ";
+
+
+            for(i=0; i<=ksiegozbior.length-1; i++){
+                if (ksiegozbior[i].selected){
+                    tekst += ksiegozbior[i].value + " książek.";
+                }
+            }
+
+            tekst += "<br>W ciągu godziny czytasz ";
+
+            for(i=0; i<=szybko.length-1; i++){
+                if (szybko[i].checked){
+                    tekst += szybko[i].value + ".";
+                }
+            }
+
 
             wynik.innerHTML = tekst;
         }
