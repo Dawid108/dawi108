@@ -7,7 +7,7 @@ const notes = [
     content: `
   <ol>
     <li>
-      <p><strong>1. Funkcja układu krwionośnego</strong></p>
+      <p><strong>Funkcja układu krwionośnego</strong></p>
 
       <p>Transportuje krew, dostarcza tlen i składniki odżywcze, usuwa dwutlenek węgla i produkty przemiany materii.</p>
 
@@ -15,7 +15,7 @@ const notes = [
     </li>
 
     <li>
-      <p><strong>2. Budowa tętnic, żył i naczyń włosowatych</strong></p>
+      <p><strong>Budowa tętnic, żył i naczyń włosowatych</strong></p>
 
       <ul>
         <li><strong>Tętnice</strong> – grube, elastyczne ściany, prowadzą krew od serca.</li>
@@ -25,7 +25,7 @@ const notes = [
     </li>
 
     <li>
-      <p><strong>3. Budowa serca</strong></p>
+      <p><strong>Budowa serca</strong></p>
 
       <p>Serce ma cztery jamy: dwa przedsionki i dwie komory.</p>
 
