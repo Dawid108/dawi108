@@ -73,3 +73,27 @@ main {
   font-size: 0.95rem;
   line-height: 1.5;
 }
+
+/* Przycisk kopiowania */
+.copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copy-btn:hover {
+  background: #357ab8;
+}
+
+/* Żeby blok notatki mógł mieć absolutnie pozycjonowany przycisk */
+.note {
+  position: relative;
+}
