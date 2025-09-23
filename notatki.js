@@ -435,7 +435,6 @@ function renderNotes(filter) {
   });
 }
 
-
 // Obsługa zmiany w filtrze
 subjectFilter.addEventListener("change", (e) => {
   renderNotes(e.target.value);
