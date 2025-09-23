@@ -408,11 +408,12 @@ function renderNotes(filter) {
     ? notes
     : notes.filter(note => note.subject === filter);
 
-  filteredNotes.forEach(note => {
+  filteredNotes.forEach((note, index) => {
     const noteDiv = document.createElement("div");
     noteDiv.classList.add("note");
 
     noteDiv.innerHTML = `
+      <button class="copy-btn" data-index="${index}">Kopiuj</button>
       <h2>${note.subject}</h2>
       <p class="date">${note.date}</p>
       <p class="topic">T: ${note.topic}</p>
@@ -421,7 +422,19 @@ function renderNotes(filter) {
 
     notesContainer.appendChild(noteDiv);
   });
+
+  // Dodaj obsługę kopiowania po wyrenderowaniu notatek
+  document.querySelectorAll(".copy-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const noteContent = btn.parentElement.querySelector(".content").innerText; 
+      navigator.clipboard.writeText(noteContent).then(() => {
+        btn.textContent = "Skopiowano!";
+        setTimeout(() => btn.textContent = "Kopiuj", 1500);
+      });
+    });
+  });
 }
+
 
 // Obsługa zmiany w filtrze
 subjectFilter.addEventListener("change", (e) => {
