@@ -35,15 +35,29 @@ const notes = [
     </li>
   </ol>
     `
-  },
+  },  
  {
     subject: "Historia",
     date: "2025-09-18",
-    topic: "Wyprawa tysiąca czerwonych koszul",
+    topic: "Zjednoczenie Niemiec",
     content: `
-  <p><strong>Wyprawa tysiąca czerwonych koszul</strong> była zbrojną akcją ochotników pod dowództwem Giuseppe Garibaldiego w 1860 roku. Jej nazwa wzięła się od charakterystycznych czerwonych koszul, które nosili uczestnicy. Oddziały Garibaldiego wylądowały na Sycylii, szybko opanowały wyspę, a następnie przeprawiły się do Kalabrii i ruszyły na Neapol. Do działań przyłączyła się armia piemoncka, dzięki czemu we wrześniu 1860 roku zdobyto Neapol. Późniejszy plebiscyt na południu Włoch potwierdził wolę mieszkańców dołączenia do procesu zjednoczenia Włoch.</p>
+    <ol>
+        <li>
+            W XIX w. w <strong>Niemczech</strong>, które były rozbite na liczne państewka, nasiliły się tendencje zjednoczeniowe. 
+            <strong>Austria</strong> i <strong>Prusy</strong> rywalizowały ze sobą o przewodnictwo państw niemieckich. 
+            W <strong>1861 r.</strong> na tronie pruskim zasiadł <strong>Wilhelm I Hohenzollern</strong>, a rok później kanclerzem (premierem) został <strong>Otto von Bismarck</strong>. 
+            Dzięki zręcznej polityce Bismarcka, polegającej na zawieraniu odpowiednich sojuszy, nastąpił znaczny wzrost potęgi Prus. 
+            W latach <strong>1870–1871</strong> toczyła się <strong>wojna prusko-francuska</strong>, która zakończyła się porażką Francji i wybuchem rewolucji w Paryżu (<strong>Komuna Paryska</strong>). 
+            W <strong>maju 1871 roku</strong> Francja i Prusy podpisały pokój, na mocy którego Francja utraciła <strong>Alzację</strong> i <strong>Lotaryngię</strong> oraz musiała zapłacić ogromne reparacje. 
+            W <strong>styczniu 1871 roku</strong> w okupowanym Wersalu Niemcy ogłosili powstanie <strong>Drugiej Rzeszy Niemieckiej</strong> (Cesarstwa Niemieckiego) pod berłem Prus.
+        </li>
+        <li>
+            <strong>Depesza emska</strong> dotyczyła rozmowy króla <strong>Wilhelma I</strong> z francuskim ambasadorem w sprawie kandydatury <strong>Hohenzollerna</strong> na tron Hiszpanii. 
+            <strong>Bismarck</strong> przeredagował depeszę tak, aby sprowokować Francję do wypowiedzenia wojny Prusom, co doprowadziło do ostatecznego <strong>zjednoczenia Niemiec.</strong>
+        </li>
+    </ol>
     `
-  }, 
+  },
  {
     subject: "Geografia",
     date: "2025-09-17",
@@ -215,6 +229,37 @@ const notes = [
             Jest idealistą, pragnie poświęcić życie nauce i marzy o stworzeniu latających machin. 
             Choć należy do arystokracji, nie interesują go bale ani konwenanse – szuka raczej ludzi światłych i otwartych. 
             W powieści przyjaźni się z Wokulskim i wspiera go, podzielając jego poglądy na potrzebę postępu i rozwoju technicznego w Polsce.
+        </li>
+    </ol>
+    `
+  }, 
+ {
+    subject: "Historia",
+    date: "2025-09-11",
+    topic: "Od Wojny Krymskiej do Zjednoczenia Włoch.",
+    content: `
+    <ol>
+        <li>
+            <strong>Wojna Krymska.</strong><br>
+            W połowie XIX wieku Rosja chciała rozszerzyć swoje wpływy na półwyspie bałkańskim i doprowadzić do osłabienia imperium Osmańskiego. 
+            Wspierała narody podbite przez Turków (Serbia) i propagowała ideę panslawizmu, zgodnie z którą Słowianie powinni zjednoczyć się pod berłem cara. 
+            W 1853 roku Car Mikołaj I wystosował żądania wobec Turcji (np. prawo ochrony wyznawców prawosławia), na co Turcja wypowiedziała wojnę. 
+            Dzięki poparciu Turcji przez Wielką Brytanię i Francję, Rosja ten konflikt przegrała. 
+            Wojna ta zakończyła się <strong>traktatem Paryskim w 1856 roku.</strong>
+        </li>
+        <li>
+            <strong>Zjednoczenie Włoch.</strong><br>
+            Po Wiośnie Ludów i Wojnie Krymskiej na półwyspie Apenińskim ożywiły się ruchy zjednoczeniowe, ponieważ Włochy były rozbite na małe księstwa i państewka. 
+            Do zjednoczenia Włoch najbardziej przyczyniło się <strong>Królestwo Piemontu</strong> pod przywództwem premiera <strong>Camillo Cavour'a</strong> i króla <strong>Wiktora Emanuela II</strong>. 
+            Dzięki zawieraniu odpowiednich sojuszy z Francją pokonano Austrię, a w wyniku działań powstańczych, których przywódcą był <strong>Giuseppe Garibaldi</strong>, obalono monarchię w Toskanii. 
+            Mimo że Garibaldi był zwolennikiem republiki, sprzymierzył się z Cavourem, a w <strong>1861 roku</strong> ogólnowłoski parlament ogłosił powstanie <strong>Królestwa Włoch</strong> z królem Emanuelem II.
+        </li>
+        <li>
+            <strong>Wyprawa tysiąca czerwonych koszul</strong> była zbrojną akcją ochotników pod dowództwem <strong>Giuseppe Garibaldiego</strong> w <strong>1860 roku</strong>. 
+            Jej nazwa wzięła się od charakterystycznych czerwonych koszul, które nosili uczestnicy. 
+            Oddziały Garibaldiego wylądowały na Sycylii, szybko opanowały wyspę, a następnie przeprawiły się do Kalabrii i ruszyły na Neapol. 
+            Do działań przyłączyła się armia piemoncka, dzięki czemu we wrześniu 1860 roku zdobyto Neapol. 
+            Późniejszy plebiscyt na południu Włoch potwierdził wolę mieszkańców dołączenia do procesu <strong>zjednoczenia Włoch.</strong>
         </li>
     </ol>
     `
