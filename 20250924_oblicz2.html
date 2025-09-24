@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator w stylu terminala</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      font-family: "Fira Code", monospace;
+      color: #00ff88;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .terminal {
+      background-color: #111;
+      border: 2px solid #00ff88;
+      border-radius: 8px;
+      padding: 20px;
+      width: 100%;
+      max-width: 600px;
+      min-height: 200px;
+      box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+    }
+    .inputs {
+      margin-bottom: 15px;
+      display: flex;
+      gap: 10px;
+    }
+    input {
+      background: #111;
+      border: 2px solid #00ff88;
+      color: #00ff88;
+      padding: 8px;
+      border-radius: 5px;
+      font-size: 16px;
+      width: 100px;
+      text-align: center;
+    }
+    button {
+      background: #00ff88;
+      border: none;
+      color: black;
+      padding: 8px 15px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    button:hover {
+      background: #00cc66;
+    }
+    .python-code {
+      background-color: #272822;
+      color: #f8f8f2;
+      border-radius: 8px;
+      padding: 15px;
+      width: 100%;
+      max-width: 600px;
+      font-size: 14px;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #00ff88;
+      border: none;
+      color: black;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .copy-btn:hover {
+      background: #00cc66;
+    }
+    h2 {
+      color: #00ff88;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Terminal</h2>
+
+  <div class="inputs">
+    <input type="number" id="inputA" placeholder="a" value="100">
+    <input type="number" id="inputB" placeholder="b" value="50">
+    <button onclick="oblicz()">Oblicz</button>
+  </div>
+
+  <div class="terminal" id="terminal"></div>
+
+  <h2>Kod w Pythonie</h2>
+  <div class="python-code" id="pythonCode">
+    a = 100<br>
+    b = 50<br><br>
+    suma = a + b<br>
+    roznica = a - b<br>
+    iloczyn = a * b<br>
+    iloraz = a / b<br>
+    modulo = a % b<br>
+    pierwiastek_a = a ** 0.5<br>
+    pierwiastek_b = b ** 0.5<br><br>
+    print("Suma:", suma)<br>
+    print("Różnica:", roznica)<br>
+    print("Iloczyn:", iloczyn)<br>
+    print("Iloraz:", iloraz)<br>
+    print("Reszta z dzielenia:", modulo)<br>
+    print("Pierwiastek z a:", pierwiastek_a)<br>
+    print("Pierwiastek z b:", pierwiastek_b)
+    <button class="copy-btn" onclick="copyPython()">Kopiuj</button>
+  </div>
+
+  <script>
+    function oblicz() {
+      const a = parseInt(document.getElementById("inputA").value);
+      const b = parseInt(document.getElementById("inputB").value);
+
+      if (isNaN(a) || isNaN(b)) {
+        document.getElementById("terminal").innerText = "Podaj poprawne liczby całkowite!";
+        return;
+      }
+
+      const suma = a + b;
+      const roznica = a - b;
+      const iloczyn = a * b;
+      const iloraz = b !== 0 ? (a / b) : "Nie można dzielić przez 0";
+      const modulo = b !== 0 ? (a % b) : "Nie można obliczyć";
+      const pierwiastekA = Math.sqrt(a);
+      const pierwiastekB = Math.sqrt(b);
+
+      const wynik = 
+        ">>> a = " + a + "\n" +
+        ">>> b = " + b + "\n\n" +
+        ">>> a + b\nSuma: " + suma + "\n" +
+        ">>> a - b\nRóżnica: " + roznica + "\n" +
+        ">>> a * b\nIloczyn: " + iloczyn + "\n" +
+        ">>> a / b\nIloraz: " + iloraz + "\n" +
+        ">>> a % b\nReszta z dzielenia: " + modulo + "\n" +
+        ">>> a ** 0.5\nPierwiastek z a: " + pierwiastekA.toFixed(2) + "\n" +
+        ">>> b ** 0.5\nPierwiastek z b: " + pierwiastekB.toFixed(2);
+
+      document.getElementById("terminal").innerText = wynik;
+    }
+
+    function copyPython() {
+      const code = document.getElementById("pythonCode").innerText.replace("Kopiuj", "").trim();
+      navigator.clipboard.writeText(code);
+      alert("Kod w Pythonie został skopiowany!");
+    }
+
+    // Uruchom od razu na start z domyślnymi wartościami
+    oblicz();
+  </script>
+</body>
+</html>
