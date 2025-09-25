@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nauka Angielskiego</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      text-align: center;
+      background: #007BFF;
+      color: white;
+      padding: 15px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .lang-buttons {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0;
+    }
+
+    .lang-buttons button {
+      padding: 10px 20px;
+      margin: 0 5px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #e0e0e0;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .lang-buttons button.active {
+      background-color: #007BFF;
+      color: white;
+    }
+
+    .lesson {
+      background: white;
+      margin: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .lesson h2, .lesson h3 {
+      margin: 5px 0;
+      color: #333;
+    }
+
+    .word {
+      font-size: 18px;
+      margin: 10px 0;
+      cursor: pointer;
+      color: #007BFF;
+    }
+
+    .word .pronunciation {
+      color: #666;
+      font-size: 15px;
+    }
+
+    .translation {
+      margin-top: 5px;
+      font-size: 16px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">Nauka Angielskiego</div>
+
+  <div class="lang-buttons">
+    <button id="btn-en" class="active">Angielski</button>
+    <button id="btn-pl">Polski</button>
+  </div>
+
+  <div id="lesson-container"></div>
+
+  <script>
+    const lessons = [
+{
+number: 22,
+  title_en: "Tour - Phrases",
+  title_pl: "Wycieczka - Zwroty",
+  words: [
+  { en: "What time do we leave?", pronunciation: "łot tajm du łi liw", pl: "O której godzinie wyjeżdżamy?" },
+  { en: "When do we arrive?", pronunciation: "łen du łi erajw", pl: "Kiedy przyjeżdżamy?" },
+  { en: "How long is the trip?", pronunciation: "hau long yz de tryp", pl: "Jak długo trwa wycieczka?" },
+  { en: "Where is the meeting point?", pronunciation: "łer yz de miting pojnt", pl: "Gdzie jest miejsce zbiórki?" },
+  { en: "Please follow me", pronunciation: "pliz foloł mi", pl: "Proszę za mną" },
+  { en: "Stay together", pronunciation: "stej tugeder", pl: "Trzymajmy się razem" },
+  { en: "Do we have free time?", pronunciation: "du łi haw fri tajm", pl: "Czy mamy czas wolny?" },
+  { en: "How much is the ticket?", pronunciation: "hau macz yz de tykyt", pl: "Ile kosztuje bilet?" },
+  { en: "Is lunch included?", pronunciation: "yz lancz inkljudyd", pl: "Czy obiad jest wliczony?" },
+  { en: "Please take a seat", pronunciation: "pliz tejk e sit", pl: "Proszę usiąść" },
+  { en: "We will stop here", pronunciation: "łi łyl stop hir", pl: "Zatrzymamy się tutaj" },
+  { en: "The next stop is...", pronunciation: "de nekst stop yz", pl: "Następny przystanek to..." },
+  { en: "Please be on time", pronunciation: "pliz bi on tajm", pl: "Proszę być punktualnie" },
+  { en: "We are running late", pronunciation: "łi ar raning lejt", pl: "Mamy opóźnienie" },
+  { en: "Watch your step", pronunciation: "łocz jor step", pl: "Patrz pod nogi" },
+  { en: "Take photos here", pronunciation: "tejk fotołs hir", pl: "Zrób zdjęcia tutaj" },
+  { en: "We are leaving soon", pronunciation: "łi ar liwing sun", pl: "Wkrótce wyjeżdżamy" },
+  { en: "Enjoy your trip", pronunciation: "endżoj jor tryp", pl: "Miłej wycieczki" },
+  { en: "Please listen carefully", pronunciation: "pliz lysyn kerfuli", pl: "Proszę słuchać uważnie" },
+  { en: "Thank you for coming", pronunciation: "fenk ju for kaming", pl: "Dziękujemy za przybycie" }
+]
+},
+{
+number: 21,
+  title_en: "Tour - Vocabulary",
+  title_pl: "Wycieczka - Słówka",
+  words: [
+  { en: "Tour", pronunciation: "tur", pl: "Wycieczka" },
+  { en: "Tour bus", pronunciation: "tur bas", pl: "Autobus wycieczkowy" },
+  { en: "Guide", pronunciation: "gajd", pl: "Przewodnik" },
+  { en: "Group", pronunciation: "grup", pl: "Grupa" },
+  { en: "Excursion", pronunciation: "ekskerszyn", pl: "Wycieczka" },
+  { en: "Itinerary", pronunciation: "ajtynereri", pl: "Plan podróży" },
+  { en: "Stop", pronunciation: "stop", pl: "Przystanek" },
+  { en: "Sightseeing", pronunciation: "sajtsijing", pl: "Zwiedzanie" },
+  { en: "Landmark", pronunciation: "landmark", pl: "Zabytek" },
+  { en: "Attraction", pronunciation: "atrakszyn", pl: "Atrakcja" },
+  { en: "Museum", pronunciation: "mjuzjem", pl: "Muzeum" },
+  { en: "Monument", pronunciation: "monjument", pl: "Pomnik" },
+  { en: "Entrance", pronunciation: "entrens", pl: "Wejście" },
+  { en: "Ticket", pronunciation: "tykyt", pl: "Bilet" },
+  { en: "Reservation", pronunciation: "rezervejszyn", pl: "Rezerwacja" },
+  { en: "Departure", pronunciation: "dyparczer", pl: "Odjazd" },
+  { en: "Arrival", pronunciation: "erajwal", pl: "Przyjazd" },
+  { en: "Luggage", pronunciation: "lagydż", pl: "Bagaż" },
+  { en: "Camera", pronunciation: "kamera", pl: "Aparat" },
+  { en: "Souvenir", pronunciation: "suwynir", pl: "Pamiątka" }
+]
+},
+{
+number: 20,
+  title_en: "Shop - Phrases",
+  title_pl: "Sklep - Zwroty",
+  words: [
+  { en: "How much is it?", pronunciation: "hau macz yz yt", pl: "Ile to kosztuje?" },
+  { en: "Can I help you?", pronunciation: "ken aj help ju", pl: "Czy mogę pomóc?" },
+  { en: "I'm just looking.", pronunciation: "ajm dżast luking", pl: "Tylko się rozglądam." },
+  { en: "Do you have this in a different size?", pronunciation: "du ju haw dys yn e dyfrent sajs", pl: "Czy macie to w innym rozmiarze?" },
+  { en: "Do you have this in a different color?", pronunciation: "du ju haw dys yn e dyfrent kalor", pl: "Czy macie to w innym kolorze?" },
+  { en: "Where can I find...?", pronunciation: "łer ken aj fajnd", pl: "Gdzie mogę znaleźć...?" },
+  { en: "It's too expensive.", pronunciation: "yts tu ekspensiw", pl: "To za drogie." },
+  { en: "Do you take card?", pronunciation: "du ju tejk kard", pl: "Czy przyjmujecie kartę?" },
+  { en: "Cash only.", pronunciation: "kasz onli", pl: "Tylko gotówka." },
+  { en: "I'll take it.", pronunciation: "ajl tejk yt", pl: "Wezmę to." },
+  { en: "I don't want it.", pronunciation: "aj dont łont yt", pl: "Nie chcę tego." },
+  { en: "Can I return it?", pronunciation: "ken aj ritern yt", pl: "Czy mogę to zwrócić?" },
+  { en: "Is there a discount?", pronunciation: "yz der e dyskałnt", pl: "Czy jest jakaś zniżka?" },
+  { en: "It's on sale.", pronunciation: "yts on sejl", pl: "Jest na promocji." },
+  { en: "I need a receipt.", pronunciation: "aj nid e rysipt", pl: "Potrzebuję paragonu." },
+  { en: "The fitting room is over there.", pronunciation: "de fytyng rum yz ołwer der", pl: "Przymierzalnia jest tam." },
+  { en: "Can I try it on?", pronunciation: "ken aj traj yt on", pl: "Czy mogę to przymierzyć?" },
+  { en: "Buy one, get one free.", pronunciation: "baj łan get łan fri", pl: "Kup jedno, drugie gratis." },
+  { en: "I'm looking for...", pronunciation: "ajm luking for", pl: "Szukam..." },
+  { en: "Thank you, have a nice day!", pronunciation: "fenk ju, haw e najs dej", pl: "Dziękuję, miłego dnia!" }
+]
+},
+
+{
+number: 19,
+  title_en: "Shop - Vocabulary",
+  title_pl: "Sklep - Słówka",
+  words: [
+  { en: "Milk", pronunciation: "milk", pl: "Mleko" },
+  { en: "Bread", pronunciation: "bred", pl: "Chleb" },
+  { en: "Butter", pronunciation: "bater", pl: "Masło" },
+  { en: "Cheese", pronunciation: "cziz", pl: "Ser" },
+  { en: "Yogurt", pronunciation: "jogert", pl: "Jogurt" },
+  { en: "Eggs", pronunciation: "egz", pl: "Jajka" },
+  { en: "Apple", pronunciation: "apyl", pl: "Jabłko" },
+  { en: "Banana", pronunciation: "banana", pl: "Banan" },
+  { en: "Tomato", pronunciation: "tomejto", pl: "Pomidor" },
+  { en: "Cucumber", pronunciation: "kjukamber", pl: "Ogórek" },
+  { en: "Carrot", pronunciation: "karot", pl: "Marchewka" },
+  { en: "Potato", pronunciation: "potejto", pl: "Ziemniak" },
+  { en: "Chicken", pronunciation: "cziken", pl: "Kurczak" },
+  { en: "Sausages", pronunciation: "sosydżys", pl: "Kiełbaski" },
+  { en: "Water", pronunciation: "łoter", pl: "Woda" },
+  { en: "Juice", pronunciation: "dżus", pl: "Sok" },
+  { en: "Rice", pronunciation: "rajs", pl: "Ryż" },
+  { en: "Pasta", pronunciation: "pasta", pl: "Makaron" },
+  { en: "Flour", pronunciation: "flałer", pl: "Mąka" },
+  { en: "Sugar", pronunciation: "szugar", pl: "Cukier" }
+]
+},
+
+{
+number: 18,
+  title_en: "Bakery - Phrases",
+  title_pl: "Piekarnia - Zwroty",
+  words: [
+  { en: "I would like a loaf of bread", pronunciation: "aj łud lajk e lołf of bred", pl: "Chciałbym bochenek chleba" },
+  { en: "Do you have rye bread?", pronunciation: "du ju hew raj bred", pl: "Czy macie chleb żytni?" },
+  { en: "Can I get a baguette?", pronunciation: "ken aj get e baget", pl: "Czy mogę dostać bagietkę?" },
+  { en: "One croissant, please", pronunciation: "łan krłasan pliz", pl: "Jednego rogalika poproszę" },
+  { en: "How much is this roll?", pronunciation: "hau macz yz dys rołl", pl: "Ile kosztuje ta bułka?" },
+  { en: "Is it fresh?", pronunciation: "yz yt fresz", pl: "Czy to jest świeże?" },
+  { en: "I’ll take two buns", pronunciation: "ajl tejk tu banz", pl: "Wezmę dwie bułki" },
+  { en: "Do you have gluten-free bread?", pronunciation: "du ju hew gluten fri bred", pl: "Czy macie chleb bezglutenowy?" },
+  { en: "Just looking, thank you", pronunciation: "dżast luking fenk ju", pl: "Tylko się rozglądam, dziękuję" },
+  { en: "Anything else?", pronunciation: "enyfing els", pl: "Coś jeszcze?" },
+  { en: "That's all, thank you", pronunciation: "dats ol fenk ju", pl: "To wszystko, dziękuję" },
+  { en: "Do you take card?", pronunciation: "du ju tejk kard", pl: "Czy przyjmujecie kartę?" },
+  { en: "I’ll pay in cash", pronunciation: "ajl pej in kasz", pl: "Zapłacę gotówką" },
+  { en: "Can I have it sliced?", pronunciation: "ken aj hew yt slajst", pl: "Czy mogę to mieć pokrojone?" },
+  { en: "Is there anything with seeds?", pronunciation: "yz der enyfing łif sidz", pl: "Czy macie coś z ziarnami?" },
+  { en: "I’d like something sweet", pronunciation: "ajd lajk samfing słit", pl: "Chciałbym coś słodkiego" },
+  { en: "Do you bake on site?", pronunciation: "du ju bejk on sajt", pl: "Czy pieczecie na miejscu?" },
+  { en: "Can I see the ingredients?", pronunciation: "ken aj si di ingridjents", pl: "Czy mogę zobaczyć składniki?" },
+  { en: "What’s today’s special?", pronunciation: "łots tudejz speszyl", pl: "Co jest dzisiaj w ofercie specjalnej?" },
+  { en: "I’ll come back later", pronunciation: "ajl kam bak lejter", pl: "Wrócę później" }
+]
+},
+
+{
+number: 17,
+  title_en: "Bakery - Vocabulary",
+  title_pl: "Piekarnia - Słówka",
+  words: [
+  { en: "Bread", pronunciation: "bred", pl: "Chleb" },
+  { en: "Roll", pronunciation: "rol", pl: "Bułka" },
+  { en: "Bun", pronunciation: "ban", pl: "Słodka bułka" },
+  { en: "Baguette", pronunciation: "baget", pl: "Bagietka" },
+  { en: "Croissant", pronunciation: "kruasą", pl: "Rogalik" },
+  { en: "Pretzel", pronunciation: "precel", pl: "Precel" },
+  { en: "Loaf", pronunciation: "lołf", pl: "Bochenek" },
+  { en: "Dough", pronunciation: "doł", pl: "Ciasto (surowe)" },
+  { en: "Pastry", pronunciation: "pejstri", pl: "Ciastko" },
+  { en: "Cake", pronunciation: "kejk", pl: "Ciasto" },
+  { en: "Muffin", pronunciation: "mafyn", pl: "Muffinka" },
+  { en: "Crust", pronunciation: "krast", pl: "Skórka" },
+  { en: "Toast", pronunciation: "tołst", pl: "Tost" },
+  { en: "Slice", pronunciation: "slajs", pl: "Kromka" },
+  { en: "Yeast", pronunciation: "jist", pl: "Drożdże" },
+  { en: "Flour", pronunciation: "flałer", pl: "Mąka" },
+  { en: "Rye bread", pronunciation: "raj bred", pl: "Chleb żytni" },
+  { en: "Wholemeal bread", pronunciation: "hołlmil bred", pl: "Chleb pełnoziarnisty" },
+  { en: "Baker", pronunciation: "bejker", pl: "Piekarz" },
+  { en: "Bakery", pronunciation: "bejkeri", pl: "Piekarnia" }
+]
+},
+
+{
+number: 16,
+  title_en: "Cafe - Phrases",
+  title_pl: "Kawiarnia - Zwroty",
+  words: [
+  { en: "Can I get a coffee?", pronunciation: "ken aj get e kofi?", pl: "Czy mogę dostać kawę?" },
+  { en: "One cappuccino, please.", pronunciation: "łan kapuczino pliz", pl: "Jedno cappuccino, proszę." },
+  { en: "Do you have soy milk?", pronunciation: "du ju hew soj milk?", pl: "Czy macie mleko sojowe?" },
+  { en: "I'll have a latte.", pronunciation: "ajl haw e late", pl: "Wezmę latte." },
+  { en: "With sugar, please.", pronunciation: "łif szugar pliz", pl: "Z cukrem, proszę." },
+  { en: "Without sugar, please.", pronunciation: "łidałt szugar pliz", pl: "Bez cukru, proszę." },
+  { en: "For here or to go?", pronunciation: "for hier or tu goł?", pl: "Na miejscu czy na wynos?" },
+  { en: "To go, please.", pronunciation: "tu goł pliz", pl: "Na wynos, proszę." },
+  { en: "For here, please.", pronunciation: "for hier pliz", pl: "Na miejscu, proszę." },
+  { en: "Can I see the menu?", pronunciation: "ken aj si de menju?", pl: "Czy mogę zobaczyć menu?" },
+  { en: "What desserts do you have?", pronunciation: "łot dezerts du ju hew?", pl: "Jakie macie desery?" },
+  { en: "I'll take a piece of cake.", pronunciation: "ajl tejk e pis of kejk", pl: "Wezmę kawałek ciasta." },
+  { en: "Anything else?", pronunciation: "enifing els?", pl: "Czy coś jeszcze?" },
+  { en: "That’s all, thank you.", pronunciation: "dets ol fenk ju", pl: "To wszystko, dziękuję." },
+  { en: "Your name, please.", pronunciation: "jor nejm pliz", pl: "Imię, proszę." },
+  { en: "It’ll be ready in five minutes.", pronunciation: "ytl bi redi in fajw minuts", pl: "Będzie gotowe za pięć minut." },
+  { en: "Enjoy your drink!", pronunciation: "indżoj jor drink", pl: "Smacznego napoju!" },
+  { en: "Can I have a glass of water?", pronunciation: "ken aj hew e glas of łoter?", pl: "Czy mogę dostać szklankę wody?" },
+  { en: "Where is the restroom?", pronunciation: "łer yz de restrum?", pl: "Gdzie jest toaleta?" },
+  { en: "The Wi-Fi password, please.", pronunciation: "de łaj-faj pasłerd pliz", pl: "Hasło do Wi-Fi, proszę." }
+]
+},
+
+{
+number: 15,
+  title_en: "Cafe - Vocabulary",
+  title_pl: "Kawiarnia - Słówka",
+  words: [
+  { en: "Cake", pronunciation: "kejk", pl: "Ciasto" },
+  { en: "Cupcake", pronunciation: "kapkejk", pl: "Babeczka" },
+  { en: "Cookie", pronunciation: "kuki", pl: "Ciastko" },
+  { en: "Muffin", pronunciation: "mafyn", pl: "Mufinka" },
+  { en: "Cheesecake", pronunciation: "czizkejk", pl: "Sernik" },
+  { en: "Apple pie", pronunciation: "apyl paj", pl: "Szarlotka" },
+  { en: "Brownie", pronunciation: "brałni", pl: "Brownie" },
+  { en: "Croissant", pronunciation: "kłasą", pl: "Rogalik" },
+  { en: "Doughnut", pronunciation: "donat", pl: "Pączek" },
+  { en: "Eclair", pronunciation: "ekler", pl: "Eklerka" },
+  { en: "Tart", pronunciation: "tart", pl: "Tarta" },
+  { en: "Pudding", pronunciation: "puding", pl: "Budyń" },
+  { en: "Waffle", pronunciation: "łafl", pl: "Gofr" },
+  { en: "Ice cream", pronunciation: "ajs krim", pl: "Lody" },
+  { en: "Coffee", pronunciation: "kofi", pl: "Kawa" },
+  { en: "Tea", pronunciation: "ti", pl: "Herbata" },
+  { en: "Hot chocolate", pronunciation: "hot czeklet", pl: "Gorąca czekolada" },
+  { en: "Milkshake", pronunciation: "milkszejk", pl: "Koktajl mleczny" },
+  { en: "Latte", pronunciation: "late", pl: "Latte" },
+  { en: "Cappuccino", pronunciation: "kapuczino", pl: "Cappuccino" }
+]
+},
+
+{
+number: 14,
+  title_en: "Restaurant - Phrases",
+  title_pl: "Restauracja - Zwroty",
+  words: [
+  { en: "I would like to order", pronunciation: "aj łud lajk tu order", pl: "Chciałbym zamówić" },
+  { en: "Can I see the menu?", pronunciation: "ken aj si de menju?", pl: "Czy mogę zobaczyć menu?" },
+  { en: "What do you recommend?", pronunciation: "łot du ju rekomend?", pl: "Co polecasz?" },
+  { en: "I’m allergic to...", pronunciation: "ajm alerdżik tu...", pl: "Mam alergię na..." },
+  { en: "No meat, please", pronunciation: "noł mit pliz", pl: "Bez mięsa, proszę" },
+  { en: "Is this dish spicy?", pronunciation: "iz dys dysz spajsi?", pl: "Czy to danie jest ostre?" },
+  { en: "I’ll have this", pronunciation: "ajl haw dys", pl: "Wezmę to" },
+  { en: "A table for two, please", pronunciation: "ej tejbl for tu pliz", pl: "Stolik dla dwóch, proszę" },
+  { en: "Can we sit outside?", pronunciation: "ken łi syt ałtsajd?", pl: "Czy możemy usiąść na zewnątrz?" },
+  { en: "Could I get the bill?", pronunciation: "kud aj get de byl?", pl: "Czy mogę prosić rachunek?" },
+  { en: "Keep the change", pronunciation: "kip de czejndż", pl: "Zachowaj resztę" },
+  { en: "The food was delicious", pronunciation: "de fud łoz deliszes", pl: "Jedzenie było pyszne" },
+  { en: "Do you have vegetarian options?", pronunciation: "du ju haw wedżetarian opszyns?", pl: "Czy są dania wegetariańskie?" },
+  { en: "I’m full", pronunciation: "ajm ful", pl: "Jestem najedzony" },
+  { en: "Water, please", pronunciation: "łoter pliz", pl: "Wodę, proszę" },
+  { en: "Without ice", pronunciation: "łiwałt ajz", pl: "Bez lodu" },
+  { en: "Can I have it to go?", pronunciation: "ken aj haw yt tu goł?", pl: "Czy mogę to na wynos?" },
+  { en: "I didn’t order this", pronunciation: "aj dydynt order dys", pl: "Nie zamawiałem tego" },
+  { en: "Is service included?", pronunciation: "iz serwys inkludyd?", pl: "Czy obsługa jest wliczona?" },
+  { en: "We are ready to order", pronunciation: "łi ar redi tu order", pl: "Jesteśmy gotowi do zamówienia" }
+]
+},
+
+{
+number: 13,
+  title_en: "Restaurant - Vocabulary",
+  title_pl: "Restauracja - Słówka",
+  words: [
+  { en: "Restaurant", pronunciation: "restaurent", pl: "Restauracja" },
+  { en: "Menu", pronunciation: "menju", pl: "Menu" },
+  { en: "Waiter", pronunciation: "łejter", pl: "Kelner" },
+  { en: "Waitress", pronunciation: "łejtres", pl: "Kelnerka" },
+  { en: "Reservation", pronunciation: "rezervejszyn", pl: "Rezerwacja" },
+  { en: "Table", pronunciation: "tejbl", pl: "Stół" },
+  { en: "Bill", pronunciation: "byl", pl: "Rachunek" },
+  { en: "Tip", pronunciation: "typ", pl: "Napiwek" },
+  { en: "Dish", pronunciation: "dysz", pl: "Danie" },
+  { en: "Appetizer", pronunciation: "apetajzer", pl: "Przystawka" },
+  { en: "Main course", pronunciation: "mejn kors", pl: "Danie główne" },
+  { en: "Dessert", pronunciation: "dezert", pl: "Deser" },
+  { en: "Drink", pronunciation: "drink", pl: "Napój" },
+  { en: "Water", pronunciation: "łoter", pl: "Woda" },
+  { en: "Juice", pronunciation: "dżus", pl: "Sok" },
+  { en: "Beer", pronunciation: "bir", pl: "Piwo" },
+  { en: "Wine", pronunciation: "łajn", pl: "Wino" },
+  { en: "Fork", pronunciation: "fork", pl: "Widelec" },
+  { en: "Knife", pronunciation: "najf", pl: "Nóż" },
+  { en: "Spoon", pronunciation: "spun", pl: "Łyżka" }
+]
+},
+
+{
+number: 12,
+  title_en: "Hotel - Phrases",
+  title_pl: "Hotel - Zwroty",
+  words: [
+  { en: "I'd like to check in", pronunciation: "ajd lajk tu czek in", pl: "Chciałbym się zameldować" },
+  { en: "I'd like to check out", pronunciation: "ajd lajk tu czek ałt", pl: "Chciałbym się wymeldować" },
+  { en: "Do you have a reservation?", pronunciation: "du ju haw e rezerwejszyn", pl: "Czy ma Pan/Pani rezerwację?" },
+  { en: "I have a reservation", pronunciation: "aj haw e rezerwejszyn", pl: "Mam rezerwację" },
+  { en: "Can I see the room?", pronunciation: "ken aj si de rum", pl: "Czy mogę zobaczyć pokój?" },
+  { en: "Is breakfast included?", pronunciation: "iz brekfast inkludyd", pl: "Czy śniadanie jest wliczone?" },
+  { en: "How much is it per night?", pronunciation: "hał macz iz yt per najt", pl: "Ile to kosztuje za noc?" },
+  { en: "Where is my room?", pronunciation: "łer iz maj rum", pl: "Gdzie jest mój pokój?" },
+  { en: "The key, please", pronunciation: "de kij pliz", pl: "Poproszę klucz" },
+  { en: "I lost my key", pronunciation: "aj lost maj kij", pl: "Zgubiłem klucz" },
+  { en: "Do you have Wi-Fi?", pronunciation: "du ju haw łaifaj", pl: "Czy jest Wi-Fi?" },
+  { en: "What is the password?", pronunciation: "łot iz de pasłerd", pl: "Jakie jest hasło?" },
+  { en: "I need more towels", pronunciation: "aj nid mor tałels", pl: "Potrzebuję więcej ręczników" },
+  { en: "Can I change the room?", pronunciation: "ken aj czejndż de rum", pl: "Czy mogę zmienić pokój?" },
+  { en: "There is no hot water", pronunciation: "der iz no hot łoter", pl: "Nie ma ciepłej wody" },
+  { en: "The air conditioning doesn't work", pronunciation: "di er kondyszyning dazynt łerk", pl: "Klimatyzacja nie działa" },
+  { en: "I would like a wake-up call", pronunciation: "aj łud lajk e łejkap kol", pl: "Chciałbym budzenie telefoniczne" },
+  { en: "Can I have the bill?", pronunciation: "ken aj haw de byl", pl: "Czy mogę dostać rachunek?" },
+  { en: "I paid already", pronunciation: "aj pejd olredi", pl: "Już zapłaciłem" },
+  { en: "Thank you for your help", pronunciation: "fenk ju for jor help", pl: "Dziękuję za pomoc" }
+]
+},
+
+{
+number: 11,
+  title_en: "Hotel - Vocabulary",
+  title_pl: "Hotel - Słówka",
+  words: [
+  { en: "Reception", pronunciation: "rysepszyn", pl: "Recepcja" },
+  { en: "Reservation", pronunciation: "rezerwejszyn", pl: "Rezerwacja" },
+  { en: "Room", pronunciation: "rum", pl: "Pokój" },
+  { en: "Key", pronunciation: "ki", pl: "Klucz" },
+  { en: "Check-in", pronunciation: "czek in", pl: "Zameldowanie" },
+  { en: "Check-out", pronunciation: "czek ałt", pl: "Wymeldowanie" },
+  { en: "Elevator", pronunciation: "elewejtor", pl: "Winda" },
+  { en: "Stairs", pronunciation: "sters", pl: "Schody" },
+  { en: "Lobby", pronunciation: "lobi", pl: "Hol" },
+  { en: "Towel", pronunciation: "tałel", pl: "Ręcznik" },
+  { en: "Pillow", pronunciation: "pyloł", pl: "Poduszka" },
+  { en: "Blanket", pronunciation: "blanket", pl: "Koc" },
+  { en: "Air conditioning", pronunciation: "er kondyszyning", pl: "Klimatyzacja" },
+  { en: "Wi-Fi", pronunciation: "łaj faj", pl: "Wi-Fi" },
+  { en: "Breakfast", pronunciation: "brekfest", pl: "Śniadanie" },
+  { en: "Do not disturb", pronunciation: "du nat dysterb", pl: "Nie przeszkadzać" },
+  { en: "Cleaning service", pronunciation: "klining serwis", pl: "Sprzątanie" },
+  { en: "Bed", pronunciation: "bed", pl: "Łóżko" },
+  { en: "Double room", pronunciation: "dabl rum", pl: "Pokój dwuosobowy" },
+  { en: "Suite", pronunciation: "słit", pl: "Apartament" }
+]
+},
+
+{
+number: 10,
+  title_en: "Ship - Phrases",
+  title_pl: "Statek - Zwroty",
+  words: [
+  { en: "Welcome aboard", pronunciation: "łelkam ebołrd", pl: "Witamy na pokładzie" },
+  { en: "Where is my cabin?", pronunciation: "łer yz maj kabyn", pl: "Gdzie jest moja kabina?" },
+  { en: "Is this the right deck?", pronunciation: "yz dys de rajt dek", pl: "Czy to jest odpowiedni pokład?" },
+  { en: "What time do we arrive?", pronunciation: "łot tajm du łi erajw", pl: "O której godzinie przypływamy?" },
+  { en: "How long is the trip?", pronunciation: "hał long yz de trip", pl: "Jak długo trwa podróż?" },
+  { en: "I feel seasick", pronunciation: "aj fil sisyk", pl: "Mam chorobę morską" },
+  { en: "Where can I get a life jacket?", pronunciation: "łer ken aj get e lajf dżakit", pl: "Gdzie mogę dostać kamizelkę ratunkową?" },
+  { en: "Is there a restaurant on board?", pronunciation: "yz der e restoran on bord", pl: "Czy na pokładzie jest restauracja?" },
+  { en: "Where is the lifeboat?", pronunciation: "łer yz de lajfbołt", pl: "Gdzie jest łódź ratunkowa?" },
+  { en: "When can we disembark?", pronunciation: "łen ken łi dysembark", pl: "Kiedy możemy zejść na ląd?" },
+  { en: "Please remain seated", pronunciation: "pliz rimejn sityd", pl: "Proszę pozostać na miejscach" },
+  { en: "Do not lean over the rail", pronunciation: "du not lin ołwer de rejl", pl: "Nie wychylaj się za barierkę" },
+  { en: "We are leaving the port", pronunciation: "łi ar liwin de port", pl: "Opuszczamy port" },
+  { en: "We are docking", pronunciation: "łi ar dokin", pl: "Przybijamy do portu" },
+  { en: "Is there Wi-Fi on board?", pronunciation: "yz der łaj-faj on bord", pl: "Czy jest Wi-Fi na pokładzie?" },
+  { en: "Where is the emergency exit?", pronunciation: "łer yz de imerdżensi egzyt", pl: "Gdzie jest wyjście ewakuacyjne?" },
+  { en: "This is my first cruise", pronunciation: "dys yz maj ferst kruz", pl: "To mój pierwszy rejs" },
+  { en: "Enjoy your trip!", pronunciation: "indżoj jor trip", pl: "Miłej podróży!" },
+  { en: "Can I see the safety instructions?", pronunciation: "ken aj si de sejfti instrukszyns", pl: "Czy mogę zobaczyć instrukcje bezpieczeństwa?" },
+  { en: "Where is the observation deck?", pronunciation: "łer yz di obzerwejszyn dek", pl: "Gdzie jest pokład widokowy?" }
+]
+},
+
+{
+number: 9,
+  title_en: "Ship - Vocabulary",
+  title_pl: "Statek - Słówka",
+  words: [
+  { en: "Ship", pronunciation: "szyp", pl: "Statek" },
+  { en: "Ferry", pronunciation: "feri", pl: "Prom" },
+  { en: "Captain", pronunciation: "kaptyn", pl: "Kapitan" },
+  { en: "Deck", pronunciation: "dek", pl: "Pokład" },
+  { en: "Cabin", pronunciation: "kabin", pl: "Kabina" },
+  { en: "Harbor", pronunciation: "harbor", pl: "Port" },
+  { en: "Port", pronunciation: "port", pl: "Lewa burta" },
+  { en: "Starboard", pronunciation: "starbord", pl: "Prawa burta" },
+  { en: "Life jacket", pronunciation: "lajf dżakit", pl: "Kamizelka ratunkowa" },
+  { en: "Anchor", pronunciation: "anker", pl: "Kotwica" },
+  { en: "Sail", pronunciation: "sejl", pl: "Żagiel" },
+  { en: "Lifeboat", pronunciation: "lajfbołt", pl: "Łódź ratunkowa" },
+  { en: "Boarding", pronunciation: "bording", pl: "Wejście na pokład" },
+  { en: "Departure", pronunciation: "diparczer", pl: "Wypłynięcie" },
+  { en: "Arrival", pronunciation: "erajwal", pl: "Przypłynięcie" },
+  { en: "Sea", pronunciation: "si", pl: "Morze" },
+  { en: "Wave", pronunciation: "łejw", pl: "Fala" },
+  { en: "Ticket", pronunciation: "tykyt", pl: "Bilet" },
+  { en: "Schedule", pronunciation: "szedjul", pl: "Rozkład" },
+  { en: "Crew", pronunciation: "kru", pl: "Załoga" }
+]
+},
+
+{
+number: 8,
+  title_en: "Airport - Phrases",
+  title_pl: "Lotnisko - Zwroty",
+  words: [
+  { en: "Where is the check-in desk?", pronunciation: "łer yz de czek-in desk?", pl: "Gdzie jest stanowisko odprawy?" },
+  { en: "Can I see your passport?", pronunciation: "ken aj si jor pasport?", pl: "Czy mogę zobaczyć twój paszport?" },
+  { en: "Do you have any luggage?", pronunciation: "du ju haw eni lagydż?", pl: "Czy masz jakiś bagaż?" },
+  { en: "Boarding pass, please.", pronunciation: "bording pas pliz", pl: "Poproszę kartę pokładową." },
+  { en: "What time is the flight?", pronunciation: "łot tajm yz de flajt?", pl: "O której jest lot?" },
+  { en: "Your gate is number 5.", pronunciation: "jor gejt yz namber fajw", pl: "Twoja bramka to numer 5." },
+  { en: "The flight is delayed.", pronunciation: "de flajt yz dilejd", pl: "Lot jest opóźniony." },
+  { en: "The flight is on time.", pronunciation: "de flajt yz on tajm", pl: "Lot jest o czasie." },
+  { en: "Please go to gate 3.", pronunciation: "pliz goł tu gejt fri", pl: "Proszę udać się do bramki 3." },
+  { en: "Where is the baggage claim?", pronunciation: "łer yz de bagedż klejm?", pl: "Gdzie jest odbiór bagażu?" },
+  { en: "How many bags do you have?", pronunciation: "haw meni bagz du ju haw?", pl: "Ile masz toreb?" },
+  { en: "This is my hand luggage.", pronunciation: "dys yz maj hend lagydż", pl: "To jest mój bagaż podręczny." },
+  { en: "Do I need to take off my shoes?", pronunciation: "du aj nid tu tejk of maj szuz?", pl: "Czy muszę zdjąć buty?" },
+  { en: "Is this your suitcase?", pronunciation: "yz dys jor sujtkejs?", pl: "Czy to twoja walizka?" },
+  { en: "Please wait in line.", pronunciation: "pliz łejt yn lajn", pl: "Proszę czekać w kolejce." },
+  { en: "Enjoy your flight!", pronunciation: "yndżoj jor flajt!", pl: "Miłego lotu!" },
+  { en: "Window or aisle seat?", pronunciation: "łindoł or ajl sit?", pl: "Miejsce przy oknie czy przy przejściu?" },
+  { en: "I have a connecting flight.", pronunciation: "aj haw e konektyng flajt", pl: "Mam lot przesiadkowy." },
+  { en: "Security check is this way.", pronunciation: "sikjuriti czek yz dys łej", pl: "Kontrola bezpieczeństwa jest tędy." },
+  { en: "Please fasten your seatbelt.", pronunciation: "pliz fastyn jor sitbelt", pl: "Proszę zapiąć pasy bezpieczeństwa." }
+]
+},
+
+{
+number: 7,
+  title_en: "Airport - Vocabulary",
+  title_pl: "Lotnisko - Słówka",
+  words: [
+  { en: "Airport", pronunciation: "erport", pl: "Lotnisko" },
+  { en: "Terminal", pronunciation: "termynal", pl: "Terminal" },
+  { en: "Departure", pronunciation: "diparczer", pl: "Odlot" },
+  { en: "Arrival", pronunciation: "erajwal", pl: "Przylot" },
+  { en: "Boarding pass", pronunciation: "bording pas", pl: "Karta pokładowa" },
+  { en: "Gate", pronunciation: "gejt", pl: "Brama" },
+  { en: "Check-in", pronunciation: "czek in", pl: "Odprawa" },
+  { en: "Security check", pronunciation: "sekjuriti czek", pl: "Kontrola bezpieczeństwa" },
+  { en: "Luggage", pronunciation: "lagydż", pl: "Bagaż" },
+  { en: "Hand luggage", pronunciation: "hend lagydż", pl: "Bagaż podręczny" },
+  { en: "Suitcase", pronunciation: "sutkejs", pl: "Walizka" },
+  { en: "Customs", pronunciation: "kastoms", pl: "Odprawa celna" },
+  { en: "Passport", pronunciation: "pasport", pl: "Paszport" },
+  { en: "Flight", pronunciation: "flajt", pl: "Lot" },
+  { en: "Flight number", pronunciation: "flajt namber", pl: "Numer lotu" },
+  { en: "Delay", pronunciation: "dilej", pl: "Opóźnienie" },
+  { en: "Cancelled", pronunciation: "kansyld", pl: "Odwołany" },
+  { en: "Take-off", pronunciation: "tejk of", pl: "Start" },
+  { en: "Landing", pronunciation: "lending", pl: "Lądowanie" },
+  { en: "Baggage claim", pronunciation: "bagydż klejm", pl: "Odbiór bagażu" }
+]
+},
+
+{
+number: 6,
+  title_en: "Souvenirs - Phrases",
+  title_pl: "Pamiątki - Zwroty",
+  words: [
+  { en: "How much is this?", pronunciation: "hau macz yz dys?", pl: "Ile to kosztuje?" },
+  { en: "Can I help you?", pronunciation: "ken aj help ju?", pl: "Czy mogę pomóc?" },
+  { en: "I'm just looking.", pronunciation: "ajm dżast luking", pl: "Tylko się rozglądam." },
+  { en: "I'll take this.", pronunciation: "ajl tejk dys", pl: "Wezmę to." },
+  { en: "Do you have magnets?", pronunciation: "du ju haw magnets?", pl: "Czy macie magnesy?" },
+  { en: "Where are the postcards?", pronunciation: "łer ar de połstkards?", pl: "Gdzie są pocztówki?" },
+  { en: "Do you accept card?", pronunciation: "du ju aksept kard?", pl: "Czy akceptujecie kartę?" },
+  { en: "Can I pay in cash?", pronunciation: "ken aj pej in kasz?", pl: "Czy mogę zapłacić gotówką?" },
+  { en: "It's too expensive.", pronunciation: "yts tu ekspensyw", pl: "To za drogie." },
+  { en: "Can you lower the price?", pronunciation: "ken ju lołer de prajs?", pl: "Czy możesz obniżyć cenę?" },
+  { en: "Do you have this in another color?", pronunciation: "du ju haw dys in enader kalor?", pl: "Czy macie to w innym kolorze?" },
+  { en: "Is this handmade?", pronunciation: "yz dys hendmejd?", pl: "Czy to jest ręcznie robione?" },
+  { en: "Can I see that?", pronunciation: "ken aj si dat?", pl: "Czy mogę to zobaczyć?" },
+  { en: "Do you have souvenirs?", pronunciation: "du ju haw suwenirs?", pl: "Czy macie pamiątki?" },
+  { en: "I’m looking for a gift.", pronunciation: "ajm luking for e gift", pl: "Szukam prezentu." },
+  { en: "Can I try this on?", pronunciation: "ken aj traj dys on?", pl: "Czy mogę to przymierzyć?" },
+  { en: "Can I get a receipt?", pronunciation: "ken aj get e resit?", pl: "Czy mogę dostać paragon?" },
+  { en: "It's a gift.", pronunciation: "yts e gift", pl: "To prezent." },
+  { en: "Is there a discount?", pronunciation: "yz der e dyskałnt?", pl: "Czy jest zniżka?" },
+  { en: "Thank you, goodbye!", pronunciation: "fenk ju, gudbaj!", pl: "Dziękuję, do widzenia!" }
+]
+},
+
+{
+number: 5,
+  title_en: "Souvenirs - Vocabulary",
+  title_pl: "Pamiątki - Słówka",
+  words: [
+  { en: "Souvenir", pronunciation: "suwenir", pl: "Pamiątka" },
+  { en: "Magnet", pronunciation: "magnet", pl: "Magnes" },
+  { en: "Postcard", pronunciation: "połstkard", pl: "Pocztówka" },
+  { en: "Stamp", pronunciation: "stamp", pl: "Znaczek / Pieczątka" },
+  { en: "Keychain", pronunciation: "kiczejn", pl: "Brelok" },
+  { en: "Guidebook", pronunciation: "gajdbuk", pl: "Przewodnik turystyczny" },
+  { en: "Travel book", pronunciation: "trawel buk", pl: "Książka podróżnicza" },
+  { en: "Map", pronunciation: "map", pl: "Mapa" },
+  { en: "Plush toy", pronunciation: "plaszt toj", pl: "Pluszak" },
+  { en: "Miniature", pronunciation: "miniczur", pl: "Miniaturka" },
+  { en: "T-shirt", pronunciation: "tiszert", pl: "Koszulka" },
+  { en: "Mug", pronunciation: "mag", pl: "Kubek" },
+  { en: "Fridge magnet", pronunciation: "fridż magnet", pl: "Magnes na lodówkę" },
+  { en: "Local craft", pronunciation: "lołkal kraft", pl: "Lokalne rękodzieło" },
+  { en: "Notebook", pronunciation: "nołtbuk", pl: "Notatnik" },
+  { en: "Calendar", pronunciation: "kalenda", pl: "Kalendarz" },
+  { en: "Bracelet", pronunciation: "brejslet", pl: "Bransoletka" },
+  { en: "Hat", pronunciation: "hat", pl: "Czapka / Kapelusz" },
+  { en: "Bag", pronunciation: "bag", pl: "Torba" },
+  { en: "Snow globe", pronunciation: "snoł glołb", pl: "Kula śnieżna" }
+]
+},
+
+{
+  number: 4,
+  title_en: "Travel - Phrases",
+  title_pl: "Podróże - Zwroty",
+  words: [
+    { en: "Where is the bus stop?", pronunciation: "łer yz de bas stop", pl: "Gdzie jest przystanek autobusowy?" },
+    { en: "Where is the train station?", pronunciation: "łer yz de trejn stejszyn", pl: "Gdzie jest dworzec kolejowy?" },
+    { en: "I have a reservation", pronunciation: "aj haw e rezerwejszyn", pl: "Mam rezerwację" },
+    { en: "I would like to check in", pronunciation: "aj łud lajk tu czek yn", pl: "Chciałbym się zameldować" },
+    { en: "I would like to check out", pronunciation: "aj łud lajk tu czek ałt", pl: "Chciałbym się wymeldować" },
+    { en: "Can you help me?", pronunciation: "ken ju help mi", pl: "Czy możesz mi pomóc?" },
+    { en: "How much does it cost?", pronunciation: "hau macz daz yt kost", pl: "Ile to kosztuje?" },
+    { en: "Do you accept credit cards?", pronunciation: "du ju aksept kredyt kards", pl: "Czy akceptujecie karty kredytowe?" },
+    { en: "I lost my passport", pronunciation: "aj lost maj pasport", pl: "Zgubiłem paszport" },
+    { en: "I need a doctor", pronunciation: "aj nid e doktor", pl: "Potrzebuję lekarza" },
+    { en: "Call the police!", pronunciation: "kol de poliis", pl: "Wezwij policję!" },
+    { en: "Can I get a map?", pronunciation: "ken aj get e map", pl: "Czy mogę dostać mapę?" },
+    { en: "Is there Wi-Fi here?", pronunciation: "yz der łaj faj hir", pl: "Czy jest tu Wi-Fi?" },
+    { en: "What time does it leave?", pronunciation: "łot tajm daz yt liw", pl: "O której to odjeżdża?" },
+    { en: "What time does it arrive?", pronunciation: "łot tajm daz yt erajw", pl: "O której to przyjeżdża?" },
+    { en: "I would like a single room", pronunciation: "aj łud lajk e syngl rum", pl: "Chciałbym pokój jednoosobowy" },
+    { en: "I would like a double room", pronunciation: "aj łud lajk e dabl rum", pl: "Chciałbym pokój dwuosobowy" },
+    { en: "Can I see the menu?", pronunciation: "ken aj si de menju", pl: "Czy mogę zobaczyć menu?" },
+    { en: "The bill, please", pronunciation: "de byl pliz", pl: "Poproszę rachunek" },
+    { en: "Can I pay by card?", pronunciation: "ken aj pej baj kard", pl: "Czy mogę zapłacić kartą?" },
+    { en: "Can I pay in cash?", pronunciation: "ken aj pej yn kesz", pl: "Czy mogę zapłacić gotówką?" },
+    { en: "Where is the nearest ATM?", pronunciation: "łer yz de niryst ej ti em", pl: "Gdzie jest najbliższy bankomat?" },
+    { en: "I would like to buy a ticket", pronunciation: "aj łud lajk tu baj e tykyt", pl: "Chciałbym kupić bilet" },
+    { en: "Is breakfast included?", pronunciation: "yz brekfest ynkludyd", pl: "Czy śniadanie jest wliczone?" },
+    { en: "How far is it?", pronunciation: "hau far yz yt", pl: "Jak daleko to jest?" },
+    { en: "I’m looking for a taxi", pronunciation: "ajm luking for e taksi", pl: "Szukam taksówki" },
+    { en: "Where can I rent a car?", pronunciation: "łer ken aj rent e kar", pl: "Gdzie mogę wynająć samochód?" },
+    { en: "I’m a tourist", pronunciation: "ajm e turyst", pl: "Jestem turystą" },
+    { en: "I don’t speak much English", pronunciation: "aj dont spik macz inglisz", pl: "Nie mówię dobrze po angielsku" },
+    { en: "Please speak slowly", pronunciation: "pliz spik slołli", pl: "Proszę mówić wolniej" }
+  ]
+},
+
+{
+  number: 3,
+  title_en: "Travel - Vocabulary",
+  title_pl: "Podróże - Słówka",
+  words: [
+    { en: "Airport", pronunciation: "erport", pl: "Lotnisko" },
+    { en: "Flight", pronunciation: "flajt", pl: "Lot" },
+    { en: "Plane", pronunciation: "plejn", pl: "Samolot" },
+    { en: "Ticket", pronunciation: "tykyt", pl: "Bilet" },
+    { en: "Passport", pronunciation: "pasport", pl: "Paszport" },
+    { en: "Luggage", pronunciation: "lagydż", pl: "Bagaż" },
+    { en: "Suitcase", pronunciation: "sjutkejs", pl: "Walizka" },
+    { en: "Hotel", pronunciation: "hołtel", pl: "Hotel" },
+    { en: "Reservation", pronunciation: "rezerwejszyn", pl: "Rezerwacja" },
+    { en: "Reception", pronunciation: "rysepszyn", pl: "Recepcja" },
+    { en: "Room", pronunciation: "rum", pl: "Pokój" },
+    { en: "Key", pronunciation: "ki", pl: "Klucz" },
+    { en: "Map", pronunciation: "map", pl: "Mapa" },
+    { en: "Guidebook", pronunciation: "gajdbuk", pl: "Przewodnik (książka)" },
+    { en: "Tourist", pronunciation: "turyst", pl: "Turysta" },
+    { en: "Trip", pronunciation: "tryp", pl: "Wycieczka" },
+    { en: "Journey", pronunciation: "dżerni", pl: "Podróż" },
+    { en: "Travel", pronunciation: "trawel", pl: "Podróżować" },
+    { en: "Destination", pronunciation: "destynejszyn", pl: "Cel podróży" },
+    { en: "Beach", pronunciation: "bicz", pl: "Plaża" },
+    { en: "Mountain", pronunciation: "małntyn", pl: "Góra" },
+    { en: "Island", pronunciation: "ajland", pl: "Wyspa" },
+    { en: "Train", pronunciation: "trejn", pl: "Pociąg" },
+    { en: "Bus", pronunciation: "bas", pl: "Autobus" },
+    { en: "Taxi", pronunciation: "taksi", pl: "Taksówka" },
+    { en: "Car", pronunciation: "kar", pl: "Samochód" },
+    { en: "Station", pronunciation: "stejszyn", pl: "Stacja" },
+    { en: "Airport terminal", pronunciation: "erport termynal", pl: "Terminal lotniczy" },
+    { en: "Backpack", pronunciation: "bakpak", pl: "Plecak" },
+    { en: "Camera", pronunciation: "kamera", pl: "Aparat fotograficzny" }
+  ]
+},
+
+{
+  number: 2,
+  title_en: "Basic Phrases",
+  title_pl: "Podstawowe Zwroty",
+  words: [
+    { en: "Excuse me", pronunciation: "ekskjuz mi", pl: "Przepraszam (zaczepka)" },
+    { en: "I'm sorry", pronunciation: "ajm sori", pl: "Przepraszam (skrucha)" },
+    { en: "How are you?", pronunciation: "hau ar ju", pl: "Jak się masz?" },
+    { en: "I'm fine", pronunciation: "ajm fajn", pl: "Mam się dobrze" },
+    { en: "What's your name?", pronunciation: "łots jor nejm", pl: "Jak masz na imię?" },
+    { en: "My name is...", pronunciation: "maj nejm yz...", pl: "Mam na imię..." },
+    { en: "Nice to meet you", pronunciation: "najs tu mit ju", pl: "Miło cię poznać" },
+    { en: "Where are you from?", pronunciation: "łer ar ju from", pl: "Skąd jesteś?" },
+    { en: "I’m from Poland", pronunciation: "ajm from poland", pl: "Jestem z Polski" },
+    { en: "Do you speak English?", pronunciation: "du ju spik inglisz", pl: "Czy mówisz po angielsku?" },
+    { en: "A little", pronunciation: "e lytl", pl: "Trochę" },
+    { en: "I don’t understand", pronunciation: "aj dont anderstend", pl: "Nie rozumiem" },
+    { en: "Could you repeat that?", pronunciation: "kuld ju rypit det", pl: "Czy możesz to powtórzyć?" },
+    { en: "What time is it?", pronunciation: "łot tajm yz yt", pl: "Która godzina?" },
+    { en: "I don’t know", pronunciation: "aj dont noł", pl: "Nie wiem" },
+    { en: "How much is it?", pronunciation: "hau macz yz yt", pl: "Ile to kosztuje?" },
+    { en: "Where is the toilet?", pronunciation: "łer yz de tojlėt", pl: "Gdzie jest toaleta?" },
+    { en: "I’m hungry", pronunciation: "ajm hangri", pl: "Jestem głodny" },
+    { en: "I’m thirsty", pronunciation: "ajm ferszti", pl: "Chce mi się pić" },
+    { en: "I'm tired", pronunciation: "ajm tajerd", pl: "Jestem zmęczony" },
+    { en: "Let’s go", pronunciation: "lets goł", pl: "Chodźmy" },
+    { en: "Wait a moment", pronunciation: "łejt e moment", pl: "Poczekaj chwilę" },
+    { en: "I like it", pronunciation: "aj lajk yt", pl: "Podoba mi się to" },
+    { en: "I don’t like it", pronunciation: "aj dont lajk yt", pl: "Nie podoba mi się to" },
+    { en: "Help!", pronunciation: "help", pl: "Pomocy!" },
+    { en: "Call the police", pronunciation: "kol de poliis", pl: "Wezwij policję" },
+    { en: "Fire!", pronunciation: "fajer", pl: "Pożar!" },
+    { en: "Be careful", pronunciation: "bi kerful", pl: "Uważaj" },
+    { en: "Good luck", pronunciation: "gud lak", pl: "Powodzenia" },
+    { en: "Congratulations!", pronunciation: "kongraczulejszyns", pl: "Gratulacje!" }
+  ]
+},
+
+      {
+        number: 1,
+        title_en: "Basic Vocabulary",
+        title_pl: "Podstawowe Słówka",
+        words: [
+          { en: "Hello", pronunciation: "heloł", pl: "Cześć" },
+          { en: "Goodbye", pronunciation: "gudbaj", pl: "Do widzenia" },
+          { en: "Thank you", pronunciation: "fenk ju", pl: "Dziękuję" },
+          { en: "Please", pronunciation: "pliz", pl: "Proszę" },
+          { en: "Yes", pronunciation: "jes", pl: "Tak" },
+          { en: "No", pronunciation: "noł", pl: "Nie" }
+        ]
+      }
+    ];
+
+    let currentLang = "en";
+
+    function renderLessons() {
+      const container = document.getElementById("lesson-container");
+      container.innerHTML = "";
+
+      lessons.forEach(lesson => {
+        const div = document.createElement("div");
+        div.className = "lesson";
+
+        const title = document.createElement("h2");
+        title.textContent = currentLang === "en" ? `Lesson ${lesson.number}` : `Lekcja ${lesson.number}`;
+        div.appendChild(title);
+
+        const subtitle = document.createElement("h3");
+        subtitle.textContent = currentLang === "en" ? lesson.title_en : lesson.title_pl;
+        div.appendChild(subtitle);
+
+        lesson.words.forEach(word => {
+          const wordDiv = document.createElement("div");
+          wordDiv.className = "word";
+
+          if (currentLang === "en") {
+            wordDiv.innerHTML = `${word.en} <span class="pronunciation">(${word.pronunciation})</span>`;
+          } else {
+            wordDiv.textContent = word.pl;
+          }
+
+          wordDiv.addEventListener("click", () => {
+            if (wordDiv.querySelector(".translation")) return;
+
+            const trans = document.createElement("div");
+            trans.className = "translation";
+            if (currentLang === "en") {
+              trans.textContent = word.pl;
+            } else {
+              trans.textContent = `${word.en} (${word.pronunciation})`;
+            }
+            wordDiv.appendChild(trans);
+          });
+
+          div.appendChild(wordDiv);
+        });
+
+        container.appendChild(div);
+      });
+    }
+
+    document.getElementById("btn-en").addEventListener("click", () => {
+      currentLang = "en";
+      document.getElementById("btn-en").classList.add("active");
+      document.getElementById("btn-pl").classList.remove("active");
+      renderLessons();
+    });
+
+    document.getElementById("btn-pl").addEventListener("click", () => {
+      currentLang = "pl";
+      document.getElementById("btn-pl").classList.add("active");
+      document.getElementById("btn-en").classList.remove("active");
+      renderLessons();
+    });
+
+    // Start domyślnie z angielskim
+    renderLessons();
+  </script>
+
+</body>
+</html>
