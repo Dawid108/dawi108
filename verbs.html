@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Verbs</title>
+  <link rel="stylesheet" href="20250925_slowka.css">
+</head>
+<body>
+  <div class="app" role="application">
+    <div class="top">
+      <div class="meter">Czas: <span id="time">60</span>s</div>
+      <div class="meter">Punkty: <span id="score">0</span></div>
+    </div>
+
+    <div class="center-block">
+      <div id="revealed" class="message-correct" aria-live="polite"></div>
+      <div class="word-card" id="polishWord">—</div>
+      <div class="input-row">
+        <input id="answer" type="text" inputmode="text" autocomplete="off" autocapitalize="none" autocorrect="off" placeholder="Wpisz tłumaczenie po angielsku" />
+      </div>
+      <div class="controls">
+        <button id="newBtn" class="btn-new">Nowa Gra</button>
+        <button id="hintBtn" class="btn-hint">Podpowiedź</button>
+      </div>
+    </div>
+
+    <div style="font-size:13px;color:rgba(9,48,66,0.6);text-align:center">Wpisz odpowiedź i zatwierdź ENTER. Poprawne odpowiedzi pojawią się gdy popełnisz błąd.</div>
+  </div>
+
+  <!-- Overlay (pokazywany przy starcie i po zakończeniu) -->
+  <div id="overlay" class="overlay" style="display:flex;">
+    <div class="modal">
+      <h2>Twój wynik: <span id="lastResult">0</span></h2>
+      <p>Twój rekord: <strong id="bestResult">0</strong></p>
+      <button id="startFromOverlay" class="btn-new">Nowa Gra</button>
+    </div>
+  </div>
+
+  <script>
+    // -----------------------------
+    // DANE - podzielone na łatwe / średnie / trudne
+    // Każdy element: {polski:'', angielski:'', inne: ['alt1','alt2']},
+    // -----------------------------
+    const easy = [
+    {polski:'należeć', angielski:'belong', inne:['belonged', 'belonged']},
+    {polski:'wspomnieć', angielski:'mention', inne:['mentioned', 'mentioned']},  
+    ];
+
+    const medium = [
+    {polski:'przychodzić', angielski:'come', inne:['came', 'come']}, 
+    {polski:'posiadać', angielski:'own', inne:['owned', 'owned']}, 
+    {polski:'przynieść', angielski:'bring', inne:['brought', 'brought']}, 
+    {polski:'przegapić', angielski:'miss', inne:['missed', 'missed']}, 
+    {polski:'zawierać', angielski:'include', inne:['included', 'included']}, 
+    ];
+
+    const hard = [    
+    {polski:'świętować', angielski:'celebrate', inne:['celebrated', 'celebrated']}, 
+    {polski:'grać', angielski:'play', inne:['played', 'played', 'play music']}, 
+    {polski:'wysłać', angielski:'send', inne:['sent', 'sent']}, 
+    {polski:'używać', angielski:'use', inne:['used', 'used']}, 
+    {polski:'rozmawiać', angielski:'talk', inne:['talked', 'talked', 'speak']}, 
+    {polski:'zrobić', angielski:'make', inne:['made', 'made', 'create']}, 
+    {polski:'świętować', angielski:'celebrate', inne:['celebrated', 'celebrated']}, 
+    {polski:'cieszyć się', angielski:'enjoy', inne:['enjoyed', 'enjoyed', 'like']}, 
+    {polski:'spędzać', angielski:'spend', inne:['spent', 'spent']}, 
+    {polski:'skakać', angielski:'jump', inne:['jumped', 'jumped']}, 
+    {polski:'pokazywać', angielski:'show', inne:['showed', 'shown']}, 
+    {polski:'trzymać', angielski:'hold', inne:['held', 'held']}, 
+    {polski:'wyglądać', angielski:'look', inne:['looked', 'looked', 'watch']}, 
+    {polski:'jeść', angielski:'eat', inne:['ate', 'eaten']}, 
+    {polski:'iść', angielski:'go', inne:['went', 'gone']}, 
+    {polski:'być', angielski:'be', inne:['was', 'were', 'been']}, 
+    {polski:'studiować', angielski:'study', inne:['studied', 'studied']}, 
+    {polski:'pracować', angielski:'work', inne:['worked', 'worked']}, 
+    {polski:'kochać', angielski:'love', inne:['loved', 'loved']}, 
+    {polski:'spotykać', angielski:'meet', inne:['met', 'met']}, 
+    {polski:'uczyć się', angielski:'learn', inne:['learnt', 'learned']}, 
+    {polski:'uczyć (kogoś)', angielski:'teach', inne:['taught', 'taught']}, 
+    {polski:'gotować', angielski:'cook', inne:['cooked', 'cooked']}
+    ];
+
+    // ---- zmienne gry ----
+    let pool = []; // kolejka slow
+    let currentIndex = 0;
+    let timeLeft = 60;
+    let timerId = null;
+    let score = 0;
+    let showingCorrectTimeout = null;
+    const STORAGE_KEY = 'verbs';
+
+    // elementy DOM
+    const timeEl = document.getElementById('time');
+    const scoreEl = document.getElementById('score');
+    const polishWordEl = document.getElementById('polishWord');
+    const answerInput = document.getElementById('answer');
+    const revealedEl = document.getElementById('revealed');
+    const newBtn = document.getElementById('newBtn');
+    const hintBtn = document.getElementById('hintBtn');
+    const overlay = document.getElementById('overlay');
+    const lastResultEl = document.getElementById('lastResult');
+    const bestResultEl = document.getElementById('bestResult');
+    const startFromOverlay = document.getElementById('startFromOverlay');
+
+    // Przy ładowaniu - wczytaj zapisane wyniki
+    function loadScores(){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if(raw){
+          const data = JSON.parse(raw);
+          lastResultEl.textContent = data.last || 0;
+          bestResultEl.textContent = data.best || 0;
+        } else {
+          lastResultEl.textContent = 0;
+          bestResultEl.textContent = 0;
+        }
+      }catch(e){
+        console.error('Błąd odczytu localStorage',e);
+      }
+    }
+
+    // Zapisz wynik po zakończeniu
+    function saveScores(last){
+      try{
+        const raw = localStorage.getItem(STORAGE_KEY);
+        let data = raw ? JSON.parse(raw) : {last:0,best:0};
+        data.last = last;
+        if(typeof data.best !== 'number') data.best = 0;
+        if(last > data.best) data.best = last;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        lastResultEl.textContent = data.last;
+        bestResultEl.textContent = data.best;
+      }catch(e){console.error('Błąd zapisu',e)}
+    }
+
+    // Pomoc: tasowanie tablicy (Fisher-Yates)
+    function shuffle(a){
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+
+    // Przygotuj pulę słów: łatwe->średnie->trudne, ale w losowej kolejności w obrębie poziomów
+    function preparePool(){
+      pool = [];
+      pool = pool.concat(shuffle([...easy]));
+      pool = pool.concat(shuffle([...medium]));
+      pool = pool.concat(shuffle([...hard]));
+      currentIndex = 0;
+    }
+
+    // Pokaż aktualne słowo
+    function showCurrent(){
+      if(currentIndex >= pool.length){
+        // wszystkie odgadnięte
+        endGame();
+        return;
+      }
+      const item = pool[currentIndex];
+      polishWordEl.textContent = item.polski;
+    }
+
+    // Obsługa odpowiedzi
+    function checkAnswer(){
+      const raw = answerInput.value.trim();
+      if(!raw) return;
+      const item = pool[currentIndex];
+      const candidates = [item.angielski].concat(item.inne || []).map(s=>s.toLowerCase());
+      if(candidates.includes(raw.toLowerCase())){
+        // poprawna
+        score += 1;
+        timeLeft += 3; // +3s
+        currentIndex += 1;
+        updateHUD();
+        answerInput.value = '';
+        // pokaż następne
+        showCurrent();
+      } else {
+        // zła odpowiedź
+        timeLeft = Math.max(0, timeLeft - 1);
+        updateHUD();
+        revealCorrectFor3s(item);
+      }
+      // utrzymaj fokus - pilnujemy żeby klawiatura była otwarta na telefonie
+      setTimeout(()=>{ answerInput.focus(); },50);
+    }
+
+    // Pokaż poprawne tłumaczenie przez 3s
+    function revealCorrectFor3s(item){
+      clearTimeout(showingCorrectTimeout);
+      revealedEl.textContent = 'Poprawnie: ' + item.angielski;
+      revealedEl.classList.add('show');
+      showingCorrectTimeout = setTimeout(()=>{
+        revealedEl.classList.remove('show');
+        revealedEl.textContent = '';
+      },3000);
+    }
+
+    // Aktualizuj widżety czasu i punktów
+    function updateHUD(){
+      timeEl.textContent = Math.max(0, Math.floor(timeLeft));
+      scoreEl.textContent = score;
+    }
+
+    // Start timera
+    function startTimer(){
+      clearInterval(timerId);
+      timerId = setInterval(()=>{
+        timeLeft -= 1;
+        updateHUD();
+        if(timeLeft <= 0){
+          clearInterval(timerId);
+          endGame();
+        }
+      },1000);
+    }
+
+    // Zakończenie gry
+    function endGame(){
+      clearInterval(timerId);
+      overlay.style.display = 'flex';
+      saveScores(score);
+      // ustaw ostatni wynik widoczny
+      lastResultEl.textContent = score;
+      // wskaż też najlepszy z localStorage
+      try{ const data = JSON.parse(localStorage.getItem(STORAGE_KEY)); if(data && typeof data.best==='number') bestResultEl.textContent = data.best; }catch(e){}
+    }
+
+    // Rozpocznij nową grę
+    function newGame(){
+      // przygotowanie
+      preparePool();
+      timeLeft = 60;
+      score = 0;
+      updateHUD();
+      revealedEl.classList.remove('show');
+      revealedEl.textContent = '';
+      overlay.style.display = 'none';
+      showCurrent();
+      // wyczyść pole i ustaw fokus
+      answerInput.value = '';
+      setTimeout(()=>answerInput.focus(),80);
+      startTimer();
+    }
+
+    // Podpowiedź - pokaż pierwszą literę poprawnego angielskiego słowa
+    function giveHint(){
+      if(currentIndex >= pool.length) return;
+      const item = pool[currentIndex];
+      const first = item.angielski.charAt(0);
+      // wstaw to do pola (nie nadpisujemy jeśli coś już jest) - pokażmy jako placeholder
+      answerInput.placeholder = 'Zaczyna się na: ' + first + ' — wpisz odpowiedź';
+      // przywrócić placeholder po 3s
+      setTimeout(()=>{ answerInput.placeholder = 'Wpisz tłumaczenie po angielsku'; },3000);
+      setTimeout(()=>answerInput.focus(),50);
+    }
+
+    // Obsługa naciśnięcia Enter w polu
+    answerInput.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter'){
+        e.preventDefault();
+        checkAnswer();
+      }
+    });
+
+    // Przycisk nowa gra
+    newBtn.addEventListener('click', ()=>{
+      newGame();
+    });
+    startFromOverlay.addEventListener('click', ()=>{
+      newGame();
+    });
+
+    // Przycisk podpowiedź
+    hintBtn.addEventListener('click', giveHint);
+
+    // Gdy użytkownik dotknie obszaru aplikacji - ustaw fokus (na telefonach przydaje się)
+    document.querySelector('.app').addEventListener('touchstart', ()=>{ setTimeout(()=>answerInput.focus(),50); });
+
+    // Przy starcie - wczytaj wyniki, pokaż overlay
+    loadScores();
+    // pokaż overlay na początku
+    overlay.style.display = 'flex';
+
+    // Upewnij się, że po załadowaniu focus jest na input (jeśli okno nie blokuje autofocus)
+    window.addEventListener('load', ()=>{ setTimeout(()=>answerInput.focus(),150); });
+
+    // Dla bezpieczeństwa: gdy pool pusty i gra w toku
+    showCurrent();
+    updateHUD();
+
+    // ---------- Notatka dla przyszłej rozbudowy ----------
+    // - Aby dodać więcej słów, rozbuduj tablice easy/medium/hard wyżej.
+    // - Można dodać poziomy trudności, dźwięki, animacje lub pasek czasu.
+
+  </script>
+</body>
+</html>
