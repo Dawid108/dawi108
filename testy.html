@@ -155,6 +155,399 @@
      */
     const easy = [
         {
+            pytanie: 'Zadaniem funkcji PHP o nazwie mysql_num_rows() jest',
+            poprawna_odpowiedz: 'zwrócić liczbę wierszy znajdujących się w wyniku zapytania',
+            bledne_odpowiedzi: ['ponumerować rekordy w bazie danych', 'zwrócić kolejny rekord z wynikami zapytania', 'zwrócić rekord, którego numer podany został w parametrze funkcji']
+        },
+        {
+            pytanie: 'Jaka treść komunikatu powinna być wstawiona w przedstawionym kodzie PHP zamiast znaków zapytania?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758885502/pyt282_k3pjag.png',
+            poprawna_odpowiedz: 'Błąd połączenia z serwerem SQL',
+            bledne_odpowiedzi: ['Wybrana baza nie istnieje', 'Pomyślnie dodano rekord do bazy', 'Błąd przetwarzania zapytania SQL']
+        },
+        {
+            pytanie: 'Testy aplikacji internetowej mające za zadanie sprawdzenie skalowalności aplikacji i bazy danych oraz architektury serwera i konfiguracji noszą nazwę testów',
+            poprawna_odpowiedz: 'kompatybilności',
+            bledne_odpowiedzi: ['bezpieczeństwa', 'funkcjonalnych', 'użyteczności']
+        },
+        {
+            pytanie: 'Aby prawidłowo udokumentować linię kodu języka Java Script, należy po znakach // wpisać komentarz',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758885616/pyt284_omt01x.png',
+            poprawna_odpowiedz: 'w zmiennej x maksymalna wartość ze zmiennych a, b, c',
+            bledne_odpowiedzi: ['nieprawidłowe dane', 'wybór losowej wartości ze zmiennych a, b i c', 'w zmiennej x minimalna wartość ze zmiennych a, b, c']
+        },
+        {
+            pytanie: 'Aby stronę WWW można było przesłać do przeglądarki internetowej w postaci zaszyfrowanej, należy użyć protokołu',
+            poprawna_odpowiedz: 'HTTPS',
+            bledne_odpowiedzi: ['HTTP', 'SFTP', 'SSH']
+        },
+        {
+            pytanie: 'W języku HTML, aby uzyskać efekt jak na przykładzie, należy zastosować konstrukcję',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758885694/pyt286_v3jil0.png',
+            poprawna_odpowiedz: '<p><big>Duży tekst</big> zwykły tekst</p>',
+            bledne_odpowiedzi: ['<p><big>Duży tekst</p> zwykły tekst', '<p><big>Duży tekst</p> zwykły tekst', '<p><strike>Duży tekst</strike> zwykły tekst</p>']
+        },
+        {
+            pytanie: 'Zapis znacznika HTML w postaci',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758885817/pyt287_hsi0os.png',
+            poprawna_odpowiedz: 'jest poprawny, po wybraniu odnośnika aktualna strona zostanie przewinięta do elementu o nazwie "hobby"',
+            bledne_odpowiedzi: ['jest niepoprawny, w atrybucie href należy podać adres URL', 'jest niepoprawny, zastosowano błędnie znak # w atrybucie href', 'jest poprawny, po wybraniu odnośnika otworzy się strona internetowa o adresie "hobby"']
+        },
+        {
+            pytanie: 'W części nagłówkowej kodu HTML zapisano tekst przedstawiony na obrazku. Zapisany tekst zostanie wyświetlony',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758886687/pyt288_jodbg4.png',
+            poprawna_odpowiedz: 'na pasku tytułu przeglądarki',
+            bledne_odpowiedzi: ['w treści strony, na banerze', 'w polu adresu, za wpisanym adresem URL', 'w treści strony, w pierwszym wyświetlonym nagłówku']
+        },
+        {
+            pytanie: 'Przeglądarka internetowa wyświetliła stronę w następujący sposób. Wskaż kod HTML, który poprawnie definiuje przedstawioną hierarchiczną strukturę tekstu:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758886792/pyt289_ncsouy.png',
+            poprawna_odpowiedz: '<h1>Rozdział 1</h1> <p>tekst</p> <h2>Podrozdział 1.1</h2> <p>tekst</p> <h2>Podrozdział 1.2</h2>',
+            bledne_odpowiedzi: ['<h1>Rozdział 1<p>tekst <h2>Podrozdział 1.1<p>tekst <h2>Podrozdział 1.2', '<ul><li>Rozdział 1<li>tekst<li>Podrozdział 1.1<li>tekst<li>Podrozdział 1.2</ul>', '<big>Rozdział 1</big>tekst<big>Podrozdział 1.1</big>tekst<big>Podrozdział 1.2</big>']
+        },
+        {
+            pytanie: 'W języku CSS, przedstawiony zapis sprawi, że plik rysunek.png będzie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758886862/pyt290_pbcssp.png',
+            poprawna_odpowiedz: 'tłem każdego paragrafu',
+            bledne_odpowiedzi: ['tłem całej strony', 'wyświetlony obok każdego paragrafu', 'wyświetlony, jeśli w kodzie zostanie zastosowany znacznik img']
+        },
+        {
+            pytanie: 'W języku CSS, aby zdefiniować niestandardowe odstępy między wyrazami, stosuje się właściwość',
+            poprawna_odpowiedz: 'word-spacing',
+            bledne_odpowiedzi: ['line-spacing', 'white-space', 'letter-space']
+        },
+        {
+            pytanie: 'W języku CSS zdefiniowano następujące formatowanie. Oznacza to, że kolorem niebieskim zostanie zapisany',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758886950/pyt292_ukvgmk.png',
+            poprawna_odpowiedz: 'pochylony tekst paragrafu',
+            bledne_odpowiedzi: ['cały tekst paragrafu niezależnie od jego formatowania', 'cały tekst nagłówków niezależnie od ich formatowania', 'pogrubiony tekst paragrafu']
+        },
+        {
+            pytanie: 'W języku CSS, zapis w następującej postaci sprawi, iż koloru czerwonego będzie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887020/pyt293_en59sh.png',
+            poprawna_odpowiedz: 'pierwsza litera nagłówka pierwszego stopnia',
+            bledne_odpowiedzi: ['pierwsza linia paragrafu', 'tekst nagłówka pierwszego stopnia', 'pierwsza litera nagłówka drugiego stopnia']
+        },
+        {
+            pytanie: 'W języku HTML informacje dotyczące autora, streszczenia i słów kluczowych strony należy umieścić',
+            poprawna_odpowiedz: 'pomiędzy znacznikami <head> i </head>, w znaczniku <meta>',
+            bledne_odpowiedzi: ['pomiędzy znacznikami <head> i </head>, w znaczniku <style>', 'pomiędzy znacznikami <body> i </body>, w znaczniku <meta>', 'pomiędzy znacznikami <body> i </body>, w znaczniku <html>']
+        },
+        {
+            pytanie: 'Który z przedstawionych kodów XHTML sformatuje tekst według podanego wzoru?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887169/pyt295_ch3vur.png',
+            poprawna_odpowiedz: 'D',
+            bledne_odpowiedzi: ['A', 'B', 'C']
+        },
+        {
+            pytanie: 'Kolor zapisany kodem RGB o wartości rgb(128, 16, 8) w postaci szesnastkowej ma wartość',
+            poprawna_odpowiedz: ' #801008',
+            bledne_odpowiedzi: ['#FF0F80', '#FF1008', '#800F80']
+        },
+        {
+            pytanie: 'Które ze zdań opisuje grafikę wektorową?',
+            poprawna_odpowiedz: 'Zapisywany obraz jest opisywany za pośrednictwem figur geometrycznych umieszczonych w układzie współrzędnych',
+            bledne_odpowiedzi: ['Jest to prezentacja obrazu za pomocą pionowo-poziomej siatki odpowiednio kolorowanych pikseli na monitorze komputera, drukarce lub innym urządzeniu wyjściowym', 'Może być przechowywana w formacie JPG lub PNG', 'Jest wykorzystywana do zapisu fotografii cyfrowej']
+        },
+        {
+            pytanie: 'Aby zbadać rozkład ilościowy poszczególnych kolorów zdjęcia, należy użyć',
+            poprawna_odpowiedz: 'histogramu',
+            bledne_odpowiedzi: ['desaturacji', 'balansu kolorów', 'rozmycia Gaussa']
+        },
+        {
+            pytanie: 'W standardzie HDTV jest stosowana rozdzielczość',
+            poprawna_odpowiedz: '1920 x 1080 px',
+            bledne_odpowiedzi: ['704 x 576 px', '720 x 480 px', '1280 x 1024 px']
+        },
+        {
+            pytanie: 'Którą klauzulę powinno się zastosować w poleceniu CREATE TABLE języka SQL, aby dane pole rekordu nie było puste?',
+            poprawna_odpowiedz: 'NOT NULL',
+            bledne_odpowiedzi: ['NULL', 'CHECK', 'DEFAULT']
+        },
+        {
+            pytanie: 'Polecenie języka SQL w postaci',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887364/pyt301_fakeu6.png',
+            poprawna_odpowiedz: 'dodaje do tabeli kolumnę o nazwie kod typu text',
+            bledne_odpowiedzi: ['zamienia nazwę tabeli miasta na nazwę kod', 'dodaje do tabeli dwie kolumny o nazwach: kod i text', 'w tabeli miasta zamienia nazwę kolumny kod na nazwę text']
+        },
+        {
+            pytanie: 'W bazie danych hurtowni zdefiniowano tabelę sprzedaz o polach: id, kontrahent, grupa_cenowa, obrot. Aby wyszukać wyłącznie kontrahentów z drugiej grupy cenowej, których obrót jest większy niż 4000zł, należy zastosować polecenie',
+            poprawna_odpowiedz: 'SELECT kontrahent FROM sprzedaz WHERE grupa_cenowa = 2 AND obrot > 4000;',
+            bledne_odpowiedzi: ['SELECT sprzedaz FROM kontrahent WHERE obrot > 4000;', 'SELECT kontrahent FROM sprzedaz WHERE grupa_cenowa = 2 OR obrot > 4000;', 'SELECT sprzedaz FROM kontrahent WHERE grupa_cenowa = 2 AND obrot > 4000;']
+        },
+        {
+            pytanie: 'Dana jest tabela programiści o polach: id, nick, ilosc_kodu, ocena. Pole ilosc_kodu zawiera liczbę linii kodu napisanych przez programistę w danym miesiącu. Aby policzyć sumę linii kodu, który napisali wszyscy programiści, należy użyć polecenia',
+            poprawna_odpowiedz: 'SELECT SUM(ilosc_kodu) FROM programisci;',
+            bledne_odpowiedzi: ['SELECT SUM(ocena) FROM ilosc_kodu;', 'SELECT COUNT(programisci) FROM ilosc_kodu;', 'SELECT MAX(ilosc_kodu) FROM programisci']
+        },
+        {
+            pytanie: 'W instrukcji CREATE TABLE użycie klauzuli PRIMARY KEY przy deklaracji pola tabeli spowoduje, że pole to stanie się',
+            poprawna_odpowiedz: 'kluczem podstawowym',
+            bledne_odpowiedzi: ['kluczem obcym', 'indeksem klucza', 'indeksem unikalnym']
+        },
+        {
+            pytanie: 'Baza danych księgarni zawiera tabelę ksiazki z polami: id, idAutor, tytul, ileSprzedanych oraz tabelę autorzy z polami: id, imie, nazwisko. Aby stworzyć raport sprzedanych książek z tytułami i nazwiskami autorów, należy',
+            poprawna_odpowiedz: 'Zdefiniować relację 1..n dla tabel ksiazki i autorzy, a następnie stworzyć kwerendę łączącą obie tabele',
+            bledne_odpowiedzi: ['stworzyć kwerendę wyszukującą tytuły książek', 'Zdefiniować relację 1..1 dla tabel ksiazki i autorzy, a następnie stworzyć kwerendę łączącą obie tabele', 'stworzyć dwie osobne kwerendy: pierwszą wyszukującą tytuły książek, drugą wyszukującą nazwiska autorów']
+        },
+        {
+            pytanie: 'Istnieje tabela pracownicy z polami: id, imie, nazwisko, pensja. W nowym roku postawiono podnieść pensję wszystkim pracownikom o 100 zł. Aktualizacja ta w bazie danych będzie miała postać',
+            poprawna_odpowiedz: 'UPDATE pracownicy SET pensja = pensja + 100;',
+            bledne_odpowiedzi: ['UPDATE pracownicy SET pensja = 100;', 'UPDATE pensja SET +100;', 'UPDATE pensja SET 100;']
+        },
+        {
+            pytanie: 'W tabeli artykuly wykonano następujące polecenia dotyczące praw użytkowania jan. Po wykonaniu poleceń użytkownik jan będzie miał prawa do',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887780/pyt307_ceabhl.png',
+            poprawna_odpowiedz: 'tworzenia tabeli i wypełniania jej danymi',
+            bledne_odpowiedzi: ['tworzenia tabeli i aktualizowania w niej danych', 'aktualizowania danych i przeglądania tabeli', 'przeglądania tabeli']
+        },
+        {
+            pytanie: 'Aby przywrócić bazę danych MS SQL z kopii bezpieczeństwa, należy zastosować polecenie',
+            poprawna_odpowiedz: 'RESTORE DATABASE',
+            bledne_odpowiedzi: ['DBCC CHECKDB', 'SAVE DATABASE', 'REBACKUP DATABASE']
+        },
+        {
+            pytanie: 'Baza danych MySQL uległa uszkodzeniu. Które z działań NIE pomoże przy jej naprawie?',
+            poprawna_odpowiedz: 'Wykonanie replikacji bazy danych',
+            bledne_odpowiedzi: ['Próba naprawy poleceniem REPAIR', 'Odtworzenie bazy z kopii bezpieczeństwa', 'Stworzenie nowej bazy i przeniesienie do niej tabel']
+        },
+        {
+            pytanie: 'W formularzu, dane z pola input o typie number zostały zapisane do zmiennej a, a następnie przetworzone w skrypcie JavaScript w następujący sposób. Zmienna x będzie typu',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887883/pyt310_aolpug.png',
+            poprawna_odpowiedz: 'liczbowego, całkowitego',
+            bledne_odpowiedzi: ['NaN', 'napisowego', 'zmiennoprzecinkowego']
+        },
+        {
+            pytanie: 'Wstawki kodu JavaScript w dokumencie HTML mogą się znaleźć',
+            poprawna_odpowiedz: 'zarówno w cześci <head>, jak i <body>, w znaczniku <script>',
+            bledne_odpowiedzi: ['tylko w cześci <head>, w znaczniku <script>', 'tylko w cześci <body>, w znaczniku <java>', 'zarówno w cześci <head>, jak i <body>, w znaczniku <java>']
+        },
+        {
+            pytanie: 'W przedstawonym kodzie JavaScript dla ułatwienia ponumerowano linie. W kodzie znajduje się błąd, gdyż po uruchomieniu żaden komunikat nie zostaje wyświetlony. Aby wyeliminować błąd, należy',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887975/p312_ce2lrm.png',
+            poprawna_odpowiedz: 'wstawić nawiasy klamrowe do sekcji if oraz else',
+            bledne_odpowiedzi: ['wstawić znaki $ przed nazwami zmiennych.', 'w liniach 2 i 5 zmienne a i b wstawić w cudzysłów', 'w liniach 3 i 6 zamienić znaki cudzysłowu na apostrof, np. ’jest mniejsze’']
+        },
+        {
+            pytanie: 'Ile iteracji będzie miała przedstawiona pętla zapisana w języku PHP, zakładając, że zmienna sterująca nie jest modyfikowana we wnętrzu pętli?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888045/p313_bqgzgx.png',
+            poprawna_odpowiedz: '11',
+            bledne_odpowiedzi: ['0', '10', 'Nieskończenie wiele']
+        },
+        {
+            pytanie: 'W języku JavaScript metoda document.getElementById(id) ma za zadanie',
+            poprawna_odpowiedz: 'zwrócić odniesienie do pierwszego elementu HTML o podanym id',
+            bledne_odpowiedzi: ['wstawić tekst o treści ’id’ na stronie WWW', 'sprawdzić poprawność formularza o identyfikatorze id', 'pobrać dane z pola formularza i wstawić je do zmiennej id']
+        },
+        {
+            pytanie: 'W instrukcji warunkowej JavaScript należy sprawdzić przypadek, gdy zmienne a oraz b są dodatnie, z czego zmienna b jest mniejsza od 100. Warunek taki powinien być zapisany w następujący sposób:',
+            poprawna_odpowiedz: 'if ( a > 0 && b > 0 && b < 100)',
+            bledne_odpowiedzi: ['if ( a > 0 || b > 0 || b > 100)', 'if ( a > 0 && b > 0 || b > 100)', 'if ( a > 0 || (b > 0 && b < 100))']
+        },
+        {
+            pytanie: 'Zadaniem przedstawionej funkcji zapisanej w języku JavaScript jest',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888160/p316_wcmrza.png',
+            poprawna_odpowiedz: 'wypisanie liczb parzystych z przedziału od a do b',
+            bledne_odpowiedzi: ['zwrócenie wartości parzystych liczb od a do b', 'wypisanie wszystkich liczb z przedziału od a do b', 'sprawdzenie, czy liczba a jest nieparzysta; jeśli tak, wypisanie jej']
+        },
+        {
+            pytanie: 'Przedstawiony kod został zapisany w języku JavaScript. W podanej definicji obiektu metodą jest element o nazwie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888220/p317_nyctrp.png',
+            poprawna_odpowiedz: 'oblicz',
+            bledne_odpowiedzi: ['obj1', 'czescCalkowita', 'czescUlamkowa']
+        },
+        {
+            pytanie: 'Aby uzyskać informacje o środowisku pracy serwera obsługującego PHP, należy skorzystać z funkcji',
+            poprawna_odpowiedz: 'phpinfo()',
+            bledne_odpowiedzi: ['php()', 'phpgetinfo()', 'phpinformation()']
+        },
+        {
+            pytanie: 'Fragment kodu w języku PHP wypisze',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888306/p319_mqrejf.png',
+            poprawna_odpowiedz: 'samą nazwę konta, czyli "adres"',
+            bledne_odpowiedzi: ['nazwę konta ze znakiem @, czyli "adres@"', 'cały adres e-mail, czyli "adres@host.pl"', 'samą nazwę domeny, czyli "host.pl"']
+        },
+        {
+            pytanie: 'Do uruchomienia skryptu JavaScript wymagane jest oprogramowanie',
+            poprawna_odpowiedz: 'przeglądarki internetowej',
+            bledne_odpowiedzi: ['serwera WWW', 'serwera MySQL', 'debugera JavaScript']
+        },
+        {
+            pytanie: 'Zadaniem funkcji PHP o nazwie mysql_select_db() jest',
+            poprawna_odpowiedz: 'określić bazę, z której będą pobierane dane',
+            bledne_odpowiedzi: ['połączyć bazę danych z serwerem SQL', 'określić tabelę, z której będą pobierane dane', 'pobrać dane z bazy danych na podstawie kwerendy']
+        },
+        {
+            pytanie: 'W przedstawionym kodzie PHP, zamiast znaków zapytania powinien pojawić się komunikat:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888449/p322_vhiyfs.png',
+            poprawna_odpowiedz: 'Błąd przetwarzania zapytania',
+            bledne_odpowiedzi: ['Zapytanie przetworzono pomyślnie', 'Nieprawidłowa nazwa bazy danych', 'Nieprawidłowe hasło do bazy danych']
+        },
+        {
+            pytanie: 'Testy wydajnościowe mają na celu sprawdzenie',
+            poprawna_odpowiedz: 'stopnia spełnienia wymagań wydajnościowych przez system lub moduł',
+            bledne_odpowiedzi: ['zdolności oprogramowania do działania w warunkach wadliwej pracy sprzętu', 'zdolności oprogramowania do działania w warunkach wadliwej pracy systemu', 'ciągu zdarzeń, w którym prawdopodobieństwo każdego zdarzenia zależy jedynie od wyniku poprzedniego']
+        },
+        {
+            pytanie: 'Aby prawidłowo udokumentować przedstawioną linię kodu języka JavaScript, należy po znakach // wpisać komentarz',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888604/p324_ddgtvi.png',
+            poprawna_odpowiedz: 'wyświetlenie daty i czasu w znaczniku o id = napis',
+            bledne_odpowiedzi: ['nieprawidłowe dane', 'zmiana stylu atrybutu innerHTML', 'wyświetlenie tekstu "Date()" w znaczniku o id = napis']
+        },
+        {
+            pytanie: 'Przekierowanie 301 służące przekierowaniu użytkownika z jednego adresu URL na inny można ustawić w pliku konfiguracji serwera Apache o nazwie',
+            poprawna_odpowiedz: '.htaccess',
+            bledne_odpowiedzi: ['conf.php', '.apacheConf', 'configuration.php']
+        },
+        {
+            pytanie: 'W języku HTML aby zdefiniować słowa kluczowe strony, należy użyć zapisu',
+            poprawna_odpowiedz: '<meta name="keywords" content="psy, koty, gryzonie">',
+            bledne_odpowiedzi: ['<meta keywords="psy, koty, gryzonie">', '<meta name="keywords" ="psy, koty, gryzonie">', '<meta name="description" content="psy, koty, gryzonie">']
+        },
+        {
+            pytanie: 'W języku HTML zdefiniowano znacznik a. Wartość nofollow atrybutu rel',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888742/pyt327_rsxnnh.png',
+            poprawna_odpowiedz: 'jest informacją dla robota wyszukiwarki Google, aby nie podążał za tym linkiem',
+            bledne_odpowiedzi: ['oznacza, że kliknięcie na link nie przeniesie do strony website.com', 'oznacza, że kliknięcie na link otworzy go w osobnej karcie przeglądarki', 'jest informacją dla przeglądarki internetowej, aby nie formatowała słowa "link" jako odnośnika']
+        },
+        {
+            pytanie: 'W języku HTML aby zdefiniować poziomą linię, należy użyć znacznika',
+            poprawna_odpowiedz: '<hr>',
+            bledne_odpowiedzi: ['<line>', '<br>', '<hl>']
+        },
+        {
+            pytanie: 'Zapisano kod HTML wstawiający grafikę na stronę internetową. Jeżeli rysunek.png nie zostanie odnaleziony, przeglądarka',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888844/p329_gf0u8m.png',
+            poprawna_odpowiedz: 'w miejscu grafiki wypisze tekst "pejzaż"',
+            bledne_odpowiedzi: ['nie wyświetli strony internetowej', 'w miejscu grafiki wypisze tekst "rysunek.png"', 'w miejscu grafiki wypisze błąd wyświetlania strony']
+        },
+        {
+            pytanie: 'Aby w języku HTML uzyskać takie formatowanie paragrafu dla tekstu należy zastosować kod',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888908/p330_jxvrf3.png',
+            poprawna_odpowiedz: '<p>Tekst może być <mark>zaznaczony</mark> albo <em>istotny</em> dla autora</p>',
+            bledne_odpowiedzi: ['<p>Tekst może być <mark>zaznaczony</mark> albo <em>istotny dla autora</p>', '<p>Tekst może być <mark>zaznaczony albo <i>istotny</i> dla autora</mark></p>', '<p>Tekst może być <mark>zaznaczony albo <em>istotny</em> dla autora</mark></p>']
+        },
+        {
+            pytanie: 'Zamieszczony kod HTML formularza zostanie wyświetlony przez przeglądarkę w sposób:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888959/P331_nxqew1.png',
+            poprawna_odpowiedz: 'D',
+            bledne_odpowiedzi: ['A', 'B', 'C']
+        },
+        {
+            pytanie: 'W języku CSS wcięcie pierwszej linii akapitu na 30 pikseli uzyska się za pomocą zapisu',
+            poprawna_odpowiedz: 'p { text-indent: 30px; }',
+            bledne_odpowiedzi: ['p { text-spacing: 30px; }', 'p { line-height: 30px; }', 'p { line-indent: 30px; }']
+        },
+        {
+            pytanie: 'W języku CSS zdefiniowano następujące formatowanie. Kolorem czerwonym zostanie zapisany',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758889038/PYT333_tp8ijm.png',
+            poprawna_odpowiedz: 'tylko tekst pochylony nagłówka pierwszego stopnia',
+            bledne_odpowiedzi: ['tylko tekst pochylony we wszystkich poziomach nagłówków', 'cały tekst nagłówka pierwszego stopnia oraz pochylony tekst akapitu', 'cały tekst nagłówka pierwszego stopnia oraz cały tekst pochylony, niezależnie od tego, w którym miejscu strony się znajduje']
+        },
+        {
+            pytanie: 'W języku CSS, aby sformatować dowolny element języka HTML w ten sposób, że po najechaniu na niego kursorem zmienia on kolor czcionki, należy zastosować pseudoklasę',
+            poprawna_odpowiedz: ':hover',
+            bledne_odpowiedzi: [':active', ':visited', ':coursor']
+        },
+        {
+            pytanie: 'Zapis CSS w takiej postaci sprawi, że na stronie internetowej',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758889146/PYT335_ek24es.png',
+            poprawna_odpowiedz: 'punktorem listy nienumerowanej będzie rys.gif',
+            bledne_odpowiedzi: ['rys.gif będzie stanowił ramkę dla listy nienumerowanej', 'wyświetli się rys.gif jako tło listy nienumerowanej', 'każdy z punktów listy będzie miał osobne tło pobrane z grafiki rys.gif']
+        },
+        {
+            pytanie: 'W języku CSS aby zdefiniować odmienne formatowanie dla pierwszej litery akapitu, należy zastosować selektor',
+            poprawna_odpowiedz: 'pseudoelementu p::first-letter',
+            bledne_odpowiedzi: ['klasy p.first-letter', 'dziecka p + first-letter', 'atrybutu p [first-letter]']
+        },
+        {
+            pytanie: 'W kodzie źródłowym zapisanym w języku HTML wskaż błąd walidacji dotyczący tego fragmentu',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758889240/P337_kqbw5k.png',
+            poprawna_odpowiedz: 'Znacznik zamykający /b niezgodny z zasadą zagnieżdżania',
+            bledne_odpowiedzi: ['Nieznany znacznik h6', 'Znacznik br nie został poprawnie zamknięty', 'Znacznik br nie może występować wewnątrz znacznika p']
+        },
+        {
+            pytanie: 'W ramce przedstawiono właściwości pliku graficznego. W celu optymalizacji czasu ładowania rysunku na stronę WWW należy',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758890023/P338_nkypro.png',
+            poprawna_odpowiedz: 'zmniejszyć wymiary rysunku',
+            bledne_odpowiedzi: ['zwiększyć rozdzielczość', 'zmienić format grafiki na CDR', 'zmienić proporcje szerokości do wysokości']
+        },
+        {
+            pytanie: 'W programie INKSCAPE / COREL aby uzyskać przedstawiony efekt napisu, należy',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758890096/P339_egd2ki.png',
+            poprawna_odpowiedz: 'skorzystać z funkcji wstaw / dopasuj tekst do ścieżki',
+            bledne_odpowiedzi: ['skorzystać z funkcji gradientu', 'zastosować funkcję sumy z kołem', 'zastosować funkcję wykluczenia z kołem']
+        },
+        {
+            pytanie: 'Programem do edycji dźwięku jest',
+            poprawna_odpowiedz: 'Audacity',
+            bledne_odpowiedzi: ['Brasero', 'Winamp', 'RealPlayer']
+        },
+        {
+            pytanie: 'Dana jest tabela pracownicy. Polecenie MySQL usuwające wszystkie rekordy z tabeli, dla których nie wypełniono pola rodzaj_umowy, ma postać',
+            poprawna_odpowiedz: 'DELETE FROM pracownicy WHERE rodzaj_umowy IS NULL;',
+            bledne_odpowiedzi: ['DROP pracownicy FROM rodzaj_umowy = 0;', 'DROP pracownicy WHERE rodzaj_umowy IS NULL;', 'DELETE pracownicy WHERE rodzaj_umowy = "brak";']
+        },
+        {
+            pytanie: 'W języku SQL, aby stworzyć tabelę, należy zastosować polecenie',
+            poprawna_odpowiedz: 'CREATE TABLE',
+            bledne_odpowiedzi: ['ADD TABLE', 'ALTER TABLE', 'INSERT TABLE']
+        },
+        {
+            pytanie: 'W przedstawionym fragmencie kwerendy języka SQL, komenda SELECT ma za zadanie zwrócić',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758890252/P343_jb7bsj.png',
+            poprawna_odpowiedz: 'liczbę wierszy',
+            bledne_odpowiedzi: ['średnią tabeli', 'sumę w kolumnie wartosc', 'średnią w kolumnie wartosc']
+        },
+        {
+            pytanie: 'Dana jest tabela ksiazki z polami: tytul, autor (typu tekstowego), cena (typu liczbowego). Aby kwerenda SELECT zwróciła tylko tytuły, dla których cena jest mniejsza od 50zł, należy zapisać:',
+            poprawna_odpowiedz: 'SELECT tytul FROM ksiazki WHERE cena < 50;',
+            bledne_odpowiedzi: ['SELECT * FROM ksiazki WHERE cena < 50;', 'SELECT tytul FROM ksiazki WHERE cena > "50 zł";', 'SELECT ksiazki FROM tytul WHERE cena < "50 zł";']
+        },
+        {
+            pytanie: 'W bazie danych MYSQL dana jest tabela programów komputerowych o polach: nazwa, producent, rokWydania. Aby kwerenda SELECT zwróciła wszystkie nazwy producentów tak, by nazwy te nie powtarzały się, należy zapisać:',
+            poprawna_odpowiedz: 'SELECT DISTINCT producent FROM programy;',
+            bledne_odpowiedzi: ['SELECT UNIQUE producent FROM programy;', 'SELECT producent FROM programy WHERE UNIQUE;', 'SELECT producent FROM programy WHERE producent NOT DUPLICATE;']
+        },
+        {
+            pytanie: 'Tabela filmy zawiera klucz główny id oraz klucz obcy rezyserID. Tabela rezyserzy zawiera klucz główny id. Obydwie tabele połączone są relacją jeden po stronie rezyserzy do wielu po stronie filmy. Aby w kwerendzie SELECT połączyć tabele filmy i rezyserzy, należy zapisać',
+            poprawna_odpowiedz: '... filmy JOIN rezyserzy ON filmy.rezyserID = rezyserzy.id ...',
+            bledne_odpowiedzi: ['... filmy JOIN rezyserzy ON filmy.id = rezyserzy.id ...', '... filmy JOIN rezyserzy ON filmy.id = rezyserzy.filmyID ...', '... filmy JOIN rezyserzy ON filmy.rezyserID = rezyserzy.filmyID ...']
+        },
+        {
+            pytanie: 'Na rysunku przedstawiono dwie tabele. Aby połączyć je relacją jeden do wielu, jeden po stronie Klienci wiele po stronie Zamowienia, należy',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758890417/P347_rr6kv6.png',
+            poprawna_odpowiedz: 'Dodać pole klucza obcego do tabeli Zamowienia i połączyć je z ID tabeli Klienci',
+            bledne_odpowiedzi: ['Połączyć relacją pola ID z obu tabel', 'Dodać pole klucza obcego do tabeli Klienci i połączyć je z ID tabeli Zamowienia', 'Zdefiniować trzecią tabelę z dwoma kluczami obcymi. Jeden klucz połączyć z ID tabeli Klienci, drugi klucz połączyć z ID tabeli Zamowienia']
+        },
+        {
+            pytanie: 'Źródłem rekordów dla raportu może być',
+            poprawna_odpowiedz: 'Tabela',
+            bledne_odpowiedzi: ['Inny raport', 'Makropolecenie', 'Zapytanie INSERT INTO']
+        },
+        {
+            pytanie: 'Przedstawione polecenie MySQL ma za zadanie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758890504/P349_nst89x.png',
+            poprawna_odpowiedz: 'Zmienić typ kolumny w tabeli ksiazki',
+            bledne_odpowiedzi: ['Usunąć kolumnę tytul z tabeli ksiazki', 'Dodać do tabeli ksiazki kolumnę tytul', 'Zmienić nazwę kolumny w tabeli ksiazki']
+        },
+        {
+            pytanie: 'W tabeli podzespoly należy zmienić wartość pola URL na "toshiba.pl" dla wszystkich rekordów, gdzie pole producent to TOSHIBA. W języku SQL modyfikacja będzie miała postać',
+            poprawna_odpowiedz: 'UPDATE podzespoly SET URL="toshiba.pl" WHERE producent="TOSHIBA";',
+            bledne_odpowiedzi: ['UPDATE podzespoly SET URL="toshiba.pl";', 'UPDATE producent="TOSHIBA" SET URL="toshiba.pl";', 'UPDATE podzespoly.producent="TOSHIBA" SET URL="toshiba.pl";']
+        }
+    ];
+
+    const medium = [
+        {
+            pytanie: 'Którego polecenia nalezy użyć, aby wyraz TEKST został wyświetleny w kolorze czarnym w oknie przeglądarki internetowej?',
+            poprawna_odpowiedz: '<font color="#000000"> TEKST </font>',
+            bledne_odpowiedzi: ['<body color="black"> TEKST </font>', '<font color="czarny"> TEKST </font>', '<body bgcolor="black"> TEKST </body>']
+        }
+    ];
+
+    const hard = [
+        {
             pytanie: 'Aby uzyskać efekt rozstrzelenia liter w selektorze CSS, należy użyć właściwości',
             poprawna_odpowiedz: 'letter-spacing',
             bledne_odpowiedzi: ['letter-transform', 'text-decoration', 'text-space']
@@ -519,18 +912,7 @@
             pytanie: 'Wymaganiem aplikacji internetowej jest, aby ta była wykonywana po stronie klienta. W którym języku należy zaimplementować tę aplikację?',
             poprawna_odpowiedz: 'JavaScript',
             bledne_odpowiedzi: ['Python', 'PHP', 'Perl']
-        }
-    ];
-
-    const medium = [
-        {
-            pytanie: 'Którego polecenia nalezy użyć, aby wyraz TEKST został wyświetleny w kolorze czarnym w oknie przeglądarki internetowej?',
-            poprawna_odpowiedz: '<font color="#000000"> TEKST </font>',
-            bledne_odpowiedzi: ['<body color="black"> TEKST </font>', '<font color="czarny"> TEKST </font>', '<body bgcolor="black"> TEKST </body>']
-        }
-    ];
-
-    const hard = [
+        },
         {
             pytanie: 'W poleceniach, których celem jest odtwarzanie na stronie internetowej dźwięku jako podkładu muzycznego NIE wykorzystuje się atrybutu',
             poprawna_odpowiedz: 'href="C:/100.wav"',
