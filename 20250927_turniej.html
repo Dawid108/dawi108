@@ -1,0 +1,423 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Turniej Ministrantów w Piłce Nożnej</title>
+<style>
+  /* --- Ogólny styl i layout --- */
+  :root{
+    --green-1: #0b6b3a;
+    --green-2: #23a455;
+    --bg: linear-gradient(180deg,#e9f7ef 0%, #f6fff8 100%);
+    --card-bg: rgba(255,255,255,0.85);
+    --glass: rgba(255,255,255,0.65);
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color:#033;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:18px;
+  }
+
+  /* Nagłówek */
+  header{
+    text-align:center;
+    margin-bottom:18px;
+  }
+  .title{
+    display:inline-block;
+    background: linear-gradient(90deg,var(--green-1), var(--green-2));
+    color:white;
+    padding:14px 18px;
+    border-radius:14px;
+    box-shadow: 0 6px 18px rgba(3,50,20,0.18);
+    font-weight:700;
+    font-size:1.15rem;
+  }
+
+  /* Kontener główny */
+  .container{
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    gap:18px;
+    grid-template-columns: 1fr;
+  }
+
+  /* Rzędy: tabela, mecze, bramki i skład */
+  .card{
+    background: var(--card-bg);
+    border-radius:12px;
+    padding:14px;
+    box-shadow: 0 6px 18px rgba(6,40,20,0.06);
+    border: 1px solid rgba(6,40,20,0.04);
+  }
+
+  /* Tabela wyników */
+  table.standings{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:8px;
+  }
+  table.standings thead{
+    background: linear-gradient(90deg, rgba(11,107,58,0.95), rgba(35,164,85,0.95));
+    color:white;
+  }
+  table.standings th, table.standings td {
+    padding:10px 8px;
+    text-align:left;
+    font-size:0.95rem;
+  }
+  table.standings th.center, table.standings td.center { text-align:center; }
+  table.standings tbody tr:nth-child(odd){ background: rgba(3,50,20,0.02); }
+
+  /* Lista meczów */
+  .matches-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+  }
+  .match{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:10px;
+    border-radius:8px;
+    background: linear-gradient(90deg, rgba(255,255,255,0.6), rgba(240,255,245,0.6));
+    border:1px solid rgba(3,50,20,0.04);
+    font-weight:600;
+  }
+  .match .teams{display:flex; gap:8px; align-items:center;}
+  .score{
+    font-size:1.05rem;
+    font-weight:800;
+    padding:6px 10px;
+    border-radius:8px;
+    background: rgba(3,50,20,0.06);
+  }
+
+  /* Bramki dla Krotoszyna - bloki */
+  .goals-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap:12px;
+  }
+  .goal-block{
+    padding:10px;
+    border-radius:10px;
+    background: rgba(255,255,255,0.9);
+    border:1px solid rgba(3,50,20,0.04);
+  }
+  .goal-block h4{margin:0 0 8px 0; font-size:0.96rem;}
+  .goal-list{margin:0; padding-left:18px;}
+
+  /* Skład drużyny */
+  .roster{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .player{
+    padding:8px 10px;
+    border-radius:999px;
+    background: linear-gradient(180deg, rgba(35,164,85,0.12), rgba(11,107,58,0.06));
+    border:1px solid rgba(3,50,20,0.04);
+    font-weight:600;
+  }
+  .badge{
+    font-size:0.8rem;
+    padding:4px 8px;
+    border-radius:8px;
+    background: rgba(3,50,20,0.06);
+    color:var(--green-1);
+    font-weight:700;
+  }
+
+  /* Footer / drobne */
+  footer{ text-align:center; color: rgba(0,0,0,0.5); font-size:0.85rem; margin-top:6px; }
+
+  /* Responsywność */
+  @media (min-width:820px){
+    .container{
+      grid-template-columns: 1fr 380px;
+      align-items:start;
+    }
+    .card.big{ grid-column:1 / 2; }
+    .right-column{ display:flex; flex-direction:column; gap:18px; }
+  }
+  @media (max-width:420px){
+    .title{ font-size:1rem; padding:10px 12px; border-radius:10px; }
+    table.standings th, table.standings td { padding:8px 6px; font-size:0.88rem; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="title">Turniej Ministrantów w Piłce Nożnej</div>
+</header>
+
+<main class="container">
+  <!-- Lewa kolumna / główna -->
+  <section class="card big" id="main-left">
+    <h3 style="margin-top:0;margin-bottom:10px;color:var(--green-1)">Tabela</h3>
+
+    <div style="overflow-x:auto">
+      <table class="standings" id="standingsTable" aria-label="Tabela rozgrywek">
+        <thead>
+          <tr>
+            <th class="center">M</th>
+            <th>Drużyna</th>
+            <th class="center">Pkt</th>
+            <th class="center">Bilans</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- wypełniane przez JS -->
+        </tbody>
+      </table>
+    </div>
+
+    <hr style="margin:16px 0;border:none;border-top:1px dashed rgba(3,50,20,0.06)">
+
+    <h3 style="color:var(--green-1); margin:6px 0 10px 0">Mecze</h3>
+    <div class="matches-list" id="matchesList">
+      <!-- wypełniane przez JS -->
+    </div>
+
+    <hr style="margin:16px 0;border:none;border-top:1px dashed rgba(3,50,20,0.06)">
+
+    <h3 style="color:var(--green-1); margin:6px 0 10px 0">Bramki dla Krotoszyna</h3>
+    <div class="goals-grid" id="goalsGrid">
+      <!-- wypełniane przez JS -->
+    </div>
+
+  </section>
+
+  <!-- Prawa kolumna -->
+  <aside class="right-column">
+    <div class="card">
+      <h4 style="margin:0 0 8px 0; color:var(--green-1)">Skład: Bazylika Krotoszyn</h4>
+      <div class="roster" id="roster">
+        <!-- roster filled by JS -->
+      </div>
+      <div style="margin-top:8px; font-size:0.92rem; color:rgba(0,0,0,0.6)">
+        <span class="badge">Kapitan: Marcin</span>
+        <span style="margin-left:8px">Br: Rafał</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h4 style="margin:0 0 8px 0; color:var(--green-1)">Legenda</h4>
+      <ul style="margin:0; padding-left:18px; color:rgba(0,0,0,0.75)">
+        <li>Win = 3 pkt, Remis = 1 pkt, Porażka = 0 pkt</li>
+        <li>Bilans = Bramki strzelone - Bramki stracone</li>
+      </ul>
+    </div>
+  </aside>
+
+</main>
+
+<footer>
+  &copy; Turniej Ministrantów — podgląd wyników
+</footer>
+
+<script>
+/*
+  Skrypt tworzy tabelę standings, listę meczów, bloki bramek oraz skład drużyny.
+  Komentarze przy ważniejszych krokach — tak jak prosiłeś.
+*/
+
+/* ----------------- Dane wejściowe (z treści użytkownika) ----------------- */
+const matches = [
+  // [gospodarz, goście, bramki_gospodarz, bramki_goście]
+  ["Chełmce", "Koźmin Wlkp.", 7, 0],
+  ["Krotoszyn", "Kobylin", 3, 1],
+  ["Chełmce", "Krotoszyn", 1, 1],
+  ["Koźmin Wlkp.", "Kobylin", 0, 8],
+  ["Chełmce", "Kobylin", 0, 4],
+  ["Koźmin Wlkp.", "Krotoszyn", 0, 5]
+];
+
+// Bramki specyficznie dla meczów z udziałem Krotoszyna
+const krotoszynGoals = [
+  // opis, lista strzelców (możemy powtarzać nazwiska gdy ktoś strzelił kilka)
+  { match: "Krotoszyn 3-1 Kobylin", scorers: ["Golo","Golo","Golo"] },
+  { match: "Chełmce 1-1 Krotoszyn", scorers: ["Dawid"] },
+  { match: "Koźmin Wlkp. 0-5 Krotoszyn", scorers: ["Hofek","Hofek","Hofek","Pepko","Marcin"] }
+];
+
+// Skład drużyny "Bazylika Krotoszyn"
+const roster = [
+  { name:"Rafał", role:"Br" },
+  { name:"Golo" },
+  { name:"Hofek" },
+  { name:"Dawid" },
+  { name:"Pepko" },
+  { name:"Jurek" },
+  { name:"Wasko" },
+  { name:"Marcin", note:"Kapitan" }
+];
+
+/* ----------------- Obliczanie tabeli (punkty, bilans) ----------------- */
+function buildStandings(matches){
+  const stats = {}; // obiekt: stats[nazwa] = {MP,W,D,L,GF,GA,GD,Pts}
+
+  // pomocnicza funkcja, inicjalizuje jeśli nie ma
+  function ensure(team){
+    if(!stats[team]) stats[team] = {MP:0,W:0,D:0,L:0,GF:0,GA:0,GD:0,Pts:0};
+  }
+
+  // Przetwarzamy wszystkie mecze
+  matches.forEach(([home, away, gh, ga]) => {
+    ensure(home); ensure(away);
+
+    stats[home].MP++;
+    stats[away].MP++;
+
+    stats[home].GF += gh;
+    stats[home].GA += ga;
+
+    stats[away].GF += ga;
+    stats[away].GA += gh;
+
+    if(gh > ga){
+      // gospodarze wygrywają
+      stats[home].W++; stats[home].Pts += 3;
+      stats[away].L++;
+    } else if(gh < ga){
+      // goście wygrywają
+      stats[away].W++; stats[away].Pts += 3;
+      stats[home].L++;
+    } else {
+      // remis
+      stats[home].D++; stats[away].D++;
+      stats[home].Pts += 1; stats[away].Pts += 1;
+    }
+  });
+
+  // policz bilans (GD)
+  Object.keys(stats).forEach(t => { stats[t].GD = stats[t].GF - stats[t].GA; });
+
+  // sortowanie: punkty desc, GD desc, GF desc, nazwa asc
+  const sorted = Object.keys(stats).sort((a,b) => {
+    if(stats[b].Pts !== stats[a].Pts) return stats[b].Pts - stats[a].Pts;
+    if(stats[b].GD !== stats[a].GD) return stats[b].GD - stats[a].GD;
+    if(stats[b].GF !== stats[a].GF) return stats[b].GF - stats[a].GF;
+    return a.localeCompare(b, 'pl');
+  });
+
+  return { stats, order: sorted };
+}
+
+/* ----------------- Renderowanie do DOM ----------------- */
+function renderStandings(containerId, data){
+  const tbody = document.querySelector(containerId + " tbody");
+  tbody.innerHTML = ""; // wyczyść
+
+  data.order.forEach((teamName, idx) => {
+    const s = data.stats[teamName];
+    const tr = document.createElement("tr");
+
+    // Miejsce
+    const tdM = document.createElement("td");
+    tdM.className = "center";
+    tdM.textContent = idx + 1;
+    tr.appendChild(tdM);
+
+    // Drużyna
+    const tdName = document.createElement("td");
+    tdName.textContent = teamName;
+    tr.appendChild(tdName);
+
+    // Punkty
+    const tdPts = document.createElement("td");
+    tdPts.className = "center";
+    tdPts.textContent = s.Pts;
+    tr.appendChild(tdPts);
+
+    // Bilans (np. +5 / -2)
+    const tdGD = document.createElement("td");
+    tdGD.className = "center";
+    tdGD.textContent = (s.GD > 0 ? "+" + s.GD : s.GD);
+    tr.appendChild(tdGD);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function renderMatches(containerId, matches){
+  const el = document.getElementById(containerId);
+  el.innerHTML = "";
+  matches.forEach(([home, away, gh, ga]) => {
+    const div = document.createElement("div");
+    div.className = "match";
+    const teams = document.createElement("div");
+    teams.className = "teams";
+    teams.innerHTML = `<span style="font-weight:700">${home}</span><span style="opacity:0.7"> - </span><span>${away}</span>`;
+    const score = document.createElement("div");
+    score.className = "score";
+    score.textContent = `${gh} : ${ga}`;
+    div.appendChild(teams);
+    div.appendChild(score);
+    el.appendChild(div);
+  });
+}
+
+function renderGoals(containerId, goalsArray){
+  const grid = document.getElementById(containerId);
+  grid.innerHTML = "";
+  goalsArray.forEach(item => {
+    const block = document.createElement("div");
+    block.className = "goal-block";
+    const h4 = document.createElement("h4");
+    h4.textContent = item.match;
+    block.appendChild(h4);
+
+    const ul = document.createElement("ul");
+    ul.className = "goal-list";
+    item.scorers.forEach((s,i) => {
+      const li = document.createElement("li");
+      li.textContent = `${i+1}. ${s}`;
+      ul.appendChild(li);
+    });
+    block.appendChild(ul);
+    grid.appendChild(block);
+  });
+}
+
+function renderRoster(containerId, roster){
+  const wrap = document.getElementById(containerId);
+  wrap.innerHTML = "";
+  roster.forEach(p => {
+    const span = document.createElement("div");
+    span.className = "player";
+    span.textContent = p.name + (p.note ? ` (${p.note})` : (p.role ? ` (${p.role})` : ""));
+    wrap.appendChild(span);
+  });
+}
+
+/* ----------------- Inicjalizacja (wywołanie wszystkiego) ----------------- */
+(function init(){
+  // Obliczanie tabeli
+  const tableData = buildStandings(matches);
+  renderStandings("#standingsTable", tableData);
+
+  // Render meczów
+  renderMatches("matchesList", matches);
+
+  // Render bramek Krotoszyna
+  renderGoals("goalsGrid", krotoszynGoals);
+
+  // Render składu
+  renderRoster("roster", roster);
+})();
+</script>
+</body>
+</html>
