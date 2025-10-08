@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Śnieżnik</title>
+    <style>
+        input{
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <label>Podaj swoje imię: <input type="text" id="imie"></label><br>
+
+        <fieldset>
+            <legend>Jak podobała się Tobie wycieczka?</legend>
+            <label><input type="radio" name="ocena" class="ocena" value="była najlepszą wycieczką. ">Najlepsza wycieczka<br></label>
+            <label><input type="radio" name="ocena" class="ocena" value="była bardzo spoko. ">Była bardzo spoko<br></label>
+            <label><input type="radio" name="ocena" class="ocena" value="była fajna, ale dużo chodzenia było. ">Fajna ale dużo chodzenia<br></label>
+            <label><input type="radio" name="ocena" class="ocena" value="mogła by być lepsza. ">Mogła by być lepsza</label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Co podobało się Tobie na wycieczce?</legend>
+            <label><input type="checkbox" name="like" class="like" value="Kościół w Bystrzycy Kłodzkiej">Kościół w Bystrzycy Kłodzkiej<br></label>
+            <label><input type="checkbox" name="like" class="like" value="Schronisko PTTK Na Śnieżniku">Schronisko PTTK "Na Śnieżniku"<br></label>
+            <label><input type="checkbox" name="like" class="like" value="Czarna Góra (1205 m)">Czarna Góra (1205 m)<br></label>
+            <label><input type="checkbox" name="like" class="like" value="Wodospad Wilczki">Wodospad Wilczki<br></label>
+            <label><input type="checkbox" name="like" class="like" value="Śnieżnik (1426 m)">Śnieżnik (1426 m)<br></label>
+            <label><input type="checkbox" name="like" class="like" value="Trójmorski Wierch (1145 m)">Trójmorski Wierch (1145 m)<br></label>
+            <label><input type="checkbox" name="like" class="like" value="Muzeum Filumenistyczne w Bystrzycy Kłodzkiej">Muzeum Filumenistyczne w Bystrzycy Kłodzkiej</label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Wybierz najlepszy dzień wycieczki</legend>
+            <select name="dzien">
+                <option class="dzien" value="pierwszy">Pierwszy</option>
+                <option class="dzien" value="drugi">Drugi</option>
+                <option class="dzien" value="trzeci">Trzeci</option>
+                <option class="dzien" value="czwarty">Czwarty</option>
+            </select>
+        </fieldset>
+
+        <fieldset>
+            <legend>Wybierz najpopularniejszy według Ciebie szczyt w Polsce</legend>
+            <select name="szczyt" multiple>
+                <optgroup label="Karpaty">
+                    <option class="szczyt" value="Rysy">Rysy (2499 m)</option>
+                    <option class="szczyt" value="Giewont">Giewont (1895 m)</option>
+                    <option class="szczyt" value="Kasprowy Wierch">Kasprowy Wierch (1987 m)</option>
+                    <option class="szczyt" value="Babia Góra">Babia Góra (1728 m)</option>
+                </optgroup>
+                <optgroup label="Sudety">
+                    <option class="szczyt" value="Śnieżka">Śnieżka (1603 m)</option>
+                    <option class="szczyt" value="Czarna Góra">Czarna Góra (1205 m)</option>
+                    <option class="szczyt" value="Śnieżnik">Śnieżnik (1426 m)</option>
+                    <option class="szczyt" value="Ślęża">Ślęża (718 m)</option>
+                </optgroup>
+            </select>
+        </fieldset>
+
+        <fieldset>
+            <legend>Najciekawszy mecz na wycieczce to:</legend>
+            <label><input type="radio" name="mecz" class="mecz" value="Barcelona 1-2 PSG">Barcelona 1-2 PSG</label><br>
+            <label><input type="radio" name="mecz" class="mecz" value="Bodo/Glimt 2-2 Tottenham">Bodo/Glimt 2-2 Tottenham</label><br>
+            <label><input type="radio" name="mecz" class="mecz" value="Kairat Almaty 0-5 Real Madryt">Kairat Almaty 0-5 Real Madryt</label><br>
+            <label><input type="radio" name="mecz" class="mecz" value="Lech Poznań 4-1 Rapid Wiedeń">Lech Poznań 4-1 Rapid Wiedeń</label>
+        </fieldset>
+
+        <fieldset>
+            <legend>Najlepsze kluby to:</legend>
+            <select name="klub" multiple>
+                <optgroup label="Anglia">
+                    <option class="klub" value="Arsenal">Arsenal</option><!--0-->
+                    <option class="klub" value="Chelsea">Chelsea</option>
+                    <option class="klub" value="Liverpool">Liverpool</option>
+                    <option class="klub" value="Manchester City">Manchester City</option>
+                    <option class="klub" value="Manchester United">Manchester United</option>
+                    <option class="klub" value="Tottenahm">Tottenham</option>
+                </optgroup>
+                <optgroup label="Francja">
+                    <option class="klub" value="Lyon">Lyon</option><!--6-->
+                    <option class="klub" value="Marsylia">Maryslia</option>
+                    <option class="klub" value="Monaco">Monaco</option>
+                    <option class="klub" value="PSG">PSG</option>
+                </optgroup>
+                <optgroup label="Hiszpania">
+                    <option class="klub" value="Atletico Madryt">Atletico Madryt</option><!--10-->
+                    <option class="klub" value="Barcelona">Barcelona</option>
+                    <option class="klub" value="Girona">Girona</option>
+                    <option class="klub" value="Real Madryt">Real Madryt</option>
+                </optgroup>
+                <optgroup label="Niemcy">
+                    <option class="klub" value="Bayer Leverkusen">Bayer Leverkusen</option><!--14-->
+                    <option class="klub" value="Bayern Monachium">Bayern Monachium</option>
+                    <option class="klub" value="Borussia Dortmund">Borussia Dortmund</option>
+                    <option class="klub" value="Eintracht Frankfurt">Eintracht Frankfurt</option>
+                </optgroup>
+                <optgroup label="Włochy">
+                    <option class="klub" value="AC Milan">AC Milan</option><!--18-->
+                    <option class="klub" value="AS Roma">AS Roma</option>
+                    <option class="klub" value="Atalanta">Atalanta</option>
+                    <option class="klub" value="Inter Mediolan">Inter Mediolan</option>
+                    <option class="klub" value="Juventus">Juventus</option>
+                    <option class="klub" value="Napoli">Napoli</option>
+                </optgroup>
+                <optgroup label="Polska">
+                    <option class="klub" value="Arka Gdynia">Arka Gdynia</option><!--24-->
+                    <option class="klub" value="Cracovia">Cracovia</option>
+                    <option class="klub" value="Jagiellonia Białystok">Jagiellonia Białystok</option>
+                    <option class="klub" value="Lech Poznań">Lech Poznań</option>
+                    <option class="klub" value="Legia Warszawa">Legia Warszawa</option>
+                    <option class="klub" value="Raków Częstochowa">Raków Częstochowa</option>
+                </optgroup>
+            </select>
+        </fieldset>
+
+        <input type="button" id="wyslij" value="Wyślij"><input type="reset" value="Wyczyść">
+    </form>
+    <h3 id="wynik"></h3>
+
+    <script>
+        imie = document.getElementById("imie");
+        ocena = document.getElementsByClassName("ocena");
+        like = document.getElementsByClassName("like");
+        dzien = document.getElementsByClassName("dzien");
+        szczyt = document.getElementsByClassName("szczyt");
+        mecz = document.getElementsByClassName("mecz");
+        klub = document.getElementsByClassName("klub");
+        wyslij = document.getElementById("wyslij");
+        wynik = document.getElementById("wynik");
+        tekst = "";
+
+        function pokaz_tekst(){
+            tekst = "Masz na imię " + imie.value + " i według Ciebie wycieczka na Śnieżnik ";
+
+            for(i=0; i<ocena.length; i++){
+                if(ocena[i].checked){
+                    tekst += ocena[i].value;
+                }
+            }
+            tekst += "<br>Na wycieczce podobało się Tobie: ";
+
+            for(i=0; i<like.length; i++){
+                if(like[i].checked){
+                    tekst += like[i].value + ", ";
+                }
+            }
+
+            tekst = tekst.replace(/, $/, ".");
+            tekst += "<br>Najlepszy dzień wycieczki według Ciebie to dzień ";
+
+            for(i=0; i<dzien.length; i++){
+                if(dzien[i].selected){
+                    tekst += dzien[i].value + ".";
+                }
+            }
+
+            tekst += "<br>Według Ciebie najpopularniejszy szczyt w Polsce to: "
+
+            for(i=0; i<szczyt.length; i++){
+                if(szczyt[i].selected){
+                    tekst += szczyt[i].value + ", ";
+                }
+            }
+
+            tekst = tekst.replace(/, $/, ".");
+            tekst += "<br>Najciekawszy mecz na wycieczce to: ";
+
+            for(i=0; i<mecz.length; i++){
+                if(mecz[i].checked){
+                    tekst += mecz[i].value;
+                }
+            }
+
+            tekst += "<br>Najlepsze kluby w poszczególnych krajach to: <br>";
+
+            for(i=0; i<klub.length; i++){
+                if(i===0){
+                    tekst += "Anglia: ";
+                }
+                if(i===6){
+                    tekst = tekst.replace(/, $/, ".");
+                    tekst += "<br>Francja: ";
+                }
+                if(i===10){
+                    tekst = tekst.replace(/, $/, ".");
+                    tekst += "<br>Hiszpania: ";
+                }
+                if(i===14){
+                    tekst = tekst.replace(/, $/, ".");
+                    tekst += "<br>Niemcy: ";
+                }
+                if(i===18){
+                    tekst = tekst.replace(/, $/, ".");
+                    tekst += "<br>Włochy: ";
+                }
+                if(i===24){
+                    tekst = tekst.replace(/, $/, ".");
+                    tekst += "<br>Polska: ";
+                }
+                if(klub[i].selected){
+                    tekst += klub[i].value + ", ";
+                }
+                if(i===29){
+                    tekst=tekst.replace(/, $/, ".");
+                }
+            }
+
+            wynik.innerHTML = tekst;
+        }
+
+        wyslij.addEventListener("click", pokaz_tekst);
+    </script>
+</body>
+</html>
