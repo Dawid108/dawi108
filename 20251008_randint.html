@@ -1,0 +1,235 @@
+<!doctype html>
+
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Zgadnij liczbę (0–10)</title>
+  <style>
+    :root{
+      --bg1:#0f172a; /* dark navy */
+      --bg2:#0b3a53; /* teal-ish */
+      --card:#ffffff;
+      --accent:#7c3aed; /* purple */
+      --glass: rgba(255,255,255,0.06);
+      --mono: 'SFMono-Regular',Consolas,"Liberation Mono",Menlo,monospace;
+    }*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial}
+body{
+  background: radial-gradient(1200px 600px at 10% 10%, rgba(124,58,237,0.12), transparent 10%),
+              linear-gradient(160deg,var(--bg1), var(--bg2));
+  color:#e6eef8;
+  display:flex;align-items:center;justify-content:center;padding:40px;
+}
+
+.wrap{width:100%;max-width:960px}
+
+header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+.logo{
+  width:64px;height:64px;border-radius:12px;background:linear-gradient(45deg,var(--accent),#06b6d4);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(12,18,31,0.6);
+  font-weight:700;font-size:20px;color:white
+}
+h1{margin:0;font-size:20px}
+p.lead{margin:0;opacity:0.9}
+
+.grid{display:grid;grid-template-columns:1fr 420px;gap:20px;align-items:start}
+
+/* Game card */
+.card{
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border-radius:14px;padding:22px;box-shadow:0 6px 30px rgba(2,6,23,0.6);backdrop-filter: blur(6px);
+  border:1px solid rgba(255,255,255,0.03);
+}
+
+.game-title{display:flex;align-items:center;gap:12px}
+.game-title h2{margin:0;font-size:18px}
+.game-meta{margin-top:6px;color:rgba(230,238,248,0.8);font-size:14px}
+
+.big-num{font-size:38px;font-weight:700;margin:14px 0 6px}
+
+.controls{display:flex;gap:8px;align-items:center}
+input[type=number]{width:120px;padding:10px;border-radius:10px;border:none;outline:none;font-size:16px;background:var(--glass);color:inherit;text-align:center}
+button{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+.btn-primary{background:linear-gradient(90deg,var(--accent),#06b6d4);color:white;box-shadow:0 6px 20px rgba(124,58,237,0.18)}
+.btn-secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:inherit}
+
+.status{margin-top:16px;padding:14px;border-radius:10px;background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(255,255,255,0.01));min-height:56px;display:flex;flex-direction:column;justify-content:center}
+.hint{font-weight:700}
+.small{font-size:13px;opacity:0.85}
+
+.stats{display:flex;gap:12px;margin-top:12px}
+.pill{background:rgba(255,255,255,0.03);padding:8px 12px;border-radius:999px;font-weight:600}
+
+/* Terminal area */
+.terminal{
+  background:#0b1220;border-radius:12px;padding:14px;color:#d6e7ff;font-family:var(--mono);font-size:13px;line-height:1.45;border:1px solid rgba(255,255,255,0.03);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.02), 0 10px 30px rgba(2,6,23,0.6);
+}
+.terminal .term-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.dots span{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px}
+.dots .r{background:#ff5f56}
+.dots .y{background:#ffbd2e}
+.dots .g{background:#27c93f}
+
+pre{margin:0;white-space:pre-wrap}
+.term-actions{display:flex;gap:8px}
+.copy-btn{background:rgba(255,255,255,0.03);border:none;padding:8px 10px;border-radius:8px;color:inherit;cursor:pointer}
+
+/* Responsive */
+@media (max-width:880px){
+  .grid{grid-template-columns:1fr;}
+}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">ZG</div>
+      <div>
+        <h1>Zgadnij liczbę <small style="opacity:.8">(0–10)</small></h1>
+        <p class="lead">Program losuje liczbę, Ty zgadujesz. Poniżej jest też gotowy kod Pythona do skopiowania.</p>
+      </div>
+    </header><div class="grid">
+  <div class="card">
+    <div class="game-title">
+      <h2>Główna gra — JavaScript</h2>
+    </div>
+    <div class="game-meta">Losuje jedną liczbę całkowitą od 0 do 10. Masz nieograniczoną liczbę prób.</div>
+
+    <div style="margin-top:14px">
+      <div class="big-num">Twoja kolej — spróbuj zgadnąć!</div>
+
+      <div class="controls">
+        <input id="guessInput" type="number" min="0" max="10" placeholder="0–10" />
+        <button id="guessBtn" class="btn-primary">Zgaduję</button>
+        <button id="resetBtn" class="btn-secondary">Nowa gra</button>
+      </div>
+
+      <div class="status" id="status">
+        <div class="hint">Wciśnij "Zgaduję" aby sprawdzić.</div>
+        <div class="small" id="feedback">Powodzenia!</div>
+      </div>
+
+      <div class="stats">
+        <div class="pill">Próby: <span id="tries">0</span></div>
+        <div class="pill">Zakres: 0–10</div>
+      </div>
+    </div>
+  </div>
+
+  <aside class="terminal card">
+    <div class="term-head">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <strong>Terminal: kod Pythona</strong>
+      </div>
+
+      <div class="term-actions">
+        <button class="copy-btn" id="copyBtn">Kopiuj kod</button>
+        <button class="copy-btn" id="selectBtn">Zaznacz wszystko</button>
+      </div>
+    </div>
+
+    <pre id="pycode">import random  # import biblioteki random
+
+losujemy liczbę całkowitą z zakresu 0–10
+
+wylosowana = random.randint(0, 10)
+
+próby = 0
+
+while True: próby += 1 try: wej = int(input("Zgadnij liczbę od 0 do 10: ")) except ValueError: print("Proszę podać liczbę całkowitą.") continue
+
+if wej < 0 or wej > 10:
+    print("Liczba poza zakresem! Podaj 0–10.")
+    continue
+
+if wej == wylosowana:
+    print(f"Brawo! Zgadłeś liczbę w {próby} próbach!")
+    break
+elif wej < wylosowana:
+    print("Nie zgadłeś — za mało.")
+else:
+    print("Nie zgadłeś — za dużo.")
+
+</pre></aside>
+</div>
+
+  </div>  <script>
+    // Losowanie liczby i logika gry
+    let secret = Math.floor(Math.random() * 11);
+    let tries = 0;
+    const input = document.getElementById('guessInput');
+    const guessBtn = document.getElementById('guessBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const status = document.getElementById('status');
+    const feedback = document.getElementById('feedback');
+    const triesEl = document.getElementById('tries');
+
+    function setStatus(text, sub=""){
+      status.querySelector('.hint').textContent = text;
+      feedback.textContent = sub;
+    }
+
+    function newGame(){
+      secret = Math.floor(Math.random() * 11);
+      tries = 0;
+      triesEl.textContent = tries;
+      input.disabled = false;
+      guessBtn.disabled = false;
+      input.value = '';
+      setStatus('Nowa gra — zgadnij liczbę!','Powodzenia!');
+    }
+
+    guessBtn.addEventListener('click', ()=>{
+      const raw = input.value;
+      if(raw === ''){ setStatus('Podaj liczbę (0–10).',''); return; }
+      const val = Number(raw);
+      if(!Number.isInteger(val) || val < 0 || val > 10){ setStatus('Błąd: podaj poprawną liczbę 0–10.',''); return; }
+
+      tries += 1;
+      triesEl.textContent = tries;
+
+      if(val === secret){
+        setStatus('Gratulacje — zgadłeś!','Zgadłeś liczbę w ' + tries + ' próbach.');
+        input.disabled = true;
+        guessBtn.disabled = true;
+      }else if(val < secret){
+        setStatus('Nie zgadłeś — za mało.','Spróbuj większej liczby.');
+      }else{
+        setStatus('Nie zgadłeś — za dużo.','Spróbuj mniejszej liczby.');
+      }
+    });
+
+    resetBtn.addEventListener('click', newGame);
+
+    // Kopiowanie kodu Pythona i dodatkowe akcje
+    const copyBtn = document.getElementById('copyBtn');
+    const selectBtn = document.getElementById('selectBtn');
+    const pycode = document.getElementById('pycode');
+
+    copyBtn.addEventListener('click', async ()=>{
+      try{
+        await navigator.clipboard.writeText(pycode.textContent);
+        copyBtn.textContent = 'Skopiowano ✓';
+        setTimeout(()=> copyBtn.textContent = 'Kopiuj kod', 1600);
+      }catch(e){
+        copyBtn.textContent = 'Kopiowanie nie powiodło się';
+        setTimeout(()=> copyBtn.textContent = 'Kopiuj kod', 2000);
+      }
+    });
+
+    selectBtn.addEventListener('click', ()=>{
+      // selekcja zawartości elementu <pre>
+      const range = document.createRange();
+      range.selectNodeContents(pycode);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+
+    // Ustawienia początkowe
+    newGame();
+  </script></body>
+</html>
