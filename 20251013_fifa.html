@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Turniej FIFA</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0c0f13;
+      color: white;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    .header {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      background: #1c1f25;
+      padding: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    button {
+      background: #222;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button.active {
+      background: #007bff;
+    }
+
+    .section {
+      padding: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .group {
+      background: #1e232b;
+      border-radius: 15px;
+      margin: 15px 0;
+      padding: 10px;
+    }
+
+    .score-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .score-table th, .score-table td {
+      border: 1px solid #444;
+      padding: 5px;
+    }
+
+    input[type="number"] {
+      width: 40px;
+      text-align: center;
+      border-radius: 5px;
+      border: 1px solid #777;
+      background: #111;
+      color: white;
+      padding: 3px;
+    }
+
+    pre {
+      background: #111;
+      color: #00d0ff;
+      text-align: left;
+      padding: 10px;
+      border-radius: 10px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button id="groupBtn" class="active">Grupa</button>
+    <button id="playoffBtn">Play-Off</button>
+  </div>
+
+  <div id="groupSection" class="section">
+    <!-- Grupa A -->
+    <div class="group">
+      <h2>Grupa A</h2>
+      <div class="matches" id="matchesA"></div>
+      <table id="tableA" class="score-table">
+        <thead>
+          <tr><th>M</th><th>Gracz</th><th>Pkt</th><th>Z</th><th>S</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Grupa B -->
+    <div class="group">
+      <h2>Grupa B</h2>
+      <div class="matches" id="matchesB"></div>
+      <table id="tableB" class="score-table">
+        <thead>
+          <tr><th>M</th><th>Gracz</th><th>Pkt</th><th>Z</th><th>S</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Grupa C -->
+    <div class="group">
+      <h2>Grupa C</h2>
+      <div class="matches" id="matchesC"></div>
+      <table id="tableC" class="score-table">
+        <thead>
+          <tr><th>M</th><th>Gracz</th><th>Pkt</th><th>Z</th><th>S</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <!-- Grupa D -->
+    <div class="group">
+      <h2>Grupa D</h2>
+      <div class="matches" id="matchesD"></div>
+      <table id="tableD" class="score-table">
+        <thead>
+          <tr><th>M</th><th>Gracz</th><th>Pkt</th><th>Z</th><th>S</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="playoffSection" class="section hidden">
+    <h2>Play-Off</h2>
+    <p>👉 Tutaj wklej drabinkę Play-Off (np. półfinały, finał itp.)</p>
+    <p>Możesz wpisać np.:</p>
+    <pre>
+<!-- PRZYKŁAD:
+Półfinał 1: Zwycięzca Grupy A - Zwycięzca Grupy B
+Półfinał 2: Zwycięzca Grupy C - Zwycięzca Grupy D
+Finał: Zwycięzca 1 - Zwycięzca 2
+-->
+    </pre>
+  </div>
+
+  <script>
+    // --- Dane grup ---
+    const groups = {
+      A: ["Piotrek", "Cypis", "Marszał"],
+      B: ["Gusto", "Igi", "Szympans"],
+      C: ["Bandi", "Senger", "Brodzik"],
+      D: ["Becia", "Romek", "Piorunek"]
+    };
+
+    // --- Tworzenie meczów w każdej grupie ---
+    function generateMatches(groupName, players) {
+      const container = document.getElementById("matches" + groupName);
+      container.innerHTML = "";
+      const matches = [];
+
+      // Każdy z każdym
+      for (let i = 0; i < players.length; i++) {
+        for (let j = i + 1; j < players.length; j++) {
+          const match = document.createElement("div");
+          match.innerHTML = `
+            ${players[i]} 
+            <input type="number" min="0" id="g${groupName}_${i}_${j}_a"> : 
+            <input type="number" min="0" id="g${groupName}_${i}_${j}_b"> 
+            ${players[j]}
+          `;
+          container.appendChild(match);
+          matches.push({ p1: players[i], p2: players[j], idA: `g${groupName}_${i}_${j}_a`, idB: `g${groupName}_${i}_${j}_b` });
+        }
+      }
+
+      // Obsługa zmian wyników
+      matches.forEach(m => {
+        document.getElementById(m.idA).addEventListener("input", () => updateTable(groupName, players, matches));
+        document.getElementById(m.idB).addEventListener("input", () => updateTable(groupName, players, matches));
+      });
+
+      // Początkowa tabela
+      updateTable(groupName, players, matches);
+    }
+
+    // --- Aktualizacja tabeli ---
+    function updateTable(groupName, players, matches) {
+      const stats = {};
+      players.forEach(p => stats[p] = { pts: 0, z: 0, s: 0 });
+
+      matches.forEach(m => {
+        const g1 = parseInt(document.getElementById(m.idA).value) || 0;
+        const g2 = parseInt(document.getElementById(m.idB).value) || 0;
+        stats[m.p1].z += g1;
+        stats[m.p1].s += g2;
+        stats[m.p2].z += g2;
+        stats[m.p2].s += g1;
+        if (g1 > g2) stats[m.p1].pts += 3;
+        else if (g2 > g1) stats[m.p2].pts += 3;
+        else if (g1 === g2 && (g1 !== 0 || g2 !== 0)) {
+          stats[m.p1].pts += 1;
+          stats[m.p2].pts += 1;
+        }
+      });
+
+      const tableBody = document.querySelector(`#table${groupName} tbody`);
+      const sorted = Object.entries(stats).sort((a, b) =>
+        b[1].pts - a[1].pts || (b[1].z - b[1].s) - (a[1].z - a[1].s)
+      );
+
+      tableBody.innerHTML = "";
+      sorted.forEach(([player, data], i) => {
+        const row = `<tr>
+          <td>${i + 1}</td><td>${player}</td>
+          <td>${data.pts}</td><td>${data.z}</td><td>${data.s}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+      });
+    }
+
+    // --- Inicjalizacja wszystkich grup ---
+    for (const [group, players] of Object.entries(groups)) {
+      generateMatches(group, players);
+    }
+
+    // --- Przełączanie sekcji ---
+    document.getElementById("groupBtn").addEventListener("click", () => {
+      document.getElementById("groupSection").classList.remove("hidden");
+      document.getElementById("playoffSection").classList.add("hidden");
+      document.getElementById("groupBtn").classList.add("active");
+      document.getElementById("playoffBtn").classList.remove("active");
+    });
+
+    document.getElementById("playoffBtn").addEventListener("click", () => {
+      document.getElementById("groupSection").classList.add("hidden");
+      document.getElementById("playoffSection").classList.remove("hidden");
+      document.getElementById("playoffBtn").classList.add("active");
+      document.getElementById("groupBtn").classList.remove("active");
+    });
+  </script>
+</body>
+</html>
