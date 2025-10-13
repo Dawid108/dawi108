@@ -92,7 +92,7 @@
   </div>
 
   <div id="groupSection" class="section">
-    <!-- Grupa A -->
+    <!-- Grupy -->
     <div class="group">
       <h2>Grupa A</h2>
       <div class="matches" id="matchesA"></div>
@@ -104,7 +104,6 @@
       </table>
     </div>
 
-    <!-- Grupa B -->
     <div class="group">
       <h2>Grupa B</h2>
       <div class="matches" id="matchesB"></div>
@@ -116,7 +115,6 @@
       </table>
     </div>
 
-    <!-- Grupa C -->
     <div class="group">
       <h2>Grupa C</h2>
       <div class="matches" id="matchesC"></div>
@@ -128,7 +126,6 @@
       </table>
     </div>
 
-    <!-- Grupa D -->
     <div class="group">
       <h2>Grupa D</h2>
       <div class="matches" id="matchesD"></div>
@@ -144,7 +141,6 @@
   <div id="playoffSection" class="section hidden">
     <h2>Play-Off</h2>
     <p>👉 Tutaj wklej drabinkę Play-Off (np. półfinały, finał itp.)</p>
-    <p>Możesz wpisać np.:</p>
     <pre>
 <!-- PRZYKŁAD:
 Półfinał 1: Zwycięzca Grupy A - Zwycięzca Grupy B
@@ -163,34 +159,49 @@ Finał: Zwycięzca 1 - Zwycięzca 2
       D: ["Becia", "Romek", "Piorunek"]
     };
 
-    // --- Tworzenie meczów w każdej grupie ---
+    // --- Funkcja do tworzenia meczów i pól wyników ---
     function generateMatches(groupName, players) {
       const container = document.getElementById("matches" + groupName);
       container.innerHTML = "";
       const matches = [];
 
-      // Każdy z każdym
       for (let i = 0; i < players.length; i++) {
         for (let j = i + 1; j < players.length; j++) {
+          const idA = `g${groupName}_${i}_${j}_a`;
+          const idB = `g${groupName}_${i}_${j}_b`;
           const match = document.createElement("div");
           match.innerHTML = `
             ${players[i]} 
-            <input type="number" min="0" id="g${groupName}_${i}_${j}_a"> : 
-            <input type="number" min="0" id="g${groupName}_${i}_${j}_b"> 
+            <input type="number" min="0" id="${idA}"> : 
+            <input type="number" min="0" id="${idB}"> 
             ${players[j]}
           `;
           container.appendChild(match);
-          matches.push({ p1: players[i], p2: players[j], idA: `g${groupName}_${i}_${j}_a`, idB: `g${groupName}_${i}_${j}_b` });
+          matches.push({ p1: players[i], p2: players[j], idA, idB });
         }
       }
 
-      // Obsługa zmian wyników
+      // Przywracanie zapisanych wyników z localStorage
       matches.forEach(m => {
-        document.getElementById(m.idA).addEventListener("input", () => updateTable(groupName, players, matches));
-        document.getElementById(m.idB).addEventListener("input", () => updateTable(groupName, players, matches));
+        const saved = JSON.parse(localStorage.getItem(m.idA)) || { a: "", b: "" };
+        document.getElementById(m.idA).value = saved.a;
+        document.getElementById(m.idB).value = saved.b;
       });
 
-      // Początkowa tabela
+      // Obsługa zmian
+      matches.forEach(m => {
+        document.getElementById(m.idA).addEventListener("input", () => saveAndUpdate(groupName, players, matches, m.idA, m.idB));
+        document.getElementById(m.idB).addEventListener("input", () => saveAndUpdate(groupName, players, matches, m.idA, m.idB));
+      });
+
+      updateTable(groupName, players, matches);
+    }
+
+    // --- Zapis i aktualizacja ---
+    function saveAndUpdate(groupName, players, matches, idA, idB) {
+      const valA = document.getElementById(idA).value;
+      const valB = document.getElementById(idB).value;
+      localStorage.setItem(idA, JSON.stringify({ a: valA, b: valB }));
       updateTable(groupName, players, matches);
     }
 
@@ -200,17 +211,17 @@ Finał: Zwycięzca 1 - Zwycięzca 2
       players.forEach(p => stats[p] = { pts: 0, z: 0, s: 0 });
 
       matches.forEach(m => {
-        const g1 = parseInt(document.getElementById(m.idA).value) || 0;
-        const g2 = parseInt(document.getElementById(m.idB).value) || 0;
-        stats[m.p1].z += g1;
-        stats[m.p1].s += g2;
-        stats[m.p2].z += g2;
-        stats[m.p2].s += g1;
-        if (g1 > g2) stats[m.p1].pts += 3;
-        else if (g2 > g1) stats[m.p2].pts += 3;
-        else if (g1 === g2 && (g1 !== 0 || g2 !== 0)) {
-          stats[m.p1].pts += 1;
-          stats[m.p2].pts += 1;
+        const data = JSON.parse(localStorage.getItem(m.idA)) || { a: "", b: "" };
+        const g1 = parseInt(data.a) || 0;
+        const g2 = parseInt(data.b) || 0;
+        if (data.a !== "" && data.b !== "") {
+          stats[m.p1].z += g1;
+          stats[m.p1].s += g2;
+          stats[m.p2].z += g2;
+          stats[m.p2].s += g1;
+          if (g1 > g2) stats[m.p1].pts += 3;
+          else if (g2 > g1) stats[m.p2].pts += 3;
+          else stats[m.p1].pts += 1, stats[m.p2].pts += 1;
         }
       });
 
@@ -221,15 +232,19 @@ Finał: Zwycięzca 1 - Zwycięzca 2
 
       tableBody.innerHTML = "";
       sorted.forEach(([player, data], i) => {
-        const row = `<tr>
-          <td>${i + 1}</td><td>${player}</td>
-          <td>${data.pts}</td><td>${data.z}</td><td>${data.s}</td>
-        </tr>`;
-        tableBody.innerHTML += row;
+        tableBody.innerHTML += `
+          <tr>
+            <td>${i + 1}</td>
+            <td>${player}</td>
+            <td>${data.pts}</td>
+            <td>${data.z}</td>
+            <td>${data.s}</td>
+          </tr>
+        `;
       });
     }
 
-    // --- Inicjalizacja wszystkich grup ---
+    // --- Inicjalizacja grup ---
     for (const [group, players] of Object.entries(groups)) {
       generateMatches(group, players);
     }
