@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pole i Obwód Koła</title>
+  <style>
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  background: linear-gradient(135deg, #e0f7fa, #ffffff);
+  color: #222;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+header {
+  background: #00796b;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  border-bottom: 4px solid #004d40;
+}
+
+main {
+  max-width: 800px;
+  width: 90%;
+  background: white;
+  margin: 20px auto;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+h3 {
+  color: #004d40;
+  margin-bottom: 10px;
+}
+
+label {
+  font-weight: bold;
+}
+
+input {
+  width: 100%;
+  max-width: 250px;
+  padding: 8px;
+  margin: 10px 0;
+  border: 2px solid #004d40;
+  border-radius: 8px;
+  font-size: 1em;
+}
+
+button {
+  background: #00796b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-size: 1em;
+}
+
+button:hover {
+  background: #004d40;
+}
+
+#results {
+  margin-top: 10px;
+  font-size: 1.1em;
+  font-weight: bold;
+}
+
+#message {
+  color: red;
+  font-weight: bold;
+}
+
+#circleCanvas {
+  margin-top: 20px;
+  border: 1px solid #aaa;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+}
+
+.python-code {
+  margin-top: 30px;
+}
+
+pre {
+  background: #f0f0f0;
+  padding: 15px;
+  border-radius: 10px;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  font-family: Consolas, monospace;
+}
+
+#copyBtn {
+  margin-top: 10px;
+  background: #004d40;
+}
+  </style>
+</head>
+<body>
+  <header>
+    <h2>
+      Napisz program który oblicza pole i obwód koła o promieniu podanym przez użytkownika,
+      wartość Pi należy pobrać z biblioteki math, wartość promienia nie może być ujemna
+      i trzeba to zabezpieczyć odpowiednim komunikatem, wygeneruj ilustrację prezentującą
+      koło ze skalą x, y.
+    </h2>
+  </header>
+
+  <main>
+    <section class="calculator">
+      <h3>Rozwiązanie w JavaScript</h3>
+      <label for="radius">Podaj promień koła:</label>
+      <input type="number" id="radius" placeholder="np. 5" step="0.1">
+      <button onclick="calculate()">Oblicz</button>
+      <p id="message"></p>
+      <div id="results"></div>
+
+      <canvas id="circleCanvas" width="300" height="300"></canvas>
+    </section>
+
+    <section class="python-code">
+      <h3>Kod w Pythonie:</h3>
+      <pre id="pythonCode">
+import math
+import matplotlib.pyplot as plt
+
+r = float(input("Podaj promień koła: "))
+
+if r < 0:
+    print("Błąd: promień nie może być ujemny!")
+else:
+    pole = math.pi * r ** 2
+    obwod = 2 * math.pi * r
+    print(f"Pole koła: {pole:.2f}")
+    print(f"Obwód koła: {obwod:.2f}")
+
+    fig, ax = plt.subplots()
+    circle = plt.Circle((0, 0), r, color='lightblue', fill=True, alpha=0.5)
+    ax.add_artist(circle)
+    ax.set_xlim(-r * 1.2, r * 1.2)
+    ax.set_ylim(-r * 1.2, r * 1.2)
+    ax.set_aspect('equal')
+    plt.axhline(0, color='black')
+    plt.axvline(0, color='black')
+    plt.title(f"Koło o promieniu r = {r}")
+    plt.show()</pre>
+      <button id="copyBtn">Kopiuj kod</button>
+    </section>
+  </main>
+
+  <script>
+function calculate() {
+  const r = parseFloat(document.getElementById("radius").value);
+  const message = document.getElementById("message");
+  const results = document.getElementById("results");
+  const canvas = document.getElementById("circleCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // Wyczyść komunikaty i rysunek
+  message.textContent = "";
+  results.textContent = "";
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (isNaN(r)) {
+    message.textContent = "Podaj wartość promienia!";
+    return;
+  }
+
+  if (r < 0) {
+    message.textContent = "Błąd: promień nie może być ujemny!";
+    return;
+  }
+
+  // Obliczenia (jak w Pythonie)
+  const pole = Math.PI * r ** 2;
+  const obwod = 2 * Math.PI * r;
+
+  results.innerHTML = `
+    Pole koła: ${pole.toFixed(2)}<br>
+    Obwód koła: ${obwod.toFixed(2)}
+  `;
+
+  // Rysowanie koła
+  const centerX = canvas.width / 2;
+  const centerY = canvas.height / 2;
+  const scale = 20; // skala (1 jednostka = 20px)
+  const radiusScaled = r * scale;
+
+  // Osie X i Y
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(0, centerY);
+  ctx.lineTo(canvas.width, centerY);
+  ctx.moveTo(centerX, 0);
+  ctx.lineTo(centerX, canvas.height);
+  ctx.stroke();
+
+  // Rysowanie koła
+  ctx.beginPath();
+  ctx.arc(centerX, centerY, radiusScaled, 0, 2 * Math.PI);
+  ctx.fillStyle = "rgba(0, 150, 136, 0.3)";
+  ctx.fill();
+  ctx.strokeStyle = "#004d40";
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // Tekst promienia
+  ctx.beginPath();
+  ctx.moveTo(centerX, centerY);
+  ctx.lineTo(centerX + radiusScaled, centerY);
+  ctx.strokeStyle = "red";
+  ctx.stroke();
+  ctx.fillStyle = "red";
+  ctx.font = "14px Arial";
+  ctx.fillText("r", centerX + radiusScaled / 2, centerY - 5);
+}
+
+// Kopiowanie kodu Pythona
+document.getElementById("copyBtn").addEventListener("click", () => {
+  const code = document.getElementById("pythonCode").innerText;
+  navigator.clipboard.writeText(code);
+  alert("Kod Pythona został skopiowany!");
+});
+</script>
+</body>
+</html>
