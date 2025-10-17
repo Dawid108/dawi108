@@ -1,270 +1,236 @@
-<!doctype html>
-
-<html lang="pl">
+<!DOCTYPE html><html lang="pl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Plan 100 km — Kalendarz i Porady</title>
-<style>
-:root{--accent:#0ea5a4;--bg:#0f172a;--card:#0b1220;--muted:#94a3b8;--glass: rgba(255,255,255,0.03)}
-*{box-sizing:border-box}
-html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial; background:linear-gradient(180deg,#071029 0%, #07142a 100%);color:#e6eef6}
-.container{max-width:1100px;margin:18px auto;padding:16px}
-.header{display:flex;gap:12px;align-items:center;justify-content:space-between}
-.brand{display:flex;gap:12px;align-items:center}
-.logo{width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;font-weight:700}
-h1{font-size:18px;margin:0}
-.sub{color:var(--muted);font-size:13px}
-.nav{display:flex;gap:8px;margin-top:14px}
-.tab{padding:8px 12px;border-radius:10px;background:var(--glass);cursor:pointer}
-.tab.active{background:linear-gradient(90deg, rgba(14,165,164,0.15), rgba(124,58,237,0.12));box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-.main{display:grid;grid-template-columns:1fr 380px;gap:18px;margin-top:16px}
-@media(max-width:900px){.main{grid-template-columns:1fr} .right-col{order:2}}
-.card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:12px;border-radius:12px;box-shadow:0 6px 18px rgba(2,6,23,0.6)}
-.week{margin-bottom:12px}
-.week h3{margin:6px 0 10px 0;font-size:15px}
-.day{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:10px;background:rgba(255,255,255,0.01);margin-bottom:8px}
-.day .left{display:flex;gap:10px;align-items:center}
-.badge{width:44px;height:44px;border-radius:8px;background:rgba(255,255,255,0.02);display:flex;flex-direction:column;align-items:center;justify-content:center;font-weight:600}
-.date{font-size:13px}
-.activity{font-size:14px}
-.suggestion{color:var(--muted);font-size:12px}
-.week-total{font-weight:700;color:var(--accent);text-align:right;margin-top:6px}
-.right-col{display:flex;flex-direction:column;gap:12px}
-.section-title{font-weight:700;margin:0 0 8px 0}
-.p{color:var(--muted);font-size:14px;line-height:1.5}
-.small{font-size:13px;color:var(--muted)}
-.kv{display:flex;gap:8px;flex-wrap:wrap}
-.btn{padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,var(--accent),#7c3aed);color:#021024;border:none;cursor:pointer}
-.modal{position:fixed;left:0;right:0;top:0;bottom:0;background:rgba(2,6,23,0.6);display:flex;align-items:center;justify-content:center;z-index:40}
-.modal-card{width:92%;max-width:760px;background:#071428;padding:16px;border-radius:12px}
-.close{float:right;background:transparent;border:none;color:var(--muted);font-size:18px}
-.footer{margin-top:18px;color:var(--muted);font-size:13px;text-align:center}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Plan 100 km - Kalendarz i Porady</title>
+  <style>
+    body {
+      font-family: 'Poppins', Arial, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa, #ffffff);
+      color: #222;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      text-align: center;
+      background-color: #0277bd;
+      color: white;
+      padding: 1rem;
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+    }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      background-color: #039be5;
+      padding: 0.7rem;
+      flex-wrap: wrap;
+    }
+    nav button {
+      background-color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0.6rem 1.2rem;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    nav button:hover {
+      background-color: #b3e5fc;
+    }
+    section {
+      padding: 1rem;
+      display: none;
+      max-width: 900px;
+      margin: auto;
+      font-size: 1.1rem;
+    }
+    section.active {
+      display: block;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .day {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin: 0.6rem 0;
+      padding: 0.8rem;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .day:hover {
+      transform: scale(1.02);
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 15px;
+      max-width: 500px;
+      text-align: center;
+      font-size: 1.1rem;
+    }
+    .close-btn {
+      background-color: #0277bd;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 1.2rem;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+    h2 {
+      color: #01579b;
+      text-align: center;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 1rem;
+      }
+      nav button {
+        font-size: 1rem;
+      }
+    }
+  </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="brand">
-      <div class="logo">100</div>
-      <div>
-        <h1>Plan do 100 km — kalendarz i porady</h1>
-        <div class="sub">Zawiera Twój plan (18 października – 30 listopada) + moje sugestie</div>
-      </div>
+  <header>🏃‍♂️ Plan 100 km - Kalendarz i Porady</header>
+  <nav>
+    <button onclick="showSection('calendar')">📅 Kalendarz</button>
+    <button onclick="showSection('tips')">💡 Porady</button>
+    <button onclick="showSection('race')">🏁 Dzień 100 km</button>
+  </nav>  <section id="calendar" class="active"></section>
+  <section id="tips">
+    <h2>Porady treningowe i żywieniowe</h2>
+    <ul>
+      <li><strong>Odżywianie:</strong> jedz zbilansowane posiłki bogate w węglowodany, białko i tłuszcze. W dni długich biegów węglowodany 70% energii.</li>
+      <li><strong>Testuj:</strong> żele, batoniki, musy i izotoniki podczas treningów 30 km+. Wybierz te, które nie powodują problemów żołądkowych.</li>
+      <li><strong>Regeneracja:</strong> rozciąganie po każdym biegu, zimne prysznice, sen min. 8 godzin, białko po treningu.</li>
+      <li><strong>Tempo:</strong> treningi regeneracyjne 6:15–6:45 min/km, długie wybiegania 6:00–6:30 min/km, krótsze 5:30–5:50 min/km.</li>
+      <li><strong>Po długim biegu:</strong> lekki posiłek białkowo-węglowodanowy i odpoczynek; unikaj dużego wysiłku przez 24h.</li>
+    </ul>
+  </section>  <section id="race">
+    <h2>Dzień biegu 100 km</h2>
+    <ul>
+      <li><strong>Pobudka:</strong> ok. 5:00, start biegu 6:00–6:30.</li>
+      <li><strong>Śniadanie:</strong> owsianka, banan, kawa/herbata, izotonik – ok. 2h przed startem.</li>
+      <li><strong>Tempo biegu:</strong> zacznij 6:30–7:00 min/km, nie szybciej.</li>
+      <li><strong>Żywienie:</strong> co 45–60 min – żel, baton lub banan; pij regularnie 200 ml co 15–20 min.</li>
+      <li><strong>Plecak w lesie:</strong> z wodą, izotonikiem, solą, żelami, musami, bananami; odwiedzaj go co 10–15 km.</li>
+      <li><strong>Obiad:</strong> można zjeść 1–2 kawałki pizzy po 60–70 km (sprawdzony wcześniej rodzaj).</li>
+      <li><strong>Ból nóg:</strong> nie przerywaj nagle, tylko zwolnij, rozluźnij, nawodnij się, zrób krótki marsz.</li>
+      <li><strong>Wsparcie:</strong> znajomi mogą podawać napoje, motywować, robić zdjęcia i kontrolować Twoje nawodnienie.</li>
+      <li><strong>Po biegu:</strong> białko (np. koktajl), lekkie jedzenie, rozciąganie, sen, zimny prysznic; następnego dnia lekki spacer.</li>
+      <li><strong>Skutki:</strong> zmęczenie, mikrourazy, możliwe bóle mięśni 3–5 dni – normalne objawy.</li>
+    </ul>
+  </section>  <div class="modal" id="modal">
+    <div class="modal-content">
+      <h3 id="modal-date"></h3>
+      <p id="modal-training"></p>
+      <button class="close-btn" onclick="closeModal()">Zamknij</button>
     </div>
-    <div>
-      <button class="btn" id="openAll">Pokaż/ukryj wszystkie sugestie</button>
-    </div>
-  </div>  <div class="nav">
-    <div class="tab active" data-tab="calendar">Kalendarz</div>
-    <div class="tab" data-tab="porady">Porady</div>
-    <div class="tab" data-tab="dzien">Dzień 100 km</div>
-  </div>  <div class="main">
-    <div id="calendarView" class="card">
-      <!-- calendar populated by JS -->
-    </div><div class="right-col">
-  <div id="poradyView" class="card" style="display:none">
-    <h3 class="section-title">Porady skrócone</h3>
-    <div class="p">
-      <strong>Odżywianie:</strong> jedz regularnie w ciągu dnia, białko + węglowodany po długim biegu (np. jogurt + banan). Na długich treningach testuj żele co 45–60 min, barów lub musy. Sole/minerały przy długich biegach.
-    </div>
-    <hr style="opacity:.06;margin:10px 0"/>
-    <div class="p"><strong>Regeneracja:</strong> minimum 8h snu, rolowanie, zimna-warm kąpiel, masaż/foam roller. Po długim — lekkie rozciąganie i posiłek białkowo-węglowodanowy w 30–60 min.</div>
-    <hr style="opacity:.06;margin:10px 0"/>
-    <div class="p"><strong>Tempo:</strong> długie >30 km spokojnie (6:00–6:40), maraton treningowo 6:30–7:00/km, krótkie 5–10 km możesz mieć tempo zbliżone do 4:30–5:30 jeśli czujesz siły.</div>
-  </div>
+  </div>  <script>
+    const calendarData = [
+      { date: '18 października', training: 'Szachy, bieg na 10 km (tempo 5:45–6:00)', week: 1 },
+      { date: '19 października', training: 'Mecz Sokół Chwaliszew vs Zawisza Sośnie (traktuj jak trening interwałowy)', week: 1 },
+      { date: '20 października', training: '5 km lub odpoczynek (jeśli zmęczony – regeneracja)', week: 1 },
+      { date: '21 października', training: '18 km spokojnie (6:10–6:30)', week: 1 },
+      { date: '22 października', training: 'Trening piłkarski', week: 1 },
+      { date: '23 października', training: '5 km luźno', week: 1 },
+      { date: '24 października', training: '10 km (6:00 tempo)', week: 1 },
+      { date: '25 października', training: '5 km spokojnie', week: 2 },
+      { date: '26 października', training: 'Bieg w Jarocinie 10 km (tempo 5:40–5:50)', week: 2 },
+      { date: '27 października', training: '10 km regeneracyjny', week: 2 },
+      { date: '28 października', training: '5 km luźno', week: 2 },
+      { date: '29 października', training: 'Trening w piłkę', week: 2 },
+      { date: '30 października', training: '5 km', week: 2 },
+      { date: '31 października', training: '10 km (spokojnie)', week: 2 },
+      { date: '1 listopada', training: '25 km long run (6:15 tempo)', week: 3 },
+      { date: '2 listopada', training: '10 km', week: 3 },
+      { date: '3 listopada', training: '5 km', week: 3 },
+      { date: '4 listopada', training: '10 km', week: 3 },
+      { date: '5 listopada', training: 'Trening w piłkę', week: 3 },
+      { date: '6 listopada', training: '10 km', week: 3 },
+      { date: '7 listopada', training: '30 km long run (6:20 tempo)', week: 3 },
+      { date: '8 listopada', training: '5 km regeneracyjny', week: 4 },
+      { date: '9 listopada', training: 'Mecz Sokół Chwaliszew vs Gorzyczanka Gorzyce Wielkie', week: 4 },
+      { date: '10 listopada', training: '5 km', week: 4 },
+      { date: '11 listopada', training: '10 km', week: 4 },
+      { date: '12 listopada', training: 'Trening w piłkę', week: 4 },
+      { date: '13 listopada', training: '10 km', week: 4 },
+      { date: '14 listopada', training: '5 km', week: 4 },
+      { date: '15 listopada', training: 'Maraton (5:50 tempo)', week: 5 },
+      { date: '16 listopada', training: 'Przerwa lub 5 km', week: 5 },
+      { date: '17 listopada', training: '5 km regeneracyjny', week: 5 },
+      { date: '18 listopada', training: '5 km', week: 5 },
+      { date: '19 listopada', training: 'Trening w piłkę', week: 5 },
+      { date: '20 listopada', training: '5 km', week: 6 },
+      { date: '21 listopada', training: '5 km', week: 6 },
+      { date: '22 listopada', training: '21 km long run', week: 6 },
+      { date: '23 listopada', training: '21 km long run', week: 6 },
+      { date: '24 listopada', training: '5 km', week: 6 },
+      { date: '25 listopada', training: '5 km', week: 6 },
+      { date: '26 listopada', training: 'Trening w piłkę', week: 6 },
+      { date: '27 listopada', training: '5 km', week: 7 },
+      { date: '28 listopada', training: '10 km', week: 7 },
+      { date: '29 listopada', training: '10 km', week: 7 },
+      { date: '30 listopada', training: 'Bieg 100 km – cel końcowy 🎯', week: 7 }
+    ];
 
-  <div id="dzienView" class="card" style="display:none">
-    <h3 class="section-title">Dzień biegu 100 km — skrót</h3>
-    <div class="p"><strong>Wstawanie:</strong> 3–4 godziny przed startem (zależy od godziny startu). Spokojne śniadanie 2–3 godziny przed (węglowodany łatwostrawne + trochę białka). Przykład: owsianka z bananem i masłem orzechowym + jogurt.</div>
-    <div style="height:8px"></div>
-    <div class="p"><strong>Plan żywieniowy podczas biegu:</strong> 200–300 kcal co 45–60 min (żel, batonik, kanapka), 200–300 ml płynu co 20–30 min, elektrolity co 60–90 min. Zaplanuj punkty, gdzie będziesz miał plecak z zapasami co ~25–30 km.</div>
-    <div style="height:8px"></div>
-    <div class="p"><strong>Tempo:</strong> zacznij dużo wolniej niż maraton: 6:30–7:30/km (ale priorytet to komfort). W miarę zmęczenia obniż tempo, ale postaraj się nie chodzić dłużej niż 1–2 min co 30–40 min.</div>
-  </div>
+    const calendarSection = document.getElementById('calendar');
 
-</div>
-
-  </div>  <div class="footer">Kliknij dzień żeby zobaczyć pełne instrukcje dla tego dnia. Po tygodniu zobaczysz sumę km w tygodniu.</div>
-</div><!-- modal --><div id="modal" class="modal" style="display:none">
-  <div class="modal-card">
-    <button class="close" id="closeModal">✕</button>
-    <div id="modalContent"></div>
-  </div>
-</div><script>
-// Twój plan (użytkownik podał): lista obiektów: yyyy-mm-dd, description
-const plan = [
-  ['2025-10-18','Szachy, bieg 10 km'],
-  ['2025-10-19','Mecz Sokół Chwaliszew vs Zawisza Sośnie'],
-  ['2025-10-20','5 km (możesz pominąć ze względu na sprawdzian)'],
-  ['2025-10-21','18 km'],
-  ['2025-10-22','Trening w piłkę (intensywność zmienna)'],
-  ['2025-10-23','5 km'],
-  ['2025-10-24','10 km'],
-  ['2025-10-25','5 km'],
-  ['2025-10-26','10 km — bieg w Jarocinie'],
-  ['2025-10-27','10 km'],
-  ['2025-10-28','5 km'],
-  ['2025-10-29','Trening w piłkę'],
-  ['2025-10-30','5 km'],
-  ['2025-10-31','10 km'],
-  ['2025-11-01','25 km'],
-  ['2025-11-02','10 km'],
-  ['2025-11-03','5 km'],
-  ['2025-11-04','10 km'],
-  ['2025-11-05','Trening w piłkę'],
-  ['2025-11-06','10 km'],
-  ['2025-11-07','30 km'],
-  ['2025-11-08','5 km (sugeruję 20 km jako drugi dzień back-to-back)'],
-  ['2025-11-09','Mecz Sokół Chwaliszew vs Gorzyczanka Gorzyce Wielkie'],
-  ['2025-11-10','5 km'],
-  ['2025-11-11','10 km'],
-  ['2025-11-12','Trening w piłkę'],
-  ['2025-11-13','10 km'],
-  ['2025-11-14','5 km'],
-  ['2025-11-15','Maraton (42 km)'],
-  ['2025-11-16','Przerwa albo 5 km bardzo luźno'],
-  ['2025-11-17','5 km'],
-  ['2025-11-18','5 km'],
-  ['2025-11-19','Trening w piłkę'],
-  ['2025-11-20','5 km'],
-  ['2025-11-21','5 km'],
-  ['2025-11-22','21 km'],
-  ['2025-11-23','21 km'],
-  ['2025-11-24','5 km (sugerowane wolne po 21+21)'],
-  ['2025-11-25','5 km'],
-  ['2025-11-26','Trening w piłkę'],
-  ['2025-11-27','5 km'],
-  ['2025-11-28','10 km'],
-  ['2025-11-29','10 km (sugeruję maks. 3 km luźno lub odpoczynek dzień przed startem)'],
-  ['2025-11-30','100 km — dzień celu']
-];
-
-// helper: parse km from text
-function extractKm(text){
-  const m = text.match(/(\d{1,3})(\s?)km|(\d{1,3})\s?km|Maraton|100 km|100km|10 km|21 km|30 km|25 km|42 km/gi);
-  // simple approach: find first number
-  const n = text.match(/(\d{1,3})/);
-  if(!n) {
-    if(/maraton/i.test(text)) return 42;
-    if(/100\s?km|100km/.test(text)) return 100;
-    return 0;
-  }
-  return parseInt(n[0],10);
-}
-
-// build grouped weeks starting Monday
-function groupByWeek(plan){
-  const weeks = [];
-  plan.forEach(([datestr,desc])=>{
-    const d = new Date(datestr+'T08:00:00');
-    // get ISO weekStart (Monday)
-    const day = d.getDay();
-    const diff = (day+6)%7; // 0->Mon
-    const weekStart = new Date(d);
-    weekStart.setDate(d.getDate()-diff);
-    const key = weekStart.toISOString().slice(0,10);
-    let w = weeks.find(x=>x.start===key);
-    if(!w){w={start:key,days:[]};weeks.push(w)}
-    w.days.push({date:datestr,desc:kebab(desc),raw:desc,km:extractKm(desc)});
-  });
-  // sort weeks
-  weeks.sort((a,b)=>a.start.localeCompare(b.start));
-  weeks.forEach(w=>w.days.sort((a,b)=>a.date.localeCompare(b.date)));
-  return weeks;
-}
-function kebab(s){return s}
-
-const weeks = groupByWeek(plan);
-
-function renderCalendar(){
-  const el = document.getElementById('calendarView');
-  el.innerHTML='';
-  weeks.forEach(w=>{
-    const weekEl = document.createElement('div'); weekEl.className='week card';
-    const h = document.createElement('h3'); h.textContent = 'Tydzień od '+w.start; weekEl.appendChild(h);
-    let total=0;
-    w.days.forEach(d=>{
-      total += d.km;
-      const day = document.createElement('div'); day.className='day';
-      const left = document.createElement('div'); left.className='left';
-      const badge = document.createElement('div'); badge.className='badge';
-      const dt = new Date(d.date+'T08:00:00');
-      badge.innerHTML = (dt.getDate())+'<div style="font-size:10px;color:var(--muted)">'+dt.toLocaleString('pl-PL',{month:'short'})+'</div>';
-      left.appendChild(badge);
-      const info = document.createElement('div');
-      const title = document.createElement('div'); title.className='activity'; title.textContent = d.raw;
-      const suggestion = document.createElement('div'); suggestion.className='suggestion'; suggestion.textContent = generateSuggestion(d);
-      info.appendChild(title); info.appendChild(suggestion);
-      left.appendChild(info);
-      const right = document.createElement('div'); right.style.textAlign='right';
-      const km = document.createElement('div'); km.className='small'; km.textContent = (d.km?d.km+' km':'');
-      right.appendChild(km);
-      day.appendChild(left); day.appendChild(right);
-      day.addEventListener('click',()=>openModal(d));
-      weekEl.appendChild(day);
+    const weeks = {};
+    calendarData.forEach(day => {
+      if (!weeks[day.week]) weeks[day.week] = [];
+      weeks[day.week].push(day);
     });
-    const totalEl = document.createElement('div'); totalEl.className='week-total'; totalEl.textContent = 'Suma km w tygodniu: '+total+' km';
-    weekEl.appendChild(totalEl);
-    el.appendChild(weekEl);
-  });
-}
 
-function generateSuggestion(d){
-  const km = d.km;
-  const txt = d.raw.toLowerCase();
-  if(/maraton/.test(txt)) return 'Biegaj spokojnie (6:30–7:00/km). Traktuj to jako długi trening, nie ścigaj się.';
-  if(km>=50) return 'Długi trening >50 km: testuj jedzenie, podziel na etapy, rozważ 2 części (rano + popołudnie).';
-  if(km>=30) return 'Długi bieg: tempo 6:00–6:40/km. Sprawdź punkt z jedzeniem co ~30 km.';
-  if(km>=20) return 'Back-to-back: drugi dzień zredukuj tempo, pilnuj nawodnienia.';
-  if(km>=10) return 'Dłuższy wybieganie: 5:50–6:30/km jeśli czujesz formę, inaczej spokojnie.';
-  if(km>0 && km<10) return 'Krótki bieg: regeneracyjny lub tempo, zależnie od samopoczucia.';
-  if(/trening w piłkę/.test(txt) || /mecz/.test(txt)) return 'Trening piłkarski: intensywne zmiany tempa — traktuj jako trening siły wytrzymałościowej.';
-  if(/przerwa/.test(txt)) return 'Dzień odpoczynku: sen i odnowa. Zero biegu.';
-  if(/100 km/.test(txt)) return 'Dzień celu — użyj planu w zakładce Dzień 100 km.';
-  return '';
-}
+    for (const [weekNumber, days] of Object.entries(weeks)) {
+      const weekDiv = document.createElement('div');
+      const totalKm = days.reduce((sum, d) => {
+        const match = d.training.match(/(\d+)\s?km/);
+        return match ? sum + parseInt(match[1]) : sum;
+      }, 0);
+      weekDiv.innerHTML = `<h2>Tydzień ${weekNumber} – Łącznie: ${totalKm} km</h2>`;
 
-function openModal(d){
-  const mc = document.getElementById('modalContent');
-  mc.innerHTML = `<h2>${d.date} — ${d.raw}</h2>`+
-  `<p class="p">Sugerowane: ${generateSuggestion(d)}</p>`+
-  `<h3 class="section-title">Szczegóły i wskazówki</h3>`+
-  detailHtml(d);
-  document.getElementById('modal').style.display='flex';
-}
+      days.forEach(d => {
+        const dayDiv = document.createElement('div');
+        dayDiv.className = 'day';
+        dayDiv.textContent = `${d.date}: ${d.training}`;
+        dayDiv.onclick = () => showModal(d.date, d.training);
+        weekDiv.appendChild(dayDiv);
+      });
+      calendarSection.appendChild(weekDiv);
+    }
 
-function detailHtml(d){
-  const mc = document.getElementById('modalContent');
-  const parts = [];
-  parts.push(`<p class='p'>Opis: ${d.raw}</p>`);
-  if(d.km>=30){
-    parts.push(`<p class='p'><strong>Praktyczne:</strong> zabierz żele/co 45–60 min, sól, taśmę na pęcherze, sprawdzone buty. Po biegu: posiłek białkowo-węglowodanowy i rozciąganie.</p>`);
-  }
-  if(/mecz|piłkę/.test(d.raw.toLowerCase())){
-    parts.push(`<p class='p'><strong>Uwaga:</strong> mecze i treningi piłkarskie dają duże przyśpieszenia — po nich zrób lżejszy bieg lub odpoczynek.</p>`);
-  }
-  if(d.km>0 && d.km<10){
-    parts.push(`<p class='p'>Krótki bieg: trucht regeneracyjny 5:00–6:00/km lub mocniejszy 4:30–5:30/km zależnie od planu.</p>`);
-  }
-  mc.innerHTML += parts.join('');
-}
+    function showModal(date, training) {
+      document.getElementById('modal-date').textContent = date;
+      document.getElementById('modal-training').textContent = training;
+      document.getElementById('modal').style.display = 'flex';
+    }
 
-// modal controls
-document.getElementById('closeModal').addEventListener('click',()=>document.getElementById('modal').style.display='none');
+    function closeModal() {
+      document.getElementById('modal').style.display = 'none';
+    }
 
-// tabs
-document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',e=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  e.target.classList.add('active');
-  const tab = e.target.dataset.tab;
-  document.getElementById('calendarView').style.display = tab==='calendar' ? 'block':'none';
-  document.getElementById('poradyView').style.display = tab==='porady' ? 'block':'none';
-  document.getElementById('dzienView').style.display = tab==='dzien' ? 'block':'none';
-}));
-
-let showAll=false; document.getElementById('openAll').addEventListener('click',()=>{showAll=!showAll;document.querySelectorAll('.suggestion').forEach(s=>s.style.display=showAll?'block':'none');});
-
-renderCalendar();
-</script></body>
+    function showSection(id) {
+      document.querySelectorAll('section').forEach(sec => sec.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+  </script></body>
 </html>
