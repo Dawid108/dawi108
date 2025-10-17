@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprawdzian 2</title>
+    <style>
+        #wynik{
+            color: red;
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <form>
+        <fieldset>
+            <legend>Wyierz ulubione przysłowie:</legend>
+            <label><input type="radio" name="przyslowie" class="przyslowie" value="Uparty jak osioł">Uparty jak osioł</label><br>
+            <label><input type="radio" name="przyslowie" class="przyslowie" value="Wolny jak żółw">Wolny jak żółw</label><br>
+            <label><input type="radio" name="przyslowie" class="przyslowie" value="Szybki jak błyskawica">Szybki jak błyskawica</label>
+        </fieldset>
+        <br>Jaki jest twój ulubiony owoc: 
+        <select name="owoc">
+            <option class="owoc" value="Jabłko">Jabłko</option><br>
+            <option class="owoc" value="Banan">Banan</option><br>
+            <option class="owoc" value="Malina">Malina</option><br>
+            <option class="owoc" value="Borówka">Borówka</option><br>
+            <option class="owoc" value="Arbuz">Arbuz</option><br>
+            <option class="owoc" value="Śliwka">Śliwka</option>
+        </select>
+        <br><br>
+        Podaj imię: <input type="text" id="imie">
+        <br><br>
+        <input type="button" id="akceptuj" value="akceptuj">
+    </form>
+    <br>
+    <p id="wynik"></p>
+    <script>
+        przyslowie = document.getElementsByClassName("przyslowie");
+        owoc = document.getElementsByClassName("owoc");
+        imie = document.getElementById("imie");
+        akceptuj = document.getElementById("akceptuj");
+        wynik = document.getElementById("wynik");
+
+        function wyswietl_wynik(){
+            tekst = "Twoje ulubione przysłowie to: ";
+
+            for(i=0; i<przyslowie.length; i++){
+                if(przyslowie[i].checked){
+                    tekst += przyslowie[i].value;
+                }
+            }
+
+            tekst += ".<br>Twój ulubiony owoc to: ";
+
+            for(i=0; i<owoc.length; i++){
+                if(owoc[i].selected){
+                    tekst += owoc[i].value;
+                }
+            }
+
+            tekst += ".<br>Masz na imię " + imie.value + ".";
+
+            wynik.innerHTML = tekst;
+        }
+
+        akceptuj.addEventListener("click", wyswietl_wynik);
+    </script>
+</body>
+</html>
