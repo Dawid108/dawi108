@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria</title>
+    <link rel="stylesheet" href="20251009_styl7.css">
+    <link rel="icon" href="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316409/favicon_ob9i7b.png">
+</head>
+<body>
+    <header>
+        <h2>Galeria miejsc ciekawych</h2>
+    </header>
+    <main>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316584/lanzarotte_vhmljm.jpg" alt="galeria" id="glowny">
+    </main>
+    <section>
+        <h3>Przeglądaj zdjęcia</h3>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316584/lanzarotte_vhmljm.jpg" alt="lanzarotte" class="przegladaj" id="lanzarotte">
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316614/pekin_dxvbtt.jpg" alt="pekin" class="przegladaj" id="pekin">
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316642/serengeti_tpfhwy.jpg" alt="serengeti" class="przegladaj" id="serengeti">
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316710/wenecja_tqckio.jpg" alt="wenecja" class="przegladaj" id="wenecja">
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316670/tajlandia_zufe0b.jpg" alt="tajlandia" class="przegladaj" id="tajlandia">
+    </section>
+    <aside>
+        <h3>Obrazy w naszej galerii</h3>
+        <table>
+            <tr><td>Europa</td><td>Azja</td><td>Afryka</td></tr>
+            <tr><td>2</td><td>2</td><td>1</td></tr>
+        </table>
+        <p>Polub nas <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316478/icon-off_pen3ht.png" id="ikona"></p>
+        <a href="https://pixabay.com" target="_blanc">Odkryj więcej zdjęć</a>
+    </aside>
+    <footer>
+        <p>Autor: 0000000000</p>
+    </footer>
+    <script>
+        glowny = document.getElementById("glowny");
+        lanzarotte = document.getElementById("lanzarotte");
+        pekin = document.getElementById("pekin");
+        serengeti = document.getElementById("serengeti");
+        wenecja = document.getElementById("wenecja");
+        tajlandia = document.getElementById("tajlandia");
+        ikona = document.getElementById("ikona");
+        dodaj = document.getElementById("dodaj");
+        miniatury = ["https://res.cloudinary.com/diljpkw9f/image/upload/v1761316584/lanzarotte_vhmljm.jpg", "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316614/pekin_dxvbtt.jpg", "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316642/serengeti_tpfhwy.jpg", "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316710/wenecja_tqckio.jpg", "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316670/tajlandia_zufe0b.jpg"];
+        i=0;
+
+        /*function pokaz_l(){
+            glowny.src = 'https://res.cloudinary.com/diljpkw9f/image/upload/v1761316584/lanzarotte_vhmljm.jpg';
+        }
+        function pokaz_p(){
+            glowny.src = 'https://res.cloudinary.com/diljpkw9f/image/upload/v1761316614/pekin_dxvbtt.jpg';
+        }
+        function pokaz_s(){
+            glowny.src = serengeti.src;
+        }
+        function pokaz_w(){
+            glowny.src = wenecja.src;
+        }
+        function pokaz_t(){
+            glowny.src = tajlandia.src;
+        }*/
+
+
+        function kolejne(){
+            i++;
+            if(i===miniatury.length){
+                i=0;
+            }
+            glowny.src = miniatury[i];
+
+            setTimeout(kolejne, 1000);
+        }
+
+        /*window.addEventListener("load", kolejne);*/
+        kolejne();
+
+        function podmiana(){
+            glowny.src = this.src;
+        }
+
+
+        /*function zmien_ikone(){
+            if(ikona.src.includes('https://res.cloudinary.com/diljpkw9f/image/upload/v1761316478/icon-off_pen3ht.png')){
+                ikona.src = 'https://res.cloudinary.com/diljpkw9f/image/upload/v1761316531/icon-on_d8bnh9.png';
+            }
+            else{
+                ikona.src = 'https://res.cloudinary.com/diljpkw9f/image/upload/v1761316478/icon-off_pen3ht.png';
+            }
+        }*/
+
+        let serce = "puste";
+        function zmiana_serca(){
+            if(serce == "puste"){
+                ikona.src = "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316531/icon-on_d8bnh9.png";
+                serce = "pełne";
+            }
+            else {
+                ikona.src = "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316478/icon-off_pen3ht.png";
+                serce = "puste";
+            }
+        }
+
+        /*lanzarotte.addEventListener("click", pokaz_l);
+        pekin.addEventListener("click", pokaz_p);
+        serengeti.addEventListener("click", pokaz_s);
+        wenecja.addEventListener("click", pokaz_w);
+        tajlandia.addEventListener("click", pokaz_t);*/
+        lanzarotte.addEventListener("click", podmiana);
+        pekin.addEventListener("click", podmiana);
+        serengeti.addEventListener("click", podmiana);
+        wenecja.addEventListener("click", podmiana);
+        tajlandia.addEventListener("click", podmiana);
+        /*ikona.addEventListener("click", zmien_ikone);*/
+        ikona.addEventListener("click", zmiana_serca);
+        dalej.addEventListener("click", kolejne);
+    </script>
+</body>
+</html>
