@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formatowanie</title>
+    <link rel="stylesheet" href="20251021_styl2.css">
+    <link rel="icon" href="dawi108.png">
+</head>
+<body>
+    <header>
+        <h1>Formatowanie dokumentów HTML</h1>
+    </header>
+    <aside>
+        <h2>Przykład listy - hobby</h2>
+        <ul>
+            <li>muzyka</li>
+            <li>turystyka
+                <ol>
+                    <li>góry</li>
+                    <li>jeziora</li>
+                    <li>na rowerze</li>
+                </ol>
+            </li>
+            <li>książki</li>
+        </ul>
+    </aside>
+    <article>
+        <h2>Przykład tabeli - rozkład dnia</h2>
+        <table>
+            <tr><th>Pora dnia</th><th>obowiązki</th></tr>
+            <tr><td>rano</td><td>nauka</td></tr>
+            <tr><td>południe</td><td>zajęcia dodatkowe</td></tr>
+            <tr><td>popołudnie</td><td rowspan="2">moje hobby</td></tr>
+            <tr><td>wieczór</td></tr>
+        </table>
+    </article>
+    <section>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761317609/napisy_cpjtwb.png" alt="technologia web">
+    </section>
+    <main>
+        <p>Podaj rozmiar tekstu w procentach: <input type="number" id="rozmiar">%</p>
+        <select name="styl">
+            <option class="styl" value="normal">prosty</option>
+            <option class="styl" value="italic">kursywa</option>
+        </select>
+        <p>Jakim kolorem sformatować tekst? Wybierz przycisk</p>
+        <input type="button" id="czerwony">
+        <input type="button" id="zielony">
+        <input type="button" id="niebieski">
+        <p id="zmiana">To jest przykład paragrafu, który może być dowolnie formatowany przez JavaScript</p>
+    </main>
+    <footer>
+        <p>Formatowaniem tekstu zajmował sie: <em>0000000000</em></p>
+        <a href="20250901_szkola.html" target="_blank">Odwiedź także</a>
+    </footer>
+    <script>
+        rozmiar = document.getElementById("rozmiar");
+        styl = document.getElementsByClassName("styl");
+        czerwony = document.getElementById("czerwony");
+        zielony = document.getElementById("zielony");
+        niebieski = document.getElementById("niebieski");
+        zmiana = document.getElementById("zmiana");
+
+        function z_czerwony(){
+            zmiana.style.color = "red";
+            z_rozmiar();
+            z_styl();
+        }
+        function z_zielony(){
+            zmiana.style.color = "green";
+            z_rozmiar();
+            z_styl();
+        }
+        function z_niebieski(){
+            zmiana.style.color = "blue";
+            z_rozmiar();
+            z_styl();
+        }
+        function z_rozmiar(){
+            zmiana.style.fontSize = rozmiar.value + "%";
+        }
+        function z_styl(){
+            for(i=0; i<styl.length; i++){
+                if(styl[i].selected){
+                    zmiana.style.fontStyle = styl[i].value;
+                }
+            }
+        }
+
+        czerwony.addEventListener("click", z_czerwony);
+        zielony.addEventListener("click", z_zielony);
+        niebieski.addEventListener("click", z_niebieski);
+    </script>
+</body>
+</html>
