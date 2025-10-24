@@ -1,0 +1,44 @@
+*{
+    font-family: Helvetica;
+}
+header, footer{
+    background-color: rgb(70, 130, 180);
+    color: white;
+    height: 30px;
+    text-align: center;
+}
+main{
+    background-color: rgb(176, 196, 222);
+    padding: 50px;
+    text-align: center;
+}
+section, aside{
+    float: left;
+}
+section{
+    background-color: rgb(70, 130, 180);
+    color: white;
+    height: 300px;
+    width: 80%;
+}
+aside{
+    background-color: rgb(70, 130, 180);
+    color: white;
+    height: 300px;
+    width: 20%;
+}
+footer{
+    clear: both;
+}
+#glowny{
+    height: 250px;
+    padding: 3px;
+    border: 1px dashed blue;
+    border-radius: 10px;
+}
+.przegladaj{
+    height: 40%;
+}
+.przegladaj:hover{
+    border: 1px solid white;
+} 
