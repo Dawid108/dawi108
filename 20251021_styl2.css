@@ -1,0 +1,58 @@
+*{
+    font-family: Georgia;
+}
+header{
+    background-color: #824555;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+aside, article{
+    background-color: #A26475;
+    color: white;
+    width: 30%;
+    height: 300px;
+    float: left;
+}
+section{
+    background-color: #A26475;
+    color: white;
+    width: 40%;
+    height: 300px;
+    text-align: right;
+    float: left;
+}
+main{
+    background-color: #F0EAE2;
+    padding: 50px;
+    clear: both;
+}
+footer{
+    background-color: #824555;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    clear: both;
+}
+table, td, th{
+    border: 2px solid #69293A;
+    padding: 7px;
+}
+table{
+    border-collapse: collapse;
+}
+ul{
+    list-style-type: square;
+}
+div{
+    float: left;
+}
+#czerwony{
+    background-color: red;
+}
+#zielony{
+    background-color: green;
+}
+#niebieski{
+    background-color: blue;
+}
