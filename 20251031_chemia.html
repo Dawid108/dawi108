@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz o Węglu</title>
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #1f1f1f, #333);
+    color: #fff;
+    text-align: center;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+#quiz-container {
+    background: #222;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+    width: 90%;
+    max-width: 600px;
+}
+h1 {
+    margin-bottom: 20px;
+}
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
+button:hover {
+    background-color: #45a049;
+}
+#message {
+    margin-top: 20px;
+    font-size: 18px;
+}
+#restart-btn {
+    display: none;
+    background-color: #007BFF;
+}
+#restart-btn:hover {
+    background-color: #0056b3;
+}
+</style>
+</head>
+<body>
+<div id="quiz-container">
+    <h1>🧪 Test o Węglu</h1>
+    <div id="question"></div>
+    <div id="answers"></div>
+    <div id="message"></div>
+    <button id="restart-btn" onclick="startQuiz()">Zagraj ponownie</button>
+</div>
+
+<script>
+const questions = [
+    { q: "Co zaliczamy do związków organicznych?", answers: ["Sole", "Węglowodany", "Tlenki", "Kwasy nieorganiczne"], correct: 1 },
+    { q: "Ile wiązań może tworzyć atom węgla?", answers: ["2", "3", "4", "5"], correct: 2 },
+    { q: "Jakie rodzaje wiązań może tworzyć węgiel?", answers: ["Tylko pojedyncze", "Tylko podwójne", "Tylko potrójne", "Pojedyncze i wielokrotne"], correct: 3 },
+    { q: "Które z poniższych są odmianami alotropowymi węgla?", answers: ["Siarka, fosfor, tlen", "Diament, grafit, grafen, fulereny", "Sól, cukier, woda", "Azot, tlen, węgiel"], correct: 1 },
+    { q: "Która odmiana węgla jest najtwardsza i przezroczysta?", answers: ["Grafit", "Fuleren", "Diament", "Grafen"], correct: 2 },
+    { q: "Która odmiana węgla dobrze przewodzi prąd i jest czarna?", answers: ["Diament", "Grafit", "Grafen", "Fuleren"], correct: 1 },
+    { q: "Która odmiana węgla składa się z jednej warstwy atomów węgla?", answers: ["Grafit", "Grafen", "Fuleren", "Diament"], correct: 1 },
+    { q: "Która odmiana węgla ma kształt kuli?", answers: ["Grafit", "Diament", "Grafen", "Fuleren"], correct: 3 },
+    { q: "W jakich dziedzinach wykorzystuje się grafen?", answers: ["Biżuteria", "Nanotechnologia i elektronika", "Budownictwo", "Produkcja papieru"], correct: 1 },
+    { q: "Dlaczego grafit przewodzi prąd, a diament nie?", answers: [
+        "Bo grafit ma warstwy, a diament nie ma wolnych elektronów",
+        "Bo diament ma wolne elektrony, a grafit ich nie ma",
+        "Bo diament jest cieńszy",
+        "Bo grafit jest przezroczysty"
+    ], correct: 0 }
+];
+
+let usedQuestions = [];
+
+function startQuiz() {
+    document.getElementById("restart-btn").style.display = "none";
+    document.getElementById("message").textContent = "";
+    usedQuestions = [];
+    showNextQuestion();
+}
+
+function showNextQuestion() {
+    if (usedQuestions.length === questions.length) {
+        document.getElementById("question").innerHTML = "<h2>🎉 Wygrałeś!</h2>";
+        document.getElementById("answers").innerHTML = "";
+        document.getElementById("restart-btn").style.display = "block";
+        return;
+    }
+
+    // Losowe pytanie, które nie było jeszcze użyte
+    let randomIndex;
+    do {
+        randomIndex = Math.floor(Math.random() * questions.length);
+    } while (usedQuestions.includes(randomIndex));
+    usedQuestions.push(randomIndex);
+
+    const q = questions[randomIndex];
+    document.getElementById("question").textContent = q.q;
+
+    const answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML = "";
+    q.answers.forEach((ans, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = ans;
+        btn.onclick = () => checkAnswer(i, q.correct, q);
+        answersDiv.appendChild(btn);
+    });
+}
+
+function checkAnswer(selected, correct, q) {
+    const messageDiv = document.getElementById("message");
+
+    if (selected === correct) {
+        messageDiv.textContent = "✅ Dobrze!";
+        setTimeout(() => {
+            messageDiv.textContent = "";
+            showNextQuestion();
+        }, 1000);
+    } else {
+        messageDiv.textContent = `❌ Zła odpowiedź! Poprawna to: "${q.answers[correct]}".`;
+        setTimeout(() => {
+            messageDiv.textContent = "";
+            document.getElementById("question").textContent = "😔 Koniec gry!";
+            document.getElementById("answers").innerHTML = "";
+            document.getElementById("restart-btn").style.display = "block";
+        }, 3000);
+    }
+}
+
+window.onload = startQuiz;
+</script>
+</body>
+</html>
