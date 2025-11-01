@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz Historyczny XIX wiek</title>
+<style>
+    body {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        font-family: 'Segoe UI', sans-serif;
+        color: #fff;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 700px;
+        background: rgba(0,0,0,0.3);
+        padding: 30px;
+        margin: 60px auto;
+        border-radius: 20px;
+        box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    }
+    h1 {
+        margin-bottom: 20px;
+        font-size: 32px;
+        letter-spacing: 1px;
+    }
+    .question {
+        font-size: 20px;
+        margin-bottom: 25px;
+    }
+    .answers button {
+        display: block;
+        width: 100%;
+        background: #ffffff22;
+        border: 2px solid #fff;
+        color: #fff;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+    }
+    .answers button:hover {
+        background: #ffffff44;
+    }
+    .info {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+    .result {
+        font-size: 28px;
+        margin: 25px 0;
+        font-weight: bold;
+    }
+    #restart {
+        background: #00c853;
+        border: none;
+        padding: 15px 25px;
+        color: white;
+        border-radius: 10px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    #restart:hover {
+        background: #00e676;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Quiz Historyczny XIX wieku</h1>
+    <div id="quiz-area">
+        <div class="question" id="question"></div>
+        <div class="answers" id="answers"></div>
+        <div class="info" id="progress"></div>
+        <div class="info" id="lives"></div>
+    </div>
+    <div class="result" id="result"></div>
+    <button id="restart" style="display:none;">Zagraj ponownie</button>
+</div>
+
+<script>
+// ===================== DANE PYTAŃ =======================
+const questions = [
+    {q:"Kto chciał stworzyć społeczeństwo bezklasowe?", a:["Adam Smith","Karol Marks","Napoleon Bonaparte","Winston Churchill"], correct:1},
+    {q:"Kto jest twórcą teorii ewolucji?", a:["Karol Marks","Karol Darwin","Isaac Newton","Albert Einstein"], correct:1},
+    {q:"Kto była pierwszą kobietą profesorem?", a:["Emilia Plater","Maria Konopnicka","Maria Skłodowska-Curie","Eliza Orzeszkowa"], correct:2},
+    {q:"Czym zajmowała się Maria Skłodowska-Curie?", a:["Prawami człowieka","Promieniotwórczością","Astronomią","Literaturą"], correct:1},
+    {q:"Kto był twórcą teorii względności?", a:["Albert Einstein","Karol Darwin","Karol Marks","Nikola Tesla"], correct:0},
+    {q:"Jak nazywał się ruch kobiet walczących o prawa wyborcze?", a:["Rewolucja przemysłowa","Emancypacja","Demokracja","Kolonializm"], correct:1},
+    {q:"Jak nazywał się kanał skracający drogę do Indii?", a:["Kanał Panamski","Kanał La Manche","Kanał Sueski","Kanał Beringa"], correct:2},
+    {q:"Co łączy Kanał Sueski?", a:["Ocean Atlantycki z Oceanem Spokojnym","Morze Śródziemne z Morzem Czerwonym","Morze Północne z Bałtykiem","Morze Kaspijskie z Czarnym"], correct:1},
+    {q:"Które państwo miało najwięcej kolonii?", a:["Francja","Niemcy","Wielka Brytania","Hiszpania"], correct:2},
+    {q:"Między jakimi państwami toczyły się wojny opiumowe?", a:["Wielka Brytania i Chiny","Francja i Indie","Niemcy i Japonia","USA i Meksyk"], correct:0},
+    {q:"Czym zasłynął Henry Ford?", a:["Odkryciem elektryczności","Budową kanałów","Wprowadzeniem taśmy produkcyjnej","Wynalezieniem radia"], correct:2},
+    {q:"Między jakimi państwami toczyła się wojna krymska?", a:["Francja i Niemcy","Rosja i Turcja","Wielka Brytania i USA","Austria i Włochy"], correct:1},
+    {q:"Kto wygrał wojnę krymską?", a:["Rosja","Turcja i jej sojusznicy","Austria","Prusy"], correct:1},
+    {q:"Kto brał udział w zjednoczeniu Włoch?", a:["Napoleon, Ludwik XIV, Stalin","Garibaldi, Cavour, Wiktor Emanuel II","Lincoln, Washington, Roosevelt","Darwin, Marks, Einstein"], correct:1},
+    {q:"W którym roku zjednoczono Niemcy?", a:["1848","1863","1871","1888"], correct:2},
+    {q:"Kto był kanclerzem Niemiec podczas zjednoczenia?", a:["Otto von Bismarck","Wilhelm II","Adolf Hitler","Camillo Cavour"], correct:0},
+    {q:"Pod jakim berłem dokonano zjednoczenia Niemiec?", a:["Austrii","Prus","Francji","Rosji"], correct:1},
+    {q:"Kto został cesarzem po zjednoczeniu Niemiec?", a:["Napoleon III","Wilhelm I Hohenzollern","Fryderyk II","Karol Wielki"], correct:1},
+    {q:"Co utraciła Francja po wojnie z Prusami?", a:["Korsykę","Alzację i Lotaryngię","Bretanię","Normandię"], correct:1},
+    {q:"Kiedy toczyła się wojna prusko-francuska?", a:["1866–1868","1870–1871","1880–1882","1850–1851"], correct:1},
+    {q:"Kto przegrał wojnę prusko-francuską?", a:["Prusy","Francja","Rosja","Austria"], correct:1},
+    {q:"Gdzie proklamowano zjednoczenie Niemiec?", a:["W Berlinie","W Wersalu","W Rzymie","W Londynie"], correct:1},
+    {q:"Co ogłoszono po zjednoczeniu Niemiec?", a:["Powstanie III Rzeszy","Powstanie II Rzeszy","Związek Północnoniemiecki","Cesarstwo Austriackie"], correct:1},
+    {q:"Kto był prezydentem USA w czasie wojny secesyjnej?", a:["George Washington","Abraham Lincoln","Theodore Roosevelt","Andrew Johnson"], correct:1},
+    {q:"Między kim toczyła się wojna secesyjna?", a:["Północą (Unią) a Południem (Konfederacją)","USA a Meksykiem","Anglią a Francją","Kanadą a USA"], correct:0},
+    {q:"Co to był abolicjonizm?", a:["Ruch przeciwko niewolnictwu","Ruch kobiet","Kolonializm","Reformacja"], correct:0},
+    {q:"W jakich latach toczyła się wojna secesyjna?", a:["1848–1850","1861–1865","1871–1875","1855–1859"], correct:1},
+    {q:"Kto zniósł niewolnictwo w USA?", a:["Franklin D. Roosevelt","Thomas Jefferson","Abraham Lincoln","George Washington"], correct:2},
+    {q:"Dlaczego na południu USA istniało niewolnictwo?", a:["Rozwinięty przemysł","Plantacje bawełny","Religia","Brak ziemi"], correct:1},
+    {q:"Co to znaczy 'Migracja za chlebem'?", a:["Wyjazd w celach wojennych","Emigracja zarobkowa","Kolonializm","Wojna o ziemię"], correct:1},
+    {q:"'Perłą w koronie Brytyjskiej' nazywano:", a:["Kanadę","Australię","Indie","Egipt"], correct:2},
+    {q:"Co sprowadzano z Indii?", a:["Kawę i kakao","Herbatę i przyprawy","Złoto i ropę","Samochody"], correct:1},
+    {q:"Kto dołączył do walki o kolonie pod koniec XIX wieku?", a:["Japonia i Niemcy","Austria i Belgia","Polska i Grecja","Szwajcaria i Norwegia"], correct:0},
+    {q:"Co to jest opium?", a:["Metal","Narkotyk","Przyprawa","Broń"], correct:1},
+    {q:"Kto wygrał wojnę opiumową?", a:["Chiny","Japonia","Wielka Brytania","Indie"], correct:2},
+    {q:"Autorem 'Kapitału' był:", a:["Karol Marks","Karol Darwin","Fryderyk Engels","Otto von Bismarck"], correct:0},
+    {q:"Papież Leon XIII był związany z:", a:["Rewolucją przemysłową","Ruchem narodowym i encykliką społeczną","Zjednoczeniem Niemiec","Kolonializmem"], correct:1},
+    {q:"Gdzie kobiety jako pierwsze uzyskały prawa wyborcze?", a:["Francja","USA","Niemcy","Hiszpania"], correct:1},
+    {q:"Kto wynalazł szczepionkę przeciwko wściekliźnie?", a:["Albert Einstein","Louis Pasteur","Karol Darwin","Isaac Newton"], correct:1}
+];
+
+// ===================== ZMIENNE =======================
+let lives, currentIndex, shuffled, correctCount;
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const progressEl = document.getElementById("progress");
+const livesEl = document.getElementById("lives");
+const resultEl = document.getElementById("result");
+const restartBtn = document.getElementById("restart");
+
+// ===================== FUNKCJE =======================
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function startGame() {
+    lives = 3;
+    correctCount = 0;
+    currentIndex = 0;
+    shuffled = shuffleArray([...questions]);
+    resultEl.textContent = "";
+    restartBtn.style.display = "none";
+    showQuestion();
+}
+
+function showQuestion() {
+    if (currentIndex >= shuffled.length) {
+        resultEl.textContent = "🎉 Wygrałeś!";
+        restartBtn.style.display = "inline-block";
+        questionEl.textContent = "";
+        answersEl.innerHTML = "";
+        progressEl.textContent = "";
+        livesEl.textContent = "";
+        return;
+    }
+
+    const q = shuffled[currentIndex];
+    questionEl.textContent = q.q;
+    answersEl.innerHTML = "";
+    q.a.forEach((ans, i) => {
+        const btn = document.createElement("button");
+        btn.textContent = ans;
+        btn.onclick = () => checkAnswer(i === q.correct);
+        answersEl.appendChild(btn);
+    });
+    progressEl.textContent = `Pytanie ${currentIndex + 1} / ${shuffled.length}`;
+    livesEl.textContent = `Życia: ${"❤️".repeat(lives)}`;
+}
+
+function checkAnswer(correct) {
+    if (correct) {
+        currentIndex++;
+        showQuestion();
+    } else {
+        lives--;
+        livesEl.textContent = `Życia: ${"❤️".repeat(lives)}`;
+        if (lives <= 0) {
+            gameOver();
+        } else {
+            questionEl.textContent = "❌ Zła odpowiedź!";
+            answersEl.innerHTML = "";
+            setTimeout(() => {
+                currentIndex++;
+                showQuestion();
+            }, 3000);
+        }
+    }
+}
+
+function gameOver() {
+    resultEl.textContent = "💀 Przegrałeś!";
+    questionEl.textContent = "";
+    answersEl.innerHTML = "";
+    progressEl.textContent = "";
+    livesEl.textContent = "";
+    restartBtn.style.display = "inline-block";
+}
+
+// ===================== RESTART =======================
+restartBtn.onclick = startGame;
+
+// ===================== START PIERWSZY =======================
+startGame();
+</script>
+</body>
+</html>
