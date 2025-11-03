@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hurtownia</title>
+    <link rel="stylesheet" href="20251023_styl14.css">
+    <link rel="icon" href="dawi108.png">
+</head>
+<body>
+    <header>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762192699/logo2_i9hb6z.png" alt="hurtownia">
+    </header>
+    <nav>
+        <a href="20251023_index.html">Strona główna</a>
+        <a href="20251023_zamowienia.html">Zamówienia</a>
+        <a href="20250901_szkola.html">Blog o kawie</a>
+        <a href="20251028_obrazki.html">Odwiedź także</a>
+    </nav>
+    <section>
+        <h1>Hurtownia kawy</h1>
+    </section>
+    <article>
+        <h2>Oferta</h2>
+        <ol>
+            <li>Kawa palona Arabica</li>
+            <li>Kawa palona Robusta</li>
+            <li>Kawa bezkofenowa</li>
+            <li>Kawa zielona</li>
+        </ol>
+    </article>
+    <aside>
+        <form>
+            <label>Podaj numer kawy:<br>
+            <input type="number" id="numer"></label><br>
+            <label>Podaj wagę w dekagramach:<br>
+            <input type="number" id="waga"></label>
+            <input type="button" id="zamow" value="Zamów"><br><br>
+            <p id="wynik"></p>
+        </form>
+    </aside>
+    <footer>
+        <p>Stronę przygotował: <b>Dawid</b></p>
+    </footer>
+    <script>
+        numer = document.getElementById("numer");
+        waga =  document.getElementById("waga");
+        zamow = document.getElementById("zamow");
+        wynik = document.getElementById("wynik");
+        let cena;
+        let koszt; 
+
+
+        function oblicz(){
+            switch(Number(numer.value)){
+                case 1: cena=5; break;
+                case 2: cena=6; break;
+                case 3: cena=7; break;
+                default: cena=0;
+            }
+            
+            koszt = waga.value*cena;
+            wynik.innerHTML = "Koszt zamówienia wynosi " + koszt + " zł.";
+        }
+
+        zamow.addEventListener("click", oblicz);
+    </script>
+</body>
+</html>
