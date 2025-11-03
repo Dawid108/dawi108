@@ -1,0 +1,53 @@
+body{
+    width: 900px;
+    margin: 0 auto;
+    background-color: black;
+}
+#lewy{
+    height: 600px;
+    width: 30%;
+    float: left;
+}
+main{
+    height: 600px;
+    width: 40%;
+    background-color: blue;
+    float: left;
+}
+#prawy{
+    height: 600px;
+    width: 30%;
+    float: left;
+}
+header{
+    background-color: white;
+    height: 200px;
+}
+nav{
+    background-color: red;
+    height: 200px;
+    clear: both;
+}
+section{
+    background-color: green;
+    height: 200px;
+    clear: both;
+}
+article{
+    background-color: yellow;
+    height: 300px;
+}
+aside{
+    background-color: gray;
+    height: 300px;
+    clear: both;
+}
+footer{
+    background-color: orange;
+    text-align: center;
+    height: 100px;
+    clear: both;
+    color: black;
+    font-size: 24px;
+    line-height: 100px;
+}
