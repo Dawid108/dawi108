@@ -123,8 +123,34 @@ const questions = [
     {q:"Kto wygrał wojnę opiumową?", a:["Chiny","Japonia","Wielka Brytania","Indie"], correct:2},
     {q:"Autorem 'Kapitału' był:", a:["Karol Marks","Karol Darwin","Fryderyk Engels","Otto von Bismarck"], correct:0},
     {q:"Papież Leon XIII był związany z:", a:["Rewolucją przemysłową","Ruchem narodowym i encykliką społeczną","Zjednoczeniem Niemiec","Kolonializmem"], correct:1},
-    {q:"Gdzie kobiety jako pierwsze uzyskały prawa wyborcze?", a:["Francja","USA","Niemcy","Hiszpania"], correct:1},
-    {q:"Kto wynalazł szczepionkę przeciwko wściekliźnie?", a:["Albert Einstein","Louis Pasteur","Karol Darwin","Isaac Newton"], correct:1}
+    {q:"Kto wynalazł szczepionkę przeciwko wściekliźnie?", a:["Albert Einstein","Louis Pasteur","Karol Darwin","Isaac Newton"], correct:1},
+    {q:"Jaką ideę propagowała Rosja?", a:["Liberalizmu","Socjalizmu","Panslawizmu","Konserwatyzmu"], correct:2},
+    {q:"Co to była idea Panslawizmu?", a:["Wszyscy Europejczycy powinni się zjednoczyć","Słowianie powinni zjednoczyć się pod berłem Cara","Każdy kraj powinien być niezależny","Zjednoczenie narodów pod rządami Francji"], correct:1},
+    {q:"Carem Rosji był?", a:["Aleksander II","Mikołaj I","Piotr Wielki","Mikołaj II"], correct:1},
+    {q:"Dlaczego Turcja wypowiedziała wojnę?", a:["Chciała zdobyć Krym","Nie zgadzała się z żądaniami Mikołaja I dotyczącymi ochrony prawosławia","Zaatakowała ją Rosja bez powodu","Broniła Francji"], correct:1},
+    {q:"Czym zakończyła się wojna krymska?", a:["Klęską Francji","Rozejmem w Moskwie","Traktatem paryskim","Układem berlińskim"], correct:2},
+    {q:"Kiedy zawarto traktat paryski?", a:["1848","1856","1861","1870"], correct:1},
+    {q:"Co najbardziej przyczyniło się do zjednoczenia Włoch?", a:["Cesarstwo Austrii","Państwo Kościelne","Królestwo Piemontu","Francja"], correct:2},
+    {q:"Co w 1861 roku ogłosił ogólnowłoski parlament?", a:["Powstanie Republiki Włoskiej","Powstanie Królestwa Włoch","Upadek Austrii","Unifikację Niemiec"], correct:1},
+    {q:"Skąd wzięła się nazwa „Czerwonych Koszul”?", a:["Od flagi narodowej","Od barw Rzymu","Od czerwonych koszul uczestników oddziału Garibaldiego","Od koloru mundurów armii włoskiej"], correct:2},
+    {q:"Czego dotyczyła Depesza Emska?", a:["Rozmowy króla Wilhelma I z francuskim ambasadorem","Paktu wojskowego Niemiec z Francją","Planów zjednoczenia Włoch","Sprawy wojny krymskiej"], correct:0},
+    {q:"Kto reprezentował system dwupartyjny w USA?", a:["Demokraci i Republikanie","Socjaliści i Komuniści","Konserwatyści i Liberałowie","Unia i Konfederacja"], correct:0},
+    {q:"Na czym polegała Doktryna Monroego?", a:["Europa powinna kolonizować Amerykę","Europa nie powinna ingerować w sprawy Ameryk","USA nie mogą handlować z Europą","Ameryka powinna wejść do Unii Europejskiej"], correct:1},
+    {q:"Gdzie wynaleziono lek na malarię?", a:["W Indiach","W Chinach","W Egipcie","W Anglii"], correct:1},
+    {q:"Najważniejsze imperium kolonialne w Azji to?", a:["Francja","Niemcy","Wielka Brytania","Rosja"], correct:2},
+    {q:"Jaka była nowa klasa społeczna?", a:["Arystokracja","Duchowieństwo","Robotnicy","Chłopi"], correct:2},
+    {q:"Co proponował Ruch Chrześcijański – Hadecja?", a:["Rewolucję robotniczą","Porozumienie między kapitalistami a robotnikami","Wojnę klas","Nacjonalizację fabryk"], correct:1},
+    {q:"Co to nacjonalizm?", a:["Przekonanie o wyższości własnego narodu","Dążenie do równości społecznej","Sprzeciw wobec kolonializmu","Wiara w braterstwo narodów"], correct:0},
+    {q:"Co to antysemityzm?", a:["Tolerancja wobec Żydów","Wrogość wobec Żydów","Poparcie dla religii żydowskiej","Współpraca z Żydami"], correct:1},
+    {q:"Co wynalazł Ignacy Łukasiewicz?", a:["Silnik parowy","Telefon","Lampę naftową","Samolot"], correct:2},
+    {q:"Kto wynalazł samochód z silnikiem benzynowym?", a:["Gie Daimler i Karol Benz","Thomas Edison","Rudolf Diesel","Henry Ford"], correct:0},
+    {q:"Jakie były style w malarstwie?", a:["Barok, rokoko, gotyk","Impresjonizm, realizm, kubizm","Klasycyzm, renesans, romantyzm","Surrealizm, gotyk, renesans"], correct:1},
+    {q:"Co reprezentowało kulturę masową?", a:["Teatr i opera","Prasa, kino, radio","Literatura i filozofia","Polityka i religia"], correct:1},
+    {q:"Kiedy kobiety dostały prawa wyborcze w Polsce?", a:["1914","1918","1921","1939"], correct:1},
+    {q:"Jaki mundur mieli żołnierze Unii (USA)?", a:["Czerwony","Niebieski","Szary","Zielony"], correct:1},
+    {q:"Czym była doktryna Monroego?", a:["Polityką izolacjonizmu USA wobec Europy","Sojuszem militarnym USA i Francji","Programem reform społecznych w USA","Doktryną wojny totalnej"], correct:0},
+    {q:"Jaki kanał skrócił drogę do Indii?", a:["Kanał Panamski","Kanał Kiloński","Kanał Sueski","Kanał La Manche"], correct:2},
+    {q:"Co to teoria względności?", a:["Teoria budowy atomu","Teoria ewolucji","Teoria Alberta Einsteina o czasie i przestrzeni","Teoria powstania życia na Ziemi"], correct:2}
 ];
 
 // ===================== ZMIENNE =======================
@@ -168,25 +194,27 @@ function showQuestion() {
     q.a.forEach((ans, i) => {
         const btn = document.createElement("button");
         btn.textContent = ans;
-        btn.onclick = () => checkAnswer(i === q.correct);
+        btn.onclick = () => checkAnswer(i, q.correct);
         answersEl.appendChild(btn);
     });
     progressEl.textContent = `Pytanie ${currentIndex + 1} / ${shuffled.length}`;
     livesEl.textContent = `Życia: ${"❤️".repeat(lives)}`;
 }
 
-function checkAnswer(correct) {
-    if (correct) {
+function checkAnswer(selected, correctIndex) {
+    const q = shuffled[currentIndex];
+    if (selected === correctIndex) {
         currentIndex++;
         showQuestion();
     } else {
         lives--;
         livesEl.textContent = `Życia: ${"❤️".repeat(lives)}`;
+        const correctAnswer = q.a[correctIndex];
+        questionEl.innerHTML = `❌ Zła odpowiedź!<br><br>✅ Poprawna to: <strong>${correctAnswer}</strong>`;
+        answersEl.innerHTML = "";
         if (lives <= 0) {
-            gameOver();
+            setTimeout(gameOver, 3000);
         } else {
-            questionEl.textContent = "❌ Zła odpowiedź!";
-            answersEl.innerHTML = "";
             setTimeout(() => {
                 currentIndex++;
                 showQuestion();
