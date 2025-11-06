@@ -201,29 +201,36 @@
       </div>
 
       <pre id="pythonCode" class="code" tabindex="0" aria-label="Kod Python do skopiowania">
-// workshop.py
+class Vehicle:
+    def __init__(self, name, max_speed, milage, color="white"):
+        self.name = name
+        self.max_speed = max_speed
+        self.milage = milage
+        self.color = color
 
-class Workshop:
-    def __init__(self):
-        self._przebieg = 0  # prywatny atrybut: przebieg
+class Car(Vehicle):
+    pass  # nic nie dodajemy, dziedziczy wszystko po Vehicle
 
-    @property
-    def przebieg(self):
-        return self._przebieg
+# Tworzymy 4 samochody (instancje klasy Car)
+car1 = Car("BMW", 240, 120000)
+car2 = Car("Toyota", 200, 210000)
+car3 = Car("Audi", 230, 175000)
+car4 = Car("Fiat", 180, 300000)
 
-    @przebieg.setter
-    def przebieg(self, a):
-        # setter pyta o przebieg i sprawdza, czy kupujemy pojazd
-        self._przebieg = int(input("Podaj przebieg w km: "))
+# Funkcja sprawdzająca, czy samochód jest zdolny do jazdy
+def czy_zdolny_do_jazdy(car):
+    if car.milage < 180000:
+        return "Zdolny do jazdy"
+    else:
+        return "NIEzdolny do jazdy"
 
-        if self._przebieg > 180000:
-            print("Dziękujemy, twój pojazd ma za duży lub niepoprawny przebieg, więc go nie kupimy.")
-        else:
-            print("Dziękujemy, kupimy twój pojazd!")
+# Wyświetlamy informacje o samochodach w komisie
+print("=== KOMIS SAMOCHODOWY ===")
+print(f"{'Marka':<10} {'Prędkość maks.':<18} {'Przebieg':<10} {'Kolor':<10} {'Stan'}")
+print("-" * 60)
 
-# użycie:
-# mark = Workshop()
-# mark.przebieg = 0  # setter zapyta o przebieg w konsoli
+for car in [car1, car2, car3, car4]:
+    print(f"{car.name:<10} {car.max_speed:<18} {car.milage:<10} {car.color:<10} {czy_zdolny_do_jazdy(car)}")
       </pre>
     </section>
 
