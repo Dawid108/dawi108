@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Efekty obrazu</title>
+    <link rel="stylesheet" href="20251028_styl.css">
+</head>
+<body>
+    <header>
+        <h2>Efekty na obrazach</h2>
+    </header>
+    <section>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762445002/pszczola_kawfrz.jpg" alt="pszczoła na fioletowym kwiatku" id="bea"><br>
+        <label><input type="radio" class="pszcz" name="pszcz" value="blur(6px)">Blur</label><br>
+        <label><input type="radio" class="pszcz" name="pszcz" value="sepia(100%)">Sepia</label><br>
+        <label><input type="radio" class="pszcz" name="pszcz" value="invert(100%)">Negatyw</label><br>
+        <input type="button" class="zastosuj" id="zas1" value="Zastosuj">
+    </section>
+    <section>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762445002/pomarancza_uck1lc.jpg" alt="drzewo pomarańczy" id="orange"><br>
+        <input type="button" id="kolorowy" value="Kolorowy">
+        <input type="button" id="mono" value="Czarno-biały">
+    </section>
+    <section>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762445002/owoce_q6d6qg.jpg" alt="Kosz pełen owoców" id="fruit"><br>
+        <input type="range" min="0" max="100" value="100" class="suwak" id="suwak1"><br>
+        <input type="button" class="zastosuj" id="zas2" value="Zastosuj">
+    </section>
+    <section>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762445002/zolw_yj5n6m.jpg" alt="Żółw w wodzie" id="zolw"><br>
+        <input type="range" min="0" max="250" class="suwak" id="suwak2"><br>
+        <input type="button" class="zastosuj" id="zas3" value="Zastosuj">
+    </section>
+    <footer>
+        <p><a href="20250901_szkola.html" target="_blank">Zobacz inne efekty obrazu</a></p>
+        <p>Stronę wykonał: Dawid</p>
+    </footer>
+    <script>
+        let pszcz = document.getElementsByClassName("pszcz");
+        let zas1 = document.getElementById("zas1");
+        let zas2 = document.getElementById("zas2");
+        let zas3 = document.getElementById("zas3");
+        let kolorowy = document.getElementById("kolorowy");
+        let mono = document.getElementById("mono");
+        let bea = document.getElementById("bea");
+        let orange = document.getElementById("orange");
+        let fruit = document.getElementById("fruit");
+        let zolw = document.getElementById("zolw");
+        let suwak1 = document.getElementById("suwak1");
+        let suwak2 = document.getElementById("suwak2");
+
+        function filtry3(){
+            for(i=0; i<pszcz.length; i++){
+                if(pszcz[i].checked){
+                    bea.style.filter = pszcz[i].value;
+                }
+            }
+        }
+
+        function desaturacja(){
+            orange.style.filter = "grayscale(100%)";
+        }
+        function kolory(){
+            orange.style.filter = "none";
+        }
+        function przezroczystosc(){
+            fruit.style.filter = "opacity(" + suwak1.value + "%)";
+        }
+        function jasnosc(){
+            zolw.style.filter = "brightness(" + suwak2.value + "%)";
+        }
+
+        zas1.addEventListener("click", filtry3);
+        mono.addEventListener("click", desaturacja);
+        kolorowy.addEventListener("click", kolory);
+        zas2.addEventListener("click", przezroczystosc);
+        zas3.addEventListener("click", jasnosc);
+    </script>
+</body>
+</html>
