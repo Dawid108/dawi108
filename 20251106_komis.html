@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Komis - Python w terminalu (symulacja JS)</title>
+  <style>
+    :root{
+      --bg:#0f1724;
+      --panel:#0b1220;
+      --accent:#7dd3fc;
+      --muted:#94a3b8;
+      --glass: rgba(255,255,255,0.03);
+      --success: #10b981;
+      --danger: #ef4444;
+      --mono: "SFMono-Regular", ui-monospace, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(180deg,#071026 0%, #071421 50%, #081425 100%);
+      color: #e6eef8;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+    }
+
+    .card{
+      width:100%;
+      max-width:1100px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:14px;
+      padding:18px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:18px;
+      align-items:start;
+    }
+
+    header{
+      grid-column: 1 / -1;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:4px;
+    }
+
+    header h1{
+      font-size:18px;
+      margin:0;
+      letter-spacing:0.2px;
+      color:var(--accent);
+    }
+    header p{ margin:0; color:var(--muted); font-size:13px }
+
+    /* Terminal / code panel */
+    .terminal{
+      background: linear-gradient(180deg,#051021 0%, #071828 100%);
+      border-radius:12px;
+      padding:14px;
+      min-height:420px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      border:1px solid rgba(125,211,252,0.06);
+    }
+
+    .term-top{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .dots{
+      display:flex;
+      gap:6px;
+    }
+    .dot{ width:12px; height:12px; border-radius:50% }
+    .dot.red{ background:#ff6b6b }
+    .dot.yellow{ background:#ffd66b }
+    .dot.green{ background:#66ff99 }
+
+    .term-actions{ margin-left:auto; display:flex; gap:8px; align-items:center }
+    .btn{
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,0.04);
+      color:var(--accent);
+      padding:8px 12px;
+      border-radius:8px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:13px;
+      transition:transform .12s ease, opacity .12s;
+    }
+    .btn:active{ transform:translateY(1px) }
+    .btn.secondary{ color:var(--muted); background:transparent; border:1px dashed rgba(255,255,255,0.03) }
+
+    pre.code {
+      background: transparent;
+      margin:0;
+      font-family: var(--mono);
+      font-size:13px;
+      line-height:1.45;
+      color:#cfeffc;
+      overflow:auto;
+      padding:8px;
+      border-radius:8px;
+      border:1px solid rgba(125,211,252,0.03);
+    }
+
+    /* Right column: controls + simulated terminal output */
+    .side {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      border-radius:12px;
+      padding:12px;
+      min-height:420px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      border:1px solid rgba(125,211,252,0.04);
+    }
+
+    .panel-title{ font-size:13px; color:var(--muted); margin:0 0 4px 0 }
+    .console {
+      background: #01060a;
+      color:#dbeefb;
+      padding:12px;
+      border-radius:8px;
+      font-family: var(--mono);
+      min-height:220px;
+      max-height:260px;
+      overflow:auto;
+      border:1px solid rgba(125,211,252,0.03);
+      box-shadow: inset 0 3px 10px rgba(0,0,0,0.6);
+      white-space:pre-wrap;
+    }
+
+    .status{
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .pill{
+      padding:6px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.02);
+      border:1px solid rgba(255,255,255,0.03);
+      color:var(--muted);
+      font-size:13px;
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+    }
+
+    footer.actions{
+      margin-top:auto;
+      display:flex;
+      gap:8px;
+      align-items:center;
+      justify-content:space-between;
+    }
+
+    .hint{ font-size:13px; color:var(--muted) }
+
+    /* responsive */
+    @media (max-width:980px){
+      .card{ grid-template-columns: 1fr; }
+      .side{ order: 2 }
+    }
+  </style>
+</head>
+<body>
+  <div class="card" role="main">
+    <header>
+      <div>
+        <h1>Komis samochodowy — Python (w terminalu) + symulacja JS</h1>
+        <p>Skopiuj kod Pythona lub uruchom symulację (prompt) w JavaScript</p>
+      </div>
+      <div class="term-actions">
+        <div class="pill">Próg sprawności: <strong style="margin-left:6px"> &lt; 180000 km</strong></div>
+      </div>
+    </header>
+
+    <!-- left: code view -->
+    <section class="terminal" aria-label="Kod Python">
+      <div class="term-top">
+        <div class="dots" aria-hidden="true">
+          <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+        </div>
+        <div style="margin-left:12px; color:var(--muted); font-size:13px">python &middot; workshop.py</div>
+
+        <div style="margin-left:auto; display:flex; gap:8px">
+          <button class="btn" id="copyBtn" title="Kopiuj kod Pythona">Kopiuj kod</button>
+          <button class="btn secondary" id="downloadBtn" title="Pobierz plik Python">Pobierz .py</button>
+        </div>
+      </div>
+
+      <pre id="pythonCode" class="code" tabindex="0" aria-label="Kod Python do skopiowania">
+// workshop.py
+
+class Workshop:
+    def __init__(self):
+        self._przebieg = 0  # prywatny atrybut: przebieg
+
+    @property
+    def przebieg(self):
+        return self._przebieg
+
+    @przebieg.setter
+    def przebieg(self, a):
+        # setter pyta o przebieg i sprawdza, czy kupujemy pojazd
+        self._przebieg = int(input("Podaj przebieg w km: "))
+
+        if self._przebieg > 180000:
+            print("Dziękujemy, twój pojazd ma za duży lub niepoprawny przebieg, więc go nie kupimy.")
+        else:
+            print("Dziękujemy, kupimy twój pojazd!")
+
+# użycie:
+# mark = Workshop()
+# mark.przebieg = 0  # setter zapyta o przebieg w konsoli
+      </pre>
+    </section>
+
+    <!-- right: simulation and console -->
+    <aside class="side" aria-label="Symulacja i terminal">
+      <div>
+        <p class="panel-title">Symulacja działania (JS) — terminal</p>
+        <div id="console" class="console" role="log" aria-live="polite">
+# Uruchom symulację → naciśnij "Run" i wpisz przebieg w oknie dialogowym.
+        </div>
+      </div>
+
+      <div class="status" aria-hidden="false">
+        <div class="pill">Symulacja: <strong style="margin-left:6px">JS</strong></div>
+        <div class="pill">Kopiuj: <strong style="margin-left:6px">Python</strong></div>
+      </div>
+
+      <footer class="actions" role="region" aria-label="Akcje">
+        <div style="display:flex; gap:8px">
+          <button class="btn" id="runBtn">Run (symulacja)</button>
+          <button class="btn secondary" id="clearBtn">Wyczyść terminal</button>
+        </div>
+
+        <div style="display:flex; gap:8px">
+          <button class="btn" id="copyConsoleBtn">Kopiuj wynik</button>
+        </div>
+      </footer>
+    </aside>
+  </div>
+
+  <script>
+    // Elementy
+    const pythonCodeEl = document.getElementById('pythonCode');
+    const copyBtn = document.getElementById('copyBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const runBtn = document.getElementById('runBtn');
+    const consoleEl = document.getElementById('console');
+    const clearBtn = document.getElementById('clearBtn');
+    const copyConsoleBtn = document.getElementById('copyConsoleBtn');
+
+    // Kopiuj kod Pythona do schowka
+    copyBtn.addEventListener('click', async () => {
+      const text = pythonCodeEl.innerText;
+      try {
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent = 'Skopiowano ✓';
+        setTimeout(()=> copyBtn.textContent = 'Kopiuj kod', 1500);
+      } catch (e) {
+        alert('Kopiowanie nie powiodło się. Zaznacz i skopiuj ręcznie.');
+      }
+    });
+
+    // Pobierz plik .py
+    downloadBtn.addEventListener('click', () => {
+      const blob = new Blob([pythonCodeEl.innerText], {type: 'text/x-python'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'workshop.py';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      downloadBtn.textContent = 'Pobrano ✓';
+      setTimeout(()=> downloadBtn.textContent = 'Pobierz .py', 1500);
+    });
+
+    // Helper: dopisz linię do "terminala"
+    function printToConsole(line, type = 'info') {
+      const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      const span = document.createElement('div');
+      span.textContent = `[${time}] ${line}`;
+      if (type === 'error') {
+        span.style.color = 'var(--danger)';
+      } else if (type === 'ok') {
+        span.style.color = 'var(--success)';
+      } else {
+        span.style.color = '#dbeefb';
+      }
+      consoleEl.appendChild(span);
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    // Symulacja logiki Pythona w JS:
+    // setter pyta o przebieg i decyduje: kupujemy jeśli < 180000
+    runBtn.addEventListener('click', () => {
+      printToConsole('Uruchamianie symulacji...', 'info');
+
+      // prompt dla użytkownika — odpowiada input() w Pythonie
+      let raw = prompt('Podaj przebieg w km:');
+      if (raw === null) {
+        printToConsole('Anulowano przez użytkownika.', 'error');
+        return;
+      }
+
+      // spróbuj sparsować liczbę
+      let milage = parseInt(raw.toString().replace(/\s+/g,'').replace(/,/g,''), 10);
+      if (Number.isNaN(milage)) {
+        printToConsole('Błąd: podano niepoprawny przebieg.', 'error');
+        return;
+      }
+
+      printToConsole(`Podany przebieg: ${milage} km`);
+
+      if (milage > 180000) {
+        printToConsole('Dziękujemy, twój pojazd ma za duży lub niepoprawny przebieg, więc go nie kupimy.', 'error');
+      } else {
+        printToConsole('Dziękujemy, kupimy twój pojazd!', 'ok');
+      }
+    });
+
+    // Wyczyść terminal
+    clearBtn.addEventListener('click', ()=>{
+      consoleEl.textContent = '# Terminal wyczyszczony.';
+    });
+
+    // Kopiuj zawartość terminala
+    copyConsoleBtn.addEventListener('click', async ()=>{
+      try {
+        await navigator.clipboard.writeText(consoleEl.innerText);
+        copyConsoleBtn.textContent = 'Skopiowano ✓';
+        setTimeout(()=> copyConsoleBtn.textContent = 'Kopiuj wynik', 1500);
+      } catch(e){
+        alert('Nie udało się skopiować terminala.');
+      }
+    });
+
+    // Accessibility: allow keyboard copying when pre is focused + Ctrl+C
+    pythonCodeEl.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'c') {
+        document.execCommand('copy');
+      }
+    });
+
+  </script>
+</body>
+</html>
