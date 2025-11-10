@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klasa Użytkownik – Zadanie w Pythonie</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #4a90e2;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 24px;
+    }
+
+    main {
+        max-width: 800px;
+        margin: 30px auto;
+        background: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    section {
+        margin-bottom: 40px;
+    }
+
+    h2 {
+        color: #333;
+        border-bottom: 2px solid #4a90e2;
+        padding-bottom: 5px;
+    }
+
+    button {
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 8px;
+    }
+
+    button:hover {
+        background-color: #357abd;
+    }
+
+    pre {
+        background-color: #f0f0f0;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    #logi {
+        background: #222;
+        color: #0f0;
+        padding: 10px;
+        border-radius: 8px;
+        min-height: 60px;
+        font-family: monospace;
+    }
+
+    footer {
+        background: #4a90e2;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        margin-top: 40px;
+        font-size: 14px;
+    }
+</style>
+</head>
+<body>
+
+<header>💻 Klasa Użytkownik – Symulator w JavaScript</header>
+
+<main>
+
+    <!-- Sekcja symulatora -->
+    <section id="symulator">
+        <h2>Symulator działania programu</h2>
+        <div>
+            <label>Imię: </label><input type="text" id="imie"><br><br>
+            <label>Hasło: </label><input type="password" id="haslo"><br><br>
+            <button onclick="utworzUzytkownika()">Utwórz użytkownika</button>
+        </div>
+
+        <div id="panel" style="display:none; margin-top:20px;">
+            <h3>Panel użytkownika</h3>
+            <button onclick="zaloguj()">Zaloguj się</button>
+            <button onclick="pokazHaslo()">Zobacz hasło</button>
+            <button onclick="zmienHaslo()">Zmień hasło</button>
+        </div>
+
+        <h3>Logi:</h3>
+        <div id="logi"></div>
+    </section>
+
+
+    <!-- Sekcja kodu Pythona -->
+    <section id="python">
+        <h2>Kod Pythona</h2>
+        <pre id="pythonCode">
+def loguj(funkcja):
+    def wrapper(*args, **kwargs):
+        print(f"Wywołano metodę: {funkcja.__name__}")
+        return funkcja(*args, **kwargs)
+    return wrapper
+
+
+class Uzytkownik:
+    @loguj
+    def __init__(self, imie, haslo):
+        self.imie = imie
+        self._haslo = haslo  
+
+    @property
+    @loguj
+    def haslo(self):
+        print("Hasło jest poufne!")
+        return None
+
+    @haslo.setter
+    @loguj
+    def haslo(self, nowe_haslo):
+        self._haslo = nowe_haslo
+        print("Hasło zostało zmienione.")
+
+    @loguj
+    def zaloguj(self, podane_haslo):
+        if podane_haslo == self._haslo:
+            print("Zalogowano pomyślnie.")
+        else:
+            print("Niepoprawne hasło.")
+
+
+
+print("=== System logowania ===")
+imie = input("Podaj swoje imię: ")
+haslo = input("Ustaw hasło: ")
+
+u = Uzytkownik(imie, haslo)
+
+while True:
+    print("\n--- MENU ---")
+    print("1. Zaloguj się")
+    print("2. Zobacz hasło")
+    print("3. Zmień hasło")
+    print("4. Zakończ")
+
+    wybor = input("Wybierz opcję (1-4): ")
+
+    if wybor == "1":
+        podane = input("Podaj hasło: ")
+        u.zaloguj(podane)
+    elif wybor == "2":
+        _ = u.haslo  
+    elif wybor == "3":
+        nowe = input("Podaj nowe hasło: ")
+        u.haslo = nowe
+    elif wybor == "4":
+        print("Koniec programu.")
+        print("Zadanie wykonał: Dawid Gustowski")
+        break
+    else:
+        print("Niepoprawny wybór!")
+        </pre>
+        <button onclick="kopiujKod()">📋 Kopiuj kod</button>
+    </section>
+
+
+    <!-- Sekcja wytłumaczenia -->
+    <section id="wytlumaczenie">
+        <h2>Wyjaśnienie kodu</h2>
+        <ul>
+            <li><b>@loguj</b> – dekorator, który wypisuje nazwę metody przy jej wywołaniu.</li>
+            <li><b>__init__</b> – konstruktor, tworzy nowego użytkownika.</li>
+            <li><b>self._haslo</b> – prywatny atrybut przechowujący hasło.</li>
+            <li><b>@property</b> – umożliwia dostęp do metody jak do atrybutu (np. u.haslo).</li>
+            <li><b>getter</b> – nie zwraca hasła, tylko informuje, że jest poufne.</li>
+            <li><b>setter</b> – pozwala zmienić hasło na nowe.</li>
+            <li><b>zaloguj()</b> – sprawdza, czy podane hasło jest poprawne.</li>
+        </ul>
+    </section>
+
+    <!-- Sekcja polecenia -->
+    <section id="polecenie">
+        <h2>Polecenie zadania</h2>
+        <p>
+            Napisz klasę <b>Uzytkownik</b>, która:
+        </p>
+        <ul>
+            <li>W konstruktorze przyjmuje imię i hasło.</li>
+            <li>Przechowuje hasło jako prywatny atrybut <code>_haslo</code>.</li>
+            <li>Ma właściwość <code>@property</code> o nazwie <b>haslo</b>, która nie pozwala odczytać hasła, ale umożliwia jego zmianę.</li>
+            <li>Próba odczytania <code>uzytkownik.haslo</code> wypisuje „Hasło jest poufne!”.</li>
+            <li>Ustawienie nowego hasła zmienia prywatny atrybut.</li>
+            <li>Posiada dekorator <code>@loguj</code>, który wypisuje informację o wywołaniu metody.</li>
+            <li>Metoda <code>zaloguj()</code> przyjmuje hasło i sprawdza jego poprawność.</li>
+        </ul>
+    </section>
+</main>
+
+<footer>
+    © 2025 Zadanie – Klasa Uzytkownik w Pythonie
+</footer>
+
+<script>
+let uzytkownik = null;
+
+function log(msg) {
+    const logi = document.getElementById("logi");
+    logi.innerHTML += msg + "<br>";
+    logi.scrollTop = logi.scrollHeight;
+}
+
+function utworzUzytkownika() {
+    const imie = document.getElementById("imie").value;
+    const haslo = document.getElementById("haslo").value;
+    if (!imie || !haslo) {
+        alert("Podaj imię i hasło!");
+        return;
+    }
+
+    uzytkownik = { imie: imie, _haslo: haslo };
+    log("[LOG] Wywołano metodę: __init__");
+    log(`Utworzono użytkownika: ${imie}`);
+    document.getElementById("panel").style.display = "block";
+}
+
+function pokazHaslo() {
+    if (!uzytkownik) return;
+    log("[LOG] Wywołano metodę: haslo (getter)");
+    log("Hasło jest poufne!");
+}
+
+function zmienHaslo() {
+    if (!uzytkownik) return;
+    const nowe = prompt("Podaj nowe hasło:");
+    if (nowe) {
+        uzytkownik._haslo = nowe;
+        log("[LOG] Wywołano metodę: haslo (setter)");
+        log("Hasło zostało zmienione.");
+    }
+}
+
+function zaloguj() {
+    if (!uzytkownik) return;
+    const wpisane = prompt("Podaj hasło do logowania:");
+    log("[LOG] Wywołano metodę: zaloguj");
+    if (wpisane === uzytkownik._haslo) {
+        log("Zalogowano pomyślnie.");
+    } else {
+        log("Niepoprawne hasło.");
+    }
+}
+
+function kopiujKod() {
+    const kod = document.getElementById("pythonCode").innerText;
+    navigator.clipboard.writeText(kod);
+    alert("Kod Pythona został skopiowany!");
+}
+</script>
+
+</body>
+</html>
