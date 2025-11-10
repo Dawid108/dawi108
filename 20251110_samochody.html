@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Komis Samochodowy – Dziedziczenie w Pythonie</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    header {
+        background-color: #4a90e2;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 24px;
+    }
+
+    main {
+        max-width: 900px;
+        margin: 30px auto;
+        background: white;
+        padding: 25px 30px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    section {
+        margin-bottom: 40px;
+    }
+
+    h2 {
+        color: #333;
+        border-bottom: 2px solid #4a90e2;
+        padding-bottom: 5px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        border: 1px solid #ccc;
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #eaf1fb;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    button {
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background-color: #357abd;
+    }
+
+    pre {
+        background-color: #f0f0f0;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+
+    footer {
+        background: #4a90e2;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        margin-top: 40px;
+        font-size: 14px;
+    }
+</style>
+</head>
+<body>
+
+<header>🚗 Komis Samochodowy – Dziedziczenie klas w Pythonie</header>
+
+<main>
+    <!-- SYMULATOR -->
+    <section id="symulator">
+        <h2>Symulator działania programu</h2>
+        <button onclick="pokazSamochody()">Pokaż listę samochodów</button>
+        <table id="tabelaSamochodow" style="display:none;">
+            <thead>
+                <tr>
+                    <th>Marka</th>
+                    <th>Prędkość maks.</th>
+                    <th>Przebieg</th>
+                    <th>Kolor</th>
+                    <th>Stan</th>
+                </tr>
+            </thead>
+            <tbody id="tabelaDane"></tbody>
+        </table>
+    </section>
+
+    <!-- KOD PYTHONA -->
+    <section id="python">
+        <h2>Kod Pythona</h2>
+        <pre id="pythonCode">
+class Vehicle:
+    def __init__(self, name, max_speed, milage, color="white"):
+        self.name = name
+        self.max_speed = max_speed
+        self.milage = milage
+        self.color = color
+
+class Car(Vehicle):
+    pass  
+
+car1 = Car("BMW", 240, 120000)
+car2 = Car("Toyota", 200, 210000)
+car3 = Car("Audi", 230, 175000)
+car4 = Car("Fiat", 180, 300000)
+car5 = Car("Volkswagen", 195, 148000)
+car6 = Car("Hyundai", 190, 119000)
+car7 = Car("Ford", 250, 58000)
+car8 = Car("Opel", 200, 328000)
+
+def czy_zdolny_do_jazdy(car):
+    if car.milage &lt; 180000:
+        return "Zdolny do jazdy"
+    else:
+        return "Nie zdolny do jazdy"
+
+print("=== KOMIS SAMOCHODOWY ===")
+print(f"{'Marka':&lt;10} {'Prędkość maks.':&lt;18} {'Przebieg':&lt;10} {'Kolor':&lt;10} {'Stan'}")
+print("-" * 60)
+
+for car in [car1, car2, car3, car4, car5, car6, car7, car8]:
+    print(f"{car.name:&lt;10} {car.max_speed:&lt;18} {car.milage:&lt;10} {car.color:&lt;10} {czy_zdolny_do_jazdy(car)}")
+        </pre>
+        <button onclick="kopiujKod()">📋 Kopiuj kod</button>
+    </section>
+
+    <!-- WYJAŚNIENIE -->
+    <section id="wytlumaczenie">
+        <h2>Wyjaśnienie kodu</h2>
+        <ul>
+            <li><b>class Vehicle</b> – klasa bazowa opisująca pojazd (nazwa, prędkość, przebieg, kolor).</li>
+            <li><b>__init__</b> – konstruktor, przypisuje wartości do pól obiektu.</li>
+            <li><b>class Car(Vehicle)</b> – klasa pochodna (dziedziczy z Vehicle).</li>
+            <li><b>pass</b> – oznacza brak dodatkowych zmian (korzysta z tego co ma Vehicle).</li>
+            <li><b>czy_zdolny_do_jazdy()</b> – funkcja sprawdzająca, czy przebieg jest mniejszy niż 180000 km.</li>
+            <li><b>print()</b> – wypisuje dane w formie tabeli.</li>
+            <li><b>f-stringi</b> (np. <code>f"{car.name:&lt;10}"</code>) – formatowanie kolumn w konsoli.</li>
+        </ul>
+    </section>
+
+    <!-- POLECENIE -->
+    <section id="polecenie">
+        <h2>Polecenie zadania</h2>
+        <p>
+            Napisz klasy <b>Vehicle</b> i <b>Car</b>. Klasa <b>Vehicle</b> powinna posiadać konstruktor z parametrami:
+            <code>name</code>, <code>max_speed</code>, <code>milage</code>, <code>color</code> (domyślnie "white").
+        </p>
+        <ul>
+            <li>Klasa <b>Car</b> dziedziczy po klasie <b>Vehicle</b>.</li>
+            <li>Utwórz 8 obiektów klasy Car z różnymi danymi.</li>
+            <li>Napisz funkcję <b>czy_zdolny_do_jazdy()</b>, która sprawdza przebieg.</li>
+            <li>Wypisz dane w formie tabeli (marka, prędkość, przebieg, kolor, stan).</li>
+        </ul>
+    </section>
+</main>
+
+<footer>© 2025 Zadanie – Dziedziczenie klas w Pythonie</footer>
+
+<script>
+function pokazSamochody() {
+    const cars = [
+        { name: "BMW", speed: 240, milage: 120000, color: "white" },
+        { name: "Toyota", speed: 200, milage: 210000, color: "white" },
+        { name: "Audi", speed: 230, milage: 175000, color: "white" },
+        { name: "Fiat", speed: 180, milage: 300000, color: "white" },
+        { name: "Volkswagen", speed: 195, milage: 148000, color: "white" },
+        { name: "Hyundai", speed: 190, milage: 119000, color: "white" },
+        { name: "Ford", speed: 250, milage: 58000, color: "white" },
+        { name: "Opel", speed: 200, milage: 328000, color: "white" }
+    ];
+
+    const tbody = document.getElementById("tabelaDane");
+    tbody.innerHTML = "";
+
+    cars.forEach(car => {
+        const stan = car.milage < 180000 ? "Zdolny do jazdy" : "Nie zdolny do jazdy";
+        const row = `
+            <tr>
+                <td>${car.name}</td>
+                <td>${car.speed} km/h</td>
+                <td>${car.milage} km</td>
+                <td>${car.color}</td>
+                <td>${stan}</td>
+            </tr>`;
+        tbody.innerHTML += row;
+    });
+
+    document.getElementById("tabelaSamochodow").style.display = "table";
+}
+
+function kopiujKod() {
+    const kod = document.getElementById("pythonCode").innerText;
+    navigator.clipboard.writeText(kod);
+    alert("Kod Pythona został skopiowany!");
+}
+</script>
+
+</body>
+</html>
