@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Turnieje Pluszaków</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --accent:#7c3aed;
+    --muted:#94a3b8;
+    --glass: rgba(255,255,255,0.03);
+    --glass-2: rgba(255,255,255,0.02);
+    --success: #10b981;
+    --danger: #ef4444;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background: radial-gradient(1000px 400px at 10% 10%, rgba(124,58,237,0.12), transparent),
+                radial-gradient(1000px 400px at 90% 90%, rgba(59,130,246,0.06), transparent),
+                var(--bg);
+    color:#e6eef8;
+    min-height:100vh;
+    padding:28px;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .app {
+    max-width:1100px;
+    margin:0 auto;
+    display:grid;
+    grid-template-columns: 1fr 360px;
+    gap:20px;
+  }
+
+  header.card{
+    grid-column:1 / -1;
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    border-radius:14px;
+    padding:18px;
+    display:flex;
+    align-items:center;
+    gap:18px;
+    box-shadow: 0 6px 30px rgba(2,6,23,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+  }
+  .logo{
+    width:64px;
+    height:64px;
+    border-radius:12px;
+    background: linear-gradient(135deg,var(--accent), #3b82f6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:700;
+    font-size:20px;
+    color:white;
+    box-shadow: 0 6px 18px rgba(124,58,237,0.18);
+  }
+  header h1{
+    margin:0;
+    font-size:20px;
+    letter-spacing:0.2px;
+  }
+  header p{margin:0;color:var(--muted);font-size:13px}
+
+  /* Left column (main) */
+  .main{
+    background:var(--card);
+    border-radius:14px;
+    padding:18px;
+    min-height:520px;
+    box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+  }
+
+  /* Right column (side) */
+  .side{
+    background:linear-gradient(180deg,var(--glass),var(--glass-2));
+    border-radius:14px;
+    padding:16px;
+    height:fit-content;
+    box-shadow: 0 6px 30px rgba(2,6,23,0.5);
+  }
+
+  /* Top nav buttons */
+  .nav{
+    display:flex;
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .btn{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.06);
+    color:var(--muted);
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+    transition:all .18s;
+    display:inline-flex;
+    gap:8px;
+    align-items:center;
+  }
+  .btn:hover{transform:translateY(-2px)}
+  .btn.active{
+    background:linear-gradient(90deg,var(--accent), #3b82f6);
+    color:white;
+    border: none;
+    box-shadow: 0 8px 28px rgba(59,130,246,0.12);
+  }
+
+  /* Forms and lists */
+  .card{
+    background:transparent;
+    border-radius:12px;
+    padding:12px;
+  }
+
+  .field{margin-bottom:12px}
+  label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+  input[type="text"]{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.04);
+    background: rgba(255,255,255,0.02);
+    color:inherit;
+    outline:none;
+    font-size:14px;
+  }
+
+  .participants{
+    max-height:260px;
+    overflow:auto;
+    padding:8px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:6px;
+  }
+  .p-item{
+    background: rgba(255,255,255,0.02);
+    padding:8px;
+    border-radius:8px;
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .muted{color:var(--muted);font-size:13px}
+  .hint{color:var(--muted);font-size:12px;margin-top:-6px;margin-bottom:10px}
+
+  .actions{display:flex;gap:8px;margin-top:8px}
+  .primary{
+    background:var(--accent);
+    color:white;
+    border:none;
+    padding:9px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+  }
+  .secondary{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.04);
+    color:var(--muted);
+    padding:9px 12px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:700;
+  }
+
+  /* Tournament cards list */
+  .tour-list{display:grid;gap:10px}
+  .tour-card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
+    padding:12px;border-radius:12px;display:flex;justify-content:space-between;align-items:center;
+  }
+  .tour-meta{display:flex;flex-direction:column;gap:4px}
+  .small{font-size:13px;color:var(--muted)}
+
+  /* Matches & rounds */
+  .round{
+    margin-bottom:14px;
+    padding:12px;
+    border-radius:12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.01), transparent);
+  }
+  .round h3{margin:0 0 8px 0;font-size:15px}
+  .match{
+    display:flex;gap:8px;align-items:center;justify-content:space-between;margin-bottom:8px;
+    background: rgba(255,255,255,0.01);
+    padding:8px;border-radius:8px;
+  }
+  .player{
+    flex:1;
+    display:flex;align-items:center;gap:8px;
+  }
+  .player .name{font-weight:700}
+  .player button{
+    background:transparent;border:1px solid rgba(255,255,255,0.04);padding:6px 8px;border-radius:8px;cursor:pointer;
+  }
+  .player button.active{border-color:transparent;background:rgba(255,255,255,0.04)}
+
+  /* Table */
+  table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:8px;
+  }
+  th,td{padding:8px;text-align:left;border-bottom:1px dashed rgba(255,255,255,0.02)}
+  th{font-size:13px;color:var(--muted);font-weight:700}
+  td.place{font-weight:900;width:48px}
+
+  /* small notices */
+  .notice{padding:8px;border-radius:8px;background:rgba(255,255,255,0.02);color:var(--muted);font-size:13px}
+
+  .footer{grid-column:1 / -1;margin-top:14px;color:var(--muted);font-size:13px;text-align:center}
+  @media (max-width:980px){
+    .app{grid-template-columns:1fr; padding:14px}
+    .side{order:3}
+  }
+</style>
+</head>
+<body>
+  <div class="app">
+    <header class="card">
+      <div class="logo">🐻+</div>
+      <div>
+        <h1>Turnieje Pluszaków</h1>
+        <p>Twórz drabinki, losuj mecze i zapisuj wszystko lokalnie — szybko i ładnie ✨</p>
+      </div>
+    </header>
+
+    <main class="main">
+      <div class="nav" role="tablist" aria-label="Główne">
+        <button class="btn" id="btn-tabela">Tabela</button>
+        <button class="btn" id="btn-mecze">Mecze</button>
+        <button class="btn" id="btn-turnieje">Turnieje</button>
+        <button class="btn active" id="btn-nowy">Nowy</button>
+      </div>
+
+      <!-- Nowy turniej -->
+      <section id="view-nowy" class="card view">
+        <div class="field">
+          <label>Nazwa turnieju</label>
+          <input id="t-name" type="text" placeholder="Np. Turniej Pluszaków - Jesień" />
+        </div>
+
+        <div class="field">
+          <label>Uczestnicy (wybierz 8 lub 16)</label>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <button class="secondary" id="select-all">Zaznacz wszystkich</button>
+            <button class="secondary" id="clear-all">Odznacz</button>
+            <div style="flex:1"></div>
+            <div class="muted" id="picked-count">Wybrano: 0</div>
+          </div>
+
+          <div class="participants" id="participants-list">
+            <!-- Checkbox items będą wstrzyknięte JS -->
+          </div>
+          <div class="hint">Możesz wybrać tylko 8 lub 16 uczestników. Inne wartości spowodują błąd po kliknięciu "Utwórz".</div>
+        </div>
+
+        <div class="actions">
+          <button class="primary" id="create-btn">Utwórz</button>
+          <button class="secondary" id="preview-random">Losuj pary podgląd</button>
+        </div>
+
+        <div style="height:12px"></div>
+        <div id="new-msg" class="notice" style="display:none"></div>
+      </section>
+
+      <!-- Mecze -->
+      <section id="view-mecze" class="card view" style="display:none">
+        <div id="mecze-area">
+          <div class="notice" id="no-tourn-selected-msg" style="display:none">Brak aktywnego turnieju. Stwórz nowy lub wybierz z listy po prawej.</div>
+          <div id="rounds-container"></div>
+          <div style="margin-top:12px">
+            <button class="primary" id="shuffle-next" style="display:none">Losuj następną rundę (jeśli możliwe)</button>
+            <button class="secondary" id="reset-tourn" style="display:none">Resetuj ten turniej</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabela -->
+      <section id="view-tabela" class="card view" style="display:none">
+        <h3 style="margin-top:0">Tabela turnieju</h3>
+        <div id="tabela-area">
+          <div class="notice" id="no-table-msg" style="display:none">Brak aktywnego turnieju. Wybierz turniej z prawej lub stwórz nowy.</div>
+          <div id="table-wrapper" style="display:none">
+            <table>
+              <thead>
+                <tr><th class="place">M</th><th>Zawodnik</th><th>Pkt</th></tr>
+              </thead>
+              <tbody id="table-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- Turnieje -->
+      <section id="view-turnieje" class="card view" style="display:none">
+        <h3 style="margin-top:0">Wszystkie turnieje</h3>
+        <div id="tours-list" class="tour-list"></div>
+        <div style="height:8px"></div>
+        <div class="muted">Kliknij kartę by ustawić ją jako aktywny turniej i zobaczyć Mecze/Tabelę.</div>
+      </section>
+
+      <div class="footer">Dane przechowywane lokalnie w localStorage — klucz: <code>turniej_pluszakow</code></div>
+    </main>
+
+    <aside class="side">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>
+          <div style="font-weight:800">Aktywny turniej</div>
+          <div class="small" id="active-name">Brak</div>
+        </div>
+        <div style="text-align:right">
+          <div class="small" id="active-date"></div>
+          <div style="height:6px"></div>
+          <div class="small" id="active-status"></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:700">Szybkie akcje</div>
+        </div>
+        <div style="height:10px"></div>
+        <button class="secondary" id="btn-go-new">Nowy</button>
+        <button class="secondary" id="btn-go-matches">Mecze</button>
+        <button class="secondary" id="btn-go-table">Tabela</button>
+      </div>
+
+      <div class="card">
+        <div style="font-weight:700;margin-bottom:8px">Lista uczestników (domyślna)</div>
+        <ul style="padding-left:16px;margin:0;color:var(--muted);font-size:14px;line-height:1.5">
+          <li>Meduza Milena</li>
+          <li>Sówka Zosia</li>
+          <li>Zając Zuzia</li>
+          <li>Czekolada Celinka</li>
+          <li>Sarenka Hania</li>
+          <li>Podusia Tęczusia</li>
+          <li>Ważka Wiola</li>
+          <li>Sowa Zofia</li>
+          <li>Piesek Piotrek</li>
+          <li>Krem Krzyś</li>
+          <li>Frytki Filip</li>
+          <li>Bocian Bolek</li>
+          <li>Pies Dżi-Pi-Es</li>
+          <li>Lis Lucek</li>
+          <li>Burger Bogdan</li>
+          <li>Borsuk Bartek</li>
+        </ul>
+      </div>
+
+      <div style="height:12px"></div>
+      <div class="muted" style="font-size:13px">Instrukcje: Wideo nie potrzeba — klikaj strony, losuj pary, kliknij zwycięzcę w meczu. Po wypełnieniu rundy system sam zaproponuje kolejną.</div>
+    </aside>
+  </div>
+
+<script>
+/*
+  Turnieje Pluszaków
+  - Wszystko przechowywane w localStorage pod kluczem: turniej_pluszakow
+  - Domyślnie pokazuje się widok "Nowy"
+  - Autor: ChatGPT (kodowy przyjaciel)
+*/
+
+// --- Stałe i dane domyślne ---
+const STORAGE_KEY = 'turniej_pluszakow';
+const DEFAULT_PLAYERS = [
+  "Meduza Milena","Sówka Zosia","Zając Zuzia","Czekolada Celinka",
+  "Sarenka Hania","Podusia Tęczusia","Ważka Wiola","Sowa Zofia",
+  "Piesek Piotrek","Krem Krzyś","Frytki Filip","Bocian Bolek",
+  "Pies Dżi-Pi-Es","Lis Lucek","Burger Bogdan","Borsuk Bartek"
+];
+
+let state = {
+  tournaments: [], // załadowane z localStorage
+  activeTournamentId: null // id aktualnego turnieju
+};
+
+// --- Pomocnicze funkcje zapisu/odczytu ---
+function saveState(){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state.tournaments));
+}
+function loadState(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  try{
+    state.tournaments = raw ? JSON.parse(raw) : [];
+  } catch(e){
+    console.error('Błąd parsowania storage, czyszczę', e);
+    state.tournaments = [];
+    saveState();
+  }
+}
+
+// --- ID generator proste ---
+function uid(prefix='id'){
+  return prefix + '_' + Math.random().toString(36).slice(2,9);
+}
+
+// --- UI elementy ---
+const views = {
+  nowy: document.getElementById('view-nowy'),
+  mecze: document.getElementById('view-mecze'),
+  tabela: document.getElementById('view-tabela'),
+  turnieje: document.getElementById('view-turnieje')
+};
+const btns = {
+  tabela: document.getElementById('btn-tabela'),
+  mecze: document.getElementById('btn-mecze'),
+  turnieje: document.getElementById('btn-turnieje'),
+  nowy: document.getElementById('btn-nowy'),
+};
+const activeNameEl = document.getElementById('active-name');
+const activeDateEl = document.getElementById('active-date');
+const activeStatusEl = document.getElementById('active-status');
+
+const participantsListEl = document.getElementById('participants-list');
+const pickedCountEl = document.getElementById('picked-count');
+const selectAllBtn = document.getElementById('select-all');
+const clearAllBtn = document.getElementById('clear-all');
+const createBtn = document.getElementById('create-btn');
+const previewBtn = document.getElementById('preview-random');
+const newMsgEl = document.getElementById('new-msg');
+
+const roundsContainer = document.getElementById('rounds-container');
+const noTournMsg = document.getElementById('no-tourn-selected-msg');
+const shuffleNextBtn = document.getElementById('shuffle-next');
+const resetTournBtn = document.getElementById('reset-tourn');
+
+const tableBody = document.getElementById('table-body');
+const noTableMsg = document.getElementById('no-table-msg');
+const tableWrapper = document.getElementById('table-wrapper');
+
+const toursListEl = document.getElementById('tours-list');
+
+const btnGoNew = document.getElementById('btn-go-new');
+const btnGoMatches = document.getElementById('btn-go-matches');
+const btnGoTable = document.getElementById('btn-go-table');
+
+const btnTabela = btns.tabela, btnMecze = btns.mecze, btnTurnieje = btns.turnieje, btnNowy = btns.nowy;
+
+// --- Inicjalizacja ---
+function init(){
+  loadState();
+  renderParticipantsList();
+  bindNav();
+  bindSideButtons();
+  renderTournamentsList();
+  // domyślnie pokazujemy Nowy
+  showView('nowy');
+  updateActivePanel();
+}
+init();
+
+// --- Widoki i nawigacja ---
+function showView(viewName){
+  // ukryj wszystkie
+  Object.values(views).forEach(v => v.style.display = 'none');
+  // remove active from nav buttons
+  Object.values(btns).forEach(b => b.classList.remove('active'));
+  // pokaż wybrany
+  if(viewName === 'nowy'){ views.nowy.style.display = 'block'; btnNowy.classList.add('active'); }
+  if(viewName === 'mecze'){ views.mecze.style.display = 'block'; btnMecze.classList.add('active'); renderMatchesView(); }
+  if(viewName === 'tabela'){ views.tabela.style.display = 'block'; btnTabela.classList.add('active'); renderTableView(); }
+  if(viewName === 'turnieje'){ views.turnieje.style.display = 'block'; btnTurnieje.classList.add('active'); renderTournamentsList(); }
+}
+
+// przyciski górne
+function bindNav(){
+  btnNowy.addEventListener('click', ()=> showView('nowy'));
+  btnMecze.addEventListener('click', ()=> showView('mecze'));
+  btnTabela.addEventListener('click', ()=> showView('tabela'));
+  btnTurnieje.addEventListener('click', ()=> showView('turnieje'));
+}
+
+// boczne
+function bindSideButtons(){
+  btnGoNew.addEventListener('click', ()=> showView('nowy'));
+  btnGoMatches.addEventListener('click', ()=> showView('mecze'));
+  btnGoTable.addEventListener('click', ()=> showView('tabela'));
+}
+
+// --- Render listy uczestników w sekcji "Nowy" ---
+function renderParticipantsList(){
+  participantsListEl.innerHTML = '';
+  DEFAULT_PLAYERS.forEach((name, idx) => {
+    const id = 'p_' + idx;
+    const div = document.createElement('div');
+    div.className = 'p-item';
+    div.innerHTML = `
+      <input type="checkbox" id="${id}" data-name="${escapeHtml(name)}" />
+      <label for="${id}" style="margin:0;cursor:pointer">${escapeHtml(name)}</label>
+    `;
+    participantsListEl.appendChild(div);
+  });
+  // eventy
+  participantsListEl.querySelectorAll('input[type=checkbox]').forEach(cb => {
+    cb.addEventListener('change', updatePickedCount);
+  });
+  updatePickedCount();
+}
+
+// utility escape
+function escapeHtml(s){ return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;'); }
+
+// select all / clear all
+selectAllBtn.addEventListener('click', ()=> {
+  participantsListEl.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = true);
+  updatePickedCount();
+});
+clearAllBtn.addEventListener('click', ()=> {
+  participantsListEl.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+  updatePickedCount();
+});
+
+function updatePickedCount(){
+  const checked = participantsListEl.querySelectorAll('input[type=checkbox]:checked').length;
+  pickedCountEl.textContent = 'Wybrano: ' + checked;
+}
+
+// --- Tworzenie turnieju ---
+createBtn.addEventListener('click', ()=> {
+  const name = document.getElementById('t-name').value.trim();
+  const checkedBoxes = Array.from(participantsListEl.querySelectorAll('input[type=checkbox]:checked'));
+  const selectedNames = checkedBoxes.map(cb => cb.dataset.name);
+  if(!name){
+    showNewMsg('Podaj nazwę turnieju', true); return;
+  }
+  if(!(selectedNames.length === 8 || selectedNames.length === 16)){
+    showNewMsg('Musisz wybrać dokładnie 8 lub 16 uczestników.', true); return;
+  }
+
+  // tworzymy strukturę turnieju
+  const tourn = {
+    id: uid('tourn'),
+    name,
+    date: new Date().toISOString(),
+    participants: selectedNames.map((n, i) => ({
+      id: uid('p'),
+      name: n,
+      points: 0,
+      reachedFinal: false, // flaga aby dać +3 raz
+    })),
+    rounds: [], // tablica rund: każda runda ma {name, matches: [{id,p1,p2,winnerId:null}]}
+    finished: false,
+    winnerId: null
+  };
+
+  // stworzymy pierwszą rundę losowo
+  createFirstRound(tourn);
+
+  // zapisz do storage i ustaw jako aktywny
+  state.tournaments.push(tourn);
+  saveState();
+  state.activeTournamentId = tourn.id;
+  renderTournamentsList();
+  updateActivePanel();
+  showNewMsg('Turniej utworzony! Przechodzę do Mecze...', false);
+  // przejdź do widoku Mecze
+  showView('mecze');
+  renderMatchesView();
+});
+
+// podgląd losowy par
+previewBtn.addEventListener('click', ()=> {
+  const checkedBoxes = Array.from(participantsListEl.querySelectorAll('input[type=checkbox]:checked'));
+  const selectedNames = checkedBoxes.map(cb => cb.dataset.name);
+  if(!(selectedNames.length === 8 || selectedNames.length === 16)){
+    showNewMsg('Musisz najpierw zaznaczyć 8 lub 16 uczestników, żeby zobaczyć losowe pary.', true);
+    return;
+  }
+  const shuffled = shuffleArray(selectedNames.slice());
+  const pairs = chunkArray(shuffled,2);
+  let html = '<strong>Podgląd par:</strong><ul>';
+  pairs.forEach(p => html += `<li>${p[0]} vs ${p[1]}</li>`);
+  html += '</ul>';
+  showNewMsg(html, false);
+});
+
+// komunikaty w sekcji new
+function showNewMsg(html, isError){
+  newMsgEl.style.display = 'block';
+  newMsgEl.style.color = isError ? 'var(--danger)' : 'inherit';
+  newMsgEl.innerHTML = html;
+  setTimeout(()=> {
+    // ukryj po 6s (ale jeśli error, zostaw krócej)
+    newMsgEl.style.display = 'none';
+  }, isError ? 4500 : 6000);
+}
+
+// --- Funkcje tworzenia rundy i parowania ---
+function createFirstRound(tourn){
+  const count = tourn.participants.length;
+  const roundName = count === 16 ? '1/8 Finału' : 'Ćwierćfinał';
+  const shuffled = shuffleArray(tourn.participants.map(p => p.id));
+  const matches = [];
+  for(let i=0;i<shuffled.length;i+=2){
+    matches.push({
+      id: uid('m'),
+      p1: shuffled[i],
+      p2: shuffled[i+1] || null,
+      winnerId: null
+    });
+  }
+  tourn.rounds = [{name: roundName, matches}];
+}
+
+// shuffle
+function shuffleArray(arr){
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function chunkArray(arr, size){ // returns nested arrays of pairs
+  const out=[];
+  for(let i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size));
+  return out;
+}
+
+// --- Renderowanie listy turniejów (prawo) ---
+function renderTournamentsList(){
+  toursListEl.innerHTML = '';
+  if(state.tournaments.length === 0){
+    toursListEl.innerHTML = '<div class="notice">Brak utworzonych turniejów — stwórz pierwszy!</div>';
+    return;
+  }
+  // pokaż ostatnie najpierw
+  state.tournaments.slice().reverse().forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'tour-card';
+    const winnerName = t.winnerId ? (t.participants.find(p=>p.id===t.winnerId)?.name || '-') : (t.finished ? '—' : 'Trwa');
+    div.innerHTML = `
+      <div>
+        <div style="font-weight:800">${escapeHtml(t.name)}</div>
+        <div class="small">${new Date(t.date).toLocaleString()}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="small">Uczestników: ${t.participants.length}</div>
+        <div style="height:4px"></div>
+        <div class="small">Zwycięzca: ${winnerName}</div>
+        <div style="height:6px"></div>
+        <button class="btn small select-tour" data-id="${t.id}">Wybierz</button>
+      </div>
+    `;
+    toursListEl.appendChild(div);
+  });
+
+  // eventy select
+  toursListEl.querySelectorAll('.select-tour').forEach(b => {
+    b.addEventListener('click', (e) => {
+      const id = e.target.dataset.id;
+      state.activeTournamentId = id;
+      updateActivePanel();
+      showView('mecze');
+      renderMatchesView();
+    });
+  });
+}
+
+// --- Aktualizacja panelu aktywnego turnieju (prawe) ---
+function updateActivePanel(){
+  const t = state.tournaments.find(tt => tt.id === state.activeTournamentId);
+  if(!t){
+    activeNameEl.textContent = 'Brak';
+    activeDateEl.textContent = '';
+    activeStatusEl.textContent = 'Żaden nieaktywny';
+    return;
+  }
+  activeNameEl.textContent = t.name;
+  activeDateEl.textContent = new Date(t.date).toLocaleString();
+  activeStatusEl.textContent = t.finished ? 'Zakończony' : 'W toku';
+  // render tabelki i mecze jeśli obecnie wyświetlany
+  renderTournamentsList();
+  renderMatchesView();
+  renderTableView();
+}
+
+// --- Renderowanie widoku Mecze ---
+function renderMatchesView(){
+  roundsContainer.innerHTML = '';
+  const t = state.tournaments.find(tt => tt.id === state.activeTournamentId);
+  if(!t){
+    noTournMsg.style.display = 'block';
+    shuffleNextBtn.style.display = 'none';
+    resetTournBtn.style.display = 'none';
+    return;
+  }
+  noTournMsg.style.display = 'none';
+  resetTournBtn.style.display = 'inline-block';
+  // dla każdej rundy tworzymy blok
+  t.rounds.forEach((round, rIdx) => {
+    const block = document.createElement('div');
+    block.className = 'round';
+    block.innerHTML = `<h3>${escapeHtml(round.name)}</h3>`;
+    round.matches.forEach(match => {
+      // pobierz zawodników
+      const p1 = t.participants.find(p=>p.id===match.p1);
+      const p2 = match.p2 ? t.participants.find(p=>p.id===match.p2) : null;
+      const matchEl = document.createElement('div');
+      matchEl.className = 'match';
+      matchEl.innerHTML = `
+        <div class="player left">
+          <div style="display:flex;flex-direction:column">
+            <div style="font-size:13px;color:var(--muted)">🏷️</div>
+            <div class="name">${escapeHtml(p1 ? p1.name : '—')}</div>
+          </div>
+        </div>
+        <div style="width:28px;text-align:center;color:var(--muted)">vs</div>
+        <div class="player right">
+          <div style="display:flex;flex-direction:column">
+            <div style="font-size:13px;color:var(--muted)">🏷️</div>
+            <div class="name">${escapeHtml(p2 ? p2.name : '—')}</div>
+          </div>
+        </div>
+      `;
+      // buttons for choosing winner
+      const leftBtn = document.createElement('button');
+      leftBtn.textContent = 'Wygrał';
+      const rightBtn = document.createElement('button');
+      rightBtn.textContent = 'Wygrał';
+      // style active if match has winner
+      if(match.winnerId){
+        if(match.winnerId === match.p1) leftBtn.classList.add('active');
+        else if(match.winnerId === match.p2) rightBtn.classList.add('active');
+      }
+      // attach events
+      leftBtn.addEventListener('click', ()=> handleSetWinner(t.id, rIdx, match.id, match.p1));
+      rightBtn.addEventListener('click', ()=> handleSetWinner(t.id, rIdx, match.id, match.p2));
+      // append buttons to player areas
+      matchEl.querySelector('.player.left').appendChild(leftBtn);
+      matchEl.querySelector('.player.right').appendChild(rightBtn);
+
+      block.appendChild(matchEl);
+    });
+    roundsContainer.appendChild(block);
+  });
+
+  // pokaż przycisk losuj następną rundę jeśli wszystkie mecze w ostatniej mają winner
+  const lastRound = t.rounds[t.rounds.length-1];
+  const allDecided = lastRound.matches.length > 0 && lastRound.matches.every(m => m.winnerId);
+  if(allDecided && !t.finished){
+    shuffleNextBtn.style.display = 'inline-block';
+  } else {
+    shuffleNextBtn.style.display = 'none';
+  }
+}
+
+// --- Obsługa wyznaczania zwycięzcy meczu ---
+function handleSetWinner(tournId, roundIdx, matchId, winnerPlayerId){
+  const tourn = state.tournaments.find(tt => tt.id === tournId);
+  if(!tourn) return;
+  const round = tourn.rounds[roundIdx];
+  const match = round.matches.find(m => m.id === matchId);
+  if(!match) return;
+  // jeśli winnerPlayerId=null (np. przy bye), ignoruj
+  if(!winnerPlayerId) return;
+  // jeśli już był inny winner, cofnij jego punkt
+  if(match.winnerId && match.winnerId !== winnerPlayerId){
+    const prev = tourn.participants.find(p=>p.id===match.winnerId);
+    if(prev) prev.points = Math.max(0, prev.points - 1);
+  }
+  // ustaw nowego zwycięzcę
+  match.winnerId = winnerPlayerId;
+  // dodaj punkt zwycięzcy (1 punkt za wygraną)
+  const winner = tourn.participants.find(p=>p.id===winnerPlayerId);
+  if(winner){
+    // upewnij się, że punkt nie był już nadany dla tego meczu (tj. jeśli klikamy tego samego zwycięzcę ponownie nie dodawaj)
+    // Prostą metodą jest liczyć ile razy dana osoba wygrała dotychczas w rundach, ale tu zrobimy: sprawdzamy czy w tej rundzie już była przypisana jako zwycięzca tego matchu uprzednio
+    // Jeśli match wcześniej nie miał zwycięzcy lub miał innego zwycięzcę, dodaj 1.
+    winner.points = winner.points + 1;
+  }
+  // Zapisz i odśwież UI
+  saveState();
+  renderMatchesView();
+  renderTableView();
+
+  // Po ustawieniu zwycięzcy sprawdzamy czy skończono rundę i czy powinniśmy nadać +3 finalistom (gdy semifinały zakończone)
+  maybeAssignFinalBonus(tourn);
+}
+
+// --- Przyznanie +3 punktów za dotarcie do finału (po półfinałach) ---
+// Ideą: po zakończeniu rundy półfinałowej (czyli w momencie powstania rundy "Półfinał" i gdy wszyscy zwycięzcy są znani),
+// zidentyfikuj finalistów i dodaj każdemu +3, tylko raz (używamy flagi reachedFinal)
+function maybeAssignFinalBonus(tourn){
+  // znajdź, czy istnieje runda nazwana "Półfinał" (lub "Półfinał" w polskich nazwach) i czy wszystkie jej mecze mają winner
+  const semiRound = tourn.rounds.find(r => r.name.toLowerCase().includes('pół') || r.name.toLowerCase().includes('półfina'));
+  if(!semiRound) return; // brak półfinałów - może 8 graczy lecz nazwany "Ćwierćfinał" / no - ale w strukturze jeśli jest 8 graczy, półfinał powstaje dopiero później
+  const allSemisDone = semiRound.matches.every(m => m.winnerId);
+  if(!allSemisDone) return;
+  // znamy finalistów: to zwycięzcy półfinałów
+  const finalists = semiRound.matches.map(m => m.winnerId).filter(Boolean);
+  // nadaj +3 jeżeli nie dostali jeszcze (reachedFinal flag)
+  finalists.forEach(fid => {
+    const p = tourn.participants.find(pp => pp.id === fid);
+    if(p && !p.reachedFinal){
+      p.points += 3;
+      p.reachedFinal = true;
+    }
+  });
+  saveState();
+  renderTableView();
+}
+
+// --- Losuj następną rundę (po zakończeniu aktualnej) ---
+shuffleNextBtn.addEventListener('click', ()=>{
+  const tourn = state.tournaments.find(tt => tt.id === state.activeTournamentId);
+  if(!tourn) return;
+  const lastRound = tourn.rounds[tourn.rounds.length-1];
+  // upewnij się że wszystkie mecze mają winner
+  if(!lastRound.matches.every(m => m.winnerId)){
+    alert('Musisz najpierw rozstrzygnąć wszystkie mecze w tej rundzie.');
+    return;
+  }
+
+  // wygeneruj zwycięzców
+  const winners = lastRound.matches.map(m => m.winnerId).filter(Boolean);
+  // jeśli liczba zwycięzców równa 1 => turniej zakończony
+  if(winners.length === 1){
+    tourn.finished = true;
+    tourn.winnerId = winners[0];
+    saveState();
+    updateActivePanel();
+    renderMatchesView();
+    renderTournamentsList();
+    alert('Turniej zakończony! Zwycięzca: ' + (tourn.participants.find(p=>p.id===winners[0])?.name || '—'));
+    return;
+  }
+
+  // jeżeli to półfinały zostały rozstrzygnięte - może trzeba utworzyć mecz o 3 miejsce
+  // ale kolejność: najpierw tworzymy rundę następną (półfinał/finisale), a dla dwóch półfinałów tworzymy mecz o 3 miejsce po rozegraniu półfinałów
+  // Określ nazwę następnej rundy na podstawie liczby winners
+  let nextName;
+  if(winners.length === 8) nextName = 'Ćwierćfinał';
+  else if(winners.length === 4) nextName = 'Półfinał';
+  else if(winners.length === 2) nextName = 'Finał';
+  else nextName = (winners.length + ' - Runda');
+
+  // stwórz pary losowe z winners (dla większej losowości)
+  const shuffledW = shuffleArray(winners.slice());
+  const nextMatches = [];
+  for(let i=0;i<shuffledW.length;i+=2){
+    nextMatches.push({id: uid('m'), p1:shuffledW[i], p2:shuffledW[i+1] || null, winnerId: null});
+  }
+  tourn.rounds.push({name: nextName, matches: nextMatches});
+  // jeśli po tej rundzie otrzymamy tylko 2 graczy (czyli nextMatches powstały z 4 -> 2 matches -> po rozstrzygnięciu finalistów),
+  // to po rozstrzygnięciu półfinałów utworzymy mecz o 3 miejsce. To wykonamy kiedy półfinały będą skończone - w funkcji maybeCreateThirdPlace
+  saveState();
+  renderMatchesView();
+  renderTableView();
+});
+
+// --- Reset tournament (cofa do stanu początkowego: usuwa rundy i tworzy pierwszą rundę); przydatne do testów ---
+resetTournBtn.addEventListener('click', ()=>{
+  const tourn = state.tournaments.find(tt => tt.id === state.activeTournamentId);
+  if(!tourn) return;
+  if(!confirm('Czy na pewno zresetować ten turniej do pierwszej rundy? Wszystkie punkty zostaną zresetowane.')) return;
+  // reset punktów i flag
+  tourn.participants.forEach(p => { p.points = 0; p.reachedFinal = false; });
+  createFirstRound(tourn);
+  tourn.finished = false;
+  tourn.winnerId = null;
+  saveState();
+  renderMatchesView();
+  renderTableView();
+  renderTournamentsList();
+});
+
+// --- Kiedy półfinały skończą się, tworzymy mecz o 3 miejsce (między przegranymi półfinałów) ---
+function maybeCreateThirdPlace(tourn){
+  // sprawdź, czy jest runda o nazwie "Półfinał" i czy po niej nie ma już "O 3 Miejsce"
+  const hasThird = tourn.rounds.some(r => r.name.toLowerCase().includes('3') || r.name.toLowerCase().includes('o 3'));
+  if(hasThird) return; // już utworzono
+  const semiIdx = tourn.rounds.findIndex(r => r.name.toLowerCase().includes('pół'));
+  if(semiIdx === -1) return;
+  const semi = tourn.rounds[semiIdx];
+  // jeśli półfinały rozstrzygnięte, wyciągnij przegranych
+  if(!semi.matches.every(m => m.winnerId)) return;
+  // przegrani to p1/p2 którzy nie są winner w danym meczu
+  const losers = semi.matches.map(m => (m.p1 === m.winnerId ? m.p2 : m.p1)).filter(Boolean);
+  if(losers.length === 2){
+    tourn.rounds.splice(semiIdx+1,0,{name:'O 3 Miejsce', matches:[{id:uid('m'), p1:losers[0], p2:losers[1], winnerId:null}]});
+    saveState();
+    renderMatchesView();
+  }
+}
+
+// --- Render tabeli punktowej ---
+function renderTableView(){
+  const t = state.tournaments.find(tt => tt.id === state.activeTournamentId);
+  if(!t){
+    noTableMsg.style.display = 'block';
+    tableWrapper.style.display = 'none';
+    return;
+  }
+  noTableMsg.style.display = 'none';
+  tableWrapper.style.display = 'block';
+  // sortuj po punktach malejąco, potem po nazwie
+  const rows = t.participants.slice().sort((a,b)=> {
+    if(b.points !== a.points) return b.points - a.points;
+    return a.name.localeCompare(b.name,'pl');
+  });
+  tableBody.innerHTML = '';
+  rows.forEach((p,idx)=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = `<td class="place">${idx+1}</td><td>${escapeHtml(p.name)}</td><td>${p.points}</td>`;
+    tableBody.appendChild(tr);
+  });
+}
+
+// --- Po każdej zmianie zwycięzcy próbuj utworzyć mecz o 3 miejsce, albo zakończyć turniej jeśli finał rozstrzygnięty ---
+function postWinnerHousekeeping(){
+  const tourn = state.tournaments.find(tt => tt.id === state.activeTournamentId);
+  if(!tourn) return;
+  maybeCreateThirdPlace(tourn);
+
+  // jeżeli istnieje runda "Finał" i wszyscy w finale mają winner -> zakończ
+  const finalRound = tourn.rounds.find(r => r.name.toLowerCase().includes('finał'));
+  if(finalRound && finalRound.matches.every(m=>m.winnerId)){
+    // przyznaj zwycięzcy status finished
+    const winnerId = finalRound.matches[0].winnerId;
+    tourn.finished = true;
+    tourn.winnerId = winnerId;
+    saveState();
+    updateActivePanel();
+    renderTournamentsList();
+  }
+}
+
+// We need wywoływać postWinnerHousekeeping po każdej zmianie winner; dodamy je w odpowiednich miejscach
+// Dodajemy małe opóźnienie, by wszystkie UI już odświeżyły się w handleSetWinner
+const origHandleWinner = handleSetWinner;
+window.handleSetWinner = function(...args){
+  origHandleWinner(...args);
+  // po drobnej przerwie wykonaj porządki
+  setTimeout(()=> postWinnerHousekeeping(), 120);
+};
+
+// --- Utility: znajdź aktualny turniej i indeks rundy/meczu ---
+function findMatch(tourn, matchId){
+  for(let ri=0; ri<tourn.rounds.length; ri++){
+    const r = tourn.rounds[ri];
+    const m = r.matches.find(mm=>mm.id===matchId);
+    if(m) return {roundIdx:ri, match:m, round:r};
+  }
+  return null;
+}
+
+// --- Pomocnicze: usuwanie turnieju (opcjonalne) - nie dodano przycisku, ale można wewnętrznie wywołać) ---
+function deleteTournament(id){
+  state.tournaments = state.tournaments.filter(t => t.id !== id);
+  if(state.activeTournamentId === id) state.activeTournamentId = null;
+  saveState();
+  renderTournamentsList();
+  updateActivePanel();
+}
+
+// --- Inicjalne renderowanie widoku nowy (domyślne) wykonane w init() ---
+// DODATKOWO: reaguj na zmiany w localStorage (jeśli otwarte w wielu zakładkach)
+window.addEventListener('storage', (e) => {
+  if(e.key === STORAGE_KEY) loadState();
+});
+
+// --- Małe ulepszenia UX: podświetlenie aktywnego przycisku nav ---
+document.querySelectorAll('.nav .btn').forEach(b => b.addEventListener('click', (e)=>{
+  document.querySelectorAll('.nav .btn').forEach(x => x.classList.remove('active'));
+  e.currentTarget.classList.add('active');
+}));
+
+// --- Uwaga: musimy przemapować akcję handleSetWinner do globalnej ale zdefiniowanej wersji wyżej. Już to zrobiliśmy. ---
+
+// --- Dodatkowe: jeśli użytkownik utworzy turniej, przechodzimy automatycznie do mecze i ustawiamy active ---
+/* Już zrobione w createBtn */
+
+</script>
+</body>
+</html>
