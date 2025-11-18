@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fryzjerstwo</title>
+    <link rel="stylesheet" href="20251106_styl8.css">
+</head>
+<body>
+    <main id="lewy">
+        <header>
+            <h1><a href="20251106_index.html">SALON FRYZJERSKI</a></h1>
+        </header>
+        <nav>
+            <h2>PROMOCJA!</h2>
+            <input type="radio" class="promka" name="promka" value="15 zł">Krótkie<br>
+            <input type="radio" class="promka" name="promka" value="20 zł">Średnie<br>
+            <input type="radio" class="promka" name="promka" value="30 zł">Półdługie<br>
+            <input type="radio" class="promka" name="promka" value="40 zł">Długie<br>
+            <input type="button" id="odkryj" value="Odkryj promocję">
+            <br><br>
+            <p id="wynik"></p>
+        </nav>
+        <section>
+            <p>Witaj! Miło nam, że odwiedziłeś nasz salon. Sprawdź promocje!</p>
+            <h4>Kontakt: 444 555 666</h4>
+        </section>
+    </main>
+    <main id="prawy">
+        <article>
+            <h4><a href="20251106_fryzura.html">Ceny strzyżenia</a></h4>
+            <table>
+                <tr><th>Długośc włosów</th><th>Cena</th></tr>
+                <tr><td>Krótkie</td><td>25</td></tr>
+                <tr><td>Średnie</td><td>30</td></tr>
+                <tr><td>Półdługie</td><td>40</td></tr>
+                <tr><td>Długie</td><td>50</td></tr>
+            </table>
+        </article>
+        <aside>
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1763487496/obraz1_kq7zsl.jpg" alt="Fryzjerka">
+        </aside>
+    </main>
+    <footer>
+        <p>Autor: Dawid</p>
+    </footer>
+    <script>
+        let promka = document.getElementsByClassName("promka");
+        let odkryj = document.getElementById("odkryj");
+        let wynik = document.getElementById("wynik");
+
+        function promocja(){
+            for(i=0; i<promka.length; i++){
+                if(promka[i].checked){
+                    wynik.innerHTML = "cena promocyjna: " + promka[i].value;
+                }
+            }
+        }
+
+        odkryj.addEventListener("click", promocja);
+    </script>
+</body>
+</html>
