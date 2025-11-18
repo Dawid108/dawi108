@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Test z Biologii — Układ krwionośny i limfatyczny</title>
+<style>
+  :root{
+    --bg: #eaf7ea;
+    --card: #ffffff;
+    --accent: #2b8a3e;
+    --accent-dark: #216a30;
+    --muted: #6b6b6b;
+    --success: #2e8b57;
+    --danger: #c02b2b;
+    --shadow: 0 6px 18px rgba(34,34,34,0.06);
+  }
+  *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background: linear-gradient(180deg, #f3fbf3 0%, var(--bg) 100%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:24px;
+  }
+  .container{
+    width:100%;
+    max-width:920px;
+    background:var(--card);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    padding:22px;
+    border:1px solid rgba(33,138,62,0.06);
+  }
+  header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    margin-bottom:14px;
+  }
+  h1{margin:0;font-size:20px;color:var(--accent-dark)}
+  .meta{color:var(--muted);font-size:14px}
+  .status{
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .hearts{font-size:20px}
+  .score{background:linear-gradient(90deg,var(--accent) 0%,var(--accent-dark) 100%);color:white;padding:6px 10px;border-radius:8px;font-weight:600}
+  .card{
+    background: linear-gradient(180deg, #ffffff 0%, #f7fff7 100%);
+    padding:18px;border-radius:10px;border:1px solid rgba(33,138,62,0.06);
+    box-shadow: 0 6px 18px rgba(33,138,62,0.04);
+  }
+  .question{
+    font-size:18px;
+    color:#164a25;
+    margin-bottom:12px;
+    min-height:54px;
+  }
+  .options{display:grid;grid-template-columns:1fr;gap:10px}
+  .option{
+    padding:12px 14px;border-radius:10px;border:2px solid rgba(33,138,62,0.12);
+    background:linear-gradient(180deg, #f8fff8, #ffffff);
+    cursor:pointer;
+    font-weight:600;
+    transition:transform .08s ease, box-shadow .08s;
+  }
+  .option:hover{transform:translateY(-3px);box-shadow:0 6px 14px rgba(33,138,62,0.06)}
+  .option.disabled{cursor:default;opacity:0.9;transform:none}
+  .option.correct{background:linear-gradient(90deg,#e6f7ea,#dff5e4);border-color:rgba(46,139,87,0.35);color:var(--success)}
+  .option.wrong{background:linear-gradient(90deg,#fff0f0,#ffecec);border-color:rgba(192,43,43,0.25);color:var(--danger)}
+  .footer{
+    margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .progress{color:var(--muted);font-size:14px}
+  .btn{
+    background:var(--accent);color:white;padding:9px 14px;border-radius:10px;border:none;font-weight:700;cursor:pointer;
+    box-shadow: 0 6px 12px rgba(33,138,62,0.12);
+  }
+  .center{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:28px}
+  .big-msg{font-size:22px;color:var(--accent-dark);font-weight:800}
+  .small-muted{color:var(--muted);font-size:14px}
+  footer.note{margin-top:12px;color:var(--muted);font-size:13px;text-align:center}
+  @media(max-width:600px){
+    .container{padding:14px}
+    .question{font-size:16px}
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>Test: Układ krwionośny i limfatyczny</h1>
+        <div class="meta">Pytania: łatwe → średnie → trudne. Powodzenia!</div>
+      </div>
+      <div class="status">
+        <div class="hearts" id="hearts" aria-hidden="true">❤️❤️❤️</div>
+        <div class="score" id="score">Punkty: 0</div>
+      </div>
+    </header>
+
+    <main>
+      <div class="card" id="gameCard">
+        <div class="question" id="question">Ładowanie pytań…</div>
+        <div class="options" id="options"></div>
+
+        <div class="footer">
+          <div class="progress" id="progress">0 / 0</div>
+          <div class="meta small-muted" id="hint">Brak przycisków pomiń / restart — restart po zakończeniu.</div>
+        </div>
+      </div>
+
+      <div id="endScreen" class="card" style="display:none;margin-top:14px">
+        <div class="center" id="endContent">
+          <!-- dynamic -->
+        </div>
+      </div>
+    </main>
+
+    <footer class="note">Po błędnej odpowiedzi: Twoja odpowiedź czerwonym, poprawna zielonym — 3 sekundy, potem następne pytanie.</footer>
+  </div>
+
+<script>
+/* Dane pytań — nie zmieniaj strukturze: text, options array, correct index (index odnosi się do options przed tasowaniem) */
+const rawQuestions = {
+  easy: [
+    { text:"Jak nazywa się płynna część krwi zawierająca białka i substancje odżywcze?", options:["Limfa o składzie wodnym","Osocze z białkami","Surowica pozbawiona komórek","Hemoglobina rozpuszczona"], correct:1 },
+    { text:"Jakie elementy krwi biorą udział w procesie krzepnięcia?", options:["Leukocyty odpornościowe","Płytki krwi","Erytrocyty transportowe","Limfocyty T"], correct:1 },
+    { text:"Jakie komórki krwi odpowiadają za przenoszenie tlenu?", options:["Leukocyty broniące","Trombocyty krzepnięcia","Erytrocyty transportowe","Limfocyty B"], correct:2 },
+    { text:"Jakie komórki krwi chronią organizm przed infekcjami?", options:["Erytrocyty","Trombocyty","Leukocyty","Komórki mięśniowe"], correct:2 },
+    { text:"Jak nazywają się leukocyty pozbawione ziarnistości?", options:["Granulocyty","Eozynofile","Agranulocyty","Bazofile"], correct:2 },
+    { text:"Jakie komórki odpornościowe walczą bezpośrednio z patogenami?", options:["Neurony czuciowe","Granulocyty","Erytrocyty","Melanocyty"], correct:1 },
+    { text:"Jakie komórki produkują przeciwciała?", options:["Limfocyty B","Limfocyty T","Makrofagi tkankowe","Neutrofile krwi"], correct:0 },
+    { text:"Jakie naczynia odprowadzają krew z serca do narządów?", options:["Żyły duże","Kapilary cienkie","Tętnice grube","Zatoki żylne"], correct:2 },
+    { text:"Najmniejsze naczynia krwionośne, w których zachodzi wymiana substancji:", options:["Żyły główne","Tętniczki doprowadzające","Naczynia włosowate","Zastawki żylne"], correct:2 },
+    { text:"Jakie struktury serca zapobiegają cofaniu się krwi?", options:["Komory","Zastawki","Przegrody","Naczynia wieńcowe"], correct:1 },
+    { text:"Jak nazywają się dwie główne części serca pompujące krew?", options:["Przedsionki","Komory","Zastawki","Osierdzie"], correct:1 },
+    { text:"Jak nazywa się obieg krwi prowadzący z prawej komory do płuc i z powrotem?", options:["Obieg duży","Obieg wrotny","Płucny obieg krwi","Obieg skórny"], correct:2 },
+    { text:"Który zapis przedstawia prawidłowy schemat krzepnięcia krwi?", options:["Fibrina → Fibrynogen → Skrzep","Skrzep → Fibrynogen → Fibrina","Fibrynogen → Fibrina → Skrzep","Fibrina → Skrzep → Fibrynogen"], correct:2 }
+  ],
+  medium: [
+    { text:"Osocze to…", options:["Płynna część krwi zawierająca białka i substancje odżywcze","Komórki odpowiedzialne za transport tlenu","Elementy krwi uczestniczące w krzepnięciu","Najmniejsze naczynia krwionośne organizmu"], correct:0 },
+    { text:"Płytki krwi to…", options:["Komórki transportujące tlen do tkanek","Elementy biorące udział w procesie krzepnięcia krwi","Komórki broniące organizm przed drobnoustrojami","Części serca zapobiegające cofaniu krwi"], correct:1 },
+    { text:"Erytrocyty to…", options:["Komórki odpornościowe produkujące przeciwciała","Komórki transportujące tlen w organizmie","Naczynia odprowadzające krew z serca","Płynna część krwi z białkami"], correct:1 },
+    { text:"Leukocyty to…", options:["Komórki odpowiedzialne za obronę przed infekcjami","Komórki przenoszące tlen we krwi","Elementy biorące udział w krzepnięciu","Najmniejsze naczynia krwionośne"], correct:0 },
+    { text:"Agranulocyty to…", options:["Leukocyty bez ziarnistości w cytoplazmie","Naczynia odprowadzające krew z serca","Struktury zapobiegające cofaniu się krwi","Komory pompujące krew w sercu"], correct:0 },
+    { text:"Granulocyty to…", options:["Komórki bezpośrednio walczące z patogenami","Płynna część krwi pełniąca funkcję transportową","Naczynia cienkościenne wymieniające substancje","Komórki produkujące przeciwciała"], correct:0 },
+    { text:"Limfocyty B to…", options:["Komórki układu odpornościowego wytwarzające przeciwciała","Komórki transportujące tlen w tkankach","Elementy krwi biorące udział w krzepnięciu","Struktury serca pompujące krew"], correct:0 },
+    { text:"Tętnice to…", options:["Naczynia odprowadzające krew z serca do tkanek","Komórki zwalczające patogeny","Najmniejsze naczynia wymieniające substancje","Elementy krzepnięcia krwi"], correct:0 },
+    { text:"Naczynia włosowate to…", options:["Najmniejsze naczynia, w których zachodzi wymiana substancji","Struktury serca zapobiegające cofaniu się krwi","Naczynia prowadzące krew do serca","Komory serca pompujące krew"], correct:0 },
+    { text:"Zastawki to…", options:["Struktury serca zapobiegające cofaniu się krwi","Komórki układu odpornościowego","Najmniejsze naczynia krwionośne","Elementy krwi biorące udział w krzepnięciu"], correct:0 },
+    { text:"Komory serca to…", options:["Główne części serca pompujące krew do płuc i reszty ciała","Struktury wymieniające substancje","Organy filtrujące krew","Elementy krwi transportujące tlen"], correct:0 },
+    { text:"Płucny obieg krwi to…", options:["Droga krwi z prawej komory do płuc i z powrotem do lewego przedsionka","Wymiana tlenu w naczyńkach włosowatych","Krążenie krwi w całym organizmie","Transport krwi przez zastawki"], correct:0 },
+    { text:"„Fibrynogen → Fibrina → Skrzep” to…", options:["Schemat procesu krzepnięcia krwi","Opis działania komór odpornościowych","Kolejność etapów wymiany gazowej","Nazwy tkanek układu limfatycznego"], correct:0 }
+  ],
+  hard: [
+    { text:"Która odpowiedź opisuje funkcję transportową układu krwionośnego?", options:["Przenoszenie substancji","Wytwarzanie limfocytów","Zatrzymywanie patogenów","Produkcja hormonów"], correct:0 },
+    { text:"Która odpowiedź opisuje funkcję utrzymywania stałych parametrów organizmu?", options:["Ogrzewanie mięśni","Utrzymanie homeostazy","Transport dźwięku","Tworzenie włókien kolagenu"], correct:1 },
+    { text:"Która odpowiedź opisuje funkcję ochronną krwi?", options:["Magazynowanie witamin","Ochrona przed infekcjami","Wytwarzanie melaniny","Transport impulsów"], correct:1 },
+    { text:"Która odpowiedź opisuje ochronę przed drobnoustrojami?", options:["Oczyszczanie wątroby","Obrona przed patogenami","Regeneracja erytrocytów","Produkcja enzymów"], correct:1 },
+    { text:"Co jest funkcją limfy w zakresie transportu?", options:["Wymiana dwutlenku węgla","Transport tłuszczów do krwi","Produkcja hormonów tarczycy","Wytwarzanie hemoglobiny"], correct:1 },
+    { text:"Która odpowiedź opisuje regulację płynów ustrojowych przez układ limfatyczny?", options:["Utrzymanie ciśnienia osmotycznego","Zatrzymywanie potu","Regeneracja nabłonka","Odbudowa włókien mięśni"], correct:0 },
+    { text:"Który narząd filtruje limfę i zatrzymuje drobnoustroje?", options:["Węzły chłonne","Zastawki serca","Przysadka mózgowa","Nadnercza"], correct:0 },
+    { text:"Który narząd usuwa stare erytrocyty i chroni przed infekcjami?", options:["Żołądek","Śledziona","Trzustka","Tarczyca"], correct:1 },
+    { text:"Który narząd odpowiada za dojrzewanie limfocytów T?", options:["Wątroba","Grasica","Jelito cienkie","Skóra właściwa"], correct:1 },
+    { text:"Które struktury limfatyczne znajdują się w gardle i chronią przed drobnoustrojami?", options:["Grudki chłonne","Jelita długie","Migdałki podniebienne","Zastawki żylne"], correct:2 },
+    { text:"Które skupiska tkanki limfatycznej występują w różnych częściach ciała?", options:["Grudki limfatyczne","Płaty wątrobowe","Zwoje nerwowe","Torebki płucne"], correct:0 },
+    { text:"Który narząd wytwarza elementy krwi i komórki odpornościowe?", options:["Trzustka","Szpik kostny","Nadnercza","Mózgowie"], correct:1 }
+  ]
+};
+
+/* Helper functions */
+function shuffle(array){
+  // Fisher-Yates
+  for(let i = array.length -1; i>0; i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+/* Game state */
+let questions = []; // połączone: easy (tasowane) -> medium -> hard
+let currentIndex = 0;
+let lives = 3;
+let score = 0;
+let busy = false;
+
+/* Elements */
+const qEl = document.getElementById('question');
+const optsEl = document.getElementById('options');
+const heartsEl = document.getElementById('hearts');
+const scoreEl = document.getElementById('score');
+const progressEl = document.getElementById('progress');
+const gameCard = document.getElementById('gameCard');
+const endScreen = document.getElementById('endScreen');
+const endContent = document.getElementById('endContent');
+
+function initGame(){
+  // Reset state
+  currentIndex = 0;
+  lives = 3;
+  score = 0;
+  busy = false;
+  updateHearts();
+  updateScore();
+  endScreen.style.display = 'none';
+  gameCard.style.display = 'block';
+
+  // Prepare questions: shuffle each difficulty group separately, then concatenate
+  const easy = shuffle(JSON.parse(JSON.stringify(rawQuestions.easy)));
+  const medium = shuffle(JSON.parse(JSON.stringify(rawQuestions.medium)));
+  const hard = shuffle(JSON.parse(JSON.stringify(rawQuestions.hard)));
+  questions = [...easy, ...medium, ...hard];
+
+  // For variety across attempts also shuffle the three groups order? 
+  // User explicitly wanted easy → medium → hard, so keep that order.
+  // Update progress total
+  progressEl.textContent = `0 / ${questions.length}`;
+  showQuestion();
+}
+
+function updateHearts(){
+  heartsEl.textContent = '❤️'.repeat(lives) + '🖤'.repeat(Math.max(0, 3-lives));
+}
+
+function updateScore(){
+  scoreEl.textContent = `Punkty: ${score}`;
+}
+
+function showQuestion(){
+  if(currentIndex >= questions.length){
+    finishGame();
+    return;
+  }
+  const q = questions[currentIndex];
+  qEl.textContent = q.text;
+
+  // Build options with correct flag and shuffle them
+  const opts = q.options.map((text, idx) => ({ text, isCorrect: idx === q.correct }));
+  shuffle(opts);
+
+  // Clear options
+  optsEl.innerHTML = '';
+  opts.forEach((o, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'option';
+    btn.type = 'button';
+    btn.innerText = `${String.fromCharCode(97+idx)}) ${o.text}`;
+    btn.disabled = false;
+    btn.onclick = () => selectAnswer(btn, o);
+    optsEl.appendChild(btn);
+  });
+
+  progressEl.textContent = `${currentIndex+1} / ${questions.length}`;
+}
+
+function selectAnswer(btn, option){
+  if(busy) return;
+  busy = true;
+
+  // disable all options
+  const allBtns = Array.from(optsEl.querySelectorAll('button'));
+  allBtns.forEach(b => { b.classList.add('disabled'); b.disabled = true; });
+
+  if(option.isCorrect){
+    // mark as correct and immediately go to next question
+    btn.classList.add('correct');
+    score += 1;
+    updateScore();
+    // immediate next question (no waiting per spec)
+    currentIndex++;
+    // small timeout to allow CSS to show (practically immediate)
+    setTimeout(() => { busy = false; showQuestion(); }, 150);
+  } else {
+    // wrong: show chosen red and show which is correct green, wait 3s then next (unless lives==0)
+    btn.classList.add('wrong');
+    // find correct button
+    const allBtns = Array.from(optsEl.querySelectorAll('button'));
+    allBtns.forEach(b=>{
+      if(b !== btn){
+        const text = b.innerText.replace(/^[a-d]\)\s*/,'');
+        // compare by text to find correct one
+        if(text === getCorrectTextForCurrentQuestion()){
+          b.classList.add('correct');
+        }
+      }
+    });
+
+    lives -= 1;
+    updateHearts();
+
+    setTimeout(() => {
+      if(lives <= 0){
+        // Game over
+        showEnd(false);
+      } else {
+        currentIndex++;
+        busy = false;
+        showQuestion();
+      }
+    }, 3000);
+  }
+}
+
+function getCorrectTextForCurrentQuestion(){
+  const q = questions[currentIndex];
+  return q.options[q.correct];
+}
+
+function finishGame(){
+  // Player answered wszystkie pytania
+  if(lives === 3){
+    // perfect
+    showEnd(true, true);
+  } else if(lives >= 1){
+    showEnd(true, false); // won but used lives
+  } else {
+    // lives 0; likely handled earlier, but fallback
+    showEnd(false);
+  }
+}
+
+function showEnd(won, perfect=false){
+  gameCard.style.display = 'none';
+  endScreen.style.display = 'block';
+  endContent.innerHTML = '';
+
+  if(won){
+    if(perfect){
+      const msg = document.createElement('div');
+      msg.className = 'big-msg';
+      msg.textContent = 'Wygrałeś — wykonałeś ten test bezbłędnie!';
+      endContent.appendChild(msg);
+    } else {
+      const msg = document.createElement('div');
+      msg.className = 'big-msg';
+      msg.textContent = 'Brawo — wygrałeś!';
+      endContent.appendChild(msg);
+    }
+    const sub = document.createElement('div');
+    sub.className = 'small-muted';
+    sub.textContent = `Punkty: ${score} / ${questions.length}  •  Pozostałe życia: ${lives}`;
+    endContent.appendChild(sub);
+  } else {
+    const msg = document.createElement('div');
+    msg.className = 'big-msg';
+    msg.style.color = 'var(--danger)';
+    msg.textContent = 'Przegrałeś';
+    endContent.appendChild(msg);
+
+    const sub = document.createElement('div');
+    sub.className = 'small-muted';
+    sub.textContent = `Punkty: ${score} / ${questions.length}`;
+    endContent.appendChild(sub);
+  }
+
+  const btn = document.createElement('button');
+  btn.className = 'btn';
+  btn.textContent = 'Nowa gra';
+  btn.onclick = () => {
+    initGame();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  endContent.appendChild(btn);
+}
+
+/* Start */
+initGame();
+</script>
+</body>
+</html>
