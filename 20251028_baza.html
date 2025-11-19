@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zadania SQL – Bazy Danych</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f4f7f9;
+        color: #333;
+        line-height: 1.6;
+    }
+
+    header img {
+        width: 100%;
+        max-width: 700px;
+        height: auto;
+        display: block;
+        margin: 10px auto;
+    }
+
+    .container {
+        max-width: 700px;
+        margin: 10px auto;
+        padding: 15px;
+    }
+
+    h2 {
+        text-align: center;
+        margin-top: 40px;
+        color: #2b5ba8;
+        font-size: 26px;
+    }
+
+    .query-box {
+        background: #fff;
+        padding: 20px;
+        margin: 20px 0;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .query-title {
+        font-size: 22px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 15px;
+        color: #1f4c7a;
+    }
+
+    .query-task {
+        font-size: 18px;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    pre {
+        background: #1e1e1e;
+        color: #e8e8e8;
+        padding: 15px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-size: 15px;
+    }
+
+    .description {
+        margin-top: 10px;
+        font-size: 16px;
+        background: #eef5ff;
+        padding: 10px;
+        border-left: 4px solid #2b5ba8;
+        border-radius: 5px;
+    }
+
+    .operations {
+        margin-top: 50px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .operations h3 {
+        text-align: center;
+        color: #2b5ba8;
+    }
+
+    ul {
+        margin-left: 20px;
+        padding-left: 10px;
+    }
+
+    li {
+        margin-bottom: 10px;
+        font-size: 17px;
+    }
+
+    @media (max-width: 700px) {
+        h2 { font-size: 22px; }
+        .query-title { font-size: 20px; }
+        .query-task { font-size: 17px; }
+        pre { font-size: 14px; }
+        li { font-size: 16px; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1763561030/baza1_uz7u9g.png" alt="Baza danych">
+</header>
+
+<div class="container">
+
+    <h2>Zapytania SQL – Zadania</h2>
+
+    <!-- Zapytanie 1 -->
+    <div class="query-box">
+        <div class="query-title">Zapytanie 1</div>
+        <div class="query-task">Polecenie: wybierające jedynie imię i pensję pracowników ze stażem mniejszym niż 5 lat.</div>
+
+<pre>
+SELECT pracownicy.imie, pracownicy.pensja 
+FROM pracownicy 
+WHERE pracownicy.staz &lt; 5;
+</pre>
+
+        <div class="description">
+            To zapytanie pobiera imię i pensję pracowników, którzy mają mniej niż 5 lat stażu.
+        </div>
+    </div>
+
+    <!-- Zapytanie 2 -->
+    <div class="query-box">
+        <div class="query-title">Zapytanie 2</div>
+        <div class="query-task">
+            Polecenie: zapytanie liczące średnią pensję pracowników ze względu na rodzaj stanowiska.
+            Zapytanie pokazuje średnią pensję na danym stanowisku i nazwę stanowiska.
+        </div>
+
+<pre>
+SELECT stanowiska.nazwa, AVG(pracownicy.pensja) AS "Średnia pensja"
+FROM pracownicy
+INNER JOIN stanowiska ON stanowiska.id = pracownicy.stanowiska_id
+GROUP BY stanowiska.nazwa;
+</pre>
+
+        <div class="description">
+            Zapytanie łączy tabele <b>pracownicy</b> i <b>stanowiska</b>, a następnie oblicza średnią pensję
+            dla każdego stanowiska.
+        </div>
+    </div>
+
+    <!-- Zapytanie 3 -->
+    <div class="query-box">
+        <div class="query-title">Zapytanie 3</div>
+        <div class="query-task">
+            Polecenie: wybierające imię, nazwisko i pensję pracownika z najwyższą pensją,
+            obliczaną za pomocą podzapytania.
+        </div>
+
+<pre>
+SELECT pracownicy.imie, pracownicy.nazwisko, pracownicy.pensja 
+FROM pracownicy 
+WHERE pracownicy.pensja = (SELECT MAX(pracownicy.pensja) FROM pracownicy);
+</pre>
+
+        <div class="description">
+            To zapytanie wyszukuje pracownika o najwyższej pensji,
+            używając podzapytania obliczającego maksymalną wartość pensji.
+        </div>
+    </div>
+
+    <!-- Zapytanie 4 -->
+    <div class="query-box">
+        <div class="query-title">Zapytanie 4</div>
+        <div class="query-task">
+            Polecenie: aktualizujące staż wszystkich pracowników – zwiększając go o 1 rok.
+        </div>
+
+<pre>
+UPDATE pracownicy
+SET pracownicy.staz = pracownicy.staz + 1;
+</pre>
+
+        <div class="description">
+            To zapytanie zwiększa staż każdego pracownika o jeden rok.
+        </div>
+    </div>
+
+    <!-- Operacje na bazie -->
+    <div class="operations">
+        <h3>Operacje na bazie danych</h3>
+
+        <ul>
+            <li>Utwórz bazę danych <b>baza</b> z zestawem polskich znaków (np. <b>utf8_unicode_ci</b>).</li>
+            <li>Zaimportuj tabele z pliku <b>baza.sql</b> w phpMyAdmin.</li>
+            <li>Wykonaj zrzut ekranu po imporcie — pełny ekran z paskiem zadań, zapisz jako <b>import.png</b>.</li>
+            <li>Wykonaj zapytania SQL i zapisz je w pliku <b>kwerendy.txt</b>.</li>
+            <li>Zrzuty ekranu wyników zapytań zapisz jako <b>kw1.jpg</b>, <b>kw2.jpg</b>, <b>kw3.jpg</b>, <b>kw4.jpg</b> (pełny ekran).</li>
+        </ul>
+    </div>
+
+</div>
+
+</body>
+</html>
