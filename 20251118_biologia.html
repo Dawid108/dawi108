@@ -99,7 +99,7 @@
         <div class="meta">Pytania: łatwe → średnie → trudne. Powodzenia!</div>
       </div>
       <div class="status">
-        <div class="hearts" id="hearts" aria-hidden="true">❤️❤️❤️</div>
+        <div class="hearts" id="hearts" aria-hidden="true">❤️❤️❤️❤️❤️</div>
         <div class="score" id="score">Punkty: 0</div>
       </div>
     </header>
@@ -111,7 +111,7 @@
 
         <div class="footer">
           <div class="progress" id="progress">0 / 0</div>
-          <div class="meta small-muted" id="hint">Brak przycisków pomiń / restart — restart po zakończeniu.</div>
+          <div class="meta small-muted" id="hint">Powodzenia!</div>
         </div>
       </div>
 
@@ -122,7 +122,7 @@
       </div>
     </main>
 
-    <footer class="note">Po błędnej odpowiedzi: Twoja odpowiedź czerwonym, poprawna zielonym — 3 sekundy, potem następne pytanie.</footer>
+    <footer class="note">Układ krążenia i Odporność organizmu</footer>
   </div>
 
 <script>
@@ -222,7 +222,7 @@ function shuffle(array){
 /* Game state */
 let questions = []; // połączone: easy (tasowane) -> medium -> hard
 let currentIndex = 0;
-let lives = 3;
+let lives = 5;
 let score = 0;
 let busy = false;
 
@@ -239,7 +239,7 @@ const endContent = document.getElementById('endContent');
 function initGame(){
   // Reset state
   currentIndex = 0;
-  lives = 3;
+  lives = 5;
   score = 0;
   busy = false;
   updateHearts();
@@ -261,7 +261,7 @@ function initGame(){
 }
 
 function updateHearts(){
-  heartsEl.textContent = '❤️'.repeat(lives) + '🖤'.repeat(Math.max(0, 3-lives));
+  heartsEl.textContent = '❤️'.repeat(lives) + '🖤'.repeat(Math.max(0, 5-lives));
 }
 
 function updateScore(){
@@ -350,7 +350,7 @@ function getCorrectTextForCurrentQuestion(){
 
 function finishGame(){
   // Player answered wszystkie pytania
-  if(lives === 3){
+  if(lives === 5){
     // perfect
     showEnd(true, true);
   } else if(lives >= 1){
