@@ -95,7 +95,7 @@
 <body>
 
 <div class="top-bar">
-    <div>Życia: <span id="lives">3</span></div>
+    <div>Życia: <span id="lives">9</span></div>
     <div>Punkty: <span id="points">0</span></div>
 </div>
 
@@ -748,7 +748,7 @@ const questions = [
     
 let shuffledQuestions = [];
 let index = 0;
-let lives = 3;
+let lives = 9;
 let points = 0;
 let answering = true;
 
@@ -767,7 +767,7 @@ function updateCounter() {
 }
 
 function startGame() {
-    lives = 3;
+    lives = 9;
     points = 0;
     index = 0;
     answering = true;
@@ -807,7 +807,7 @@ function checkAnswer(ans) {
         if (ans === "tak") yesBtn.classList.add("correct");
         else noBtn.classList.add("correct");
 
-        setTimeout(nextQuestion, 800);
+        setTimeout(nextQuestion, 500);
 
     } else {
         lives--;
