@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Test na Prawo Jazdy – ABC</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f2f2f2;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 20px;
+        font-size: 40px;
+        font-weight: bold;
+        background: white;
+        border-bottom: 2px solid #ddd;
+    }
+
+    #counter {
+        margin-top: 20px;
+        font-size: 55px;
+        font-weight: bold;
+    }
+
+    #image {
+        width: 100%;
+        height: auto;
+        margin-top: 10px;
+        border-radius: 10px;
+        border: 2px solid #ccc;
+        aspect-ratio: 16/9;
+    }
+
+    #question {
+        font-size: 46px;
+        margin: 20px 0;
+        padding: 0 10px;
+    }
+
+    .buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+        margin-top: 20px;
+        padding: 0 20px;
+    }
+
+    button {
+        background: #b5b5b5;
+        border: none;
+        padding: 25px 40px;
+        font-size: 50px;
+        border-radius: 14px;
+        cursor: pointer;
+        color: white;
+        transition: 0.3s;
+        width: 100%;
+    }
+
+    button:hover {
+        background: #9d9d9d;
+    }
+
+    .correct {
+        background: #4caf50 !important;
+    }
+
+    .wrong {
+        background: #e53935 !important;
+    }
+
+    #endScreen {
+        margin-top: 40px;
+        font-size: 55px;
+        font-weight: bold;
+    }
+
+    #restart {
+        margin-top: 20px;
+        padding: 20px 40px;
+        font-size: 46px;
+        background: #6b6b6b;
+        border-radius: 10px;
+        color: white;
+    }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+    <div>Życia: <span id="lives">9</span></div>
+    <div>Punkty: <span id="points">0</span></div>
+</div>
+
+<div id="counter">Pytanie 1 / 1</div>
+
+<img id="image" src="">
+
+<div id="question"></div>
+
+<div class="buttons">
+    <button id="aBtn">A</button>
+    <button id="bBtn">B</button>
+    <button id="cBtn">C</button>
+</div>
+
+<div id="endScreen"></div>
+
+<script>
+/* ==========================
+       PYTANIA ABC
+========================== */
+const questions = [
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764011660/21-4_ic8j2m.png",
+        q: "Z jaką prędkością wolno kontynuować jazdę samochodem osobowym za tymi znakami?",
+        options: [
+            "A. 30 km/h do najbliższego skryżowania a następnie 50 km/h.",
+            "B. 30 km/h do tablicy z nazwą początku miejscowości a następnie 90 km/h.",
+            "C. 30 km.h na całym odcinku drogi biegnącej na obszarze zabudowanym."
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764011856/21-11_j9ppia.png",
+        q: "Jaka jest maksymalna dopuszczalna prędkość samochodu osobowego poruszającego się po tej drodze?",
+        options: [
+            "A. 120 km/h",
+            "B. 100 km/h",
+            "C. 90 km/h"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764011934/21-15_p3huc9.png",
+        q: "Z jaką maksymalną dopuszczalną prędkością wolno Ci jechać po drodze za tymi znakami, jeśli holujesz inny samochód osobowy?",
+        options: [
+            "A. 30 km/h",
+            "B. 60 km/h",
+            "C. 90 km/h"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764012049/21-19_iosmbc.png",
+        q: "Z jaką prędkością masz obowiązek jechać na autostradzie?",
+        options: [
+            "A. Co najmniej 40 km/h",
+            "B. Co najmniej 60 km/h",
+            "C. Bezpieczną, nieutrudniającą jazdy innym kierującym, jednak nie większą niż dopuszczalna"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764012179/21-21_jauivt.png",
+        q: "Jaka jest dopuszczalna prędkość samochodu osobowego z przyczepą na tak oznakowanej drodze?",
+        options: [
+            "A. 70 km/h za znakiem zakazu",
+            "B. 50 km/h",
+            "C. 40 km/h"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764012261/21-26_ns7z1c.png",
+        q: "Czy prędkość dopuszczalna 50 km/h obowiązuje na obszarze zabudowanym przez całą dobę?",
+        options: [
+            "A. Tak",
+            "B. Nie, tylko od godziny 5:00 do 23:00",
+            "C. Nie, tylko od zmierzchu do świtu"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764012393/21-33_fehviu.png",
+        q: "Z jaką maksymalną dopuszczalną prędkością wolno Ci jechać po drodze za tym znakiem, jeśli holujesz inny samochód osobowy?",
+        options: [
+            "A. 30 km/h",
+            "B. 50 km/h",
+            "C. 60 km/h"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764012539/22-12_yxxwo5.png",
+        q: "Które z wymienionych uszkodzeń pasów bezpieczeństwa oznaczają bezwzględną konieczność wymiany pasów na nowe?",
+        options: [
+            "A. Skręcenie lub zwinięcie pasów",
+            "B. Przetarcia, przewężenia i naderwania taśmy pasów",
+            "C. Trwałe zabrudzenia i plamy na taśmie pasów"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764012680/22-18_opm6yb.png",
+        q: "W jakiej kolejności masz obowiązek wykonać poszczególne czynności, gdy przygotowujesz się do jazdy samochodem?",
+        options: [
+            "A. Zapiąć pasy bezpieczeństwa, ustawić lusterka i fotel kierowcy",
+            "B. Ustawić lusterka, fotel kierowcy i zapiąć pasy bezpieczeństwa",
+            "C. Ustawić fotel kierowcy, lusterka i zapiąć pasy bezpieczeństwa"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jaką funkcję spełniają poduszki powietrzne?",
+        options: [
+            "A. Zmniejszają uszkodzenia pojazdu podczas zderzenia",
+            "B. Zapewniają pełną ochronę kierującego i pasażerów podczas zderzenia",
+            "C. Zmniejszają obrażenia ciała, jakim może ulec kierujący i pasażerowie w wyniku zderzenia"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "W którym przypadku nie ma obowiązku przewożenia dziecka o wzroście poniżej 150 cm w foteliku bezpieczeństwa lub innym urządzeniu podtrzymującym, zapewniającym bezpieczeństwo dziecka?",
+        options: [
+            "A. Podczas przewożenia dziecka taksówką",
+            "B. Podczas przewożenia dziecka na tylnym siedzeniu",
+            "C. Podczas przewożenia dzeicka na kolanach osoby dorosłej"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013821/23-8_dg53gg.png",
+        q: "Z jaką prędkością, kierując samochodem osobowym, należy poruszać się za tym pojazdem, jeżeli tunel znajduje się poza obszarem zabudowanym, a jego długość wynosi 600 m?",
+        options: [
+            "A. Z taką, aby utrzymywać, co najmniej 50 m odstępu",
+            "B. Z taką, aby utrzymywać, co najmniej 80 m odstępu",
+            "C. Z taką, aby utrzymywać, co najmniej 5 m odstępu"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013943/23-12_xob2sr.png",
+        q: "Czy kierując samochodem osobowym w tunelu o długości 600 m położonym w obszarze zabudowanym, masz obowiązek utrzymywać odstęp od poprzedzającego pojazdu nie mniejszy niż 50 metrów?",
+        options: [
+            "A. Tak, ale prowadząc samochód o masie całkowitej przekaczającej 2,5 tony",
+            "B. Nie",
+            "C. Tak"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764014064/23-18_zyasfa.png",
+        q: "Jaki odstęp należy zachować wyprzedzając motocyklistę?",
+        options: [
+            "A. Bezpieczny, mniejszy niż 1 metr",
+            "B. Każdy odstęp, ale bezpieczny",
+            "C. Nie mniejszy niż 1 metr"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764014150/23-34_xfebrf.png",
+        q: "W jaki sposób powinieneś hamować awaryjnie samochodem osobowym wyposażonym w układ przeciwblokujący (ABS)?",
+        options: [
+            "A. Mocno wcisnąć pedał hamulca i nie zwalniać go w chwili zadziałania układu ABS",
+            "B. Mocno wcisnąć pedał hamulca i zmiejszyć nacisk w chwili zadziałania układu ABS",
+            "C. Hamować pulsacyjnie aż do zadziałania układu ABS"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764014310/23-40_oxu14q.png",
+        q: "Jaki minimalny odstęp masz obowiązek zachować od jadącego przed Tobą pojazdu, jeżeli poruszasz się samochodem osobowym tą drogą z maksymalną dozwoloną prędkością?",
+        options: [
+            "A. 60 m",
+            "B. 70 m",
+            "C. 80 m"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Z jaką maksymalną dopuszczalną prędkością możesz holować inny pojazd?",
+        options: [
+            "A. 50 km/h w obszarze zabudowanym",
+            "B. 60 km/h poza obszarem zabudowanym",
+            "C. 80 km/h na drodze dwujezdniowej o co najmniej dwóch pasach przeznaczonych dla każdego kierunku ruchu"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764014520/24-3_l2f9sl.png",
+        q: "O jakim niebezpieczeństwie ostrzega przedstawiony znak pionowy?",
+        options: [
+            "A. O silnych bocznych podmuchach wiatru",
+            "B. O silnych podmuchach wiatru występujących tylko z prawej strony",
+            "C. O silnych czołowych podmuchach wiatru"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Którą z tych czynności masz obowiązek wykonać podczas wyprzedzania samochodem osobowym we mgle poza obszarem zabudowanym?",
+        options: [
+            "A. Dawać krótkotrwałe sygnały świetlne",
+            "B. Dawać krótkotrwałe sygnały dźwiękowe",
+            "C. Włączyć tylne światła przeciwmgłowe, niezależnie od stopnia ograniczenia widoczności"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Która z tych czynności zwiększy bezpieczeństwo jazdy, gdy kierujesz samochodem osobowym podczas mgły ograniczającej widoczność do 40 metrów?",
+        options: [
+            "A. Włączenie świateł drogowych",
+            "B. Zmniejszenie odstępu od poprzedzającego pojazdu",
+            "C. Włączenie świateł przeciwmgłowych tylnych"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Który z wymienionych czynników może ograniczyć pole widzenia kierującego samochodem osobowym podczas jazdy nocą?",
+        options: [
+            "A. Zmniejszona prędkość",
+            "B. Uszkodzony system ABS",
+            "C. Niewłaściwe ustawione światła"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764015024/25-13_y4dmgu.png",
+        q: "Jaka pozycja za kierownicą umożliwi zmniejszenie efektu tzw. martwego pola w lusterkach, występującego w czasie obserwacji drogi?",
+        options: [
+            "A. Statyczna - sztywne siedzenie na fotelu, bez ruchów tułowia i głowy",
+            "B. Dynamiczna - w zależności od sytuacji odchylanie tułowia i głowy od fotela",
+            "C. Dowolna - przede wszystkim dająca wygodę kierowania"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764015176/26-10_dy8y0y.png",
+        q: "W jaki sposób oświetlają drogę przed samochodem osobowym światła mijania?",
+        options: [
+            "A. Prostopadle",
+            "B. Symetrycznie",
+            "C. Asymetrycznie"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764015254/26-18_bhjqb5.png",
+        q: "Która z wymienionych technik jazdy pasuje do określenia „ekonomiczna jazda samochodem”?",
+        options: [
+            "A. Częste używanie hamulca roboczego",
+            "B. Unikanie gwałtownych hamowań i przyspieszeń",
+            "C. Częsta zmiana biegów"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jak należy zachować się podczas wymijania samochodem osobowym w nocy innego pojazdu?",
+        options: [
+            "A. Patrzeć prosto w światła pojazdu nadjeżdżającego z przeciwka",
+            "B. Zmeinić światła mijania na drogowe",
+            "C. Patrzeć w prawo od źródła światła pojazdu nadjeżdżającego z przeciwka i wypatrywać tam ewentualnej przeszkody"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764015486/26-21_mabsfj.png",
+        q: "W którym momencie wciśniesz pedał sprzęgła, gdy jadąc z dużą prędkością samochodem osobowym, planujesz wykonać manewr hamowania?",
+        options: [
+            "A. Przed naciśnięciem pedału hamulca",
+            "B. Równocześnie z pedałem hamulca",
+            "C. Gdy prędkość poruszania się samochodu spadnie do minimalnej dla aktualnego przełożenia"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764016330/26-26_st3kdx.png",
+        q: "Co nazywamy zespołem pojazdów?",
+        options: [
+            "A. Samochód osobowy z przyczepą",
+            "B. Motocykl z bocznym wózkiem",
+            "C. Pojazdy silnikowe złączone w celu holowania"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764016436/26-28_aemmc8.png",
+        q: "Czy naruszasz przepisy ruchu drogowego, jeżeli kierując pojazdem rozmawiasz przez telefon trzymając go w ręku?",
+        options: [
+            "A. Nie, pod warunkiem panowania nad pojazdem",
+            "B. Nie, pod warunkiem, że telefon trzymam oddalony od ucha z włączonym trybem głośnomówiącym",
+            "C. Tak, nawet wówczas gdy telefon trzymam oddalony od ucha z włączonym trybem głośnomówiącym"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jakiej wielkości nie ma prawa przekroczyć rzeczywista masa całkowita przyczepy ciągniętej przez samochód osobowy?",
+        options: [
+            "A. Masy własnej samochodu",
+            "B. Rzeczywistej masy całkowitej samochodu",
+            "C. Rzeczywistej masy całkowitej samochodu pomniejszonej o 40%"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764016662/27-13_mjtngk.png",
+        q: "Kierując samochodem osobowym podczas przewożenia osoby niepełnosprawnej legitymującej się kartą parkingową powinieneś:",
+        options: [
+            "A. zawsze używać świateł mijania",
+            "B. stale zachowywać szczególną ostrożność",
+            "C. obserowować drogę i jej otoczenie, również w lusterkach pojazdu"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764016781/27-20_uwdgrt.png",
+        q: "Jaka jest maksymalna dopuszczalna długość zespołu pojazdów składającego się z samochodu osobowego i przyczepy kempingowej?",
+        options: [
+            "A. 18,75 m",
+            "B. 17,75 m",
+            "C. 15 m"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jakiej barwy chorągiewką wolno Ci oznaczyć ładunek wystający z tyłu samochodu osobowego?",
+        options: [
+            "A. Zieloną",
+            "B. Żółtą",
+            "C. Czerwoną"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Policjant zatrzyma prawo jazdy za pokwitowaniem w przypadku ujawnienia czynu polegającego na: Policjant zatrzyma",
+        options: [
+            "A. kierowaniu pojazdem z prędkością przekraczającą dopuszczalną o 50 km/h na obszarze zabudowanym",
+            "B. kierowaniu pojazdem z prędkością przekraczającą dopuszczalną o więcej niż 50 km/h na obszarze zabudowanym",
+            "C. kierowaniu pojazdem z prędkością przekraczającą dopuszczalną o 50 km/h poza obszarem zabudowanym"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jakie dokumenty masz obowiązek mieć przy sobie i okazywać na żądanie uprawnionego organu podczas kontroli drogowej?",
+        options: [
+            "A. Krajowe prawo jazdy",
+            "B. Inny dokument stwierdzający uprawnienie do kierowania pojazdem niż wydane w kraju prawo jazdy",
+            "C. Świadectwo kwalifikacji"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jakie dokumenty masz obowiązek mieć przy sobie i okazywać na żądanie uprawnionego organu podczas kontroli drogowej?",
+        options: [
+            "A. Orzeczenie lekarskie, jeżeli wykonujesz zarobkowy przewóz osób",
+            "B. Pokwitowanie zatrzymania prawa jazdy w okresie, w którym upoważnia ono do kierowania",
+            "C. Orzeczenie psychologiczne"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Który z obowiązków dotyczy właściciela samochodu osobowego?",
+        options: [
+            "A. Poddawanie pojazdu okresowym badaniom technicznym",
+            "B. Zawarcie umowy ubezpieczenia NW",
+            "C. Zawarcie umowy ubezpieczenia Autocasco"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jak postąpi policjant, jeżeli podczas kontroli drogowej ujawni, że przekroczyłeś prędkość o więcej niż 50 km/h w obszarze zabudowanym, ale było to związane z ratowaniem ludzkiego życia?",
+        options: [
+            "A. Zatrzyma prawo jazdy",
+            "B. Pouczy i skieruje na egzamin kontrolny",
+            "C. Nie zatrzyma prawa jazdy"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764092683/28-13_xahis8.png",
+        q: "Którym z wymienionych zespołów pojazdów możesz kierować mając prawo jazdy kategorii B?",
+        options: [
+            "A. Samochodem ciężarowym o dopuszczalnej masie całkowitej 2,5 t z przyczepą lekką",
+            "B. Ciągnikiem rolniczym z dwiema przyczepami",
+            "C. Samochodem osobowym z przyczepą, których łączna dopuszczalna masa całkowita wynosi 4,5 t"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jakie dokumenty masz obowiązek mieć przy sobie i okazywać na żądanie uprawnionego organu, gdy na terytorium Rzeczypospolitej kierujesz pojazdem, który jest zarejestrowany za granicą?",
+        options: [
+            "A. Profesjonalny dowód rejestracyjny",
+            "B. Dowód opłacenia składki za obowiązkowe ubezpieczenie odpowiedzialności cywilnej",
+            "C. Dokument potwierdzający opłatę za korzystanie z autostrad i dróg ekspresowych"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Na jak długo pokwitowanie zatrzymania prawa jazdy za przekroczenie dozwolonej prędkości na obszarze zabudowanym o więcej niż 50 km/h uprawnia do kierowania pojazdem?",
+        options: [
+            "A. Przez okres 24 godzin od chwili zatrzymania prawa jazdy",
+            "B. Przez okres 7 dni od chwili zatrzymania prawa jazdy",
+            "C. Przez okres 72 godzin od chwili zatrzymania prawa jazdy"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Czy jako właściciel pojazdu masz obowiązek wskazać na żądanie uprawnionego organu, komu powierzyłeś pojazd do kierowania lub używania w określonym czasie?",
+        options: [
+            "A. Tak, chyba że jest to pojazd wykorzystywany do prowadzenia działalności gospodarczej",
+            "B. Tak, chyba że pojazd został użyty wbrew Twojej woli i wiedzy przez nieznaną osobę, czemu nie mogłeś zapobiec",
+            "C. Nie mam takiego obowiązku"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Czy wolno Ci nakleić na pojeździe znak określający inne państwo niż to, w którym pojazd został zarejestrowany?",
+        options: [
+            "A. Tak, bez żadnych ograniczeń",
+            "B. Tak, ale pod warunkiem, że pojazd posiada tablicę rejestracyjną z oznaczeniem PL",
+            "C. Nie, jest to zabronione"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jak może zareagować kontrolujący, jeżeli nie będziesz miał przy sobie prawa jazdy?",
+        options: [
+            "A. Uniemożliwić Ci dalszą jezdę i ukaże mandatem karnym za brak wymaganych dokumentów",
+            "B. Sprawdzi Twoje dane zgromadzone w Centralnej Ewidencji Kierowców",
+            "C. Ukarać mandatem karnym za brak wymaganych dokumentów"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "W której z wymienionych sytuacji potwierdzenie zatrzymania prawa jazdy uprawnia do kierowania pojazdem w ciągu 7 dni?",
+        options: [
+            "A. Gdy upłynął termin ważności prawa jazdy",
+            "B. W przypadku przekroczenia przez kierującego 24 punktów za naruszenie przepisów ruchu drogowego w okresie 5 lat od wydania skierowania na kurs reedukacyjny",
+            "C. Gdy wobec kierującego wydane zostało postanowienie o zatrzymaniu prawa jazdy"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Co grozi kierowcy, który samochodem ciężarowym przewozi o trzy osoby więcej od liczby miejsc wpisanej w dowodzie rejestracyjnym pojazdu?",
+        options: [
+            "A. Zatrzymanie prawa jazdy na okres 3 miesięcy",
+            "B. Zatrzymanie prawa jazdy na okres 3 miesięcy i kontrolne sprawdzenie kwalifikacji",
+            "C. Zatrzymanie prawa jazdy na okres 6 miesięcy"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764093763/28-42_raqgif.png",
+        q: "Czy międzynarodowe prawo jazdy może być wydane na okres dłuższy niż 3 lata?",
+        options: [
+            "A. Tak, jeżeli wynika to z orzeczenia lekarskiego",
+            "B. Tak, w każdym przypadku",
+            "C. Nie"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jakie konsekwencje grożą kierującemu za przekroczenie dozwolonej prędkości o więcej niż 50 km/h na obszarze zabudowanym, który będzie kierował pojazdem silnikowym mimo decyzji o zatrzymaniu prawa jazdy?",
+        options: [
+            "A. Starosta wyda decyzję administracyjną o przedłużeniu okresu, na który zatrzymano prawo jazdy do 6 miesięcy",
+            "B. starosta wyda decyzję administracyjną o przedłużeniu okresu, na który zatrzymano prawo jazdy o 6 miesięcy od chwili ujawnienia czynu",
+            "C. Starosta wyda decyzję administracyjną o przedłużeniu okresu, na który zatrzymano prawo jazdy do 1 roku"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764093763/28-42_raqgif.png",
+        q: "Czy w celu wydania międzynarodowego prawa jazdy powinieneś zgłosić się do wojewody?",
+        options: [
+            "A. Nie, takie prawo jazdy wydaje starosta",
+            "B. Tak, ale trzeba uiścić opłatę ewidencyjną",
+            "C. Tak w każdym przypadku"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jakie dokumenty masz obowiązek mieć przy sobie i okazywać na żądanie uprawnionego organu, gdy na terytorium Rzeczypospolitej kierujesz pojazdem, który jest zarejestrowany za granicą?",
+        options: [
+            "A. Dokument dopuszczający pojazd do ruchu",
+            "B. Dokument potwierdzający zawarcie umowy ubezpieczenia od nieszczęśliwych wypadków",
+            "C. Kopię zaświadczenia o przeprowadzonym badaniu technicznym"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Który z wymienionych dokumentów kierujący pojazdem zarejestrowanym na terytorium RP jest zobowiązany przy sobie mieć i okazywać na żądanie uprawnionego organu?",
+        options: [
+            "A. Krajowe prawo jazdy",
+            "B. Dowód rejestracyjny pojazdu",
+            "C. Dokument inny niż wydane w kraju prawo jazdy, który stwierdza uprawnienia do kierowania pojazdem"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Czy inspektor transportu drogowego podczas kontrolowania pojazdu, który wykonuje transport drogowy, ma prawo weryfikować dane o pojeździe w Centralnej Ewidencji Pojazdów?",
+        options: [
+            "A. Tak, w tym zakresie przysługują takie same prawa jak policji",
+            "B. Nie, takie uprawnienia posiada tylko policja",
+            "C. Nie, do weryfikacji danych o pojeździe w Centralnej Ewidencji Pojazdów uprawnione są tylko: policja, straż graniczna i służby celno-skarbowe"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764094656/28-60_lvlnyu.png",
+        q: "Czy prawo jazdy kat. B uprawnia do kierowania motorowerem lub czterokołowcem lekkim?",
+        options: [
+            "A. Tak, ale tylko poza obszarem zabudowanym",
+            "B. Tak",
+            "C. Nie"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Do czego służą światła pozycyjne pojazdu?",
+        options: [
+            "A. Do oświetlania drogi",
+            "B. Do określania pozucji pojazdu",
+            "C. Do sygnalizacji zmiany pasa ruchu"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Które z wymienionych działań należy podjąć, gdy w czasie jazdy zaświeci się na czerwono lampka kontrolna układu hamulcowego?",
+        options: [
+            "A. Zmniejszyć prędkość i czekać, aż lampka zgaśnie",
+            "B. Zatrzymać pojazd i sprawdzić poziom płynu hamulcowego",
+            "C. Kontynuować jazdę i zgłosić ten stan przy najbliższych badaniach okresowych pojazdu"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764096906/29-6_mlrap6.png",
+        q: "Która z wymienionych przyczyn spowoduje nieosiągnięcie przez silnik, o zapłonie samoczynnym, obrotów rozruchowych?",
+        options: [
+            "A. Niesprawny rozrusznik",
+            "B. Naładowany akumulator",
+            "C. Zbyt luźny pasek klinowy alternatora"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jaka jest dopuszczalna minimalna głębokość bieżnika w oponie niewyposażonej we wskaźnik granicznego jej zużycia?",
+        options: [
+            "A. 1,6 milimetra",
+            "B. 2,6 milimetra",
+            "C. 3 milimetry"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764097156/29-16_gwu6fc.png",
+        q: "Jaką funkcję spełnia system przeciwblokujący (ABS)?",
+        options: [
+            "A. Skraca drogę hamowania w każdych warunkach",
+            "B. Zapobiega zerwaniu przyczepności opon podczas przyspieszania",
+            "C. Ułatwia omijanie przeszkód w czasie hamowania"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Którą z czynności należy wykonać, gdy działający system ABS wypycha w czasie hamowania pedał hamulca?",
+        options: [
+            "A. Utrzymać siłę nacisku na pedał hamulca",
+            "B. Zmniejszyć siłę nacisku na pedał hamulca",
+            "C. Zwolnić pedał hamulca"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764097367/29-25_sc6v0e.png",
+        q: "W którym z wymienionych przypadków, masz obowiązek wymienić oponę na nową w samochodzie osobowym?",
+        options: [
+            "A. Gdy uszkodzony jest zawór powietrza",
+            "B. Gdy w czole opony znajduje się cienki gwóźdź",
+            "C. Gdy na boku opony są widoczne odkształcenia"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764097529/29-37_pzptr8.png",
+        q: "Jakiej metody hamowania użyjesz, w przypadku awarii ABS-u na śliskiej nawierzchni?",
+        options: [
+            "A. Hamowania pulsacyjnego",
+            "B. Wciśnięcia pedału hamulca do oporu",
+            "C. Zaciągnięcia hamulca ręcznego"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Która z wymienionych usterek, uniemożliwia bezpieczne używanie samochodu w ruchu drogowym?",
+        options: [
+            "A. Zanieczyszczony wkład filtra powietrza",
+            "B. Przegrzewające się elektrody świec zapłonowych",
+            "C. Przepalona żarówka tylnego lewego kierunkowskazu"
+        ],
+        correctIndex: 2
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764097780/29-39_r9f4cw.png",
+        q: "O czym świadczy skok pedału hamulca do dołu, gdy po jego wciśnięciu uruchomisz silnik pojazdu?",
+        options: [
+            "A. O działaniu wspomagania układu hamulcowego",
+            "B. O wysokim poziomie płynu hamulcowego w zbiorniku wyrównawczym",
+            "C. O działaniu układu przeciwblokującego (ABS)"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Który z wymienionych przypadków może świadczyć o złym stanie technicznym samochodu osobowego?",
+        options: [
+            "A. Emisja czarnych lub niebieskich gęstych spalin",
+            "B. Emisja bezbarwnych spalin",
+            "C. Zaświecenie się na czerwono lampki kontrolnej ciśnienia oleju silnikowego przed urochomieniem silnika"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764098010/29-43_qknyff.png",
+        q: "Który z wymienionych skutków może zostać wywołany przez kontynuowanie jazdy przy świecącej się na czerwono lampce kontrolnej ciśnienia oleju silnikowego?",
+        options: [
+            "A. Poważne uszkodzenie silnika",
+            "B. Uszkodzenie hamulców",
+            "C. Uszkodzenie mechanizmów przeniesienia napędu"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Do czego może doprowadzić zbyt mocne hamowanie samochodu osobowego niewyposażonego w system ABS?",
+        options: [
+            "A. Do skrócenia o co najmniej połowę drogi hamowania",
+            "B. Do utraty sterowności",
+            "C. Do zniszczenia hamulców"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Który ze sposobów hamowania samochodu osobowego wyposażonego w system ABS jest najbardziej efektywny?",
+        options: [
+            "A. Pulsacyjne wciskanie pedału hamulca",
+            "B. Szybkie i mocne wciśnięcie pedału hamulca",
+            "C. Wciśnięcie pedału sprzęgła, a następnie pedału hamulca"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764098262/29-53_kktka1.png",
+        q: "Który z wymienionych czynników, może spowodować szybsze zużywanie się opon na kołach przednich w samochodzie osobowym?",
+        options: [
+            "A. Niewielkie obciążenie przedniej osi pojazdu",
+            "B. Nieprawidłowa zbieżność",
+            "C. Nierówna nawierzchnia jezdni"
+        ],
+        correctIndex: 1
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Kiedy powinieneś sprawdzać ciśnienie w ogumieniu samochodu osobowego?",
+        options: [
+            "A. Bezpośrednio przed rozpoczęciem podróży",
+            "B. Po zakończeniu jazdy",
+            "C. Co najmniej dobę przed zaplanowaną podróżą"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764098416/29-61_da4ano.png",
+        q: "Czym może być spowodowany nadmierny luz (ruch jałowy) koła kierownicy samochodu?",
+        options: [
+            "A. Zużyciem przegubów (końcówek) drążków kierowniczych",
+            "B. Zużyciem opon",
+            "C. Niewyważeniem kół kierowanych"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764098517/30-9_byltq6.png",
+        q: "Jak należy prawidłowo rozpocząć resuscytację krążeniowo-oddechową małego dziecka (przedszkolaka), u którego doszło do nagłego zatrzymania krążenia, prowadzoną przez jednego ratownika?",
+        options: [
+            "A. 5 wdechów wstępnych, następnie 30 uciśnięć i 2 wdechy",
+            "B. 15 uciśnięć i następnie 2 wdechy",
+            "C. 30 uciśnięć i następnie 2 wdechy"
+        ],
+        correctIndex: 0
+    },
+    {
+        img: "https://res.cloudinary.com/diljpkw9f/image/upload/v1764013535/bez_wdkbts.png",
+        q: "Jak należy postąpić z poszkodowanym w wypadku drogowym, znajdującym się w pojeździe?",
+        options: [
+            "A. Należy go ewakuować z pojazdu - w każdym przypadku",
+            "B. Należy go ewakuować z pojazdu - w przypadku stwierdzenia u niego zatrzymania akcji serca",
+            "C. Należy go zawsze pozostawić w pojeździe - do czasu przybycia lekarza"
+        ],
+        correctIndex: 1
+    }
+];
+
+let shuffledQuestions = [];
+let index = 0;
+let lives = 9;
+let points = 0;
+let answering = true;
+
+const imgEl = document.getElementById("image");
+const qEl = document.getElementById("question");
+const livesEl = document.getElementById("lives");
+const pointsEl = document.getElementById("points");
+const counterEl = document.getElementById("counter");
+const endScreen = document.getElementById("endScreen");
+
+const aBtn = document.getElementById("aBtn");
+const bBtn = document.getElementById("bBtn");
+const cBtn = document.getElementById("cBtn");
+
+function updateCounter() {
+    counterEl.textContent = `Pytanie ${index+1} / ${shuffledQuestions.length}`;
+}
+
+function startGame() {
+    lives = 9;
+    points = 0;
+    index = 0;
+    answering = true;
+
+    endScreen.innerHTML = "";
+
+    [aBtn, bBtn, cBtn].forEach(btn => btn.style.display = "block");
+
+    livesEl.textContent = lives;
+    pointsEl.textContent = points;
+
+    shuffledQuestions = [...questions].sort(() => Math.random() - 0.5);
+    loadQuestion();
+}
+
+function loadQuestion() {
+    const q = shuffledQuestions[index];
+
+    imgEl.src = q.img;
+    qEl.textContent = q.q;
+
+    aBtn.textContent = q.options[0];
+    bBtn.textContent = q.options[1];
+    cBtn.textContent = q.options[2];
+
+    [aBtn, bBtn, cBtn].forEach(btn => btn.classList.remove("correct", "wrong"));
+
+    updateCounter();
+    answering = true;
+}
+
+function checkAnswer(choiceIndex) {
+    if (!answering) return;
+    answering = false;
+
+    const correct = shuffledQuestions[index].correctIndex;
+
+    const buttons = [aBtn, bBtn, cBtn];
+
+    if (choiceIndex === correct) {
+        points++;
+        pointsEl.textContent = points;
+        buttons[choiceIndex].classList.add("correct");
+        setTimeout(nextQuestion, 800);
+    } else {
+        lives--;
+        livesEl.textContent = lives;
+
+        buttons[choiceIndex].classList.add("wrong");
+        buttons[correct].classList.add("correct");
+
+        setTimeout(() => {
+            if (lives === 0) return loseGame();
+            nextQuestion();
+        }, 2500);
+    }
+}
+
+function nextQuestion() {
+    index++;
+    if (index >= shuffledQuestions.length) {
+        winGame();
+        return;
+    }
+    loadQuestion();
+}
+
+function loseGame() {
+    [aBtn, bBtn, cBtn].forEach(btn => btn.style.display = "none");
+    endScreen.innerHTML = `Przegrałeś<br><button id="restart" onclick="startGame()">Nowa Gra</button>`;
+}
+
+function winGame() {
+    [aBtn, bBtn, cBtn].forEach(btn => btn.style.display = "none");
+    endScreen.innerHTML = `Wygrałeś!<br><button id="restart" onclick="startGame()">Nowa Gra</button>`;
+}
+
+aBtn.onclick = () => checkAnswer(0);
+bBtn.onclick = () => checkAnswer(1);
+cBtn.onclick = () => checkAnswer(2);
+
+startGame();
+</script>
+
+</body>
+</html>
