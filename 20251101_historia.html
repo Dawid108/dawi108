@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiz Historyczny XIX wiek</title>
+<title>Test z Historii</title>
 <style>
     body {
         background: linear-gradient(135deg, #1e3c72, #2a5298);
@@ -72,7 +72,7 @@
 </head>
 <body>
 <div class="container">
-    <h1>Quiz Historyczny XIX wieku</h1>
+    <h1>Test z Historii </h1>
     <div id="quiz-area">
         <div class="question" id="question"></div>
         <div class="answers" id="answers"></div>
@@ -86,71 +86,85 @@
 <script>
 // ===================== DANE PYTAŃ =======================
 const questions = [
-    {q:"Kto chciał stworzyć społeczeństwo bezklasowe?", a:["Adam Smith","Karol Marks","Napoleon Bonaparte","Winston Churchill"], correct:1},
-    {q:"Kto jest twórcą teorii ewolucji?", a:["Karol Marks","Karol Darwin","Isaac Newton","Albert Einstein"], correct:1},
-    {q:"Kto była pierwszą kobietą profesorem?", a:["Emilia Plater","Maria Konopnicka","Maria Skłodowska-Curie","Eliza Orzeszkowa"], correct:2},
-    {q:"Czym zajmowała się Maria Skłodowska-Curie?", a:["Prawami człowieka","Promieniotwórczością","Astronomią","Literaturą"], correct:1},
-    {q:"Kto był twórcą teorii względności?", a:["Albert Einstein","Karol Darwin","Karol Marks","Nikola Tesla"], correct:0},
-    {q:"Jak nazywał się ruch kobiet walczących o prawa wyborcze?", a:["Rewolucja przemysłowa","Emancypacja","Demokracja","Kolonializm"], correct:1},
-    {q:"Jak nazywał się kanał skracający drogę do Indii?", a:["Kanał Panamski","Kanał La Manche","Kanał Sueski","Kanał Beringa"], correct:2},
-    {q:"Co łączy Kanał Sueski?", a:["Ocean Atlantycki z Oceanem Spokojnym","Morze Śródziemne z Morzem Czerwonym","Morze Północne z Bałtykiem","Morze Kaspijskie z Czarnym"], correct:1},
-    {q:"Które państwo miało najwięcej kolonii?", a:["Francja","Niemcy","Wielka Brytania","Hiszpania"], correct:2},
-    {q:"Między jakimi państwami toczyły się wojny opiumowe?", a:["Wielka Brytania i Chiny","Francja i Indie","Niemcy i Japonia","USA i Meksyk"], correct:0},
-    {q:"Czym zasłynął Henry Ford?", a:["Odkryciem elektryczności","Budową kanałów","Wprowadzeniem taśmy produkcyjnej","Wynalezieniem radia"], correct:2},
-    {q:"Między jakimi państwami toczyła się wojna krymska?", a:["Francja i Niemcy","Rosja i Turcja","Wielka Brytania i USA","Austria i Włochy"], correct:1},
-    {q:"Kto wygrał wojnę krymską?", a:["Rosja","Turcja i jej sojusznicy","Austria","Prusy"], correct:1},
-    {q:"Kto brał udział w zjednoczeniu Włoch?", a:["Napoleon, Ludwik XIV, Stalin","Garibaldi, Cavour, Wiktor Emanuel II","Lincoln, Washington, Roosevelt","Darwin, Marks, Einstein"], correct:1},
-    {q:"W którym roku zjednoczono Niemcy?", a:["1848","1863","1871","1888"], correct:2},
-    {q:"Kto był kanclerzem Niemiec podczas zjednoczenia?", a:["Otto von Bismarck","Wilhelm II","Adolf Hitler","Camillo Cavour"], correct:0},
-    {q:"Pod jakim berłem dokonano zjednoczenia Niemiec?", a:["Austrii","Prus","Francji","Rosji"], correct:1},
-    {q:"Kto został cesarzem po zjednoczeniu Niemiec?", a:["Napoleon III","Wilhelm I Hohenzollern","Fryderyk II","Karol Wielki"], correct:1},
-    {q:"Co utraciła Francja po wojnie z Prusami?", a:["Korsykę","Alzację i Lotaryngię","Bretanię","Normandię"], correct:1},
-    {q:"Kiedy toczyła się wojna prusko-francuska?", a:["1866–1868","1870–1871","1880–1882","1850–1851"], correct:1},
-    {q:"Kto przegrał wojnę prusko-francuską?", a:["Prusy","Francja","Rosja","Austria"], correct:1},
-    {q:"Gdzie proklamowano zjednoczenie Niemiec?", a:["W Berlinie","W Wersalu","W Rzymie","W Londynie"], correct:1},
-    {q:"Co ogłoszono po zjednoczeniu Niemiec?", a:["Powstanie III Rzeszy","Powstanie II Rzeszy","Związek Północnoniemiecki","Cesarstwo Austriackie"], correct:1},
-    {q:"Kto był prezydentem USA w czasie wojny secesyjnej?", a:["George Washington","Abraham Lincoln","Theodore Roosevelt","Andrew Johnson"], correct:1},
-    {q:"Między kim toczyła się wojna secesyjna?", a:["Północą (Unią) a Południem (Konfederacją)","USA a Meksykiem","Anglią a Francją","Kanadą a USA"], correct:0},
-    {q:"Co to był abolicjonizm?", a:["Ruch przeciwko niewolnictwu","Ruch kobiet","Kolonializm","Reformacja"], correct:0},
-    {q:"W jakich latach toczyła się wojna secesyjna?", a:["1848–1850","1861–1865","1871–1875","1855–1859"], correct:1},
-    {q:"Kto zniósł niewolnictwo w USA?", a:["Franklin D. Roosevelt","Thomas Jefferson","Abraham Lincoln","George Washington"], correct:2},
-    {q:"Dlaczego na południu USA istniało niewolnictwo?", a:["Rozwinięty przemysł","Plantacje bawełny","Religia","Brak ziemi"], correct:1},
-    {q:"Co to znaczy 'Migracja za chlebem'?", a:["Wyjazd w celach wojennych","Emigracja zarobkowa","Kolonializm","Wojna o ziemię"], correct:1},
-    {q:"'Perłą w koronie Brytyjskiej' nazywano:", a:["Kanadę","Australię","Indie","Egipt"], correct:2},
-    {q:"Co sprowadzano z Indii?", a:["Kawę i kakao","Herbatę i przyprawy","Złoto i ropę","Samochody"], correct:1},
-    {q:"Kto dołączył do walki o kolonie pod koniec XIX wieku?", a:["USA, Japonia i Niemcy","Austria i Belgia","Polska i Grecja","Szwajcaria i Norwegia"], correct:0},
-    {q:"Co to jest opium?", a:["Metal","Narkotyk","Przyprawa","Broń"], correct:1},
-    {q:"Kto wygrał wojnę opiumową?", a:["Chiny","Japonia","Wielka Brytania","Indie"], correct:2},
-    {q:"Autorem 'Kapitału' był:", a:["Karol Marks","Karol Darwin","Fryderyk Engels","Otto von Bismarck"], correct:0},
-    {q:"Papież Leon XIII był związany z:", a:["Rewolucją przemysłową","Ruchem narodowym i encykliką społeczną","Zjednoczeniem Niemiec","Kolonializmem"], correct:1},
-    {q:"Kto wynalazł szczepionkę przeciwko wściekliźnie?", a:["Albert Einstein","Louis Pasteur","Karol Darwin","Isaac Newton"], correct:1},
-    {q:"Jaką ideę propagowała Rosja?", a:["Liberalizmu","Socjalizmu","Panslawizmu","Konserwatyzmu"], correct:2},
-    {q:"Co to była idea Panslawizmu?", a:["Wszyscy Europejczycy powinni się zjednoczyć","Słowianie powinni zjednoczyć się pod berłem Cara","Każdy kraj powinien być niezależny","Zjednoczenie narodów pod rządami Francji"], correct:1},
-    {q:"Carem Rosji był?", a:["Aleksander II","Mikołaj I","Piotr Wielki","Mikołaj II"], correct:1},
-    {q:"Dlaczego Turcja wypowiedziała wojnę?", a:["Chciała zdobyć Krym","Nie zgadzała się z żądaniami Mikołaja I dotyczącymi ochrony prawosławia","Zaatakowała ją Rosja bez powodu","Broniła Francji"], correct:1},
-    {q:"Czym zakończyła się wojna krymska?", a:["Klęską Francji","Rozejmem w Moskwie","Traktatem paryskim","Układem berlińskim"], correct:2},
-    {q:"Kiedy zawarto traktat paryski?", a:["1848","1856","1861","1870"], correct:1},
-    {q:"Co najbardziej przyczyniło się do zjednoczenia Włoch?", a:["Cesarstwo Austrii","Państwo Kościelne","Królestwo Piemontu","Francja"], correct:2},
-    {q:"Co w 1861 roku ogłosił ogólnowłoski parlament?", a:["Powstanie Republiki Włoskiej","Powstanie Królestwa Włoch","Upadek Austrii","Unifikację Niemiec"], correct:1},
-    {q:"Skąd wzięła się nazwa „Czerwonych Koszul”?", a:["Od flagi narodowej","Od barw Rzymu","Od czerwonych koszul uczestników oddziału Garibaldiego","Od koloru mundurów armii włoskiej"], correct:2},
-    {q:"Czego dotyczyła Depesza Emska?", a:["Rozmowy króla Wilhelma I z francuskim ambasadorem","Paktu wojskowego Niemiec z Francją","Planów zjednoczenia Włoch","Sprawy wojny krymskiej"], correct:0},
-    {q:"Kto reprezentował system dwupartyjny w USA?", a:["Demokraci i Republikanie","Socjaliści i Komuniści","Konserwatyści i Liberałowie","Unia i Konfederacja"], correct:0},
-    {q:"Na czym polegała Doktryna Monroego?", a:["Europa powinna kolonizować Amerykę","Europa nie powinna ingerować w sprawy Ameryk","USA nie mogą handlować z Europą","Ameryka powinna wejść do Unii Europejskiej"], correct:1},
-    {q:"Gdzie wynaleziono lek na malarię?", a:["W Indiach","W Chinach","W Egipcie","W Anglii"], correct:1},
-    {q:"Najważniejsze imperium kolonialne w Azji to?", a:["Francja","Niemcy","Wielka Brytania","Rosja"], correct:2},
-    {q:"Jaka była nowa klasa społeczna?", a:["Arystokracja","Duchowieństwo","Robotnicy","Chłopi"], correct:2},
-    {q:"Co proponował Ruch Chrześcijański – Hadecja?", a:["Rewolucję robotniczą","Porozumienie między kapitalistami a robotnikami","Wojnę klas","Nacjonalizację fabryk"], correct:1},
-    {q:"Co to nacjonalizm?", a:["Przekonanie o wyższości własnego narodu","Dążenie do równości społecznej","Sprzeciw wobec kolonializmu","Wiara w braterstwo narodów"], correct:0},
-    {q:"Co to antysemityzm?", a:["Tolerancja wobec Żydów","Wrogość wobec Żydów","Poparcie dla religii żydowskiej","Współpraca z Żydami"], correct:1},
-    {q:"Co wynalazł Ignacy Łukasiewicz?", a:["Silnik parowy","Telefon","Lampę naftową","Samolot"], correct:2},
-    {q:"Kto wynalazł samochód z silnikiem benzynowym?", a:["Gie Daimler i Karol Benz","Thomas Edison","Rudolf Diesel","Henry Ford"], correct:0},
-    {q:"Jakie były style w malarstwie?", a:["Barok, rokoko, gotyk","Impresjonizm, realizm, kubizm","Klasycyzm, renesans, romantyzm","Surrealizm, gotyk, renesans"], correct:1},
-    {q:"Co reprezentowało kulturę masową?", a:["Teatr i opera","Prasa, kino, radio","Literatura i filozofia","Polityka i religia"], correct:1},
-    {q:"Kiedy kobiety dostały prawa wyborcze w Polsce?", a:["1914","1918","1921","1939"], correct:1},
-    {q:"Jaki mundur mieli żołnierze Unii (USA)?", a:["Czerwony","Ciemno Niebieski","Szary","Zielony"], correct:1},
-    {q:"Czym była doktryna Monroego?", a:["Polityką izolacjonizmu USA wobec Europy","Sojuszem militarnym USA i Francji","Programem reform społecznych w USA","Doktryną wojny totalnej"], correct:0},
-    {q:"Jaki kanał skrócił drogę do Indii?", a:["Kanał Panamski","Kanał Kiloński","Kanał Sueski","Kanał La Manche"], correct:2},
-    {q:"Co to teoria względności?", a:["Teoria budowy atomu","Teoria ewolucji","Teoria Alberta Einsteina o czasie i przestrzeni","Teoria powstania życia na Ziemi"], correct:2}
+{q:"W której połowie XIX wieku kształtowały się stronnictwa białych i czerwonych?", a:["W pierwszej połowie XIX w.","W drugiej połowie XIX w.","Na początku XVIII w.","Na początku XX w."], correct:1},
+
+{q:"Kto był zwolennikiem legalnej działalności i kompromisu z zaborcą?", a:["Czerwoni","Biali","Zieloni","Rząd Narodowy"], correct:1},
+
+{q:"Kim byli biali?", a:["Zwolennikami powstania zbrojnego","Zwolennikami germanizacji","Zwolennikami legalnej działalności i kompromisu","Polską armią podziemną"], correct:2},
+
+{q:"Co głosili czerwoni?", a:["Potrzebę pracy organicznej","Hasło do zbrojnego powstania","Polonizację administracji","Lojalność wobec Austrii"], correct:1},
+
+{q:"W jakich miastach odbywały się patriotyczne manifestacje w latach 60.?", a:["Tylko w Krakowie","Tylko w Poznaniu","W Warszawie i miastach Królestwa Polskiego","Wyłącznie na wsi"], correct:2},
+
+{q:"W którym roku użyto wojska rosyjskiego do rozpędzenia manifestacji?", a:["1855","1861","1863","1864"], correct:1},
+
+{q:"Kogo car mianował dyrektorem Komisji Wyznań i Oświecenia Publicznego?", a:["Romualda Traugutta","Mariana Langiewicza","Aleksandra Wielopolskiego","Ludwika Mierosławskiego"], correct:2},
+
+{q:"Co NIE było zasługą Aleksandra Wielopolskiego?", a:["Utworzenie Szkoły Głównej Warszawskiej","Polonizacja administracji","Organizacja tajnego nauczania","Reformy dotyczące chłopów i Żydów"], correct:2},
+
+{q:"Co przyspieszyło wybuch Powstania Styczniowego?", a:["Rugowanie Polaków z Prus","Branka","Wprowadzenie języka polskiego do szkół","Podpisanie pokoju w Paryżu"], correct:1},
+
+{q:"Czym była branka?", a:["Podatkiem","Zakazem manifestacji","Przymusowym poborem do wojska","Nowym kodeksem prawnym"], correct:2},
+
+{q:"Kto ogłosił manifest wzywający do powstania?", a:["Biali","Rząd Austriacki","Tymczasowy Rząd Narodowy","Hakata"], correct:2},
+
+{q:"Jaki charakter miało Powstanie Styczniowe?", a:["Wojny dyplomatycznej","Wojny morskiej","Wojny partyzanckiej","Regularnej wojny frontowej"], correct:2},
+
+{q:"W co przekształcił się Tymczasowy Rząd Narodowy?", a:["Hakata","Sejm Krajowy","Rząd Narodowy","Centralna Rada Wojenna"], correct:2},
+
+{q:"Jakie państwa udzieliły pomocy powstańcom?", a:["Francja i Anglia","Austria i Niemcy","Turcja","Żadne państwo"], correct:3},
+
+{q:"Kto NIE był przywódcą powstania?", a:["Romuald Traugutt","Marian Langiewicz","Ludwik Mierosławski","Aleksander Wielopolski"], correct:3},
+
+{q:"W którym roku upadło Powstanie Styczniowe?", a:["1851","1864","1871","1901"], correct:1},
+
+{q:"Co otrzymali chłopi po powstaniu?", a:["Zwolnienie z podatków","Ziemię na własność bez odszkodowania","Rosyjskie obywatelstwo","Przywileje szlacheckie"], correct:1},
+
+{q:"Co zlikwidowano po upadku powstania?", a:["Królestwo Polskie","Senat","Sejm Wielki","Uniwersytet Wileński"], correct:0},
+
+{q:"Jak nazwano Królestwo Polskie po zmianach administracyjnych?", a:["Imperium Polskie","Kraj Przywiślański","Kraina Nadwiślańska","Królestwo Królewskie"], correct:1},
+
+{q:"Co stało się z Kościołem katolickim po powstaniu?", a:["Uniezależnił się od państwa","Został podporządkowany Petersburgowi","Otrzymał większe prawa","Przeniesiono go do Poznania"], correct:1},
+
+{q:"Jak Polacy walczyli o zachowanie polskości po powstaniu?", a:["Germanizując szkoły","Organizując tajne nauczanie","Tworząc powstania zbrojne","Oddając władzę Rosji"], correct:1},
+
+{q:"Jak nazywano okres silnej rusyfikacji szkolnictwa po powstaniu?", a:["Rugami pruskimi","Kulturkampfem","Nocą apuchtinowską","Nocą styczniową"], correct:2},
+
+{q:"Na jakiej idei opierała się praca organiczna?", a:["Walce militarnej","Bierności","Rozwoju edukacji, kultury i gospodarki","Współpracy z Prusami"], correct:2},
+
+{q:"W którym zaborze germanizacja była szczególnie silna po 1871 roku?", a:["Austriackim","Pruskim","Rosyjskim","Tureckim"], correct:1},
+
+{q:"Co było elementem polityki pruskiej przeciw Polakom?", a:["Branka","Hakata","Manifestacje patriotyczne","Powstanie listopadowe"], correct:1},
+
+{q:"Kto był inicjatorem budowy Bazaru w Poznaniu?", a:["Hipolit Cegielski","Aleksander Wielopolski","Karol Marcinkowski","Romuald Traugutt"], correct:2},
+
+{q:"Kim był Hipolit Cegielski?", a:["Lekarzem i społecznikiem","Przemysłowcem","Poetą","Działaczem Hakaty"], correct:1},
+
+{q:"W którym roku miał miejsce strajk dzieci we Wrześni?", a:["1867","1871","1901","1918"], correct:2},
+
+{q:"W którym zaborze Polacy mieli największą autonomię?", a:["Rosyjskim","Pruskim","Austriackim","Żadnym"], correct:2},
+
+{q:"Co sprzyjało rozwojowi nauki i kultury w Galicji?", a:["Germanizacja","Największa autonomia","Upadek Austrii","Polityka Hakaty"], correct:1},
+
+{q:"Kiedy powołano Sejm Krajowy we Lwowie?", a:["1871","1867","1864","1901"], correct:0},
+
+{q:"W którym roku powstała monarchia austro-węgierska?", a:["1901","1867","1850","1871"], correct:1},
+
+{q:"Co wprowadzono w Galicji w 1867 roku?", a:["Zakaz języka polskiego","Język polski jako język nauczania","Hakatę","Tajne nauczanie"], correct:1},
+
+{q:"Kto był premierem rządu wiedeńskiego?", a:["Aleksander Wielopolski","Marian Langiewicz","Kazimierz Badeni","Romuald Traugutt"], correct:2},
+
+{q:"Co było symbolem działalności Polaków w zaborze pruskim?", a:["Szkoła Główna Warszawska","Bazar w Poznaniu","Rząd Narodowy","Sejm Krajowy"], correct:1},
+
+{q:"Kto dowodził powstaniem jako ostatni przywódca?", a:["Langiewicz","Traugutt","Mierosławski","Badeni"], correct:1},
+
+{q:"Na co głównie stawiała praca organiczna?", a:["Walkę zbrojną","Rozwój gospodarczy i edukacyjny","Brankę","Germanizację"], correct:1},
+
+{q:"Które z poniższych było konsekwencją powstania?", a:["Powstanie monarchii austro-węgierskiej","Nadanie chłopom ziemi","Rugowanie Polaków z Prus","Powstanie Hakaty"], correct:1},
+
+{q:"Jakie represje stosowano wobec powstańców?", a:["Nagrody","Stypendia","Kary śmierci i zesłania","Zwolnienia z podatków"], correct:2},
+
+{q:"Co wprowadzono po likwidacji Królestwa Polskiego?", a:["Polskie sądy","Rosyjską administrację","Autonomię pełną","Wolność polityczną"], correct:1}
 ];
 
 // ===================== ZMIENNE =======================
@@ -190,13 +204,19 @@ function showQuestion() {
 
     const q = shuffled[currentIndex];
     questionEl.textContent = q.q;
+
+    // ==== LOSOWANIE ODPOWIEDZI ====
+    let answerOptions = q.a.map((text, index) => ({ text, index }));
+    answerOptions = shuffleArray(answerOptions);
+
     answersEl.innerHTML = "";
-    q.a.forEach((ans, i) => {
+    answerOptions.forEach(ans => {
         const btn = document.createElement("button");
-        btn.textContent = ans;
-        btn.onclick = () => checkAnswer(i, q.correct);
+        btn.textContent = ans.text;
+        btn.onclick = () => checkAnswer(ans.index, q.correct);
         answersEl.appendChild(btn);
     });
+
     progressEl.textContent = `Pytanie ${currentIndex + 1} / ${shuffled.length}`;
     livesEl.textContent = `Życia: ${"❤️".repeat(lives)}`;
 }
