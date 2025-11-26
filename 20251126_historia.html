@@ -1,26 +1,262 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test z Historii</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background: #000;
-            display: flex;
-            justify-content: center;
-        }
-
-        img {
-            display: block;
-            max-width: 100%;
-            height: auto;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test z Historii</title>
+<style>
+    body {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        font-family: 'Segoe UI', sans-serif;
+        color: #fff;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 700px;
+        background: rgba(0,0,0,0.3);
+        padding: 30px;
+        margin: 60px auto;
+        border-radius: 20px;
+        box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    }
+    h1 {
+        margin-bottom: 20px;
+        font-size: 32px;
+        letter-spacing: 1px;
+    }
+    .question {
+        font-size: 20px;
+        margin-bottom: 25px;
+    }
+    .answers button {
+        display: block;
+        width: 100%;
+        background: #ffffff22;
+        border: 2px solid #fff;
+        color: #fff;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+    }
+    .answers button:hover {
+        background: #ffffff44;
+    }
+    .info {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+    .result {
+        font-size: 28px;
+        margin: 25px 0;
+        font-weight: bold;
+    }
+    #restart {
+        background: #00c853;
+        border: none;
+        padding: 15px 25px;
+        color: white;
+        border-radius: 10px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    #restart:hover {
+        background: #00e676;
+    }
+</style>
 </head>
 <body>
-    <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1764095863/malpa_huadbk.png" alt="obraz">
+<div class="container">
+    <h1>Test z Historii </h1>
+    <div id="quiz-area">
+        <div class="question" id="question"></div>
+        <div class="answers" id="answers"></div>
+        <div class="info" id="progress"></div>
+        <div class="info" id="lives"></div>
+    </div>
+    <div class="result" id="result"></div>
+    <button id="restart" style="display:none;">Zagraj ponownie</button>
+</div>
+
+<script>
+// ===================== DANE PYTAŃ =======================
+const questions = [
+{q:"W której połowie XIX wieku kształtowały się stronnictwa białych i czerwonych?", a:["W pierwszej połowie XIX w.","W drugiej połowie XIX w.","Na początku XVIII w.","Na początku XX w."], correct:1},
+
+{q:"Kto był zwolennikiem legalnej działalności i kompromisu z zaborcą?", a:["Czerwoni","Biali","Zieloni","Rząd Narodowy"], correct:1},
+
+{q:"Kim byli biali?", a:["Zwolennikami powstania zbrojnego","Zwolennikami germanizacji","Zwolennikami legalnej działalności i kompromisu","Polską armią podziemną"], correct:2},
+
+{q:"Co głosili czerwoni?", a:["Potrzebę pracy organicznej","Hasło do zbrojnego powstania","Polonizację administracji","Lojalność wobec Austrii"], correct:1},
+
+{q:"W jakich miastach odbywały się patriotyczne manifestacje w latach 60.?", a:["Tylko w Krakowie","Tylko w Poznaniu","W Warszawie i miastach Królestwa Polskiego","Wyłącznie na wsi"], correct:2},
+
+{q:"W którym roku użyto wojska rosyjskiego do rozpędzenia manifestacji?", a:["1855","1861","1863","1864"], correct:1},
+
+{q:"Kogo car mianował dyrektorem Komisji Wyznań i Oświecenia Publicznego?", a:["Romualda Traugutta","Mariana Langiewicza","Aleksandra Wielopolskiego","Ludwika Mierosławskiego"], correct:2},
+
+{q:"Co NIE było zasługą Aleksandra Wielopolskiego?", a:["Utworzenie Szkoły Głównej Warszawskiej","Polonizacja administracji","Organizacja tajnego nauczania","Reformy dotyczące chłopów i Żydów"], correct:2},
+
+{q:"Co przyspieszyło wybuch Powstania Styczniowego?", a:["Rugowanie Polaków z Prus","Branka","Wprowadzenie języka polskiego do szkół","Podpisanie pokoju w Paryżu"], correct:1},
+
+{q:"Czym była branka?", a:["Podatkiem","Zakazem manifestacji","Przymusowym poborem do wojska","Nowym kodeksem prawnym"], correct:2},
+
+{q:"Kto ogłosił manifest wzywający do powstania?", a:["Biali","Rząd Austriacki","Tymczasowy Rząd Narodowy","Hakata"], correct:2},
+
+{q:"Jaki charakter miało Powstanie Styczniowe?", a:["Wojny dyplomatycznej","Wojny morskiej","Wojny partyzanckiej","Regularnej wojny frontowej"], correct:2},
+
+{q:"W co przekształcił się Tymczasowy Rząd Narodowy?", a:["Hakata","Sejm Krajowy","Rząd Narodowy","Centralna Rada Wojenna"], correct:2},
+
+{q:"Jakie państwa udzieliły pomocy powstańcom?", a:["Francja i Anglia","Austria i Niemcy","Turcja","Żadne państwo"], correct:3},
+
+{q:"Kto NIE był przywódcą powstania?", a:["Romuald Traugutt","Marian Langiewicz","Ludwik Mierosławski","Aleksander Wielopolski"], correct:3},
+
+{q:"W którym roku upadło Powstanie Styczniowe?", a:["1851","1864","1871","1901"], correct:1},
+
+{q:"Co otrzymali chłopi po powstaniu?", a:["Zwolnienie z podatków","Ziemię na własność bez odszkodowania","Rosyjskie obywatelstwo","Przywileje szlacheckie"], correct:1},
+
+{q:"Co zlikwidowano po upadku powstania?", a:["Królestwo Polskie","Senat","Sejm Wielki","Uniwersytet Wileński"], correct:0},
+
+{q:"Jak nazwano Królestwo Polskie po zmianach administracyjnych?", a:["Imperium Polskie","Kraj Przywiślański","Kraina Nadwiślańska","Królestwo Królewskie"], correct:1},
+
+{q:"Co stało się z Kościołem katolickim po powstaniu?", a:["Uniezależnił się od państwa","Został podporządkowany Petersburgowi","Otrzymał większe prawa","Przeniesiono go do Poznania"], correct:1},
+
+{q:"Jak Polacy walczyli o zachowanie polskości po powstaniu?", a:["Germanizując szkoły","Organizując tajne nauczanie","Tworząc powstania zbrojne","Oddając władzę Rosji"], correct:1},
+
+{q:"Jak nazywano okres silnej rusyfikacji szkolnictwa po powstaniu?", a:["Rugami pruskimi","Kulturkampfem","Nocą apuchtinowską","Nocą styczniową"], correct:2},
+
+{q:"Na jakiej idei opierała się praca organiczna?", a:["Walce militarnej","Bierności","Rozwoju edukacji, kultury i gospodarki","Współpracy z Prusami"], correct:2},
+
+{q:"W którym zaborze germanizacja była szczególnie silna po 1871 roku?", a:["Austriackim","Pruskim","Rosyjskim","Tureckim"], correct:1},
+
+{q:"Co było elementem polityki pruskiej przeciw Polakom?", a:["Branka","Hakata","Manifestacje patriotyczne","Powstanie listopadowe"], correct:1},
+
+{q:"Kto był inicjatorem budowy Bazaru w Poznaniu?", a:["Hipolit Cegielski","Aleksander Wielopolski","Karol Marcinkowski","Romuald Traugutt"], correct:2},
+
+{q:"Kim był Hipolit Cegielski?", a:["Lekarzem i społecznikiem","Przemysłowcem","Poetą","Działaczem Hakaty"], correct:1},
+
+{q:"W którym roku miał miejsce strajk dzieci we Wrześni?", a:["1867","1871","1901","1918"], correct:2},
+
+{q:"W którym zaborze Polacy mieli największą autonomię?", a:["Rosyjskim","Pruskim","Austriackim","Żadnym"], correct:2},
+
+{q:"Co sprzyjało rozwojowi nauki i kultury w Galicji?", a:["Germanizacja","Największa autonomia","Upadek Austrii","Polityka Hakaty"], correct:1},
+
+{q:"Kiedy powołano Sejm Krajowy we Lwowie?", a:["1871","1867","1864","1901"], correct:0},
+
+{q:"W którym roku powstała monarchia austro-węgierska?", a:["1901","1867","1850","1871"], correct:1},
+
+{q:"Co wprowadzono w Galicji w 1867 roku?", a:["Zakaz języka polskiego","Język polski jako język nauczania","Hakatę","Tajne nauczanie"], correct:1},
+
+{q:"Kto był premierem rządu wiedeńskiego?", a:["Aleksander Wielopolski","Marian Langiewicz","Kazimierz Badeni","Romuald Traugutt"], correct:2},
+
+{q:"Co było symbolem działalności Polaków w zaborze pruskim?", a:["Szkoła Główna Warszawska","Bazar w Poznaniu","Rząd Narodowy","Sejm Krajowy"], correct:1},
+
+{q:"Kto dowodził powstaniem jako ostatni przywódca?", a:["Langiewicz","Traugutt","Mierosławski","Badeni"], correct:1},
+
+{q:"Na co głównie stawiała praca organiczna?", a:["Walkę zbrojną","Rozwój gospodarczy i edukacyjny","Brankę","Germanizację"], correct:1},
+
+{q:"Które z poniższych było konsekwencją powstania?", a:["Powstanie monarchii austro-węgierskiej","Nadanie chłopom ziemi","Rugowanie Polaków z Prus","Powstanie Hakaty"], correct:1},
+
+{q:"Jakie represje stosowano wobec powstańców?", a:["Nagrody","Stypendia","Kary śmierci i zesłania","Zwolnienia z podatków"], correct:2},
+
+{q:"Co wprowadzono po likwidacji Królestwa Polskiego?", a:["Polskie sądy","Rosyjską administrację","Autonomię pełną","Wolność polityczną"], correct:1}
+];
+
+// ===================== ZMIENNE =======================
+let lives, currentIndex, shuffled, correctCount;
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const progressEl = document.getElementById("progress");
+const livesEl = document.getElementById("lives");
+const resultEl = document.getElementById("result");
+const restartBtn = document.getElementById("restart");
+
+// ===================== FUNKCJE =======================
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function startGame() {
+    lives = 3;
+    correctCount = 0;
+    currentIndex = 0;
+    shuffled = shuffleArray([...questions]);
+    resultEl.textContent = "";
+    restartBtn.style.display = "none";
+    showQuestion();
+}
+
+function showQuestion() {
+    if (currentIndex >= shuffled.length) {
+        resultEl.textContent = "🎉 Wygrałeś!";
+        restartBtn.style.display = "inline-block";
+        questionEl.textContent = "";
+        answersEl.innerHTML = "";
+        progressEl.textContent = "";
+        livesEl.textContent = "";
+        return;
+    }
+
+    const q = shuffled[currentIndex];
+    questionEl.textContent = q.q;
+
+    // ==== LOSOWANIE ODPOWIEDZI ====
+    let answerOptions = q.a.map((text, index) => ({ text, index }));
+    answerOptions = shuffleArray(answerOptions);
+
+    answersEl.innerHTML = "";
+    answerOptions.forEach(ans => {
+        const btn = document.createElement("button");
+        btn.textContent = ans.text;
+        btn.onclick = () => checkAnswer(ans.index, q.correct);
+        answersEl.appendChild(btn);
+    });
+
+    progressEl.textContent = `Pytanie ${currentIndex + 1} / ${shuffled.length}`;
+    livesEl.textContent = `Życia: ${"❤️".repeat(lives)}`;
+}
+
+function checkAnswer(selected, correctIndex) {
+    const q = shuffled[currentIndex];
+    if (selected === correctIndex) {
+        currentIndex++;
+        showQuestion();
+    } else {
+        lives--;
+        livesEl.textContent = `Życia: ${"❤️".repeat(lives)}`;
+        const correctAnswer = q.a[correctIndex];
+        questionEl.innerHTML = `❌ Zła odpowiedź!<br><br>✅ Poprawna to: <strong>${correctAnswer}</strong>`;
+        answersEl.innerHTML = "";
+        if (lives <= 0) {
+            setTimeout(gameOver, 3000);
+        } else {
+            setTimeout(() => {
+                currentIndex++;
+                showQuestion();
+            }, 3000);
+        }
+    }
+}
+
+function gameOver() {
+    resultEl.textContent = "💀 Przegrałeś!";
+    questionEl.textContent = "";
+    answersEl.innerHTML = "";
+    progressEl.textContent = "";
+    livesEl.textContent = "";
+    restartBtn.style.display = "inline-block";
+}
+
+// ===================== RESTART =======================
+restartBtn.onclick = startGame;
+
+// ===================== START PIERWSZY =======================
+startGame();
+</script>
 </body>
 </html>
