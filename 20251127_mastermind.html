@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mastermind – Python → HTML/JS</title>
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: #0a0f1c;
+        color: #ffffff;
+        line-height: 1.6;
+    }
+
+    h1, h2 {
+        text-align: center;
+        margin-top: 30px;
+        color: #4ea1ff;
+        font-weight: 600;
+    }
+
+    .section {
+        width: 90%;
+        max-width: 900px;
+        margin: 30px auto;
+        background: #111a2e;
+        padding: 20px 30px;
+        border-radius: 14px;
+        box-shadow: 0 0 15px #0009;
+    }
+
+    .game-row {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        margin: 8px 0;
+    }
+
+    .dot {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 2px solid #000;
+    }
+
+    pre {
+        background: #0d1117;
+        padding: 20px;
+        border-radius: 12px;
+        overflow-x: auto;
+        color: #d1d5da;
+        border: 1px solid #30363d;
+        font-size: 15px;
+    }
+
+    .explanation p {
+        margin-bottom: 10px;
+    }
+
+    .task {
+        background: #1a253a;
+        padding: 15px;
+        border-radius: 12px;
+        border-left: 5px solid #4ea1ff;
+        font-size: 17px;
+    }
+</style>
+</head>
+<body>
+
+
+<h1>Mastermind – Wynik z JavaScript</h1>
+
+<div class="section" id="js-output">
+    <h2>Przebieg gry (10 prób max)</h2>
+    <div id="board"></div>
+</div>
+
+
+<!-- ================= PYTHON KOD ================= -->
+
+<h1>Kod Pythona użyty w zadaniu</h1>
+
+<div class="section">
+<pre>
+import random
+import matplotlib.pyplot as plt
+
+# Dostępne kolory
+COLORS = ["zielony", "żółty", "czerwony", "niebieski"]
+
+# Losujemy poprawną sekwencję
+secret = [random.choice(COLORS) for _ in range(4)]
+
+print("=== MASTERMIND ===")
+print("Dostępne kolory: zielony, żółty, czerwony, niebieski")
+print("Odgadnij 4 kolory i ich kolejność. Masz 10 prób.\n")
+
+# Zapisy prób do późniejszego wykresu
+attempts = []
+feedback = []
+
+won = False
+
+for turn in range(1, 11):
+    print(f"Próba {turn}/10")
+
+    guess = input("Podaj 4 kolory oddzielone spacją: ").split()
+
+    # Validacja
+    if len(guess) != 4 or any(g not in COLORS for g in guess):
+        print("Błędne dane! Podaj dokładnie 4 poprawne kolory.\n")
+        continue
+
+    # Zapisujemy próbę
+    attempts.append(guess)
+
+    # Obliczamy poprawne miejsca
+    correct_positions = sum(secret[i] == guess[i] for i in range(4))
+    feedback.append(correct_positions)
+
+    if correct_positions == 4:
+        print("\n🎉 BRAWO! Odgadłeś wszystkie kolory i pozycje!")
+        won = True
+        break
+    else:
+        if correct_positions > 0:
+            print(f"Właściwy kolor na właściwym miejscu: {correct_positions}\n")
+        else:
+            print("Żaden kolor nie jest we właściwym miejscu.\n")
+
+
+print("\nPRAWIDŁOWA ODPOWIEDŹ:", secret)
+
+# =========================================
+#              GENEROWANIE WYKRESU
+# =========================================
+
+# Zamiana kolorów na barwy matplotlib
+color_map = {
+    "zielony": "green",
+    "żółty": "yellow",
+    "czerwony": "red",
+    "niebieski": "blue"
+}
+
+fig, ax = plt.subplots(figsize=(8, 10))
+ax.set_title("Przebieg gry Mastermind")
+
+# Rysowanie prób
+for i, attempt in enumerate(attempts):
+    for j, col in enumerate(attempt):
+        ax.scatter(j, -(i+1), s=600, color=color_map[col], edgecolors='black')
+
+# Podpisy osi
+ax.set_xlabel("Pozycja koloru (0–3)")
+ax.set_ylabel("Numer próby (od góry)")
+
+# Siatka i limity
+ax.set_xticks([0, 1, 2, 3])
+ax.set_yticks([-(i+1) for i in range(len(attempts))])
+ax.grid(True, alpha=0.4)
+
+# Odwrócenie osi Y aby próba 1 była na górze
+ax.set_ylim(-len(attempts)-1, 0)
+
+plt.show()
+</pre>
+</div>
+
+
+
+<!-- ================= WYJAŚNIENIA ================= -->
+
+<h1>Wyjaśnienie elementów kodu</h1>
+
+<div class="section explanation">
+
+<p><b>1. COLORS = [...]</b><br>
+Lista dostępnych kolorów. Z niej losujemy rozwiązanie.</p>
+
+<p><b>2. secret = [...]</b><br>
+Tworzy losową sekwencję 4 kolorów — to główna tajemnica gry.</p>
+
+<p><b>3. attempts = []</b><br>
+Tutaj zapisujemy wszystkie próby użytkownika, aby później pokazać je na wykresie.</p>
+
+<p><b>4. correct = sum(secret[i] == guess[i] ...)</b><br>
+Liczy ile kolorów użytkownik trafił na właściwej pozycji.</p>
+
+<p><b>5. feedback.append(correct)</b><br>
+Zapisujemy informację o liczbie trafień — potem używane do analizy wyników.</p>
+
+<p><b>6. matplotlib</b><br>
+W Pythonie generuje kolorową planszę pokazującą każdą próbę.</p>
+
+</div>
+
+
+
+<!-- ================= TREŚĆ ZADANIA ================= -->
+
+<h1>Treść zadania</h1>
+
+<div class="section task">
+Stwórz program imitujacy gre mastermind polegajacy na odgadnieciu 4 kolorów i ich pozycji obok siebie w 10 próbach.
+
+Kolory to zielony, żółty, czerwony, niebieski, a stosowne komunikaty to Własciwy kolor na własciwym miejscu: (tutaj podać ilość dobrych)" lub "żaden kolor nie jest we właściwym miejscu". Gra jest całkowicie losowa i każdorazowo inna. Użytkownik nie widzi prawidłowego rozwiazania dopóki nie odgadnie kolejnosci. Na koniec gry, czyli po 10 nieudanych próbach generowana jest plansza matplotlib z przebiegiem całej gry niezaleznie od tego czy wygrałeś czy przegrałeś. Plansza ma odzwierciedlać zarówno kolory jak i ilość prób.
+</div>
+
+
+
+
+<!-- ================= JAVASCRIPT – WERSJA MASTERMINDA ================= -->
+
+<script>
+const COLORS = ["zielony", "żółty", "czerwony", "niebieski"];
+const COLOR_MAP = {
+    "zielony": "green",
+    "żółty": "yellow",
+    "czerwony": "red",
+    "niebieski": "blue"
+};
+
+// Losowanie tajnej sekwencji
+const secret = Array.from({length: 4}, () => COLORS[Math.floor(Math.random() * COLORS.length)]);
+
+let attempts = [];
+let feedback = [];
+
+function calculateCorrectPositions(guess) {
+    return guess.filter((col, i) => col === secret[i]).length;
+}
+
+// Generowanie 10 prób w JS (symulacja jak w Pythonie)
+for (let i = 0; i < 10; i++) {
+
+    // Losowa próba — JavaScript nie ma input(), więc symulujemy
+    let guess = Array.from({length: 4}, () => COLORS[Math.floor(Math.random() * COLORS.length)]);
+    attempts.push(guess);
+
+    let correct = calculateCorrectPositions(guess);
+    feedback.push(correct);
+}
+
+// Renderowanie planszy
+const board = document.getElementById("board");
+
+attempts.forEach((attempt, index) => {
+    const row = document.createElement("div");
+    row.className = "game-row";
+
+    attempt.forEach(color => {
+        const dot = document.createElement("div");
+        dot.className = "dot";
+        dot.style.background = COLOR_MAP[color];
+        row.appendChild(dot);
+    });
+
+    const info = document.createElement("span");
+    info.textContent = " → Trafienia: " + feedback[index];
+    info.style.marginLeft = "10px";
+    info.style.fontSize = "17px";
+
+    row.appendChild(info);
+    board.appendChild(row);
+});
+
+console.log("Tajne rozwiązanie:", secret);
+</script>
+
+</body>
+</html>
