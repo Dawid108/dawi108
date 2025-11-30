@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mowa zależna — gra</title>
+  <style>
+    :root{ --bg:#0f1724; --card:#0b1220; --accent:#60a5fa; --ok:#10b981; --bad:#ef4444; color-scheme: dark; }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; background:linear-gradient(180deg,#071028 0%,#0f1b2b 100%); color:#e6eef8; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px}
+    .wrap{width:100%;max-width:760px;background:var(--card);border-radius:12px;padding:28px;box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+    h1{margin:0 0 8px;font-size:20px}
+    p.lead{margin:0 0 18px;color:#9fb0d6}
+    .game{display:grid;grid-template-columns:1fr 320px;gap:18px}
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);padding:18px;border-radius:10px}
+    .prompt{font-size:36px;font-weight:700; text-align:center;padding:28px 12px;border-radius:8px;background:rgba(255,255,255,0.02);margin-bottom:14px}
+    .input-row{display:flex;gap:8px}
+    input[type='text']{flex:1;padding:12px 14px;border-radius:8px;border:1px solid rgba(255,255,255,0.06);background:transparent;color:inherit;font-size:16px}
+    button{background:var(--accent);border:0;color:#07203a;padding:10px 14px;border-radius:8px;font-weight:700;cursor:pointer}
+    button.secondary{background:transparent;border:1px solid rgba(255,255,255,0.06);color:#cfe3ff}
+    .small{font-size:13px;color:#9fb0d6}
+    .right{display:flex;flex-direction:column;gap:12px}
+    .status{padding:12px;border-radius:8px;text-align:center}
+    .progress{font-weight:700}
+    .hint{font-size:14px;color:#cfe3ff}
+    .message{padding:12px;border-radius:8px;text-align:center;font-weight:700}
+    .message.ok{background:rgba(16,185,129,0.12);color:var(--ok)}
+    .message.bad{background:rgba(239,68,68,0.08);color:var(--bad)}
+    .footer{margin-top:16px;text-align:center;color:#9fb0d6;font-size:13px}
+    @media (max-width:800px){.game{grid-template-columns:1fr;}.right{order:2}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Mowa zależna — ćwiczenie</h1>
+    <p class="lead">Przetłumacz słowa/zwroty na mowę zależną. Wpisz poprawną odpowiedź i naciśnij Enter lub przycisk "Sprawdź". Jeżeli odpowiesz źle — gra zaczyna się od nowa, a poprawna odpowiedź ukaże się przez 5 sekund.</p>
+
+    <div class="game">
+      <div class="panel">
+        <div id="prompt" class="prompt">–</div>
+
+        <div class="input-row">
+          <input id="answer" type="text" autocomplete="off" placeholder="Wpisz odpowiedź...">
+          <button id="check">Sprawdź</button>
+          <button id="skip" class="secondary" title="Pomiń (nie liczy się jako porażka)">Pomiń</button>
+        </div>
+
+        <div style="height:12px"></div>
+        <div id="feedback" class="message" style="display:none"></div>
+
+        <div class="footer">Zadania wyświetlane są losowo. Po poprawnej odpowiedzi zobaczysz kolejne. Po ukończeniu wszystkich pojawi się "Wygrałeś".</div>
+      </div>
+
+      <div class="right">
+        <div class="status panel">
+          <div class="small">Postęp</div>
+          <div class="progress" id="progress">0 / 0</div>
+          <div class="small" style="margin-top:8px">Pozostało: <span id="remaining">0</span></div>
+        </div>
+
+        <div class="panel">
+          <div class="small">Ostatnia poprawna odpowiedź:</div>
+          <div id="lastCorrect" style="font-weight:700;margin-top:8px">—</div>
+        </div>
+
+        <div class="panel">
+          <div class="small">Przykłady</div>
+          <ul style="margin:8px 0 0 18px;color:#cfe3ff">
+            <li>today → that day</li>
+            <li>yesterday → the day before</li>
+            <li>tomorrow → the next day</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      // Lista zadań: lewa część to to, co pokazywane; prawa część to oczekiwana odpowiedź.
+      const ALL = [
+        {q: 'today', a: 'that day'},
+        {q: 'at the moment', a: 'at that moment'},
+        {q: 'now', a: 'then'},
+        {q: 'yesterday', a: 'the day before'},
+        {q: 'last week', a: 'the week before'},
+        {q: 'last month', a: 'the month before'},
+        {q: 'last year', a: 'the year before'},
+        {q: 'two data ago', a: 'two days before'},
+        {q: 'two weeks ago', a: 'two weeks before'},
+        {q: 'two years ago', a: 'two years before'},
+        {q: 'tomorrow', a: 'the next day'},
+        {q: 'next week', a: 'the next week'},
+        {q: 'this', a: 'that'},
+        {q: 'these', a: 'those'},
+        {q: 'here', a: 'three'},
+        {q: 'zaproponować', a: 'offer'},
+        {q: 'kazać', a: 'order'},
+        {q: 'obiecać', a: 'promise'},
+        {q: 'odmówić', a: 'refuse'},
+        {q: 'powiedzieć', a: 'tell'},
+        {q: 'prosić', a: 'ask'},
+        {q: 'doradzić', a: 'advise'},
+        {q: 'poinstruować', a: 'instruct'}
+      ];
+
+      // elementy DOM
+      const promptEl = document.getElementById('prompt');
+      const answerEl = document.getElementById('answer');
+      const checkBtn = document.getElementById('check');
+      const skipBtn = document.getElementById('skip');
+      const feedbackEl = document.getElementById('feedback');
+      const progressEl = document.getElementById('progress');
+      const remainingEl = document.getElementById('remaining');
+      const lastCorrectEl = document.getElementById('lastCorrect');
+
+      let pool = [];
+      let current = null;
+      let showingReveal = false;
+      let initialSeed = null;
+
+      // Helpers
+      function normalize(s){
+        return String(s || '').trim().toLowerCase().replace(/\s+/g,' ');
+      }
+
+      function shuffle(arr){
+        for(let i=arr.length-1;i>0;i--){
+          const j = Math.floor(Math.random()*(i+1));
+          [arr[i],arr[j]]=[arr[j],arr[i]];
+        }
+      }
+
+      function startNewGame(){
+        // create a fresh shuffled pool
+        pool = ALL.map(x=>Object.assign({},x));
+        shuffle(pool);
+        initialSeed = Date.now();
+        showNext();
+        updateProgress();
+        lastCorrectEl.textContent = '—';
+        feedbackEl.style.display='none';
+        answerEl.value='';
+        answerEl.focus();
+      }
+
+      function showNext(){
+        if(pool.length===0){
+          promptEl.textContent = 'Wygrałeś! 🎉';
+          progressEl.textContent = '100%';
+          remainingEl.textContent = '0';
+          answerEl.disabled = true;
+          checkBtn.disabled = true;
+          skipBtn.disabled = true;
+          feedbackEl.style.display='block';
+          feedbackEl.className='message ok';
+          feedbackEl.textContent='Wszystkie zadania ukończone — Wygrałeś!';
+          return;
+        }
+        current = pool[0]; // always take first in pool (pool is shuffled)
+        promptEl.textContent = current.q;
+        answerEl.value='';
+        answerEl.disabled = false;
+        checkBtn.disabled = false;
+        answerEl.focus();
+        updateProgress();
+      }
+
+      function updateProgress(){
+        const done = ALL.length - pool.length;
+        progressEl.textContent = done + ' / ' + ALL.length;
+        remainingEl.textContent = pool.length;
+      }
+
+      function revealCorrectThenRestart(){
+        showingReveal = true;
+        feedbackEl.style.display='block';
+        feedbackEl.className='message bad';
+        feedbackEl.textContent = 'Poprawna odpowiedź: "' + current.a + '"';
+        // pokaż do 5 sekund, potem restart
+        setTimeout(()=>{
+          showingReveal = false;
+          startNewGame();
+        },5000);
+      }
+
+      function handleCheck(){
+        if(showingReveal) return; // ignore while revealing
+        const user = normalize(answerEl.value);
+        const expected = normalize(current.a);
+        if(user === expected){
+          // correct
+          lastCorrectEl.textContent = current.q + ' → ' + current.a;
+          // remove current from pool
+          pool.shift();
+          feedbackEl.style.display='block';
+          feedbackEl.className='message ok';
+          feedbackEl.textContent='Dobrze!';
+          setTimeout(()=>{ feedbackEl.style.display='none'; },800);
+          showNext();
+        } else {
+          // wrong: reveal and restart
+          revealCorrectThenRestart();
+        }
+      }
+
+      // events
+      checkBtn.addEventListener('click', handleCheck);
+      answerEl.addEventListener('keydown', (e)=>{
+        if(e.key === 'Enter'){
+          handleCheck();
+        }
+      });
+
+      skipBtn.addEventListener('click', ()=>{
+        if(showingReveal) return;
+        // move current to end of pool and show next
+        if(pool.length>0){
+          const item = pool.shift();
+          pool.push(item);
+          showNext();
+        }
+      });
+
+      // start
+      startNewGame();
+
+    })();
+  </script>
+</body>
+</html>
