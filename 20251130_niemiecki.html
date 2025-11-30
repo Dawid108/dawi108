@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Imperativ – Trening</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f2f2f2;
+        padding: 20px;
+        text-align: center;
+    }
+
+    #card {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 500px;
+        margin: auto;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    input {
+        width: 80%;
+        padding: 10px;
+        margin: 10px 0;
+        font-size: 18px;
+        border-radius: 6px;
+        border: 1px solid #888;
+        text-align: center;
+    }
+
+    button {
+        padding: 12px 20px;
+        font-size: 18px;
+        border: none;
+        background: #0077ff;
+        color: white;
+        border-radius: 8px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    button:hover {
+        background: #005fd1;
+    }
+
+    #correctAnswers {
+        margin-top: 15px;
+        font-size: 18px;
+        color: green;
+        font-weight: bold;
+    }
+
+    #finish {
+        font-size: 24px;
+        font-weight: bold;
+        margin-top: 20px;
+    }
+</style>
+</head>
+<body>
+
+<div id="card">
+    <h2 id="verb"></h2>
+
+    <input id="du" placeholder="du – forma rozkazująca">
+    <input id="ihr" placeholder="ihr – forma rozkazująca">
+    <input id="sie" placeholder="Sie – forma rozkazująca">
+
+    <button onclick="checkAnswer()">Sprawdź</button>
+
+    <div id="correctAnswers"></div>
+    <div id="finish"></div>
+</div>
+
+<script>
+const tasks = [
+    {inf:"machen – robić", du:"mach", ihr:"macht", sie:"machen Sie"},
+    {inf:"geben – dawać", du:"gib", ihr:"gebt", sie:"geben Sie"},
+    {inf:"helfen – pomagać", du:"hilf", ihr:"helft", sie:"helfen Sie"},
+    {inf:"zurückkommen – wracać", du:"komm zurück", ihr:"kommt zurück", sie:"kommen Sie zurück"},
+    {inf:"fahren – jechać", du:"fahr", ihr:"fahrt", sie:"fahren Sie"},
+    {inf:"sein – być", du:"sei", ihr:"seid", sie:"seien Sie"},
+    {inf:"etwas fotografieren – fotografować", du:"fotografier etwas", ihr:"fotografiert etwas", sie:"fotografieren Sie etwas"},
+    {inf:"ein Buch lesen – czytać książkę", du:"lies ein Buch", ihr:"lest ein Buch", sie:"lesen Sie ein Buch"},
+    {inf:"sich für Mode interessieren – interesować się modą", du:"interessiere dich für Mode", ihr:"interessiert euch für Mode", sie:"interessieren Sie sich für Mode"},
+    {inf:"nicht so viel fernsehen – nie oglądać dużo TV", du:"sieh nicht so viel fern", ihr:"seht nicht so viel fern", sie:"sehen Sie nicht so viel fern"},
+    {inf:"aufräumen – sprzątać", du:"räum auf", ihr:"räumt auf", sie:"räumen Sie auf"},
+    {inf:"kaufen – kupować", du:"kauf", ihr:"kauft", sie:"kaufen Sie"},
+    {inf:"warten – czekać", du:"warte", ihr:"wartet", sie:"warten Sie"},
+    {inf:"sich bedienen – częstować się", du:"bediene dich", ihr:"bedient euch", sie:"bedienen Sie sich"},
+    {inf:"zubereiten – przygotować", du:"bereite zu", ihr:"bereitet zu", sie:"bereiten Sie zu"},
+    {inf:"mitbringen – przynieść", du:"bring mit", ihr:"bringt mit", sie:"bringen Sie mit"},
+    {inf:"zugreifen – częstować się", du:"greif zu", ihr:"greift zu", sie:"greifen Sie zu"},
+    {inf:"nehmen – brać", du:"nimm", ihr:"nehmt", sie:"nehmen Sie"},
+    {inf:"essen – jeść", du:"iss", ihr:"esst", sie:"essen Sie"},
+    {inf:"waschen – myć", du:"wasch", ihr:"wascht", sie:"waschen Sie"},
+    {inf:"einladen – zapraszać", du:"lad ein", ihr:"ladet ein", sie:"laden Sie ein"},
+];
+
+// kopia do losowania
+let remaining = [...tasks];
+let current;
+
+function nextTask() {
+    if (remaining.length === 0) {
+        document.getElementById("card").innerHTML = `
+            <div id="finish">Ukończyłeś wszystko!</div>
+            <button onclick="newGame()">Nowa Gra</button>
+        `;
+        return;
+    }
+
+    const index = Math.floor(Math.random() * remaining.length);
+    current = remaining[index];
+    remaining.splice(index, 1);
+
+    document.getElementById("verb").textContent = current.inf;
+    document.getElementById("du").value = "";
+    document.getElementById("ihr").value = "";
+    document.getElementById("sie").value = "";
+    document.getElementById("correctAnswers").textContent = "";
+}
+
+function checkAnswer() {
+    const du = document.getElementById("du").value.trim();
+    const ihr = document.getElementById("ihr").value.trim();
+    const sie = document.getElementById("sie").value.trim();
+
+    if (du === current.du && ihr === current.ihr && sie === current.sie) {
+        nextTask();
+    } else {
+        document.getElementById("correctAnswers").innerHTML =
+            "Poprawne odpowiedzi:<br>du: <b>"+current.du+"</b><br>ihr: <b>"+current.ihr+
+            "</b><br>Sie: <b>"+current.sie+"</b>";
+
+        setTimeout(() => {
+            document.getElementById("du").value = "";
+            document.getElementById("ihr").value = "";
+            document.getElementById("sie").value = "";
+            document.getElementById("correctAnswers").textContent = "";
+        }, 3000);
+    }
+}
+
+function newGame() {
+    location.reload();
+}
+
+nextTask();
+</script>
+
+</body>
+</html>
