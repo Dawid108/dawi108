@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Geografia</title>
+<style>
+    body {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        font-family: 'Segoe UI', sans-serif;
+        color: #fff;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 700px;
+        background: rgba(0,0,0,0.3);
+        padding: 30px;
+        margin: 60px auto;
+        border-radius: 20px;
+        box-shadow: 0 0 25px rgba(0,0,0,0.5);
+    }
+    h1 {
+        margin-bottom: 20px;
+        font-size: 32px;
+        letter-spacing: 1px;
+    }
+    .question {
+        font-size: 20px;
+        margin-bottom: 25px;
+    }
+    .answers button {
+        display: block;
+        width: 100%;
+        background: #ffffff22;
+        border: 2px solid #fff;
+        color: #fff;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-size: 17px;
+    }
+    .answers button:hover {
+        background: #ffffff44;
+    }
+    .info {
+        margin-top: 20px;
+        font-size: 18px;
+    }
+    .result {
+        font-size: 28px;
+        margin: 25px 0;
+        font-weight: bold;
+    }
+    #restart {
+        background: #00c853;
+        border: none;
+        padding: 15px 25px;
+        color: white;
+        border-radius: 10px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    #restart:hover {
+        background: #00e676;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>Geografia Rolnictwo</h1>
+    <div id="quiz-area">
+        <div class="question" id="question"></div>
+        <div class="answers" id="answers"></div>
+        <div class="info" id="progress"></div>
+        <div class="info" id="lives"></div>
+    </div>
+    <div class="result" id="result"></div>
+    <button id="restart" style="display:none;">Zagraj ponownie</button>
+</div>
+
+<script>
+// ===================== DANE PYTAŃ =======================
+const questions = [
+{q:"Który czynnik rolnictwa jest związany z klimatem?", a:["Temperatura","Typ gleby","Ukształtowanie terenu","Rodzaj maszyn"], correct:0},
+{q:"Który czynnik rolnictwa zależy od klimatu?", a:["Opady","Zasobność minerałów","Cena paliwa","Rodzaj nawozów"], correct:0},
+{q:"Jak polityka państwa może wpływać na rolnictwo?", a:["Przez dotacje i przepisy","Przez długość rzek","Przez kształt granic","Przez położenie geograficzne"], correct:0},
+{q:"Które zboże jest przykładem zboża uprawnego?", a:["Pszenica","Bawełna","Rzepak","Słonecznik"], correct:0},
+{q:"Która roślina jest zbożem?", a:["Jęczmień","Soja","Burak cukrowy","Ziemniak"], correct:0},
+{q:"Który kraj hoduje najwięcej bydła?", a:["Brazylia","Egipt","Islandia","Norwegia"], correct:0},
+{q:"Które państwo rozwija hodowlę bydła na dużą skalę?", a:["USA","Włochy","Hiszpania","Szwecja"], correct:0},
+{q:"W jaki sposób las pełni funkcję przeciwerozyjną?", a:["Korzenie drzew zatrzymują glebę","Drewno szybciej rośnie","Zwierzęta mieszkają w lesie","Liście są zielone"], correct:0},
+{q:"Który kraj ma ponad 50% powierzchni zalesionej?", a:["Finlandia","Holandia","Egipt","Szwajcaria"], correct:0},
+{q:"W którym kraju ponad połowa powierzchni to lasy?", a:["Szwecja","Arabia Saudyjska","Libia","Mongolia"], correct:0},
+{q:"Czym różni się chów od hodowli?", a:["Hodowla obejmuje ulepszanie cech zwierząt, chów to tylko opieka","Chów jest gorszą formą hodowli","Chów dotyczy tylko ryb","Hodowla dotyczy tylko drobiu"], correct:0},
+{q:"Co oznacza intensywny typ rolnictwa?", a:["Wysokie nakłady i duża produkcja","Małe nakłady i niska produkcja","Brak nawożenia","Uprawę tylko zbóż"], correct:0},
+{q:"Co oznacza ekstensywny typ rolnictwa?", a:["Małe nakłady i niska produkcja","Duże nakłady i duża produkcja","Stosowanie wielu nawozów","Małe pola"], correct:0},
+{q:"Który czynnik wpływa na hodowlę zwierząt?", a:["Dostęp do pasz","Kolor budynków rolnika","Liczba sklepów","Poziom urbanizacji"], correct:0},
+{q:"Które zwierzę należy do zwierząt hodowlanych?", a:["Krowa","Tygrys","Lis rudy","Pingwin"], correct:0},
+{q:"Co pozyskuje się z owcy?", a:["Wełnę","Węgiel","Bawełnę","Piasek"], correct:0},
+{q:"Jaka jest funkcja lasu?", a:["Produkcja drewna","Powstawanie kopalń","Tworzenie pustyń","Budowa autostrad"], correct:0},
+{q:"Jaki jest poziom lesistości w Polsce?", a:["Około 30%","Około 5%","Około 60%","Około 80%"], correct:0},
+{q:"Gdzie znajduje się największy obszar leśny na Ziemi?", a:["W Amazonii","Na Saharze","W Arktyce","Na pustyni Gobi"], correct:0},
+{q:"Co oznacza pojęcie deforestacja?", a:["Wylesianie","Zalesianie","Sadzenie drzew","Tworzenie parków"], correct:0}
+];
+
+// ===================== ZMIENNE =======================
+let lives, currentIndex, shuffled, correctCount;
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+const progressEl = document.getElementById("progress");
+const livesEl = document.getElementById("lives");
+const resultEl = document.getElementById("result");
+const restartBtn = document.getElementById("restart");
+
+// ===================== FUNKCJE =======================
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+function startGame() {
+    lives = 3;
+    correctCount = 0;
+    currentIndex = 0;
+    shuffled = shuffleArray([...questions]);
+    resultEl.textContent = "";
+    restartBtn.style.display = "none";
+    showQuestion();
+}
+
+function showQuestion() {
+    if (currentIndex >= shuffled.length) {
+        resultEl.textContent = "🎉 Wygrałeś!";
+        restartBtn.style.display = "inline-block";
+        questionEl.textContent = "";
+        answersEl.innerHTML = "";
+        progressEl.textContent = "";
+        livesEl.textContent = "";
+        return;
+    }
+
+    const q = shuffled[currentIndex];
+    questionEl.textContent = q.q;
+
+    // ==== LOSOWANIE ODPOWIEDZI ====
+    let answerOptions = q.a.map((text, index) => ({ text, index }));
+    answerOptions = shuffleArray(answerOptions);
+
+    answersEl.innerHTML = "";
+    answerOptions.forEach(ans => {
+        const btn = document.createElement("button");
+        btn.textContent = ans.text;
+        btn.onclick = () => checkAnswer(ans.index, q.correct);
+        answersEl.appendChild(btn);
+    });
+
+    progressEl.textContent = `Pytanie ${currentIndex + 1} / ${shuffled.length}`;
+    livesEl.textContent = `Życia: ${"❤️".repeat(lives)}`;
+}
+
+function checkAnswer(selected, correctIndex) {
+    const q = shuffled[currentIndex];
+    if (selected === correctIndex) {
+        currentIndex++;
+        showQuestion();
+    } else {
+        lives--;
+        livesEl.textContent = `Życia: ${"❤️".repeat(lives)}`;
+        const correctAnswer = q.a[correctIndex];
+        questionEl.innerHTML = `❌ Zła odpowiedź!<br><br>✅ Poprawna to: <strong>${correctAnswer}</strong>`;
+        answersEl.innerHTML = "";
+        if (lives <= 0) {
+            setTimeout(gameOver, 3000);
+        } else {
+            setTimeout(() => {
+                currentIndex++;
+                showQuestion();
+            }, 3000);
+        }
+    }
+}
+
+function gameOver() {
+    resultEl.textContent = "💀 Przegrałeś!";
+    questionEl.textContent = "";
+    answersEl.innerHTML = "";
+    progressEl.textContent = "";
+    livesEl.textContent = "";
+    restartBtn.style.display = "inline-block";
+}
+
+// ===================== RESTART =======================
+restartBtn.onclick = startGame;
+
+// ===================== START PIERWSZY =======================
+startGame();
+</script>
+</body>
+</html>
