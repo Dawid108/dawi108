@@ -5,8 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dawi_108</title>
     <link rel="icon" href="dawi108.png" type="image/png">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="20251203_manifest.json">
     <link rel="stylesheet" href="style.css">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Szkoła">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="dawi108.png">
 </head>
 <body>
     <div class="container">
@@ -15,13 +20,12 @@
         <div class="table-wrapper">
             <table border="1">
 <tr><th>Lp.</th><th>Nazwa</th></tr>
+<tr><td></td><td><a href="20251123_rejestracja.html">Tulipany</a></td></tr>
 <tr><td></td><td><a href="20251118_pracownicy.html">Nasz zespół</a></td></tr>
 <tr><td></td><td><a href="20251106_index.html">Fryzjerstwo</a></td></tr>
 <tr><td></td><td><a href="20251028_obrazki.html">Obrazki</a></td></tr>
 <tr><td></td><td><a href="20251023_index.html">Hurtownia</a></td></tr>
 <tr><td></td><td><a href="20251021_formaty.html">Formatowanie</a></td></tr>
-<tr><td></td><td><a href="20251009_galeria3.html">Galeria 3</a></td></tr>
-<tr><td></td><td><a href="20251009_galeria2.html">Galeria 2</a></td></tr>
 <tr><td></td><td><a href="20251009_galeria.html">Galeria</a></td></tr>
             </table>
         </div>
@@ -29,6 +33,7 @@
         <div class="table-wrapper">
             <table border="1">
 <tr><th>Lp.</th><th>Nazwa</th></tr>
+<tr><td></td><td><a href="20251202_listy.html">Listy</a></td></tr>
 <tr><td></td><td><a href="20251125_tabelkaspr.html">Sprawdzian</a></td></tr>
 <tr><td></td><td><a href="20251125_tabelka4.html">Tabele 4</a></td></tr>
 <tr><td></td><td><a href="20251118_tabelka3.html">Tabele 3</a></td></tr>
@@ -36,10 +41,10 @@
 <tr><td></td><td><a href="20251104_tabelka.html">Tabele 1</a></td></tr>
 <tr><td></td><td><a href="20251104_bloki6.html">Poprawa</a></td></tr>
 <tr><td></td><td><a href="20251103_bloki5.html">Sprawdzian</a></td></tr>
-<tr><td></td><td><a href="20251021_bloki3.html">Bloki 3</a></td></tr>
-<tr><td></td><td><a href="20250918_bloki.html">Bloki 2</a></td></tr>
-<tr><td></td><td><a href="20250911_blok.html">Bloki</a></td></tr>
-<tr><td></td><td><a href="20250904_podzialstrony.html">Podział Strony</a></td></tr>
+<tr><td></td><td><a href="20251021_bloki3.html">Bloki 4</a></td></tr>
+<tr><td></td><td><a href="20250918_bloki.html">Bloki 3</a></td></tr>
+<tr><td></td><td><a href="20250911_blok.html">Bloki 2</a></td></tr>
+<tr><td></td><td><a href="20250904_podzialstrony.html">Bloki 1</a></td></tr>
             </table>
         </div>
         <h2>Aplikacje Internetowe</h2>
@@ -76,6 +81,8 @@
 <tr><td></td><td><a href="20251101_historia.html">Historia</a></td></tr>
 <tr><td></td><td><a href="20251031_chemia.html">Chemia</a></td></tr>
 <tr><td></td><td><a href="20251015_kolo.html">Pole i Obwód Koła</a></td></tr>
+<tr><td></td><td><a href="20251009_galeria3.html">Galeria 3</a></td></tr>
+<tr><td></td><td><a href="20251009_galeria2.html">Galeria 2</a></td></tr>
 <tr><td></td><td><a href="20251008_snieznik.html">Śnieżnik</a></td></tr>
 <tr><td></td><td><a href="20251008_randint.html">Zgadnij Liczbę</a></td></tr>
 <tr><td></td><td><a href="20250924_oblicz2.html">Obliczenia 2</a></td></tr>
@@ -94,6 +101,26 @@
             </table>
         </div>
     </div>
-    <script src="20250904_skrypt.js"></script>
+    <script>
+function numerateTables() {
+    document.querySelectorAll("table:not(.nienumerowana)").forEach(table => {
+        let rows = table.querySelectorAll("tr:not(:first-child)");
+        rows.forEach((row, index) => {
+            let firstCell = row.querySelector("td:first-child");
+            if (firstCell) {
+                firstCell.textContent = index + 1;
+            }
+        });
+    });
+}
+
+window.onload = function() {
+    numerateTables();
+};
+        
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('20251203_sw.js');
+}
+    </script>
 </body>
 </html>
