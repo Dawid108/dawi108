@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Na Egzamin</title>
+    <link rel="icon" href="dawi108.png">
+    <style>
+        main{
+            width: 100%;
+        }
+        #galeria{
+            background-color: lightblue;
+        }
+        .mainimg{
+            border: 1px dashed blue;
+            width: 200px;
+            margin: 50px;
+            padding: 2px;
+            border-radius: 5px;
+        }
+        .smallimg{
+            width: 160px;
+            margin: 30px;
+        }
+        #duze{
+            background-color: lightblue;
+            height: 200px;
+        }
+        #male{
+            background-color: lightsteelblue;
+            height: 160px;
+            width: 80%;
+            float: left;
+        }
+        #polubmsc{
+            background-color: lightsteelblue;
+            height: 160px;
+            width: 20%;
+            float: left;
+        }
+        #formaty{
+            background-color: cadetblue;
+            height: 100px;
+            clear: both;
+            padding: 30px;
+        }
+        #zielony{
+            background-color: green;
+        }
+        #niebieski{
+            background-color: blue;
+        }
+        #czerwony{
+            background-color: red;
+        }
+        #kawa{
+            background-color: rgb(162, 117, 87);
+            height: 100px;
+        }
+        #zdj{
+            width: 25%;
+            float: left;
+        }
+        #lista{
+            width: 75%;
+            float: left;
+        }
+        li:last-child{
+            text-decoration: line-through;
+        }
+        #obrazki{
+            background-color: lightgreen;
+            height: 200px;
+            text-align: center;
+        }
+        .picture{
+            width: 25%;
+            float: left;
+        }
+        .obrazk{
+            width: 200px;
+        }
+        .przycisk{
+            background-color: slateblue;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            margin-top: 5px;
+            border-radius: 3px;
+        }
+        input[type="range"]{
+            width: 80%;
+        }
+    </style>
+</head>
+<body>
+    <main id="galeria">
+        <section id="duze">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316584/lanzarotte_vhmljm.jpg" alt="kliknij" id="kliknij" class="mainimg">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316614/pekin_dxvbtt.jpg" alt="przesun" id="przesun" class="mainimg">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316642/serengeti_tpfhwy.jpg" alt="auto" id="auto" class="mainimg">
+        </section>
+        <section id="male">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316584/lanzarotte_vhmljm.jpg" alt="morze" id="morze" class="smallimg">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316614/pekin_dxvbtt.jpg" alt="miasto" id="miasto" class="smallimg">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316642/serengeti_tpfhwy.jpg" alt="safari" id="safari" class="smallimg">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316710/wenecja_tqckio.jpg" alt="wenecja" id="wenecja" class="smallimg">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316670/tajlandia_zufe0b.jpg" alt="tajlandia" id="tajlandia" class="smallimg">
+        </section>
+        <section id="polubmsc">
+            <p>Polub stronę: </p><img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1761316478/icon-off_pen3ht.png" alt="serce" id="serce">
+        </section>
+    </main>
+    <main id="formaty">
+        <label>Rozmiar: <input type="number" value="40" max="150" min="1" id="rozmiar"></label>
+        <select name="jaki">
+            <option value="normal" class="jaki">prosty</option>
+            <option value="italic" class="jaki">kursywa</option>
+        </select>
+        <input type="button" id="czerwony">
+        <input type="button" id="niebieski">
+        <input type="button" id="zielony">
+        <p id="txt">To jest tekst taki jaki wybierzesz.</p>
+    </main>
+    <main id="kawa">
+        <section id="zdj"><img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762192699/logo2_i9hb6z.png" alt="kawa"></section>
+        <section id="lista">
+            <ol>
+                <li>Czekolada</li>
+                <li>Kawa</li>
+                <li>Herbata</li>
+                <li>Shake</li>
+            </ol>
+        </section>
+    </main>
+    <main id="obrazki">
+        <section class="picture">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762445002/pszczola_kawfrz.jpg" id="bea" class="obrazk"><br>
+            <label><input type="radio" name="obra" class="obra" value="blur(6px)">Blur</label>
+            <label><input type="radio" name="obra" class="obra" value="sepia(100%)">Sepia</label>
+            <label><input type="radio" name="obra" class="obra" value="invert(100%)">Negatyw</label>
+        </section>
+        <section class="picture">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762445002/pomarancza_uck1lc.jpg" id="orange" class="obrazk"><br>
+            <input type="button" value="Kolorowy" class="przycisk" id="kolor">
+            <input type="button" value="Czarno-biały" class="przycisk" id="mono">
+        </section>
+        <section class="picture">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762445002/owoce_q6d6qg.jpg" id="owoce" class="obrazk"><br>
+            <input type="range" min="0" max="100" value="100" class="suwak" id="suwak1">
+        </section>
+        <section class="picture">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1762445002/zolw_yj5n6m.jpg" id="zolw" class="obrazk"><br>
+            <input type="range" min="0" max="250" class="suwak" id="suwak2">
+        </section>
+    </main>
+    <script>
+        let i=0;
+        let j=0;
+        let zdjecia = [
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316584/lanzarotte_vhmljm.jpg", 
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316614/pekin_dxvbtt.jpg", 
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316642/serengeti_tpfhwy.jpg", 
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316710/wenecja_tqckio.jpg", 
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316670/tajlandia_zufe0b.jpg"
+        ];
+        function kliknij_zdj(){
+            kliknij.src = this.src;
+        }
+
+        function przesunl(){
+            if(i===0){
+                i=4;
+            }
+            i--;
+            przesun.src = zdjecia[i];
+        }
+
+        function przesunp(){
+            i++;
+            if(i===zdjecia.length){
+                i=0;
+            }
+            przesun.src = zdjecia[i];
+        }
+
+        function automatic(){
+            j++;
+            if(j===zdjecia.length){
+                j=0;
+            }
+            auto.src = zdjecia[j];
+
+            setTimeout(automatic, 2000);
+        }
+
+        let heart = "niema";
+
+        function polubienie(){
+            if(heart === "niema"){
+                serce.src = "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316531/icon-on_d8bnh9.png";
+                heart = "jest";
+            }
+            else{
+                serce.src = "https://res.cloudinary.com/diljpkw9f/image/upload/v1761316478/icon-off_pen3ht.png";
+                heart = "niema";
+            }
+        }
+
+        let jaki = document.getElementsByClassName("jaki");
+
+        function cze(){
+            txt.style.fontSize = rozmiar.value + "px";
+            txt.style.color = "red";
+            for(i=0; i<jaki.length; i++){
+                if(jaki[i].selected){
+                    txt.style.fontStyle = jaki.value;
+                }
+            }
+        }
+        function zie(){
+            txt.style.fontSize = rozmiar.value + "px";
+            txt.style.color = "green";
+            for(i=0; i<jaki.length; i++){
+                if(jaki[i].selected){
+                    txt.style.fontStyle = jaki[i].value;
+                }
+            }
+        }
+        function nie(){
+            txt.style.fontSize = rozmiar.value + "px";
+            txt.style.color = "blue";
+            for(i=0; i<jaki.length; i++){
+                if(jaki[i].selected){
+                    txt.style.fontStyle = jaki[i].value;
+                }
+            }
+        }
+
+        let obra = document.getElementsByClassName("obra");
+
+        function nadaj(){
+            for(i=0; i<obra.length; i++){
+                if(obra[i].checked){
+                    bea.style.filter = obra[i].value;
+                }
+            }
+        }
+
+        function kol(){
+            orange.style.filter = "none";
+        }
+        function czb(){
+            orange.style.filter = "grayscale(100%)";
+        }
+        function przezroczystosc(){
+            owoce.style.filter = "opacity(" + suwak1.value + "%)";
+        }
+        function jasnosc(){
+            zolw.style.filter = "brightness(" + suwak2.value + "%)";
+        }
+
+        function funkcjeall(){
+            let i = Math.floor(Math.random() * 5);
+            przesunp();
+            polubienie();
+            nadaj();
+            przezroczystosc();
+            jasnosc();
+            if(i === 0){
+                cze();
+                kol();
+            } else if (i === 1){
+                zie();
+                kol();
+            } else {
+                nie();
+                czb();
+            }
+
+            setTimeout(funkcjeall, 2000);
+        }
+
+        automatic();
+        funkcjeall();
+
+        morze.addEventListener("click", kliknij_zdj);
+        miasto.addEventListener("click", kliknij_zdj);
+        safari.addEventListener("click", kliknij_zdj);
+        wenecja.addEventListener("click", kliknij_zdj);
+        tajlandia.addEventListener("click", kliknij_zdj);
+        kliknij.addEventListener("click", przesunl);
+        auto.addEventListener("click", przesunp);
+        serce.addEventListener("click", polubienie);
+        czerwony.addEventListener("click", cze);
+        zielony.addEventListener("click", zie);
+        niebieski.addEventListener("click", nie);
+        bea.addEventListener("click", nadaj);
+        kolor.addEventListener("click", kol);
+        mono.addEventListener("click", czb);
+        owoce.addEventListener("click", przezroczystosc);
+        zolw.addEventListener("click", jasnosc);
+    </script>
+</body>
+</html>
