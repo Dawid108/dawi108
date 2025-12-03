@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="wclassth=device-wclassth, initial-scale=1.0">
+    <title>Listy 1</title>
+    <style>
+        /*ol {
+            list-style-type: upper-roman;
+            upper-latin, upper-alpha, upper-roman, 
+            lower-latin, lower-alpha, lower-roman, lower-greek, 
+            decimal, georgian
+        }
+        ul {
+            list-style-type: circle;
+            square, circle, disc
+        }*/
+        .upper-latin{
+            list-style-type: upper-latin;
+        }
+        .upper-alpha{
+            list-style-type: upper-alpha;
+        }
+        .upper-roman{
+            list-style-type: upper-roman;
+        }
+        .lower-latin{
+            list-style-type: lower-latin;
+        }
+        .lower-alpha{
+            list-style-type: lower-alpha;
+        }
+        .lower-roman{
+            list-style-type: lower-roman;
+        }
+        .lower-greek{
+            list-style-type: lower-greek;
+        }
+        .decimal{
+            list-style-type: decimal;
+        }
+        .georgian{
+            list-style-type: georgian;
+        }
+        .square{
+            list-style-type: square;
+        }
+        .circle{
+            list-style-type: circle;
+        }
+        .disc{
+            list-style-type: disc;
+        }
+    </style>
+</head>
+<body>
+    <h3>Lista numerowana (uporządkowana) - planety Układu Słonecznego</h3>
+    <ol class="upper-roman">
+        <li>Merkury</li>
+        <li>Wenus</li>
+        <li>Ziemia</li>
+        <li>Mars</li>
+        <li>Jowisz</li>
+        <li>Saturn</li>
+        <li>Uran</li>
+        <li>Neptun</li>
+    </ol>
+    <h3>Lista punktowana (nieuporzątkowana) - kontynenty</h3>
+    <ul class="square">
+        <li>Afryka</li>
+        <li>Ameryka Południowa</li>
+        <li>Ameryka Północna</li>
+        <li>Antarktyda</li>
+        <li>Australia</li>
+        <li>Azja</li>
+        <li>Europa</li>
+    </ul>
+    <h3>Lista zagnieżdżona - GRY</h3>
+    <ol class="upper-roman">
+        <li>Karciane
+            <ul class="circle">
+                <li>Brydż</li>
+                <li>Oczko</li>
+                <li>Remik</li>
+                <li>Wojna</li>
+            </ul>
+        </li>
+        <li>Planszowe
+            <ul>
+                <li>Chińczyk</li>
+                <li>Warcaby</li>
+                <li>Młynek</li>
+            </ul>
+        </li>
+        <li>Ruchowe
+            <ul>
+                <li>Berek</li>
+                <li>Ciuciubabka</li>
+                <li>Dwa ognie</li>
+            </ul>
+        </li>
+    </ol>
+    <h3>Lista zagnieżdżona - województwa południowe</h3>
+    <h3>Moja lista</h3>
+    <ol class="lower-greek">
+        <li>Dolnośląskie
+            <ul class="square">
+                <li>Wrocław</li>
+                <li>Kłodzko</li>
+                <li>Bolesławiec</li>
+            </ul>
+        </li>
+        <li>Opolskie
+            <ul class="square">
+                <li>Opole</li>
+                <li>Głochołazy</li>
+                <li>Nysa</li>
+            </ul>
+        </li>
+        <li>Śląskie
+            <ul class="square">
+                <li>Katowice</li>
+                <li>Zabrze</li>
+                <li>Chorzów</li>
+            </ul>
+        </li>
+        <li>Małopolskie
+            <ul class="square">
+                <li>Kraków</li>
+                <li>Oświęcim</li>
+                <li>Nowy Targ</li>
+            </ul>
+        </li>
+        <li>Podkarpackie
+            <ul class="square">
+                <li>Rzeszów</li>
+                <li>Sanok</li>
+                <li>Solina</li>
+            </ul>
+        </li>
+    </ol>
+    <h3>Wszystkie Style List</h3>
+    <ul class="square">
+        <li>square</li>
+        <li>
+            <ol class="upper-latin">
+                <li>upper-latin</li>
+                <li></li>
+                <li></li>
+            </ol>
+            <ol class="upper-alpha">
+                <li>upper-alpha</li>
+                <li></li>
+                <li></li>
+            </ol>
+            <ol class="upper-roman">
+                <li>lower-alpha</li>
+                <li></li>
+                <li></li>
+            </ol>
+        </li>
+    </ul>
+    <ul class="circle">
+        <li>circle</li>
+        <li>
+            <ol class="lower-latin">
+                <li>lower-latin</li>
+                <li></li>
+                <li></li>
+            </ol>
+            <ol class="lower-alpha">
+                <li>lower-alpha</li>
+                <li></li>
+                <li></li>
+            </ol>
+            <ol class="lower-roman">
+                <li>lower-roman</li>
+                <li></li>
+                <li></li>
+            </ol>
+            <ol class="lower-greek">
+                <li>lower-greek</li>
+                <li></li>
+                <li></li>
+            </ol>
+        </li>
+    </ul>
+    <ul class="disc">
+        <li>disc</li>
+        <li>
+            <ol class="decimal">
+                <li>decimal</li>
+                <li></li>
+                <li></li>
+            </ol>
+            <ol class="georgian">
+                <li>georgian</li>
+                <li></li>
+                <li></li>
+            </ol>
+        </li>
+    </ul>
+</body>
+</html>
