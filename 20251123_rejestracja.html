@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rejestracja</title>
+    <link rel="stylesheet" href="20251123_styl.css">
+    <link rel="icon" href="dawi108.png">
+</head>
+<body>
+    <header>
+        <h1>Formularz rejestracyjny konferencji <em>Nasze Kwiaty</em></h1>
+    </header>
+    <main>
+        <section id="blok1">
+            <h2>Dane osobowe</h2>
+            <form>
+                <input type="text" id="imie" class="pole" placeholder="Wpisz imię..." required><br>
+                <input type="text" id="nazwisko" class="pole" placeholder="Wpisz nazwisko..." required><br>
+                <input type="button" id="nastepna1" value="Następna karta">
+            </form>
+        </section>
+        <section id="blok2">
+            <h2>Dane kontaktowe</h2>
+            <form>
+                <input type="email" id="email" class="pole" placeholder="Twój e-mail..."><br>
+                <input type="tel" id="telefon" class="pole" placeholder="Twój numer telefonu..."><br>
+                <input type="button" id="nastepna2" value="Następna karta">
+            </form>
+        </section>
+        <section id="blok3">
+            <h2>Hasło do logowania</h2>
+            <form>
+                <input type="password" id="haslo1" class="pole" placeholder="Podaj hasło"><br>
+                <input type="password" id="haslo2" class="pole" placeholder="Powtórz hasło"><br>
+                <input type="button" id="zatwierdz" value="Zatwierdź">
+            </form>
+        </section>
+    </main>
+    <footer>
+        <video controls>
+            <source src="motyl.mp4" type="video/mp4">
+            Przeglądarka nie obsługuje tego formatu.
+        </video>
+    </footer>
+    <footer>
+        <h3>Plan konferencji</h3>
+        <table>
+            <tr><td>9:00 - 12:00</td><td>Pielęgnacja roślin</td></tr>
+            <tr><td>13:00 - 15:00</td><td>Targi kwiatow</td></tr>
+        </table>
+    </footer>
+    <footer>
+        <p><a href="20250901_szkola.html">Internetowa kwiaciarnia</a></p>
+    </footer>
+    <footer>
+        <p>Formularz wykonał: Dawid</p>
+    </footer>
+    <script>
+        let imie = document.getElementById("imie");
+        let nazwisko = document.getElementById("nazwisko");
+        let nastepna1 = document.getElementById("nastepna1");
+        let email = document.getElementById("email");
+        let telefon = document.getElementById("telefon");
+        let nastepna2 = document.getElementById("nastepna2");
+        let haslo1 = document.getElementById("haslo1");
+        let haslo2 = document.getElementById("haslo2");
+        let zatwierdz = document.getElementById("zatwierdz");
+        let blok1 = document.getElementById("blok1");
+        let blok2 = document.getElementById("blok2");
+        let blok3 = document.getElementById("blok3");
+
+        function pokaz2(){
+            blok1.style.visibility = "hidden";
+            blok2.style.visibility = "visible";
+        }
+
+        function pokaz3(){
+            blok2.style.visibility = "hidden";
+            blok3.style.visibility = "visible";
+        }
+
+        function sprhaslo(){
+            if(haslo1.value !== haslo2.value){
+                alert("Podane hasła różnią się.");
+            }
+            else{
+                console.log("Witaj " + imie.value + " " + nazwisko.value);
+            }
+        }
+
+        nastepna1.addEventListener("click", pokaz2);
+        nastepna2.addEventListener("click", pokaz3);
+        zatwierdz.addEventListener("click", sprhaslo);
+    </script>
+</body>
+</html>
