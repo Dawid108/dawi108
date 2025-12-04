@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nauka SQL</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f2f2f2; }
+        header { display:flex; gap:10px; justify-content:center; padding:15px; background:white; position:sticky; top:0; }
+        button { padding:10px 20px; border:none; border-radius:8px; background:#007bff; color:white; font-size:16px; }
+        .container { padding:20px; }
+        .block { background:white; padding:15px; margin-bottom:15px; border-radius:10px; box-shadow:0 0 5px rgba(0,0,0,0.1); }
+        .code { background:#eee; padding:10px; border-radius:5px; font-family:monospace; white-space:pre-wrap; }
+        .hidden { display:none; }
+    </style>
+</head>
+<body>
+<header>
+    <button onclick="showSection('latwe')">Łatwe</button>
+    <button onclick="showSection('srednie')">Średnie</button>
+    <button onclick="showSection('trudne')">Trudne</button>
+</header>
+
+<div class="container">
+    <div id="latwe" class="section hidden"></div>
+    <div id="srednie" class="section hidden"></div>
+    <div id="trudne" class="section hidden"></div>
+</div>
+
+<script>
+const data = {
+    latwe: [
+        {t:"CREATE DATABASE", o:"Tworzy nową bazę danych.", k:"CREATE DATABASE szkola;"},
+        {t:"CREATE TABLE", o:"Tworzy tabelę w bazie.", k:"CREATE TABLE uczniowie (id INT, imie VARCHAR(30));"},
+        {t:"Typy danych", o:"Najpopularniejsze typy danych.", k:"VARCHAR(20), FLOAT, INT"},
+        {t:"INSERT INTO", o:"Wstawia dane do tabeli.", k:"INSERT INTO uczniowie VALUES (1, 'Kuba');"},
+        {t:"ALTER TABLE", o:"Zmienia strukturę tabeli.", k:"ALTER TABLE uczniowie ADD wiek INT;"},
+        {t:"SELECT DISTINCT", o:"Usuwa duplikaty w wynikach.", k:"SELECT DISTINCT imie FROM uczniowie;"},
+        {t:"BETWEEN / IN / NULL", o:"Filtry danych.", k:"SELECT * FROM t WHERE wiek BETWEEN 10 AND 20;"},
+        {t:"WHERE NOT", o:"Negacja warunku.", k:"SELECT * FROM t WHERE NOT wiek = 10;"},
+        {t:"LIKE", o:"Wyszukiwanie po wzorcu.", k:"SELECT * FROM t WHERE imie LIKE 'A%';"},
+        {t:"MAX / MIN / AVG / COUNT", o:"Funkcje agregujące.", k:"SELECT AVG(wiek) FROM uczniowie;"},
+        {t:"GROUP BY", o:"Grupuje wyniki.", k:"SELECT klasa, COUNT(*) FROM uczniowie GROUP BY klasa;"},
+        {t:"UNION", o:"Łączy wyniki zapytań.", k:"SELECT imie FROM A UNION SELECT imie FROM B;"},
+        {t:"INNER JOIN", o:"Łączy tabele.", k:"SELECT * FROM A INNER JOIN B ON A.id=B.id;"},
+        {t:"UPDATE SET", o:"Aktualizuje dane.", k:"UPDATE uczniowie SET wiek=15 WHERE id=1;"}
+    ],
+    srednie: [
+        {t:"CREATE USER", o:"Tworzy użytkownika.", k:"CREATE USER 'nowy'@'localhost' IDENTIFIED BY '1234';"},
+        {t:"DROP USER", o:"Usuwa użytkownika.", k:"DROP USER 'nowy'@'localhost';"},
+        {t:"GRANT", o:"Nadaje uprawnienia.", k:"GRANT ALL PRIVILEGES ON *.* TO 'nowy'@'localhost';"},
+        {t:"REVOKE", o:"Odbiera uprawnienia.", k:"REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'nowy'@'localhost';"},
+        {t:"LIMIT", o:"Ogranicza liczbę wyników.", k:"SELECT * FROM t LIMIT 5;"},
+        {t:"CONCAT", o:"Łączy tekst.", k:"SELECT CONCAT(imie, ' ', nazwisko) FROM t;"},
+        {t:"ROUND", o:"Zaokrągla liczby.", k:"SELECT ROUND(SUM(pensja),2) FROM pracownicy;"},
+        {t:"HAVING", o:"Warunek dla GROUP BY.", k:"SELECT klasa, COUNT(*) FROM uczniowie GROUP BY klasa HAVING COUNT(*) > 20;"},
+        {t:"CREATE VIEW", o:"Tworzy widok.", k:"CREATE VIEW młodzi AS SELECT * FROM uczniowie WHERE wiek < 18;"},
+        {t:"DROP VIEW", o:"Usuwa widok.", k:"DROP VIEW młodzi;"}
+    ],
+    trudne: [
+        {t:"TRUNCATE", o:"Czyści tabelę.", k:"TRUNCATE TABLE uczniowie;"},
+        {t:"LOCK", o:"Blokuje tabelę.", k:"LOCK TABLE uczniowie READ;"},
+        {t:"CALL", o:"Wywołuje procedurę.", k:"CALL policzUczniow();"},
+        {t:"EXPLAIN PLAN", o:"Pokazuje plan wykonania.", k:"EXPLAIN SELECT * FROM t;"},
+        {t:"RTRIM", o:"Usuwa spacje z prawej.", k:"SELECT RTRIM(imie) FROM t;"},
+        {t:"SAVEPOINT", o:"Tworzy punkt zapisu.", k:"SAVEPOINT p1;"},
+        {t:"ROLLBACK", o:"Cofa zmiany.", k:"ROLLBACK TO p1;"},
+        {t:"BEGIN / COMMIT", o:"Transakcje.", k:"BEGIN; UPDATE t SET a=1; COMMIT;"},
+        {t:"CREATE INDEX", o:"Tworzy indeks.", k:"CREATE INDEX idx_imie ON uczniowie(imie);"},
+        {t:"TRIM / LTRIM / RTRIM", o:"Usuwają spacje.", k:"SELECT TRIM(imie) FROM t;"},
+        {t:"SUBSTRING", o:"Wyciąga fragment tekstu.", k:"SELECT SUBSTRING(imie,1,3) FROM t;"},
+        {t:"Typy danych", o:"Dodatkowe typy.", k:"CHAR, TEXT, REAL, TINYINT, MONEY, DATE, TIME, DATETIME"}
+    ]
+};
+
+function loadBlocks() {
+    for (let key in data) {
+        const section = document.getElementById(key);
+        data[key].forEach(item => {
+            const block = document.createElement('div');
+            block.className = 'block';
+            block.innerHTML = `<h3>${item.t}</h3><p>${item.o}</p><div class='code'>${item.k}</div>`;
+            section.appendChild(block);
+        });
+    }
+}
+
+function showSection(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
+    document.getElementById(name).classList.remove('hidden');
+}
+
+loadBlocks();
+</script>
+</body>
+</html>
