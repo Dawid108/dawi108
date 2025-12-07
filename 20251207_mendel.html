@@ -39,7 +39,7 @@ box-shadow:0 0 20px #0006;
 
 <div id="game">
     <div id="stats">
-        <div>Życia: <span id="life">10</span></div>
+        <div>Życia: <span id="life">3</span></div>
         <div>Punkty: <span id="score">0</span></div>
     </div>
     <div class="category" id="category"></div>
@@ -138,14 +138,14 @@ let questions = [
 ];
 
 let current = 0;
-let life = 10;
+let life = 3;
 let score = 0;
 let used = [];
 let maxQ = questions.length;
 let record = localStorage.getItem("pozytywizm3") || 0;
 
 function newGame(){
-    life = 10; score = 0; used = [];
+    life = 3; score = 0; used = [];
     document.getElementById("endScreen").classList.add("hidden");
     document.getElementById("game").classList.remove("hidden");
     updateStats();
