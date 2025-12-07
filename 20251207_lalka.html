@@ -3,158 +3,533 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Test Wiedzy</title>
+<title>Lalka</title>
 <style>
-    body {
-        margin: 0;
-        font-family: Arial, sans-serif;
-        background: #0d1226;
-        color: white;
-        text-align: center;
-    }
-    #game, #gameover {
-        margin-top: 40px;
-    }
-    .panel {
-        display: flex;
-        justify-content: space-between;
-        margin: 20px auto;
-        width: 300px;
-        font-size: 20px;
-    }
-    .box {
-        background: rgba(255,255,255,0.1);
-        padding: 10px 20px;
-        border-radius: 15px;
-    }
-    #questionBox {
-        background: rgba(255,255,255,0.08);
-        width: 90%;
-        margin: auto;
-        padding: 20px;
-        border-radius: 20px;
-    }
-    .answer {
-        background: rgba(255,255,255,0.05);
-        margin: 10px auto;
-        padding: 12px;
-        width: 80%;
-        border-radius: 15px;
-        cursor: pointer;
-        transition: 0.2s;
-    }
-    .answer:hover {
-        background: rgba(255,255,255,0.15);
-    }
-    #gameover button {
-        padding: 12px 25px;
-        margin-top: 20px;
-        border-radius: 20px;
-        background: linear-gradient(90deg,#8be,#a8f);
-        border: none;
-        cursor: pointer;
-    }
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
 </style>
 </head>
 <body>
 
 <div id="game">
-    <div class="panel">
-        <div class="box">Życia: <span id="lives">3</span></div>
-        <div class="box">Punkty: <span id="score">0</span></div>
+    <div id="stats">
+        <div>Życia: <span id="life">3</span></div>
+        <div>Punkty: <span id="score">0</span></div>
     </div>
-
-    <div id="questionBox">
-        <h3 id="category"></h3>
-        <h2 id="question"></h2>
-        <div id="answers"></div>
-    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
 </div>
 
-<div id="gameover" style="display:none;">
-    <h1>INF03 – Testy</h1>
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
     <p>Twój wynik: <span id="finalScore"></span></p>
     <p>Twój rekord: <span id="record"></span></p>
-    <button onclick="startGame()">Nowa Gra</button>
+    <button onclick="newGame()">Nowa Gra</button>
 </div>
 
 <script>
-let lives = 3;
-let score = 0;
-let record = localStorage.getItem("record") || 0;
+// PYTANIA
+let questions = [
+{cat:"Lalka", q:"Kim był Stanisław Wokulski?", a:"Kupcem", b:"Władcą średniowiecznej Polski", c:"Poetą romantycznym", d:"Kapitanem okrętu wojennego"},
+ {cat:"Lalka", q:"Jaką powieścią jest „Lalka” Bolesława Prusa?", 
+ a:"Powieścią realistyczną", 
+ b:"Powieścią baśniową", 
+ c:"Powieścią mitologiczną", 
+ d:"Powieścią fantastyczną"},
 
-test = [
-    { cat:"Pojęcia", q:"Kiedy rozpoczął się pozytywizm?", a:"1864 po upadku powstania styczniowego", w:["1918 po I wojnie", "1848 po Wiośnie Ludów", "1795 po rozbiorach"] },
-    { cat:"Pojęcia", q:"Kiedy zakończyła się epoka pozytywizmu?", a:"1890–1895 pojawienie się nowych artystów", w:["1939 początek wojny", "1815 kongres wiedeński", "1905 rewolucja"] },
-    { cat:"Lalka", q:"Kim jest Stanisław Wokulski?", a:"Bohater 'Lalki', przedsiębiorca i idealista", w:["Dowódca powstania", "Poeta romantyczny", "Lekarz z Warszawy"] },
-    { cat:"Potop", q:"Co oznacza tytuł 'Potop'?", a:"Najazd Szwedów na Rzeczpospolitą", w:["Powódź w Małopolsce", "Metafora choroby", "Zniszczenia tatarskie"] },
-    { cat:"Gloria Victis", q:"Co oznacza tytuł 'Gloria Victis'?", a:"Chwała zwyciężonym", w:["Zguba bohaterów", "Chwała bogów", "Walka o wolność"] },
-    { cat:"Zbrodnia i Kara", q:"Kim jest Rodion Raskolnikow?", a:"Student, który popełnia zbrodnię i przeżywa konflikt moralny", w:["Carskim żołnierzem", "Kupcem z Moskwy", "Adwokatem"] }
+{cat:"Lalka", q:"Co ukazuje powieść „Lalka”?", 
+ a:"Nastroje społeczne lat 80. XIX wieku w Polsce", 
+ b:"Przemiany Europy w epoce baroku", 
+ c:"Życie codzienne w czasach renesansu", 
+ d:"Realistyczny obraz średniowiecznego rycerstwa"},
+
+{cat:"Lalka", q:"Kim był Stanisław Wokulski?", 
+ a:"Kupcem, wynalazcą i przedsiębiorcą dążącym do awansu społecznego", 
+ b:"Zamożnym arystokratą żyjącym z rodzinnego majątku", 
+ c:"Wieśniakiem, który został politycznym działaczem", 
+ d:"Nieznanym poetą tworzącym w ukryciu"},
+
+{cat:"Lalka", q:"Kim był Ignacy Rzecki?", 
+ a:"Starym subiektem, przyjacielem Wokulskiego i autorem pamiętnika", 
+ b:"Znanym lekarzem prowadzącym warszawską klinikę", 
+ c:"Arystokratą pracującym w kancelarii króla", 
+ d:"Kupcem podróżniczym odwiedzającym świat"},
+
+{cat:"Lalka", q:"Kim był Julian Ochocki?", 
+ a:"Młodym arystokratą marzącym o postępie i naukowych wynalazkach", 
+ b:"Zamożnym kupcem zajmującym się handlem kolonialnym", 
+ c:"Rewolucjonistą walczącym na ulicach Paryża", 
+ d:"Poetą piszącym satyry na społeczeństwo"},
+
+{cat:"Lalka", q:"Dlaczego „Lalka” jest powieścią o społeczeństwie?", 
+ a:"Bo szczegółowo opisuje arystokrację, mieszczaństwo i biedotę", 
+ b:"Bo skupia się wyłącznie na życiu jednej rodziny", 
+ c:"Bo przedstawia tylko wydarzenia polityczne", 
+ d:"Bo opisuje jedynie podróże bohaterów"},
+
+{cat:"Lalka", q:"Jakie miasto zostało szczegółowo opisane w „Lalce”?", 
+ a:"Warszawa", 
+ b:"Kraków", 
+ c:"Poznań", 
+ d:"Lwów"},
+
+{cat:"Lalka", q:"Miłość kupca galanteryjnego do arystokratki to:", 
+ a:"Miłość Wokulskiego do Izabeli Łęckiej", 
+ b:"Miłość Rzeckiego do Heleny Stawskiej", 
+ c:"Miłość Ochockiego do Izabeli", 
+ d:"Miłość Krzeszowskiego do Stawskiej"},
+
+{cat:"Lalka", q:"Kto odniósł awans społeczny w „Lalce”?", 
+ a:"Stanisław Wokulski, który z biednego chłopca stał się zamożnym kupcem", 
+ b:"Julian Ochocki, który odziedziczył fortunę po wuju", 
+ c:"Ignacy Rzecki, który otrzymał tytuł szlachecki", 
+ d:"Izabela Łęcka, która zdobyła władzę polityczną"},
+
+{cat:"Lalka", q:"Jaki jest czas teraźniejszy powieści „Lalka”?", 
+ a:"Marzec 1878 – październik 1879", 
+ b:"Rok 1812 podczas kampanii Napoleona", 
+ c:"Lata 1901–1905 w Warszawie", 
+ d:"Okres powojenny po 1945 roku"},
+
+{cat:"Lalka", q:"Jaki jest czas przeszły powieści „Lalka”?", 
+ a:"Wydarzenia XVII wieku oraz XIX wieku: Wiosna Ludów i powstanie styczniowe", 
+ b:"Okres panowania Bolesława Chrobrego", 
+ c:"Czasy wojen krzyżackich na Pomorzu", 
+ d:"Epoka rozbiorów Polski z XVIII wieku"},
+
+{cat:"Lalka", q:"Jakie są główne miejsca akcji w „Lalce”?", 
+ a:"Warszawa, Paryż, Zasławek i Zasław", 
+ b:"Kraków, Wilno, Lwów i Piotrków", 
+ c:"Berlin, Wiedeń, Londyn i Kijów", 
+ d:"Moskwa, Petersburg, Odessa i Ryga"},
+
+{cat:"Lalka", q:"Kiedy występuje narrator trzecioosobowy w „Lalce”?", 
+ a:"W akcji właściwej toczącej się w czasie teraźniejszym", 
+ b:"Wyłącznie w opisach pamiętnika Rzeckiego", 
+ c:"Jedynie w retrospekcjach dotyczących Ochockiego", 
+ d:"Tylko w scenach towarzyskich u Łęckich"},
+
+{cat:"Lalka", q:"Kiedy występuje narrator pierwszoosobowy w „Lalce”?", 
+ a:"W pamiętniku starego subiekta Ignacego Rzeckiego", 
+ b:"W opisach podróży Wokulskiego po Paryżu", 
+ c:"W wypowiedziach arystokratów o Izabeli", 
+ d:"W scenach rozmów mieszkańców Powiśla"},
+
+{cat:"Lalka", q:"Do czego nawiązuje tytuł powieści „Lalka”?", 
+ a:"Do procesu o skradzioną lalkę", 
+ b:"Do zabawek kupowanych w sklepie Minclów", 
+ c:"Do pseudonimu jednego z bohaterów", 
+ d:"Do nazwy teatru lalek w Warszawie"},
+
+{cat:"Lalka", q:"Kto może być tytułową lalką pozbawioną uczuć?", 
+ a:"Izabela Łęcka", 
+ b:"Helena Stawska", 
+ c:"Klara Howard", 
+ d:"Wiesława Pławska"},
+
+{cat:"Lalka", q:"Kto może być tytułową lalką manipulowaną przez innych?", 
+ a:"Stanisław Wokulski", 
+ b:"Julian Ochocki", 
+ c:"Kazimierz Starski", 
+ d:"Tomasz Łęcki"},
+
+{cat:"Lalka", q:"Co może symbolizować tytuł „Lalka”?", 
+ a:"Człowieka jako lalkę w teatrze życia", 
+ b:"Świat jako mechanizm kierowany przez los", 
+ c:"Społeczeństwo jako żywy organizm", 
+ d:"Historię Polski jako ciąg figur lalek"},
+
+{cat:"Lalka", q:"Co oznacza „Człowiek jako lalka w teatrze życia” w kontekście powieści?", 
+ a:"Że bohaterowie są zależni od społecznych mechanizmów i cudzych decyzji", 
+ b:"Że człowiek rodzi się z góry skazaną rolą", 
+ c:"Że ludzie są tylko obserwatorami własnego losu", 
+ d:"Że każda postać odgrywa ustaloną maskę bez emocji"},
+
+{cat:"Lalka", q:"Kim byli Idealiści w „Lalce”?", 
+ a:"Ludźmi żyjącymi zgodnie ze swoimi zasadami i moralnymi ideałami", 
+ b:"Grupą artystów piszących manifesty społeczne", 
+ c:"Kupcami próbującymi przejąć firmę Minclów", 
+ d:"Zwolennikami romantycznego buntu na ulicach Warszawy"},
+
+ {cat:"Lalka", q:"Wskaż trzech bohaterów idealistycznych w „Lalce”.",
+ a:"Rzecki, Wokulski i Ochocki",
+ b:"Łęcka, Starski i Krzeszowski",
+ c:"Stawska, Łęcki i Geist",
+ d:"Ochocki, Hopfer i Szlangbaum"},
+
+{cat:"Lalka", q:"Kto był jedynie idealistą romantycznym?",
+ a:"Ignacy Rzecki",
+ b:"Julian Ochocki",
+ c:"Tomasz Łęcki",
+ d:"Prezesowa Zasławska"},
+
+{cat:"Lalka", q:"Kto łączył idealizm romantyczny i pozytywistyczny?",
+ a:"Stanisław Wokulski",
+ b:"Kazimierz Starski",
+ c:"Henryk Szlangbaum",
+ d:"Helena Stawska"},
+
+{cat:"Lalka", q:"Kto był idealistą pozytywistycznym?",
+ a:"Julian Ochocki",
+ b:"Ignacy Rzecki",
+ c:"Kazimierz Starski",
+ d:"Tomasz Łęcki"},
+
+{cat:"Lalka", q:"Co Rzecki myśli o miłości?",
+ a:"Że miłość to uczucie stałe i wierne aż do końca",
+ b:"Że miłość jest wyłącznie ekonomiczną kalkulacją",
+ c:"Że uczucia nie mają żadnego znaczenia",
+ d:"Że miłość to chwilowa moda towarzyska"},
+
+{cat:"Lalka", q:"Jaki jest stosunek Rzeckiego do Napoleona?",
+ a:"Podziwia Napoleona i wierzy w jego legendę",
+ b:"Uważa Napoleona za słabego wodza",
+ c:"Nie interesuje go epoka napoleońska",
+ d:"Traktuje Napoleona jako postać komiczną"},
+
+{cat:"Lalka", q:"Jak Rzecki wspomina udział w Wiośnie Ludów?",
+ a:"Z sentymentem i poczuciem młodzieńczego idealizmu",
+ b:"Jako bezużyteczną przygodę bez znaczenia",
+ c:"Jako przymusowy udział w cudzej sprawie",
+ d:"Jako czas wielkich sukcesów finansowych"},
+
+{cat:"Lalka", q:"Jak Rzecki wspomina udział w powstaniu styczniowym?",
+ a:"Jako bolesne doświadczenie pełne goryczy i rozczarowania",
+ b:"Jako udaną i chwalebną kampanię",
+ c:"Jako wydarzenie, którego nie brał udziału",
+ d:"Jako radosny okres triumfu"},
+
+{cat:"Lalka", q:"Jaki Rzecki ma stosunek do ludzi innych narodowości?",
+ a:"Szanuje wszystkich ludzi niezależnie od pochodzenia",
+ b:"Uznaje wyższość tylko Francuzów",
+ c:"Nie ufa nikomu spoza Warszawy",
+ d:"Uważa, że narody nie powinny się mieszać"},
+
+{cat:"Lalka", q:"Jakie Rzecki ma marzenia wobec społeczeństwa polskiego?",
+ a:"Marzy o zgodnym, uczciwym i pracowitym narodzie",
+ b:"O społeczeństwie zamkniętym i odizolowanym",
+ c:"O Polsce kierowanej jedynie przez arystokrację",
+ d:"O państwie, które rezygnuje z tradycji"},
+
+{cat:"Lalka", q:"Jaki Rzecki ma stosunek do Wokulskiego?",
+ a:"Ceni go, wierzy w niego i uważa za człowieka wyjątkowego",
+ b:"Nie lubi go i traktuje z podejrzliwością",
+ c:"Nie zwraca na niego uwagi",
+ d:"Uważa go za lekkoducha bez ambicji"},
+
+{cat:"Lalka", q:"Jaki Rzecki ma stosunek do pieniędzy?",
+ a:"Są dla niego drugorzędne wobec wartości moralnych",
+ b:"Uważa je za najważniejsze w życiu",
+ c:"Wydaje wszystkie na luksusy",
+ d:"Gromadzi je obsesyjnie dla zysku"},
+
+{cat:"Lalka", q:"Jak Rzecki jest odbierany przez ludzi?",
+ a:"Jako uczciwy, skromny i pracowity człowiek starej daty",
+ b:"Jako ryzykowny inwestor giełdowy",
+ c:"Jako człowiek żyjący z oszustw",
+ d:"Jako znany bywalec salonów"},
+
+{cat:"Lalka", q:"Co Wokulski myśli o miłości?",
+ a:"Miłość uważa za potężne uczucie zdolne zmienić całe życie",
+ b:"Uważa miłość za niepotrzebny obowiązek",
+ c:"Traktuje ją jako tymczasową zabawę",
+ d:"W ogóle nie wierzy w istnienie miłości"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do literatury romantycznej?",
+ a:"W młodości ją podziwiał, lecz później zaczął podchodzić do niej krytycznie",
+ b:"Zawsze traktował ją jako bezużyteczną",
+ c:"Uważał ją za niebezpieczną dla młodzieży",
+ d:"Nigdy nie miał z nią styczności"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do Izabeli Łęckiej?",
+ a:"Idealizuje ją i kocha, mimo że miłość ta jest niszcząca",
+ b:"Traktuje ją jak zwykłą koleżankę",
+ c:"Uważa ją za wzór moralności",
+ d:"Widuje ją tylko jako klientkę sklepu"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do walki o ojczyznę?",
+ a:"Brał w niej udział i uważa patriotyzm za obowiązek",
+ b:"Nie interesuje go los kraju",
+ c:"Odrzuca wszelkie działania polityczne",
+ d:"Uważa walkę za stratę czasu"},
+
+{cat:"Lalka", q:"Jak Wokulski idealizuje idee pozytywistyczne?",
+ a:"Wierzy w pracę, naukę i rozwój społeczeństwa",
+ b:"Uznaje tylko tradycję i dawne zwyczaje",
+ c:"Odrzuca naukę jako zbędną",
+ d:"Uważa rozwój za zagrożenie"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do ludzi?",
+ a:"Stara się pomagać innym i widzi w nich potencjał do zmiany",
+ b:"Uważa ludzi za z natury leniwych",
+ c:"Traktuje wszystkich jako wrogów",
+ d:"Interesuje go jedynie krąg arystokracji"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do pieniędzy?",
+ a:"Traktuje je jako narzędzie, nie cel sam w sobie",
+ b:"Uważa je za najwyższy sens życia",
+ c:"Wydaje je wyłącznie na luksusy",
+ d:"Nie potrafi ich w ogóle zarabiać"}, 
+
+ {cat:"Lalka", q:"Jak odbierany jest Wokulski przez społeczeństwo?", 
+a:"Jako człowiek niezrozumiany i oceniany powierzchownie", 
+b:"Jako osoba wesoła i towarzyska, lubiana przez wszystkich", 
+c:"Jako typowy reprezentant warszawskiej arystokracji", 
+d:"Jako bezwolny urzędnik bez własnych ambicji"},
+
+{cat:"Lalka", q:"Jaki Ochocki ma stosunek do ludzi?", 
+a:"Jest życzliwy, ale traktuje ludzi z dystansem, skupiając się na nauce", 
+b:"Darzy wszystkich bezwarunkowym podziwem", 
+c:"Uważa innych za zupełnie nieistotnych", 
+d:"Odznacza się chłodną wrogością wobec wszystkich warstw społecznych"},
+
+{cat:"Lalka", q:"Jakie ma marzenia Julian Ochocki?", 
+a:"Chce odkrywać nowe wynalazki i rozwijać naukę", 
+b:"Pragnie zostać właścicielem eleganckiego sklepu", 
+c:"Planuje tworzyć wystawne bale dla arystokracji", 
+d:"Marzy o spokojnym życiu na prowincji bez ambicji naukowych"},
+
+{cat:"Lalka", q:"Jaki ma stosunek Ochocki do kobiet i miłości?", 
+a:"Uważa, że miłość odciąga go od nauki i nie jest dla niego priorytetem", 
+b:"Postrzega miłość jako najważniejszą wartość w życiu", 
+c:"Bezrefleksyjnie angażuje się w każde zauroczenie", 
+d:"Traktuje kwestie miłosne jako źródło bogactwa i wpływów"},
+
+{cat:"Lalka", q:"Czym jest dla Ochockiego nauka, postęp i rozwój?", 
+a:"Najwyższą wartością i celem życia", 
+b:"Zajęciem służącym wyłącznie zdobyciu majątku", 
+c:"Dodatkowym hobby bez większego znaczenia", 
+d:"Czymś ważnym, ale podporządkowanym modzie towarzyskiej"},
+
+{cat:"Lalka", q:"Jak Ochocki jest odbierany przez społeczeństwo?", 
+a:"Jako ekscentryk z głową w chmurach", 
+b:"Jako poważny arystokrata dbający o interesy", 
+c:"Jako stateczny kupiec o tradycyjnych poglądach", 
+d:"Jako surowy polityk, unikający nowinek naukowych"},
+
+{cat:"Lalka", q:"Gdzie została przedstawiona arystokracja?", 
+a:"W Rodzinie Łęckich, żyjącej ponad stan i często podróżującej", 
+b:"Wśród rzemieślników pracujących w małych warsztatach", 
+c:"Na Powiślu, w dzielnicy najbiedniejszych mieszkańców", 
+d:"W sklepie Wokulskiego pośród stałych klientów"},
+
+{cat:"Lalka", q:"Jak została ukazana arystokracja?", 
+a:"Krytycznie, jako ludzie żyjący na koszt społeczeństwa", 
+b:"Jako warstwa najbardziej pracowita i innowacyjna", 
+c:"Jako grupa troszcząca się o rozwój naukowy miasta", 
+d:"Jako społeczność w pełni niezależna i samowystarczalna"},
+
+{cat:"Lalka", q:"Jak nazwani są arystokraci?", 
+a:"Kosmopolitami bez uczuć patriotycznych", 
+b:"Patriotami gotowymi do poświęceń", 
+c:"Reformatorami zmieniającymi Warszawę", 
+d:"Obrońcami interesów mieszczaństwa"},
+
+{cat:"Lalka", q:"Kto jest typowym przedstawicielem mieszczaństwa?", 
+a:"Ignacy Rzecki", 
+b:"Julian Ochocki", 
+c:"Tomasz Łęcki", 
+d:"Kazimierz Starski"},
+
+{cat:"Lalka", q:"Kto reprezentuje mieszczaństwo niemieckie?", 
+a:"Rodzina Minclów", 
+b:"Rodzina Łęckich", 
+c:"Rodzina Zasławskich", 
+d:"Rodzina Krzeszowskich"},
+
+{cat:"Lalka", q:"Kto reprezentuje pochodzenia żydowskiego?", 
+a:"Rodzina Szlangbaum", 
+b:"Rodzina Minclów", 
+c:"Rodzina Łęckich", 
+d:"Rodzina Węgiełków"},
+
+{cat:"Lalka", q:"Dlaczego krytycznie Prus scharakteryzował mieszczaństwo?", 
+a:"Bo każdy pilnuje własnego interesu i brakuje odwagi do inwestowania w rozwój społeczny", 
+b:"Bo mieszczaństwo przeznaczało cały majątek na cele społeczne", 
+c:"Bo było zbyt otwarte na współpracę z arystokracją", 
+d:"Bo zaniedbywało handel na rzecz działalności politycznej"},
+
+{cat:"Lalka", q:"Jak żyją ludzie z Proletariatu?", 
+a:"W nędzy, brudzie i niechlujstwie", 
+b:"Na bogato, w eleganckich kamienicach", 
+c:"Na poziomie zbliżonym do arystokracji", 
+d:"W luksusie finansowanym przez państwo"},
+
+{cat:"Lalka", q:"Jak miał na imię Wokulski?", 
+a:"Stanisław", 
+b:"Jan", 
+c:"Karol", 
+d:"Marek"},
+
+{cat:"Lalka", q:"Kto żyje na Krakowskim Przedmieściu?", 
+a:"Arystokracja i bogaci mieszczanie", 
+b:"Najbiedniejsi robotnicy i bezdomni", 
+c:"Głównie handlowcy z Powiśla", 
+d:"Wyłącznie rodziny wojskowe"},
+
+{cat:"Lalka", q:"Gdzie była kamienica Łęckich?", 
+a:"Na alejach Ujazdowskich", 
+b:"Na Powiślu", 
+c:"Na Pradze", 
+d:"Na ulicy Bednarskiej"},
+
+{cat:"Lalka", q:"Gdzie zamieszkiwali najbiedniejsi mieszkańcy Warszawy?", 
+a:"Na Powiślu", 
+b:"Na Alei Ujazdowskich", 
+c:"W okolicach Ogrodu Saskiego", 
+d:"Na Krakowskim Przedmieściu"},
+
+{cat:"Lalka", q:"Gdzie po raz pierwszy Wokulski zobaczył Łęcką?", 
+a:"W Teatrze Wielkim", 
+b:"W sklepie Minclów", 
+c:"W Łazienkach Królewskich", 
+d:"W Ogrodzie Botanicznym"},
+
+{cat:"Lalka", q:"Jakie zostały przedstawione tereny zielone w powieści?", 
+a:"Ogród Saski, Ogród Botaniczny, Łazienki Królewskie", 
+b:"Wyłącznie Park Praski", 
+c:"Kilka anonimowych skwerów bez znaczenia", 
+d:"Tylko Łazienki bez innych ogrodów"},
+
+{cat:"Lalka", q:"Jak jest ukazany motyw świata jako teatru?", 
+a:"Ludzie porównywani są do lalek i marionetek sterowanych przez siłę wyższą", 
+b:"Życie przedstawione jest jako nieprzerwany triumf człowieka nad losem", 
+c:"Bohaterowie zawsze mają pełną kontrolę nad każdym wydarzeniem", 
+d:"Świat ukazany jest jako uporządkowana scena bez konfliktów"}
 ];
 
-let current = {};
+let current = 0;
+let life = 3;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("pozytywizm3") || 0;
 
-function shuffle(arr){ return arr.sort(()=>Math.random()-0.5); }
-
-function nextQuestion(){
-    if(lives<=0){ endGame(); return; }
-
-    let item = test[Math.floor(Math.random()*test.length)];
-    current = item;
-
-    document.getElementById("category").innerText = item.cat;
-    document.getElementById("question").innerText = item.q;
-
-    let answers = [item.a, ...item.w];
-    answers = shuffle(answers);
-
-    let box = document.getElementById("answers");
-    box.innerHTML = "";
-
-    answers.forEach(ans => {
-        let div = document.createElement("div");
-        div.className = "answer";
-        div.innerText = ans;
-        div.onclick = ()=>choose(ans);
-        box.appendChild(div);
-    });
-}
-
-function choose(ans){
-    if(ans === current.a){
-        score++;
-        document.getElementById("score").innerText = score;
-    } else {
-        lives--;
-        document.getElementById("lives").innerText = lives;
-    }
+function newGame(){
+    life = 3; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
     nextQuestion();
 }
 
-function endGame(){
-    document.getElementById("game").style.display = "none";
-    document.getElementById("gameover").style.display = "block";
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        updateStats();
+        setTimeout(()=>nextQuestion(), 300);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 2000); }
+        else{ setTimeout(()=>nextQuestion(), 3000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
     document.getElementById("finalScore").innerText = score;
 
     if(score > record){
         record = score;
-        localStorage.setItem("record", record);
+        localStorage.setItem("pozytywizm3", record);
     }
+
     document.getElementById("record").innerText = record;
 }
 
-function startGame(){
-    lives = 3;
-    score = 0;
-    document.getElementById("lives").innerText = lives;
-    document.getElementById("score").innerText = score;
-    document.getElementById("game").style.display = "block";
-    document.getElementById("gameover").style.display = "none";
-    nextQuestion();
-}
-
-startGame();
+newGame();
 </script>
-
 </body>
 </html>
