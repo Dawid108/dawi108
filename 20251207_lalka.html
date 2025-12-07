@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Wiedzy</title>
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0d1226;
+        color: white;
+        text-align: center;
+    }
+    #game, #gameover {
+        margin-top: 40px;
+    }
+    .panel {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px auto;
+        width: 300px;
+        font-size: 20px;
+    }
+    .box {
+        background: rgba(255,255,255,0.1);
+        padding: 10px 20px;
+        border-radius: 15px;
+    }
+    #questionBox {
+        background: rgba(255,255,255,0.08);
+        width: 90%;
+        margin: auto;
+        padding: 20px;
+        border-radius: 20px;
+    }
+    .answer {
+        background: rgba(255,255,255,0.05);
+        margin: 10px auto;
+        padding: 12px;
+        width: 80%;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: 0.2s;
+    }
+    .answer:hover {
+        background: rgba(255,255,255,0.15);
+    }
+    #gameover button {
+        padding: 12px 25px;
+        margin-top: 20px;
+        border-radius: 20px;
+        background: linear-gradient(90deg,#8be,#a8f);
+        border: none;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div class="panel">
+        <div class="box">Życia: <span id="lives">3</span></div>
+        <div class="box">Punkty: <span id="score">0</span></div>
+    </div>
+
+    <div id="questionBox">
+        <h3 id="category"></h3>
+        <h2 id="question"></h2>
+        <div id="answers"></div>
+    </div>
+</div>
+
+<div id="gameover" style="display:none;">
+    <h1>INF03 – Testy</h1>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <button onclick="startGame()">Nowa Gra</button>
+</div>
+
+<script>
+let lives = 3;
+let score = 0;
+let record = localStorage.getItem("record") || 0;
+
+test = [
+    { cat:"Pojęcia", q:"Kiedy rozpoczął się pozytywizm?", a:"1864 po upadku powstania styczniowego", w:["1918 po I wojnie", "1848 po Wiośnie Ludów", "1795 po rozbiorach"] },
+    { cat:"Pojęcia", q:"Kiedy zakończyła się epoka pozytywizmu?", a:"1890–1895 pojawienie się nowych artystów", w:["1939 początek wojny", "1815 kongres wiedeński", "1905 rewolucja"] },
+    { cat:"Lalka", q:"Kim jest Stanisław Wokulski?", a:"Bohater 'Lalki', przedsiębiorca i idealista", w:["Dowódca powstania", "Poeta romantyczny", "Lekarz z Warszawy"] },
+    { cat:"Potop", q:"Co oznacza tytuł 'Potop'?", a:"Najazd Szwedów na Rzeczpospolitą", w:["Powódź w Małopolsce", "Metafora choroby", "Zniszczenia tatarskie"] },
+    { cat:"Gloria Victis", q:"Co oznacza tytuł 'Gloria Victis'?", a:"Chwała zwyciężonym", w:["Zguba bohaterów", "Chwała bogów", "Walka o wolność"] },
+    { cat:"Zbrodnia i Kara", q:"Kim jest Rodion Raskolnikow?", a:"Student, który popełnia zbrodnię i przeżywa konflikt moralny", w:["Carskim żołnierzem", "Kupcem z Moskwy", "Adwokatem"] }
+];
+
+let current = {};
+
+function shuffle(arr){ return arr.sort(()=>Math.random()-0.5); }
+
+function nextQuestion(){
+    if(lives<=0){ endGame(); return; }
+
+    let item = test[Math.floor(Math.random()*test.length)];
+    current = item;
+
+    document.getElementById("category").innerText = item.cat;
+    document.getElementById("question").innerText = item.q;
+
+    let answers = [item.a, ...item.w];
+    answers = shuffle(answers);
+
+    let box = document.getElementById("answers");
+    box.innerHTML = "";
+
+    answers.forEach(ans => {
+        let div = document.createElement("div");
+        div.className = "answer";
+        div.innerText = ans;
+        div.onclick = ()=>choose(ans);
+        box.appendChild(div);
+    });
+}
+
+function choose(ans){
+    if(ans === current.a){
+        score++;
+        document.getElementById("score").innerText = score;
+    } else {
+        lives--;
+        document.getElementById("lives").innerText = lives;
+    }
+    nextQuestion();
+}
+
+function endGame(){
+    document.getElementById("game").style.display = "none";
+    document.getElementById("gameover").style.display = "block";
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("record", record);
+    }
+    document.getElementById("record").innerText = record;
+}
+
+function startGame(){
+    lives = 3;
+    score = 0;
+    document.getElementById("lives").innerText = lives;
+    document.getElementById("score").innerText = score;
+    document.getElementById("game").style.display = "block";
+    document.getElementById("gameover").style.display = "none";
+    nextQuestion();
+}
+
+startGame();
+</script>
+
+</body>
+</html>
