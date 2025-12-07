@@ -118,6 +118,7 @@
       let current = null;
       let showingReveal = false;
       let initialSeed = null;
+      let dawid108 = localStorage.getItem("dawid108") || 0;
 
       // Helpers
       function normalize(s){
@@ -198,6 +199,9 @@
           feedbackEl.textContent='Dobrze!';
           setTimeout(()=>{ feedbackEl.style.display='none'; },800);
           showNext();
+          dawid108++;
+          localStorage.setItem("dawid108", dawid108);
+          console.log("dawid108:", dawid108);
         } else {
           // wrong: reveal and restart
           revealCorrectThenRestart();
@@ -219,6 +223,9 @@
           const item = pool.shift();
           pool.push(item);
           showNext();
+          dawid108++;
+          localStorage.setItem("dawid108", dawid108);
+          console.log("dawid108:", dawid108);
         }
       });
 
