@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zbrodnia i kara - Fiodor Dostojewski</title>
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">10</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Zbrodnia i kara", q:"Kim był Rodion Raskolnikow?", a:"Studentem, który popełnił zbrodnię i zmagał się z wyrzutami sumienia", b:"Sędzią prowadzącym śledztwo", c:"Znanym rosyjskim poetą", d:"Żołnierzem armii carskiej"},
+  {cat:"Zbrodnia i Kara", q:"Kto nadał tytuł pierwotny polskiemu przekładowi powieści?", 
+ a:"Pierwszy tłumacz utworu", 
+ b:"Znany dziewiętnastowieczny wydawca", 
+ c:"Znany redaktor literacki tamtej epoki", 
+ d:"Jeden z popularnych krytyków gazety"},
+
+{cat:"Zbrodnia i Kara", q:"Jaki jest rosyjski tytuł powieści?", 
+ a:"Priestupliénie i nakazánije",
+ b:"Powieść o czynach i skutkach",
+ c:"Historia winy i pokuty",
+ d:"Opowieść o przestępstwie i sądzie"},
+
+{cat:"Zbrodnia i Kara", q:"Co oznacza słowo „Priestupliénie”?", 
+ a:"Przekroczenie prawa",
+ b:"Nieuzasadniony czyn",
+ c:"Poważne naruszenie zasad",
+ d:"Złamanie ważnych reguł"},
+
+{cat:"Zbrodnia i Kara", q:"Co oznacza słowo „nakazánije”?", 
+ a:"Kara, przestroga, nauczka",
+ b:"Wyrok, decyzja, pouczenie",
+ c:"Nagana, potępienie, osąd",
+ d:"Reprymenda, uwaga, ostrzeżenie"},
+
+{cat:"Zbrodnia i Kara", q:"Jaki jest czas akcji powieści?", 
+ a:"14 dni lipca 1865 roku",
+ b:"Dwa tygodnie lata 1864 roku",
+ c:"Około kilkunastu dni w 1866 roku",
+ d:"Początek lipca w połowie lat sześćdziesiątych"},
+
+{cat:"Zbrodnia i Kara", q:"Gdzie rozgrywa się akcja powieści?", 
+ a:"Rosja, Petersburg",
+ b:"Rosja, Moskwa",
+ c:"Rosja, Niżny Nowogród",
+ d:"Rosja, Krasnojarsk"},
+
+{cat:"Zbrodnia i Kara", q:"Jaki rodzaj narratora występuje w powieści?", 
+ a:"Trzecioosobowy wszechwiedzący",
+ b:"Pierwszoosobowy pamiętnikarski",
+ c:"Narrator ograniczony sytuacyjny",
+ d:"Relator o niepełnej wiedzy"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Rodion Roskolnikow?", 
+ a:"Ubogo żyjącym studentem prawa",
+ b:"Drobnomieszczańskim urzędnikiem w stolicy",
+ c:"Zamożnym kupcem o trudnej przeszłości",
+ d:"Znanym uczniem prestiżowej akademii"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Sonia Marmieładow?", 
+ a:"Córką urzędnika, zmuszoną do pracy dla rodziny",
+ b:"Krewną policjanta zajmującą się domem",
+ c:"Siostrą kupca pomagającą krewnym",
+ d:"Daleką kuzynką Roskolnikowa utrzymującą się z posług"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Dymitr Razumichin?", 
+ a:"Najbliższym przyjacielem Rodiona",
+ b:"Znajomym rodziny Roskolnikowów",
+ c:"Pomocnikiem z lokalnego urzędu",
+ d:"Współlokatorem z poprzedniego mieszkania"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Eudoksja Roskolnikow – Dunia?", 
+ a:"Siostrą Rodiona",
+ b:"Ubogą krewną mieszkającą na prowincji",
+ c:"Pomocnicą w domu sąsiadów",
+ d:"Znajomą matki Rodiona z młodości"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Pulcheria Roskolnikow?", 
+ a:"Matką Rodiona",
+ b:"Ciotką mieszkającą na wsi",
+ c:"Kuzynką, która opiekuje się domem",
+ d:"Opiekunką rodziny z sąsiedniego miasta"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Siemion Marmieładow?", 
+ a:"Zadłużonym urzędnikiem i ojcem Soni",
+ b:"Byłym kupcem utrzymującym rodzinę",
+ c:"Robotnikiem pracującym w dokach",
+ d:"Emerytowanym pisarzem urzędowym"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Piotr Łużyn?", 
+ a:"Narzeczonym Duni i egoistycznym karierowiczem",
+ b:"Znajomym matki Roskolnikowa z pracy",
+ c:"Skromnym lekarzem pomagającym rodzinie",
+ d:"Młodym kupcem zainteresowanym Dunią"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Arkadiusz Swidrygajłow?", 
+ a:"Bogaczem o mrocznej przeszłości",
+ b:"Nauczycielem pracującym na prowincji",
+ c:"Byłym urzędnikiem próbującym się dorobić",
+ d:"Znanym kupcem z odległej dzielnicy"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Porfiry Pietrowicz?", 
+ a:"Sędzią śledczym prowadzącym sprawę",
+ b:"Lekarzem badającym podejrzanych",
+ c:"Urzędnikiem związanym z rodziną Roskolnikowa",
+ d:"Pomocnikiem policji w prostych sprawach"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Aleksander Zamiotow?", 
+ a:"Młodym urzędnikiem policyjnym",
+ b:"Asystentem kupca z centralnej dzielnicy",
+ c:"Znajomym Razumichina z uczelni",
+ d:"Pisarzem współpracującym z sądem"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Alona Iwanowna?", 
+ a:"Starą lichwiarką",
+ b:"Znajomą sąsiadów Roskolnikowa",
+ c:"Właścicielką sklepu z odzieżą",
+ d:"Opiekunką jednego z mieszkańców kamienicy"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Lizawieta Limanowa?", 
+ a:"Siostrą lichwiarki",
+ b:"Nianią z pobliskiego domu",
+ c:"Znajomą Razumichina z ulicy",
+ d:"Pomocnicą w jednej z kamienic"},
+
+{cat:"Zbrodnia i Kara", q:"Do czego odnosi się część pierwsza powieści?", 
+ a:"Do zbrodni, czyli zamiaru i popełnienia przestępstwa",
+ b:"Do drogi moralnej bohatera i jego rozterek",
+ c:"Do reakcji rodziny na zachowanie Rodiona",
+ d:"Do życia ubogich mieszkańców Petersburga"},
+
+{cat:"Zbrodnia i Kara", q:"Do czego odnoszą się pozostałe pięć części powieści?", 
+ a:"Do kary i przemiany wnętrza Rodiona",
+ b:"Do opisania codzienności miasta i mieszkańców",
+ c:"Do konfliktów rodzinnych i osobistych bohatera",
+ d:"Do rozmaitych wątków pobocznych fabuły"},
+
+{cat:"Zbrodnia i Kara", q:"Skąd pochodził Roskolnikow?", 
+ a:"Zubożałej rodziny szlacheckiej z prowincji",
+ b:"Rodziny bogatych mieszczan z centrum",
+ c:"Znanej rodziny kupieckiej z miasta",
+ d:"Dawnej rodziny rzemieślniczej z okolic"},
+
+{cat:"Zbrodnia i Kara", q:"Dokąd wyjechał Rodion, by studiować prawo?", 
+ a:"Do Petersburga",
+ b:"Do Moskwy",
+ c:"Do Tweru",
+ d:"Do Smoleńska"},
+
+{cat:"Zbrodnia i Kara", q:"Jak był ubrany Roskolnikow?", 
+ a:"Nędznie, w tachmany",
+ b:"Starannie, w schludny surdut",
+ c:"Elegancko, w nowy płaszcz",
+ d:"Zwyczajnie, w prosty ubiór miejski"},
+
+{cat:"Zbrodnia i Kara", q:"Co charakterystycznego nosił Rodion?", 
+ a:"Walcowaty kapelusz",
+ b:"Długi wełniany szalik",
+ c:"Stary płócienny worek",
+ d:"Zniszczone rękawiczki skórzane"},
+
+{cat:"Zbrodnia i Kara", q:"Jak wyglądał kapelusz Rodiona?", 
+ a:"Bez rondla, dziurawy, z plamami i przekrzywiony",
+ b:"Szeroki, gładki, ozdobiony tasiemką",
+ c:"Wąski, czysty, z niewielką klamrą",
+ d:"Zwykły, ciemny, lekko wyblakły"},
+
+{cat:"Zbrodnia i Kara", q:"Jak dzielił ludzi Rodion?", 
+ a:"Na przeciętnych i wybitnych",
+ b:"Na słabych i stanowczych",
+ c:"Na biednych i zamożnych",
+ d:"Na ostrożnych i impulsywnych"},
+
+ {cat:"Zbrodnia i Kara", q:"Co stanowi fundament relacji Rodiona z Sonią?", 
+a:"Wzajemne wsparcie moralne prowadzące go ku odrodzeniu", 
+b:"Dążenie do wspólnych celów materialnych i zyskownych", 
+c:"Rywalizacja o wpływy i znaczenie w otoczeniu", 
+d:"Unikanie rozmów z powodu różnic światopoglądowych"},
+
+{cat:"Zbrodnia i Kara", q:"Dlaczego Sonia jest kluczowa w życiu Rodiona?", 
+a:"Pomaga mu pojąć winę i odnaleźć drogę przemiany", 
+b:"Umożliwia mu rozwój zawodowy i zdobycie kontaktów", 
+c:"Wprowadza go do bogatego środowiska znajomych", 
+d:"Wskazuje mu sposoby na poprawę codziennych finansów"},
+
+{cat:"Zbrodnia i Kara", q:"Co wyróżnia relację Rodiona z Razumichinem?", 
+a:"Szczera przyjaźń oraz stałe i lojalne wsparcie", 
+b:"Wspólne interesy prowadzone dla osiągania zysków", 
+c:"Konkurencja o względy mieszkających w okolicy", 
+d:"Chłodne relacje wynikające z rzadkich spotkań"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Razumichin reaguje na zachowanie Rodiona?", 
+a:"Próbuje pomagać mimo braku zrozumienia jego działań", 
+b:"Traktuje go obojętnie i unika wszelkich rozmów", 
+c:"Wykorzystuje jego słabości dla własnych celów", 
+d:"Całkowicie zrywa kontakt z powodu jego zachowań"},
+
+{cat:"Zbrodnia i Kara", q:"Co dominuje w relacji Rodiona z Dunią i matką?", 
+a:"Troska połączona z dystansem wynikającym z winy", 
+b:"Ciągłe konflikty prowadzące do rozpadu więzi", 
+c:"Wspólna praca nad poprawą finansów rodziny", 
+d:"Chłód emocjonalny wynikający z obojętności Rodiona"},
+
+{cat:"Zbrodnia i Kara", q:"Dlaczego Rodion dystansuje się od bliskich?", 
+a:"Obawia się skrzywdzenia ich ciężarem swojej tajemnicy", 
+b:"Chce zerwać kontakty z powodu narastającej złości", 
+c:"Uważa więzi rodzinne za całkowicie niepotrzebne", 
+d:"Woli skupić się na karierze zamiast na rodzinie"},
+
+{cat:"Zbrodnia i Kara", q:"Jak wygląda relacja Rodiona z Łużynem?", 
+a:"Rodion odrzuca egoistyczne i manipulacyjne intencje Łużyna", 
+b:"Obaj współpracują dla dobra całej rodziny", 
+c:"Łączy ich wzajemny podziw oraz podobne poglądy", 
+d:"Tworzą silną przyjaźń opartą na zaufaniu"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Rodion ocenia zamiary Łużyna wobec Duni?", 
+a:"Uważa je za manipulacyjne i skierowane przeciw siostrze", 
+b:"Traktuje je jako korzystne dla bliskiej rodziny", 
+c:"Widzi je jako dowód jego szczerości i dobroci", 
+d:"Ignoruje je, uznając za zupełnie obojętne"},
+
+{cat:"Zbrodnia i Kara", q:"Co jest główną ideą filozofii Rodiona o wyjątkowych ludziach?", 
+a:"Przekonanie, że wybrani mogą przekraczać prawo dla dobra", 
+b:"Założenie, że wszyscy muszą bezwzględnie przestrzegać prawa", 
+c:"Przekonanie, że żadne działania nie zmieniają świata", 
+d:"Twierdzenie o jednakowych możliwościach dla każdego"},
+
+{cat:"Zbrodnia i Kara", q:"Jak artykuł Rodiona wpływa na jego myślenie?", 
+a:"Wzmacnia wiarę w wyjątkowość i konieczność eksperymentu moralnego", 
+b:"Zniechęca go do zastanawiania się nad własnymi poglądami", 
+c:"Prowadzi do odrzucenia wszelkich wcześniejszych idei", 
+d:"Skłania do spokojnego i bezrefleksyjnego życia"},
+
+{cat:"Zbrodnia i Kara", q:"Jakie znaczenie mają sny Rodiona?", 
+a:"Ukazują jego lęki oraz moralne rozdarcie przed zbrodnią", 
+b:"Nadają mu odwagę i pewność w podejmowaniu decyzji", 
+c:"Oddzielają go od rzeczywistości prowadząc do fantazji", 
+d:"Ukazują mu wyłącznie chorobę bez głębszych emocji"},
+
+{cat:"Zbrodnia i Kara", q:"Co pokazują sny o przemocy wobec zwierzęcia?", 
+a:"Wewnętrzny konflikt między ideą a sumieniem Rodiona", 
+b:"Akceptację okrucieństwa wobec słabszych osób", 
+c:"Brak kontaktu z rzeczywistością i pogłębiające się urojenia", 
+d:"Obojętność na cierpienie innych ludzi"},
+
+{cat:"Zbrodnia i Kara", q:"Jak warunki życia wpływają na decyzje Rodiona?", 
+a:"Bieda i samotność popychają go ku myśli o zbrodni", 
+b:"Dostatek daje mu spokój i poczucie stabilizacji", 
+c:"Bogate otoczenie wzmacnia jego pewność siebie", 
+d:"Stałe wsparcie rodziny rozwiązuje jego problemy"},
+
+{cat:"Zbrodnia i Kara", q:"Co odczuwa Rodion w swojej codzienności?", 
+a:"Beznadzieję wynikającą z nędzy i narastającej izolacji", 
+b:"Harmonię wynikającą z bliskich relacji rodzinnych", 
+c:"Radość z osiąganych postępów i sukcesów", 
+d:"Stabilność zapewnianą przez regularne dochody"},
+
+{cat:"Zbrodnia i Kara", q:"Jak został przygotowany plan zbrodni?", 
+a:"Został starannie opracowany, lecz wymknął się spod kontroli", 
+b:"Powstał spontanicznie bez żadnego wcześniejszego namysłu", 
+c:"Został ustalony wspólnie z zaufanymi znajomymi", 
+d:"Został narzucony Rodionowi przez innych ludzi"},
+
+{cat:"Zbrodnia i Kara", q:"Co najbardziej burzy plan zbrodni Rodiona?", 
+a:"Nagłe pojawienie się Lizawiety podczas wykonywania czynu", 
+b:"Wczesne odnalezienie narzędzia przez sąsiadów", 
+c:"Brak możliwości dotarcia do pokoju lichwiarki", 
+d:"Przerwanie działań przez niespodziewanych policjantów"},
+
+{cat:"Zbrodnia i Kara", q:"Co dzieje się z Rodionem po zbrodni?", 
+a:"Ogarnia go choroba, gorączka i paniczny niepokój", 
+b:"Uspokaja się i czuje ulgę po ciężkiej decyzji", 
+c:"Skupia się wyłącznie na pracy zapominając o wszystkim", 
+d:"Uzyskuje pewność siebie i zaczyna nowe inicjatywy"},
+
+{cat:"Zbrodnia i Kara", q:"Co staje się największą karą dla Rodiona?", 
+a:"Wyrzuty sumienia oraz długotrwałe cierpienie psychiczne", 
+b:"Problemy związane z brakiem przyjaciół i kontaktów", 
+c:"Obowiązek częstych wizyt w komisariacie policji", 
+d:"Trudności finansowe utrudniające codzienne życie"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Sonia pomaga Rodionowi?", 
+a:"Uczy go pokory i odpowiedzialności za popełniony czyn", 
+b:"Dostarcza mu nowych możliwości pracy i rozwoju", 
+c:"Wskazuje sposoby ukrywania prawdy przed policją", 
+d:"Zachęca go do unikania jakichkolwiek rozmów"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Sonia wpływa na wyznanie winy przez Rodiona?", 
+a:"Skłania go do odwagi oraz moralnego oczyszczenia", 
+b:"Przekonuje go do ucieczki z miasta i ukrycia się", 
+c:"Pomaga mu w ukryciu dowodów i śladów", 
+d:"Prosi go o milczenie oraz brak wyznań"},
+
+{cat:"Zbrodnia i Kara", q:"Co oznacza przyznanie się do winy dla Rodiona?", 
+a:"Początek pokuty oraz duchowego odrodzenia", 
+b:"Zerwanie wszelkich kontaktów z rodziną", 
+c:"Rezygnację z własnych dotychczasowych poglądów", 
+d:"Wejście w środowisko osób łamiących prawo"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Syberia wpływa na dalsze losy Rodiona?", 
+a:"Umożliwia mu przemianę dzięki wsparciu i obecności Sonii", 
+b:"Zamyka go na emocje i oddala od wszelkiej refleksji", 
+c:"Pogłębia jego nienawiść do ludzi i świata", 
+d:"Umacnia go w przekonaniu o całkowitej niewinności"}
+];
+
+let current = 0;
+let life = 10;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("pozytywizm3") || 0;
+
+function newGame(){
+    life = 10; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        updateStats();
+        setTimeout(()=>nextQuestion(), 300);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 2000); }
+        else{ setTimeout(()=>nextQuestion(), 3000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("pozytywizm3", record);
+    }
+
+    document.getElementById("record").innerText = record;
+}
+
+newGame();
+</script>
+</body>
+</html>
