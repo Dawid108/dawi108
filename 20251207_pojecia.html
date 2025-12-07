@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pozytywizm - Pojęcia</title>
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">10</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Pojęcia", q:"Czym był pozytywizm?", a:"Kierunkiem umysłowym epoki po powstaniu styczniowym", b:"Ruchem średniowiecznych bardów", c:"Filozofią starożytnej Grecji", d:"Nurtem barokowego mistycyzmu"},
+{cat:"Pojęcia", q:"Kiedy zaczyna się pozytywizm?", a:"1864 – po upadku powstania styczniowego", b:"1918 – po I wojnie", c:"966 – chrzest Polski", d:"1939 – początek II wojny"},
+{cat:"Pojęcia", q:"Kiedy kończy się pozytywizm?", a:"1890–1895 – pojawienie się nowego pokolenia artystów", b:"2005 – rozwój internetu", c:"1772 – rozbiory Polski", d:"1600 – początek baroku"},
+  {cat:"Pojęcia", q:"Czym był pozytywizm?", a:"Kierunkiem umysłowym epoki po powstaniu styczniowym", b:"Nurtem inspirowanym legendami antycznymi", c:"Ruchem opartym na wierzeniach ludów pierwotnych", d:"Koncepcją filozoficzną związaną z barokową duchowością"},
+
+{cat:"Pojęcia", q:"Czym był realizm?", a:"Kierunkiem dążącym do wiernego przedstawiania rzeczywistości", b:"Nurtem skupionym na symbolicznych wizjach świata", c:"Stylem opartym na fantastycznych opowieściach", d:"Teorią tworzącą idealistyczne obrazy życia"},
+
+{cat:"Pojęcia", q:"Czym był naturalizm?", a:"Nurtem zakładającym biologiczne uwarunkowania ludzkich działań", b:"Kierunkiem odwołującym się głównie do mitologii", c:"Teorią tworzącą wyłącznie postacie heroiczne", d:"Stylem skupionym na całkowitej idealizacji bohaterów"},
+
+{cat:"Pojęcia", q:"Na czym polegała praca organiczna?", a:"Na traktowaniu społeczeństwa jako organizmu współpracujących warstw", b:"Na wierze w spontaniczny rozwój życia politycznego", c:"Na rozwijaniu tylko elitarnych warstw społecznych", d:"Na skupianiu wysiłków jedynie na działaniach artystycznych"},
+
+{cat:"Pojęcia", q:"Na czym polegała praca u podstaw?", a:"Na kształceniu i wspieraniu najbiedniejszych warstw społecznych", b:"Na doskonaleniu jedynie edukacji wyższej", c:"Na organizowaniu elitarnych towarzystw naukowych", d:"Na budowaniu prestiżowych instytucji dla zamożnych"},
+
+{cat:"Pojęcia", q:"Czym była asymilacja Żydów?", a:"Procesem włączania Żydów w życie kulturowe i społeczne", b:"Próbą narzucania im izolacji i odosobnienia", c:"Dążeniem do całkowitego oddzielenia ich od społeczeństwa", d:"Tworzeniem osobnych wspólnot bez kontaktu z innymi grupami"},
+
+{cat:"Pojęcia", q:"Czym był antysemityzm?", a:"Wrogim nastawieniem wobec Żydów i ich kultury", b:"Nurtem dążącym do pełnej integracji narodowości", c:"Poglądem popierającym rozwój mniejszości etnicznych", d:"Ideą promującą współpracę wszystkich grup wyznaniowych"},
+
+{cat:"Pojęcia", q:"Czym była emancypacja kobiet?", a:"Ruchem dążącym do równouprawnienia kobiet", b:"Systemem ograniczającym prawa kobiet w społeczeństwie", c:"Ideą rezygnacji kobiet z życia publicznego", d:"Nurtem sprzeciwiającym się edukacji dziewcząt"},
+
+{cat:"Pojęcia", q:"Co twierdził Auguste Comte - twórca scjentyzmu?", a:"Że wiedza naukowa jest najwyższą i najpewniejszą formą poznania", b:"Że świat można zrozumieć tylko przez symbole mitologiczne", c:"Że prawdą są wyłącznie objawienia religijne", d:"Że filozofia powinna opierać się jedynie na intuicji"},
+
+{cat:"Pojęcia", q:"Co twierdził Herbert Spencer - popularyzator ewolucjonizmu Karola Darwina?", a:"Że społeczeństwo rozwija się na zasadzie doboru naturalnego", b:"Że rozwój społeczny jest dziełem przypadkowych zjawisk", c:"Że najsłabsi zawsze powinni dominować nad silniejszymi", d:"Że ewolucja jest wynikiem działań wyłącznie politycznych"},
+
+{cat:"Pojęcia", q:"Co twierdził Hipolit Taine - twórca utylitaryzmu?", a:"Że wszystko co tworzy człowiek musi być użyteczne dla drugiego człowieka", b:"Że twórczość wynika wyłącznie z fantazji autora", c:"Że dzieła powstają dzięki boskim objawieniom", d:"Że jedynym źródłem literatury są przekazy ustne"},
+
+{cat:"Pojęcia", q:"Jaki typ narratora występuje w noweli?", a:"Trzecioosobowy narrator wszechwiedzący", b:"Narrator pierwszoosobowy subiektywny", c:"Narrator występujący jako przypadkowy obserwator", d:"Narrator mówiący wyłącznie w formie dialogów"},
+
+{cat:"Pojęcia", q:"Co to jest nowela?", a:"Krótki utwór pisany prozą", b:"Długi poemat o skomplikowanej strukturze", c:"Dramat oparty wyłącznie na dialogach", d:"Esej opisujący rozbudowane rozważania filozoficzne"},
+
+{cat:"Pojęcia", q:"Czego w noweli nie ma lub jest bardzo mało?", a:"Opisów", b:"Rozbudowanych monologów wewnętrznych", c:"Szerokich charakterystyk psychologicznych", d:"Złożonych analiz społecznych"},
+
+{cat:"Pojęcia", q:"Na czym polega rygorystyczna budowa noweli?", a:"Na zawiązaniu akcji, rozwiązaniu akcji, komplikacji i puencie", b:"Na luźnej i swobodnej kompozycji wydarzeń", c:"Na wielowątkowej i rozbudowanej fabule", d:"Na przypadkowym zestawieniu epizodów"}
+  
+];
+
+let current = 0;
+let life = 10;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("pozytywizm3") || 0;
+
+function newGame(){
+    life = 10; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        updateStats();
+        setTimeout(()=>nextQuestion(), 300);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 2000); }
+        else{ setTimeout(()=>nextQuestion(), 3000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("pozytywizm3", record);
+    }
+
+    document.getElementById("record").innerText = record;
+}
+
+newGame();
+</script>
+</body>
+</html>
