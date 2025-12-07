@@ -52,6 +52,7 @@ box-shadow:0 0 20px #0006;
     <h2 id="endTitle"></h2>
     <p>Twój wynik: <span id="finalScore"></span></p>
     <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
     <button onclick="newGame()">Nowa Gra</button>
 </div>
 
@@ -432,6 +433,7 @@ let score = 0;
 let used = [];
 let maxQ = questions.length;
 let record = localStorage.getItem("pozytywizm3") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
 
 function newGame(){
     life = 30; score = 0; used = [];
@@ -489,6 +491,9 @@ function answer(correct, btn){
     if(correct){
         btn.classList.add("correct");
         score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
         updateStats();
         setTimeout(()=>nextQuestion(), 300);
     }else{
@@ -527,6 +532,7 @@ function endScreen(){
     }
 
     document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
 }
 
 newGame();
