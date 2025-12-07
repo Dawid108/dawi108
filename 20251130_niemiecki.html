@@ -108,6 +108,7 @@ const tasks = [
 // Kopia listy
 let remaining = [...tasks];
 let current;
+let dawid108 = localStorage.getItem("dawid108") || 0;
 
 function nextTask() {
     if (remaining.length === 0) {
@@ -138,6 +139,9 @@ function checkAnswer() {
 
     if (du === current.du && ihr === current.ihr && sie === current.sie) {
         nextTask();
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
     } else {
         document.getElementById("correctAnswers").innerHTML =
             "Poprawne odpowiedzi:<br>du: <b>"+current.du+"</b><br>ihr: <b>"+current.ihr+
