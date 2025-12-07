@@ -1,0 +1,1215 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Pozytywizm</title>
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">3</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Pojęcia", q:"Czym był pozytywizm?", a:"Kierunkiem umysłowym epoki po powstaniu styczniowym", b:"Ruchem średniowiecznych bardów", c:"Filozofią starożytnej Grecji", d:"Nurtem barokowego mistycyzmu"},
+{cat:"Pojęcia", q:"Kiedy zaczyna się pozytywizm?", a:"1864 – po upadku powstania styczniowego", b:"1918 – po I wojnie", c:"966 – chrzest Polski", d:"1939 – początek II wojny"},
+{cat:"Pojęcia", q:"Kiedy kończy się pozytywizm?", a:"1890–1895 – pojawienie się nowego pokolenia artystów", b:"2005 – rozwój internetu", c:"1772 – rozbiory Polski", d:"1600 – początek baroku"},
+{cat:"Lalka", q:"Kim był Stanisław Wokulski?", a:"Kupcem", b:"Władcą średniowiecznej Polski", c:"Poetą romantycznym", d:"Kapitanem okrętu wojennego"},
+{cat:"Potop", q:"Co oznacza tytuł \"Potop\"?", a:"Najazd Szwedów – porównany do potopu", b:"Powódź na Wiśle", c:"Katastrofę morską", d:"Mitologiczny potop grecki"},
+{cat:"Gloria Victis", q:"Co oznacza tytuł \"Gloria Victis\"?", a:"Chwała zwyciężonym", b:"Upadek bohaterów", c:"Zwycięstwo armii", d:"Klęskę moralną"},
+{cat:"Zbrodnia i kara", q:"Kim był Rodion Raskolnikow?", a:"Studentem, który popełnił zbrodnię i zmagał się z wyrzutami sumienia", b:"Sędzią prowadzącym śledztwo", c:"Znanym rosyjskim poetą", d:"Żołnierzem armii carskiej"},
+{cat:"Pojęcia", q:"Czym był pozytywizm?", a:"Kierunkiem umysłowym epoki po powstaniu styczniowym", b:"Nurtem inspirowanym legendami antycznymi", c:"Ruchem opartym na wierzeniach ludów pierwotnych", d:"Koncepcją filozoficzną związaną z barokową duchowością"},
+
+{cat:"Pojęcia", q:"Czym był realizm?", a:"Kierunkiem dążącym do wiernego przedstawiania rzeczywistości", b:"Nurtem skupionym na symbolicznych wizjach świata", c:"Stylem opartym na fantastycznych opowieściach", d:"Teorią tworzącą idealistyczne obrazy życia"},
+
+{cat:"Pojęcia", q:"Czym był naturalizm?", a:"Nurtem zakładającym biologiczne uwarunkowania ludzkich działań", b:"Kierunkiem odwołującym się głównie do mitologii", c:"Teorią tworzącą wyłącznie postacie heroiczne", d:"Stylem skupionym na całkowitej idealizacji bohaterów"},
+
+{cat:"Pojęcia", q:"Na czym polegała praca organiczna?", a:"Na traktowaniu społeczeństwa jako organizmu współpracujących warstw", b:"Na wierze w spontaniczny rozwój życia politycznego", c:"Na rozwijaniu tylko elitarnych warstw społecznych", d:"Na skupianiu wysiłków jedynie na działaniach artystycznych"},
+
+{cat:"Pojęcia", q:"Na czym polegała praca u podstaw?", a:"Na kształceniu i wspieraniu najbiedniejszych warstw społecznych", b:"Na doskonaleniu jedynie edukacji wyższej", c:"Na organizowaniu elitarnych towarzystw naukowych", d:"Na budowaniu prestiżowych instytucji dla zamożnych"},
+
+{cat:"Pojęcia", q:"Czym była asymilacja Żydów?", a:"Procesem włączania Żydów w życie kulturowe i społeczne", b:"Próbą narzucania im izolacji i odosobnienia", c:"Dążeniem do całkowitego oddzielenia ich od społeczeństwa", d:"Tworzeniem osobnych wspólnot bez kontaktu z innymi grupami"},
+
+{cat:"Pojęcia", q:"Czym był antysemityzm?", a:"Wrogim nastawieniem wobec Żydów i ich kultury", b:"Nurtem dążącym do pełnej integracji narodowości", c:"Poglądem popierającym rozwój mniejszości etnicznych", d:"Ideą promującą współpracę wszystkich grup wyznaniowych"},
+
+{cat:"Pojęcia", q:"Czym była emancypacja kobiet?", a:"Ruchem dążącym do równouprawnienia kobiet", b:"Systemem ograniczającym prawa kobiet w społeczeństwie", c:"Ideą rezygnacji kobiet z życia publicznego", d:"Nurtem sprzeciwiającym się edukacji dziewcząt"},
+
+{cat:"Pojęcia", q:"Co twierdził Auguste Comte - twórca scjentyzmu?", a:"Że wiedza naukowa jest najwyższą i najpewniejszą formą poznania", b:"Że świat można zrozumieć tylko przez symbole mitologiczne", c:"Że prawdą są wyłącznie objawienia religijne", d:"Że filozofia powinna opierać się jedynie na intuicji"},
+
+{cat:"Pojęcia", q:"Co twierdził Herbert Spencer - popularyzator ewolucjonizmu Karola Darwina?", a:"Że społeczeństwo rozwija się na zasadzie doboru naturalnego", b:"Że rozwój społeczny jest dziełem przypadkowych zjawisk", c:"Że najsłabsi zawsze powinni dominować nad silniejszymi", d:"Że ewolucja jest wynikiem działań wyłącznie politycznych"},
+
+{cat:"Pojęcia", q:"Co twierdził Hipolit Taine - twórca utylitaryzmu?", a:"Że wszystko co tworzy człowiek musi być użyteczne dla drugiego człowieka", b:"Że twórczość wynika wyłącznie z fantazji autora", c:"Że dzieła powstają dzięki boskim objawieniom", d:"Że jedynym źródłem literatury są przekazy ustne"},
+
+{cat:"Pojęcia", q:"Jaki typ narratora występuje w noweli?", a:"Trzecioosobowy narrator wszechwiedzący", b:"Narrator pierwszoosobowy subiektywny", c:"Narrator występujący jako przypadkowy obserwator", d:"Narrator mówiący wyłącznie w formie dialogów"},
+
+{cat:"Pojęcia", q:"Co to jest nowela?", a:"Krótki utwór pisany prozą", b:"Długi poemat o skomplikowanej strukturze", c:"Dramat oparty wyłącznie na dialogach", d:"Esej opisujący rozbudowane rozważania filozoficzne"},
+
+{cat:"Pojęcia", q:"Czego w noweli nie ma lub jest bardzo mało?", a:"Opisów", b:"Rozbudowanych monologów wewnętrznych", c:"Szerokich charakterystyk psychologicznych", d:"Złożonych analiz społecznych"},
+
+{cat:"Pojęcia", q:"Na czym polega rygorystyczna budowa noweli?", a:"Na zawiązaniu akcji, rozwiązaniu akcji, komplikacji i puencie", b:"Na luźnej i swobodnej kompozycji wydarzeń", c:"Na wielowątkowej i rozbudowanej fabule", d:"Na przypadkowym zestawieniu epizodów"},
+
+{cat:"Mendel Gdański", q:"Jacy bohaterowie występują w noweli «Mendel Gdański»?", 
+ a:"Mendel Gdański, Kubuś i Zegarmistrz", 
+ b:"Nauczyciel, Sędzia i Urzędnik miejski", 
+ c:"Stolarz, Dozorca i Wędrowny kupiec", 
+ d:"Lekarz, Księgarz i Woźny szkolny"},
+
+{cat:"Mendel Gdański", q:"Kim jest Mendel Gdański?", 
+ a:"Starym żydowskim introligatorem mieszkającym w Warszawie", 
+ b:"Zamożnym kupcem prowadzącym sklep kolonialny", 
+ c:"Wędrownym kaznodzieją głoszącym nauki moralne", 
+ d:"Emerytowanym urzędnikiem mieszkającym na przedmieściach"},
+
+{cat:"Mendel Gdański", q:"Kim jest Kubuś?", 
+ a:"Wnukiem Mendla, niewinnym chłopcem rannym w wyniku ataku tłumu", 
+ b:"Sierotą przygarniętą przez lokalną ochronkę dla dzieci", 
+ c:"Synem sąsiadów zajmującym się dostarczaniem gazet", 
+ d:"Chłopcem pracującym dorywczo w pobliskiej drukarni"},
+
+{cat:"Mendel Gdański", q:"Co robi zegarmistrz w noweli?", 
+ a:"Powtarza stereotypy o Żydach i traktuje Mendla lekceważąco", 
+ b:"Próbuje zażegnać konflikty oraz broni mieszkańców kamienicy", 
+ c:"Wspiera Mendla i pomaga mu w pracy introligatorskiej", 
+ d:"Występuje jako świadek broniący bohaterów przed tłumem"},
+
+{cat:"Mendel Gdański", q:"Jaki jest tłum w «Mendlu Gdańskim»?", 
+ a:"Wrogi, brutalny i kierujący się nienawiścią", 
+ b:"Niezdecydowany, spokojny i skłonny do ustępstw", 
+ c:"Zdezorientowany, bierny i niezdolny do działania", 
+ d:"Zorganizowany, opanowany i nastawiony pokojowo"},
+
+{cat:"Mendel Gdański", q:"Jak zostały ukazane kobiety w noweli?", 
+ a:"Jako osoby pozytywnie nastawione do Mendla", 
+ b:"Jako obserwatorki obojętne na los mieszkańców", 
+ c:"Jako agresywne uczestniczki zajść na ulicy", 
+ d:"Jako urzędniczki kierujące porządkiem w mieście"},
+
+{cat:"Mendel Gdański", q:"Jaki był stosunek grubego zegarmistrza do starego Mendla?", 
+ a:"Pełen uprzedzeń – widział w nim wyłącznie Żyda, nie człowieka", 
+ b:"Opiekuńczy i życzliwy – próbował go chronić", 
+ c:"Zazdrosny o sukcesy, lecz pełen szacunku", 
+ d:"Neutralny i zdystansowany – unikał komentarzy"},
+
+{cat:"Mendel Gdański", q:"Jaki był stosunek kobiet do Mendla i Kubusia?", 
+ a:"Okazywały współczucie i wzruszenie, ale nie udzieliły realnej pomocy", 
+ b:"Zachowywały obojętność i nie wykazywały emocji", 
+ c:"Same podżegały do nienawiści i przemocy", 
+ d:"Stanowczo broniły ich przed agresją tłumu"},
+
+{cat:"Mendel Gdański", q:"Jaki był stosunek tłumu do Mendla i Kubusia?", 
+ a:"Pełen agresji, nienawiści i przemocy", 
+ b:"Powściągliwy i ostrożny w działaniach", 
+ c:"Pozbawiony emocji i ograniczony do obserwacji", 
+ d:"Przyjazny i wspierający wobec mieszkańców"},
+
+{cat:"Mendel Gdański", q:"Co zrobił tłum podczas ataku?", 
+ a:"Zranił Kubusia, rzucając kamieniem", 
+ b:"Rozproszył się bez podejmowania działań", 
+ c:"Próbował mediować między mieszkańcami", 
+ d:"Ograniczył się do głośnych okrzyków i uciekł"},
+
+{cat:"Mendel Gdański", q:"Jak ukazany jest antysemityzm w noweli?", 
+ a:"Jako atak Polaków na Żyda i jego wnuka", 
+ b:"Jako konflikt między zamożnymi kupcami", 
+ c:"Jako spór dotyczący zaniedbanej kamienicy", 
+ d:"Jako nieporozumienie związane z zaległymi podatkami"},
+
+{cat:"Mendel Gdański", q:"Co chciała przekazać Konopnicka w noweli?", 
+ a:"Że antysemityzm prowadzi do nienawiści i że potrzebna jest asymilacja Polaków i Żydów", 
+ b:"Że społeczeństwo powinno izolować wszystkie mniejszości", 
+ c:"Że konflikty zawsze wynikają z nieporozumień ekonomicznych", 
+ d:"Że bohaterowie mogą liczyć wyłącznie na pomoc władz"},
+
+{cat:"Mendel Gdański", q:"Co stary Mendel powiedział zegarmistrzowi?", 
+ a:"Że ludzi można dzielić tylko na dobrych i złych", 
+ b:"Że każdy powinien kierować się jedynie własnym interesem", 
+ c:"Że warto ufać najbardziej wpływowym osobom", 
+ d:"Że w życiu liczą się przede wszystkim poglądy polityczne"},
+
+ {cat:"Lalka", q:"Jaką powieścią jest „Lalka” Bolesława Prusa?", 
+ a:"Powieścią realistyczną", 
+ b:"Powieścią baśniową", 
+ c:"Powieścią mitologiczną", 
+ d:"Powieścią fantastyczną"},
+
+{cat:"Lalka", q:"Co ukazuje powieść „Lalka”?", 
+ a:"Nastroje społeczne lat 80. XIX wieku w Polsce", 
+ b:"Przemiany Europy w epoce baroku", 
+ c:"Życie codzienne w czasach renesansu", 
+ d:"Realistyczny obraz średniowiecznego rycerstwa"},
+
+{cat:"Lalka", q:"Kim był Stanisław Wokulski?", 
+ a:"Kupcem, wynalazcą i przedsiębiorcą dążącym do awansu społecznego", 
+ b:"Zamożnym arystokratą żyjącym z rodzinnego majątku", 
+ c:"Wieśniakiem, który został politycznym działaczem", 
+ d:"Nieznanym poetą tworzącym w ukryciu"},
+
+{cat:"Lalka", q:"Kim był Ignacy Rzecki?", 
+ a:"Starym subiektem, przyjacielem Wokulskiego i autorem pamiętnika", 
+ b:"Znanym lekarzem prowadzącym warszawską klinikę", 
+ c:"Arystokratą pracującym w kancelarii króla", 
+ d:"Kupcem podróżniczym odwiedzającym świat"},
+
+{cat:"Lalka", q:"Kim był Julian Ochocki?", 
+ a:"Młodym arystokratą marzącym o postępie i naukowych wynalazkach", 
+ b:"Zamożnym kupcem zajmującym się handlem kolonialnym", 
+ c:"Rewolucjonistą walczącym na ulicach Paryża", 
+ d:"Poetą piszącym satyry na społeczeństwo"},
+
+{cat:"Lalka", q:"Dlaczego „Lalka” jest powieścią o społeczeństwie?", 
+ a:"Bo szczegółowo opisuje arystokrację, mieszczaństwo i biedotę", 
+ b:"Bo skupia się wyłącznie na życiu jednej rodziny", 
+ c:"Bo przedstawia tylko wydarzenia polityczne", 
+ d:"Bo opisuje jedynie podróże bohaterów"},
+
+{cat:"Lalka", q:"Jakie miasto zostało szczegółowo opisane w „Lalce”?", 
+ a:"Warszawa", 
+ b:"Kraków", 
+ c:"Poznań", 
+ d:"Lwów"},
+
+{cat:"Lalka", q:"Miłość kupca galanteryjnego do arystokratki to:", 
+ a:"Miłość Wokulskiego do Izabeli Łęckiej", 
+ b:"Miłość Rzeckiego do Heleny Stawskiej", 
+ c:"Miłość Ochockiego do Izabeli", 
+ d:"Miłość Krzeszowskiego do Stawskiej"},
+
+{cat:"Lalka", q:"Kto odniósł awans społeczny w „Lalce”?", 
+ a:"Stanisław Wokulski, który z biednego chłopca stał się zamożnym kupcem", 
+ b:"Julian Ochocki, który odziedziczył fortunę po wuju", 
+ c:"Ignacy Rzecki, który otrzymał tytuł szlachecki", 
+ d:"Izabela Łęcka, która zdobyła władzę polityczną"},
+
+{cat:"Lalka", q:"Jaki jest czas teraźniejszy powieści „Lalka”?", 
+ a:"Marzec 1878 – październik 1879", 
+ b:"Rok 1812 podczas kampanii Napoleona", 
+ c:"Lata 1901–1905 w Warszawie", 
+ d:"Okres powojenny po 1945 roku"},
+
+{cat:"Lalka", q:"Jaki jest czas przeszły powieści „Lalka”?", 
+ a:"Wydarzenia XVII wieku oraz XIX wieku: Wiosna Ludów i powstanie styczniowe", 
+ b:"Okres panowania Bolesława Chrobrego", 
+ c:"Czasy wojen krzyżackich na Pomorzu", 
+ d:"Epoka rozbiorów Polski z XVIII wieku"},
+
+{cat:"Lalka", q:"Jakie są główne miejsca akcji w „Lalce”?", 
+ a:"Warszawa, Paryż, Zasławek i Zasław", 
+ b:"Kraków, Wilno, Lwów i Piotrków", 
+ c:"Berlin, Wiedeń, Londyn i Kijów", 
+ d:"Moskwa, Petersburg, Odessa i Ryga"},
+
+{cat:"Lalka", q:"Kiedy występuje narrator trzecioosobowy w „Lalce”?", 
+ a:"W akcji właściwej toczącej się w czasie teraźniejszym", 
+ b:"Wyłącznie w opisach pamiętnika Rzeckiego", 
+ c:"Jedynie w retrospekcjach dotyczących Ochockiego", 
+ d:"Tylko w scenach towarzyskich u Łęckich"},
+
+{cat:"Lalka", q:"Kiedy występuje narrator pierwszoosobowy w „Lalce”?", 
+ a:"W pamiętniku starego subiekta Ignacego Rzeckiego", 
+ b:"W opisach podróży Wokulskiego po Paryżu", 
+ c:"W wypowiedziach arystokratów o Izabeli", 
+ d:"W scenach rozmów mieszkańców Powiśla"},
+
+{cat:"Lalka", q:"Do czego nawiązuje tytuł powieści „Lalka”?", 
+ a:"Do procesu o skradzioną lalkę", 
+ b:"Do zabawek kupowanych w sklepie Minclów", 
+ c:"Do pseudonimu jednego z bohaterów", 
+ d:"Do nazwy teatru lalek w Warszawie"},
+
+{cat:"Lalka", q:"Kto może być tytułową lalką pozbawioną uczuć?", 
+ a:"Izabela Łęcka", 
+ b:"Helena Stawska", 
+ c:"Klara Howard", 
+ d:"Wiesława Pławska"},
+
+{cat:"Lalka", q:"Kto może być tytułową lalką manipulowaną przez innych?", 
+ a:"Stanisław Wokulski", 
+ b:"Julian Ochocki", 
+ c:"Kazimierz Starski", 
+ d:"Tomasz Łęcki"},
+
+{cat:"Lalka", q:"Co może symbolizować tytuł „Lalka”?", 
+ a:"Człowieka jako lalkę w teatrze życia", 
+ b:"Świat jako mechanizm kierowany przez los", 
+ c:"Społeczeństwo jako żywy organizm", 
+ d:"Historię Polski jako ciąg figur lalek"},
+
+{cat:"Lalka", q:"Co oznacza „Człowiek jako lalka w teatrze życia” w kontekście powieści?", 
+ a:"Że bohaterowie są zależni od społecznych mechanizmów i cudzych decyzji", 
+ b:"Że człowiek rodzi się z góry skazaną rolą", 
+ c:"Że ludzie są tylko obserwatorami własnego losu", 
+ d:"Że każda postać odgrywa ustaloną maskę bez emocji"},
+
+{cat:"Lalka", q:"Kim byli Idealiści w „Lalce”?", 
+ a:"Ludźmi żyjącymi zgodnie ze swoimi zasadami i moralnymi ideałami", 
+ b:"Grupą artystów piszących manifesty społeczne", 
+ c:"Kupcami próbującymi przejąć firmę Minclów", 
+ d:"Zwolennikami romantycznego buntu na ulicach Warszawy"},
+
+ {cat:"Lalka", q:"Wskaż trzech bohaterów idealistycznych w „Lalce”.",
+ a:"Rzecki, Wokulski i Ochocki",
+ b:"Łęcka, Starski i Krzeszowski",
+ c:"Stawska, Łęcki i Geist",
+ d:"Ochocki, Hopfer i Szlangbaum"},
+
+{cat:"Lalka", q:"Kto był jedynie idealistą romantycznym?",
+ a:"Ignacy Rzecki",
+ b:"Julian Ochocki",
+ c:"Tomasz Łęcki",
+ d:"Prezesowa Zasławska"},
+
+{cat:"Lalka", q:"Kto łączył idealizm romantyczny i pozytywistyczny?",
+ a:"Stanisław Wokulski",
+ b:"Kazimierz Starski",
+ c:"Henryk Szlangbaum",
+ d:"Helena Stawska"},
+
+{cat:"Lalka", q:"Kto był idealistą pozytywistycznym?",
+ a:"Julian Ochocki",
+ b:"Ignacy Rzecki",
+ c:"Kazimierz Starski",
+ d:"Tomasz Łęcki"},
+
+{cat:"Lalka", q:"Co Rzecki myśli o miłości?",
+ a:"Że miłość to uczucie stałe i wierne aż do końca",
+ b:"Że miłość jest wyłącznie ekonomiczną kalkulacją",
+ c:"Że uczucia nie mają żadnego znaczenia",
+ d:"Że miłość to chwilowa moda towarzyska"},
+
+{cat:"Lalka", q:"Jaki jest stosunek Rzeckiego do Napoleona?",
+ a:"Podziwia Napoleona i wierzy w jego legendę",
+ b:"Uważa Napoleona za słabego wodza",
+ c:"Nie interesuje go epoka napoleońska",
+ d:"Traktuje Napoleona jako postać komiczną"},
+
+{cat:"Lalka", q:"Jak Rzecki wspomina udział w Wiośnie Ludów?",
+ a:"Z sentymentem i poczuciem młodzieńczego idealizmu",
+ b:"Jako bezużyteczną przygodę bez znaczenia",
+ c:"Jako przymusowy udział w cudzej sprawie",
+ d:"Jako czas wielkich sukcesów finansowych"},
+
+{cat:"Lalka", q:"Jak Rzecki wspomina udział w powstaniu styczniowym?",
+ a:"Jako bolesne doświadczenie pełne goryczy i rozczarowania",
+ b:"Jako udaną i chwalebną kampanię",
+ c:"Jako wydarzenie, którego nie brał udziału",
+ d:"Jako radosny okres triumfu"},
+
+{cat:"Lalka", q:"Jaki Rzecki ma stosunek do ludzi innych narodowości?",
+ a:"Szanuje wszystkich ludzi niezależnie od pochodzenia",
+ b:"Uznaje wyższość tylko Francuzów",
+ c:"Nie ufa nikomu spoza Warszawy",
+ d:"Uważa, że narody nie powinny się mieszać"},
+
+{cat:"Lalka", q:"Jakie Rzecki ma marzenia wobec społeczeństwa polskiego?",
+ a:"Marzy o zgodnym, uczciwym i pracowitym narodzie",
+ b:"O społeczeństwie zamkniętym i odizolowanym",
+ c:"O Polsce kierowanej jedynie przez arystokrację",
+ d:"O państwie, które rezygnuje z tradycji"},
+
+{cat:"Lalka", q:"Jaki Rzecki ma stosunek do Wokulskiego?",
+ a:"Ceni go, wierzy w niego i uważa za człowieka wyjątkowego",
+ b:"Nie lubi go i traktuje z podejrzliwością",
+ c:"Nie zwraca na niego uwagi",
+ d:"Uważa go za lekkoducha bez ambicji"},
+
+{cat:"Lalka", q:"Jaki Rzecki ma stosunek do pieniędzy?",
+ a:"Są dla niego drugorzędne wobec wartości moralnych",
+ b:"Uważa je za najważniejsze w życiu",
+ c:"Wydaje wszystkie na luksusy",
+ d:"Gromadzi je obsesyjnie dla zysku"},
+
+{cat:"Lalka", q:"Jak Rzecki jest odbierany przez ludzi?",
+ a:"Jako uczciwy, skromny i pracowity człowiek starej daty",
+ b:"Jako ryzykowny inwestor giełdowy",
+ c:"Jako człowiek żyjący z oszustw",
+ d:"Jako znany bywalec salonów"},
+
+{cat:"Lalka", q:"Co Wokulski myśli o miłości?",
+ a:"Miłość uważa za potężne uczucie zdolne zmienić całe życie",
+ b:"Uważa miłość za niepotrzebny obowiązek",
+ c:"Traktuje ją jako tymczasową zabawę",
+ d:"W ogóle nie wierzy w istnienie miłości"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do literatury romantycznej?",
+ a:"W młodości ją podziwiał, lecz później zaczął podchodzić do niej krytycznie",
+ b:"Zawsze traktował ją jako bezużyteczną",
+ c:"Uważał ją za niebezpieczną dla młodzieży",
+ d:"Nigdy nie miał z nią styczności"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do Izabeli Łęckiej?",
+ a:"Idealizuje ją i kocha, mimo że miłość ta jest niszcząca",
+ b:"Traktuje ją jak zwykłą koleżankę",
+ c:"Uważa ją za wzór moralności",
+ d:"Widuje ją tylko jako klientkę sklepu"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do walki o ojczyznę?",
+ a:"Brał w niej udział i uważa patriotyzm za obowiązek",
+ b:"Nie interesuje go los kraju",
+ c:"Odrzuca wszelkie działania polityczne",
+ d:"Uważa walkę za stratę czasu"},
+
+{cat:"Lalka", q:"Jak Wokulski idealizuje idee pozytywistyczne?",
+ a:"Wierzy w pracę, naukę i rozwój społeczeństwa",
+ b:"Uznaje tylko tradycję i dawne zwyczaje",
+ c:"Odrzuca naukę jako zbędną",
+ d:"Uważa rozwój za zagrożenie"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do ludzi?",
+ a:"Stara się pomagać innym i widzi w nich potencjał do zmiany",
+ b:"Uważa ludzi za z natury leniwych",
+ c:"Traktuje wszystkich jako wrogów",
+ d:"Interesuje go jedynie krąg arystokracji"},
+
+{cat:"Lalka", q:"Jaki Wokulski ma stosunek do pieniędzy?",
+ a:"Traktuje je jako narzędzie, nie cel sam w sobie",
+ b:"Uważa je za najwyższy sens życia",
+ c:"Wydaje je wyłącznie na luksusy",
+ d:"Nie potrafi ich w ogóle zarabiać"}, 
+
+ {cat:"Lalka", q:"Jak odbierany jest Wokulski przez społeczeństwo?", 
+a:"Jako człowiek niezrozumiany i oceniany powierzchownie", 
+b:"Jako osoba wesoła i towarzyska, lubiana przez wszystkich", 
+c:"Jako typowy reprezentant warszawskiej arystokracji", 
+d:"Jako bezwolny urzędnik bez własnych ambicji"},
+
+{cat:"Lalka", q:"Jaki Ochocki ma stosunek do ludzi?", 
+a:"Jest życzliwy, ale traktuje ludzi z dystansem, skupiając się na nauce", 
+b:"Darzy wszystkich bezwarunkowym podziwem", 
+c:"Uważa innych za zupełnie nieistotnych", 
+d:"Odznacza się chłodną wrogością wobec wszystkich warstw społecznych"},
+
+{cat:"Lalka", q:"Jakie ma marzenia Julian Ochocki?", 
+a:"Chce odkrywać nowe wynalazki i rozwijać naukę", 
+b:"Pragnie zostać właścicielem eleganckiego sklepu", 
+c:"Planuje tworzyć wystawne bale dla arystokracji", 
+d:"Marzy o spokojnym życiu na prowincji bez ambicji naukowych"},
+
+{cat:"Lalka", q:"Jaki ma stosunek Ochocki do kobiet i miłości?", 
+a:"Uważa, że miłość odciąga go od nauki i nie jest dla niego priorytetem", 
+b:"Postrzega miłość jako najważniejszą wartość w życiu", 
+c:"Bezrefleksyjnie angażuje się w każde zauroczenie", 
+d:"Traktuje kwestie miłosne jako źródło bogactwa i wpływów"},
+
+{cat:"Lalka", q:"Czym jest dla Ochockiego nauka, postęp i rozwój?", 
+a:"Najwyższą wartością i celem życia", 
+b:"Zajęciem służącym wyłącznie zdobyciu majątku", 
+c:"Dodatkowym hobby bez większego znaczenia", 
+d:"Czymś ważnym, ale podporządkowanym modzie towarzyskiej"},
+
+{cat:"Lalka", q:"Jak Ochocki jest odbierany przez społeczeństwo?", 
+a:"Jako ekscentryk z głową w chmurach", 
+b:"Jako poważny arystokrata dbający o interesy", 
+c:"Jako stateczny kupiec o tradycyjnych poglądach", 
+d:"Jako surowy polityk, unikający nowinek naukowych"},
+
+{cat:"Lalka", q:"Gdzie została przedstawiona arystokracja?", 
+a:"W Rodzinie Łęckich, żyjącej ponad stan i często podróżującej", 
+b:"Wśród rzemieślników pracujących w małych warsztatach", 
+c:"Na Powiślu, w dzielnicy najbiedniejszych mieszkańców", 
+d:"W sklepie Wokulskiego pośród stałych klientów"},
+
+{cat:"Lalka", q:"Jak została ukazana arystokracja?", 
+a:"Krytycznie, jako ludzie żyjący na koszt społeczeństwa", 
+b:"Jako warstwa najbardziej pracowita i innowacyjna", 
+c:"Jako grupa troszcząca się o rozwój naukowy miasta", 
+d:"Jako społeczność w pełni niezależna i samowystarczalna"},
+
+{cat:"Lalka", q:"Jak nazwani są arystokraci?", 
+a:"Kosmopolitami bez uczuć patriotycznych", 
+b:"Patriotami gotowymi do poświęceń", 
+c:"Reformatorami zmieniającymi Warszawę", 
+d:"Obrońcami interesów mieszczaństwa"},
+
+{cat:"Lalka", q:"Kto jest typowym przedstawicielem mieszczaństwa?", 
+a:"Ignacy Rzecki", 
+b:"Julian Ochocki", 
+c:"Tomasz Łęcki", 
+d:"Kazimierz Starski"},
+
+{cat:"Lalka", q:"Kto reprezentuje mieszczaństwo niemieckie?", 
+a:"Rodzina Minclów", 
+b:"Rodzina Łęckich", 
+c:"Rodzina Zasławskich", 
+d:"Rodzina Krzeszowskich"},
+
+{cat:"Lalka", q:"Kto reprezentuje pochodzenia żydowskiego?", 
+a:"Rodzina Szlangbaum", 
+b:"Rodzina Minclów", 
+c:"Rodzina Łęckich", 
+d:"Rodzina Węgiełków"},
+
+{cat:"Lalka", q:"Dlaczego krytycznie Prus scharakteryzował mieszczaństwo?", 
+a:"Bo każdy pilnuje własnego interesu i brakuje odwagi do inwestowania w rozwój społeczny", 
+b:"Bo mieszczaństwo przeznaczało cały majątek na cele społeczne", 
+c:"Bo było zbyt otwarte na współpracę z arystokracją", 
+d:"Bo zaniedbywało handel na rzecz działalności politycznej"},
+
+{cat:"Lalka", q:"Jak żyją ludzie z Proletariatu?", 
+a:"W nędzy, brudzie i niechlujstwie", 
+b:"Na bogato, w eleganckich kamienicach", 
+c:"Na poziomie zbliżonym do arystokracji", 
+d:"W luksusie finansowanym przez państwo"},
+
+{cat:"Lalka", q:"Jak miał na imię Wokulski?", 
+a:"Stanisław", 
+b:"Jan", 
+c:"Karol", 
+d:"Marek"},
+
+{cat:"Lalka", q:"Kto żyje na Krakowskim Przedmieściu?", 
+a:"Arystokracja i bogaci mieszczanie", 
+b:"Najbiedniejsi robotnicy i bezdomni", 
+c:"Głównie handlowcy z Powiśla", 
+d:"Wyłącznie rodziny wojskowe"},
+
+{cat:"Lalka", q:"Gdzie była kamienica Łęckich?", 
+a:"Na alejach Ujazdowskich", 
+b:"Na Powiślu", 
+c:"Na Pradze", 
+d:"Na ulicy Bednarskiej"},
+
+{cat:"Lalka", q:"Gdzie zamieszkiwali najbiedniejsi mieszkańcy Warszawy?", 
+a:"Na Powiślu", 
+b:"Na Alei Ujazdowskich", 
+c:"W okolicach Ogrodu Saskiego", 
+d:"Na Krakowskim Przedmieściu"},
+
+{cat:"Lalka", q:"Gdzie po raz pierwszy Wokulski zobaczył Łęcką?", 
+a:"W Teatrze Wielkim", 
+b:"W sklepie Minclów", 
+c:"W Łazienkach Królewskich", 
+d:"W Ogrodzie Botanicznym"},
+
+{cat:"Lalka", q:"Jakie zostały przedstawione tereny zielone w powieści?", 
+a:"Ogród Saski, Ogród Botaniczny, Łazienki Królewskie", 
+b:"Wyłącznie Park Praski", 
+c:"Kilka anonimowych skwerów bez znaczenia", 
+d:"Tylko Łazienki bez innych ogrodów"},
+
+{cat:"Lalka", q:"Jak jest ukazany motyw świata jako teatru?", 
+a:"Ludzie porównywani są do lalek i marionetek sterowanych przez siłę wyższą", 
+b:"Życie przedstawione jest jako nieprzerwany triumf człowieka nad losem", 
+c:"Bohaterowie zawsze mają pełną kontrolę nad każdym wydarzeniem", 
+d:"Świat ukazany jest jako uporządkowana scena bez konfliktów"},
+
+{cat:"Potop", q:"Jaką część trylogii stanowi „Potop”?", 
+a:"Środkową część Trylogii", 
+b:"Pierwszą część Trylogii", 
+c:"Ostatnią część powieści", 
+d:"Niezależną część utworu"},
+
+{cat:"Potop", q:"Jakie są inne części Trylogii?", 
+a:"„Ogniem i Mieczem” oraz „Pan Wołodyjowski”", 
+b:"„Quo Vadis” oraz „Krzyżacy”", 
+c:"„Latarnik” i „W pustyni i w puszczy”", 
+d:"„Chłopi” oraz „Ziemia Obiecana”"},
+
+{cat:"Potop", q:"Czym jest powieść historyczna?", 
+a:"Powieścią, której akcja rozgrywa się w zamkniętym okresie historycznym", 
+b:"Utworem opisującym wyłącznie wydarzenia fantastyczne", 
+c:"Opowieścią całkowicie oderwaną od realiów epoki", 
+d:"Dziełem przedstawiającym tylko fikcyjne krainy"},
+
+{cat:"Potop", q:"Co cechuje powieść historyczną?", 
+a:"Ukazanie wydarzeń na tle autentycznych realiów historycznych", 
+b:"Całkowite pomijanie faktów i dat", 
+c:"Oparcie narracji jedynie na mitach", 
+d:"Skupienie wyłącznie na opisie przyrody"},
+
+{cat:"Potop", q:"Jakie elementy gatunkowe występują w „Potopie”?", 
+a:"Epos antyczny, dramat szekspirowski, realizm, baśń i western", 
+b:"Wyłącznie baśń i przypowieść moralna", 
+c:"Tylko elementy romansu dworskiego", 
+d:"Wyłącznie komedia i satyra polityczna"},
+
+{cat:"Potop", q:"Do czego odnosi się tytuł „Potop”?", 
+a:"Do biblijnej historii zesłanego przez Boga potopu", 
+b:"Do opisu handlowej wyprawy bohaterów", 
+c:"Do fikcyjnej powodzi w Rzeczypospolitej", 
+d:"Do legendy o zatopionym mieście"},
+
+{cat:"Potop", q:"Jak nazwano najazd Szwedów na Polskę w XVII wieku?", 
+a:"Potopem", 
+b:"Wielką wojną północną", 
+c:"Zimową kampanią królewską", 
+d:"Najazdem karpackim"},
+
+{cat:"Potop", q:"Jaki charakter ma książka „Potop”?", 
+a:"Poucza i niesie nadzieję ku pokrzepieniu serc", 
+b:"Jest przede wszystkim satyrą obyczajową", 
+c:"Pełni funkcję wyłącznie humorystyczną", 
+d:"Stanowi jedynie dramat osobisty bohaterów"},
+
+{cat:"Potop", q:"Pod wpływem czego Kmicic przechodzi przemianę?", 
+a:"Wydarzeń wojennych i miłości", 
+b:"Wyłącznie bogactwa i zaszczytów", 
+c:"Przymusu ze strony króla", 
+d:"Zazdrości wobec innych dowódców"},
+
+{cat:"Potop", q:"Jaką przemianę przechodzi Kmicic?", 
+a:"Moralną i ideową", 
+b:"Fizyczną i zdrowotną", 
+c:"Towarzyską i majątkową", 
+d:"Wyłącznie zawodową"},
+
+{cat:"Potop", q:"Do jakiej kobiety miłość żywi Andrzej Kmicic?", 
+a:"Do Oleńki Bilewiczównej", 
+b:"Do Heleny Kurcewiczówny", 
+c:"Do Izabeli Łęckiej", 
+d:"Do Baśki Wołodyjowskiej"},
+
+{cat:"Potop", q:"Jaki jest czas akcji powieści?", 
+a:"Lata potopu szwedzkiego 1655–1657", 
+b:"Wiek XVIII podczas konfederacji barskiej", 
+c:"Okres zaborów w XIX wieku", 
+d:"Czasy panowania Bolesława Chrobrego"},
+
+{cat:"Potop", q:"Jakie jest miejsce akcji powieści?", 
+a:"Większość terytorium Rzeczypospolitej", 
+b:"Jedynie okolice Warszawy", 
+c:"Wyłącznie tereny Małopolski", 
+d:"Tylko Kresy Wschodnie"},
+
+{cat:"Potop", q:"Jaka jest narracja w „Potopie”?", 
+a:"Trzecioosobowa, wszechwiedzącego narratora", 
+b:"Pierwszoosobowa pamiętnikarska", 
+c:"W formie listów między bohaterami", 
+d:"Zmienna, zależna od humoru postaci"},
+
+{cat:"Potop", q:"Jakim językiem mówi narrator?", 
+a:"Językiem stylizowanym na XVII-wieczny", 
+b:"Współczesnym slangiem młodzieżowym", 
+c:"Językiem czysto naukowym", 
+d:"Wyłącznie prostą gwarą ludową"},
+
+{cat:"Potop", q:"Kim jest Andrzej Kmicic?", 
+a:"Szlachcicem, żołnierzem i patriotą", 
+b:"Chłopem pracującym na roli", 
+c:"Królewskim skrybą i kupcem", 
+d:"Zakonnikiem pełniącym służbę"},
+
+{cat:"Potop", q:"Jakie włosy ma Kmicic?", 
+a:"Jasne i mocno podgolone", 
+b:"Ciemne i bardzo długie", 
+c:"Rude i splecione w warkocz", 
+d:"Czarne i kręcone po ramiona"},
+
+{cat:"Potop", q:"Jaki ma stosunek Kmicic do rodaków?", 
+a:"Jest gotów poświęcić się dla ich dobra", 
+b:"Uważa rodaków za nieważnych", 
+c:"Traktuje ich jak wrogów", 
+d:"Zachowuje wobec nich całkowitą obojętność"},
+
+{cat:"Potop", q:"Dlaczego Kmicic jest krytyczny wobec szlachty?", 
+a:"Bo uważa, że brakuje jej patriotyzmu", 
+b:"Bo jest zbyt przedsiębiorcza", 
+c:"Bo nadmiernie wspiera króla", 
+d:"Bo unika udziału w wojnie ze Szwedami"},
+
+{cat:"Potop", q:"Dlaczego Kmicic jest bohaterem złożonym?", 
+a:"Bo sprzymierzył się ze zdrajcą, a jednocześnie jest patriotą", 
+b:"Bo nie przeżywa żadnych konfliktów wewnętrznych", 
+c:"Bo zawsze podejmuje te same decyzje", 
+d:"Bo nie odczuwa odpowiedzialności za swe czyny"},
+
+{cat:"Potop", q:"Jak zachowywał się Kmicic przed przemianą?", 
+a:"Był agresywny, porywczy i skłonny do przemocy", 
+b:"Był statecznym i spokojnym uczonym", 
+c:"Słynął z wyjątkowej łagodności", 
+d:"Unikał wszelkich konfliktów i sporów"},
+
+{cat:"Potop", q:"Jak zachowywał się Kmicic przed przemianą?", 
+a:"Uważał, że jest bezkarny", 
+b:"Postępował zawsze zgodnie z prawem", 
+c:"Był wzorem pokory i skromności", 
+d:"Przesadnie unikał trudnych decyzji"},
+
+{cat:"Potop", q:"Jak zachowywał się Kmicic przed przemianą?", 
+a:"Był egoistyczny, ale opiekował się swoimi żołnierzami", 
+b:"Nigdy nie interesował się losem podkomendnych", 
+c:"Był obojętny wobec towarzyszy broni", 
+d:"Całkowicie unikał kontaktu z innymi"},
+
+{cat:"Potop", q:"Co było okolicznością zmiany Kmicica?", 
+a:"Zaufał zdrajcy Januszowi Radziwiłłowi", 
+b:"Otrzymał list od króla Jana Kazimierza", 
+c:"Został ranny w pierwszej bitwie", 
+d:"Stracił cały majątek rodzinny"},
+
+{cat:"Potop", q:"Co zrobił Janusz Radziwiłł?", 
+a:"Oddał Litwę królowi szwedzkiemu Karolowi Gustawowi", 
+b:"Podpisał pokój z Polską", 
+c:"Wsparł obronę Warszawy", 
+d:"Utworzył własną armię przeciw Szwedom"},
+
+{cat:"Potop", q:"Jaką postawę ma Kmicic po przemianie?", 
+a:"Jest odważny, stanowczy i patriotyczny", 
+b:"Unika walki i odpowiedzialności", 
+c:"Skupia się wyłącznie na własnym majątku", 
+d:"Jest obojętny wobec losu kraju"},
+
+{cat:"Potop", q:"Dlaczego Kmicic był odważny?", 
+a:"Bo brał udział w obronie Jasnej Góry", 
+b:"Bo przebywał tylko w bezpiecznych miejscach", 
+c:"Bo unikał udziału w większych bitwach", 
+d:"Bo zajmował się wyłącznie dyplomacją"},
+
+{cat:"Potop", q:"Dlaczego Kmicic jest wewnętrznie rozdarty i cierpi za ojczyznę?", 
+a:"Bo ojczyzna została zniewolona przez Szwedów", 
+b:"Bo czuje brak uznania od króla", 
+c:"Bo utracił włości rodowe", 
+d:"Bo nie ma kontaktu z rodziną"},
+
+{cat:"Potop", q:"Na jakie nazwisko zmienia się Andrzej Kmicic?", 
+a:"Babinicz", 
+b:"Zagłoba", 
+c:"Wołodyjowski", 
+d:"Rosiński"},
+
+{cat:"Potop", q:"Jakie cechy romantyczne ma Kmicic?", 
+a:"Przemianę moralną i wewnętrzne rozdarcie", 
+b:"Chłodny realizm bez emocji", 
+c:"Stałość charakteru bez zmian", 
+d:"Obojętność wobec uczuć i ojczyzny"},
+
+{cat:"Potop", q:"Jak dzieli się polska szlachta w powieści?", 
+a:"Na zdrajców i patriotów", 
+b:"Na mieszczan i chłopów", 
+c:"Na duchownych i kupców", 
+d:"Na dworzan i rzemieślników"},
+
+{cat:"Potop", q:"Kim był Wejchart Wrzeszczowicz?", 
+a:"Oficerem wojsk szwedzkich", 
+b:"Posłańcem królowej szwedzkiej", 
+c:"Dowódcą obrony Krakowa", 
+d:"Kupcem podróżującym z Litwy"},
+
+{cat:"Potop", q:"Czym zajmował się Wejchart Wrzeszczowicz?", 
+a:"Dostarczaniem żywności", 
+b:"Pisaniem listów dyplomatycznych", 
+c:"Budową umocnień w miastach", 
+d:"Nadzorem nad królewskimi archiwami"},
+
+{cat:"Potop", q:"Kim był Lisola?", 
+a:"Niemieckim szpiegiem działającym dla cesarza", 
+b:"Szwedzkim lekarzem wojskowym", 
+c:"Litewskim kupcem i doradcą", 
+d:"Rosyjskim posłem na dworze"},
+
+{cat:"Potop", q:"Jakie jest miejsce akcji w scenach z Lisolą?", 
+a:"Karczma", 
+b:"Zamek królewski", 
+c:"Obóz wojskowy", 
+d:"Dwór magnacki"},
+
+{cat:"Gloria Victis", q:"Kiedy toczyła się akcja noweli?", a:"50 lat po Powstaniu styczniowym", b:"30 lat po wojnach napoleońskich", c:"60 lat po bitwie pod Grunwaldem", d:"40 lat po powstaniu listopadowym"},
+
+{cat:"Gloria Victis", q:"Kiedy dzieje się opowiadana w noweli historia?", a:"W czasie powstania styczniowego", b:"W czasie powstania listopadowego", c:"W trakcie zaboru pruskiego", d:"W okresie międzywojennym"},
+
+{cat:"Gloria Victis", q:"Jakie jest miejsce akcji noweli?", a:"Las na Polesiu litewskim", b:"Puszcza w okolicach Mazowsza", c:"Las w pobliżu Podlasia", d:"Zagajnik na ziemiach lubelskich"},
+
+{cat:"Gloria Victis", q:"Jaki charakter ma narracja w noweli?", a:"Baśniowy", b:"Dramatyczny", c:"Historyczny", d:"Reporterski"},
+
+{cat:"Gloria Victis", q:"Kto opowiada o wydarzeniach z powstania?", a:"Drzewa: dąb, świerk i brzoza", b:"Kamienie i pnie leśne", c:"Ptaki i zwierzęta polne", d:"Chmury i mgły okoliczne"},
+
+{cat:"Gloria Victis", q:"Kto słucha opowieści drzew?", a:"Wiatr", b:"Strumień", c:"Chmura", d:"Echo"},
+
+{cat:"Gloria Victis", q:"Kim był Romuald Traugutt?", a:"Dowódcą powstania", b:"Posłańcem królewskim", c:"Szlachcicem z Galicji", d:"Zwykłym leśniczym"},
+
+{cat:"Gloria Victis", q:"Kim był Jagmin?", a:"Dzielnym powstańcem i przyjacielem Mariana", b:"Zamożnym kupcem z Wilna", c:"Wędrownym pisarzem z Kresów", d:"Strażnikiem królewskiej straży"},
+
+{cat:"Gloria Victis", q:"Kim był Marian Tarłowski?", a:"Dzielnym powstańcem i bratem Anieli", b:"Ubogim chłopcem ze wsi", c:"Nauczycielem z pobliskiej wioski", d:"Młodym poetą z Warszawy"},
+
+{cat:"Gloria Victis", q:"Kim była Aniela Tarłowska?", a:"Młodszą siostrą Mariana i ukochaną Jagmina", b:"Panną dworską z małego miasteczka", c:"Córką przywódcy rosyjskiego", d:"Dziewczyną mieszkającą w Wilnie"},
+
+{cat:"Gloria Victis", q:"Kto jako pierwszy przybył do lasu w opowieści?", a:"Wiatr", b:"Wędrowiec", c:"Myśliwy", d:"Starzec"},
+
+{cat:"Gloria Victis", q:"Co zauważył Wiatr po przybyciu do lasu?", a:"Kopiec z drewnianym krzyżem wbitym w niego", b:"Drogę porośniętą paprociami i mchami", c:"Stare obozowisko otoczone liśćmi", d:"Ruiny drewnianej strażnicy"},
+
+{cat:"Gloria Victis", q:"Do kogo porównany był Jagmin przez drzewa?", a:"Do Herkulesa", b:"Do Odyseusza", c:"Do Achillesa", d:"Do Beowulfa"},
+
+{cat:"Gloria Victis", q:"Co zrobił oddział, który dotarł do lasu?", a:"Rozbił obóz", b:"Zbudował prowizoryczną wieżę", c:"Wyczyścił teren z gałęzi", d:"Oznaczył szlak dla posiłków"},
+
+{cat:"Gloria Victis", q:"Kto stał na czele przybyłego oddziału?", a:"Romuald Traugutt", b:"Ignacy Chmielewski", c:"Marcin z Węgrowa", d:"Stefan Jarociński"},
+
+{cat:"Gloria Victis", q:"Do kogo pojawiło się uczucie Jagmina?", a:"Do Anieli", b:"Do Heleny", c:"Do Zofii", d:"Do Marii"},
+
+{cat:"Gloria Victis", q:"Co ma nastąpić za 10 dni według opowieści?", a:"Mobilizacja", b:"Zgromadzenie wojskowe", c:"Wymarsz patroli", d:"Rozkaz odwrotu"},
+
+{cat:"Gloria Victis", q:"Kto chce wziąć udział w mobilizacji?", a:"Jagmin i Maryś", b:"Aniela i Kaliksta", c:"Dąb i Brzoza", d:"Leśnicy z okolicy"},
+
+{cat:"Gloria Victis", q:"Co wygłasza Traugutt przed oddziałem?", a:"Mowę pobudzającą do walki", b:"Rozkaz budowy umocnień", c:"Polecenie odwrotu z lasu", d:"Apel o złożenie broni"},
+
+{cat:"Gloria Victis", q:"Co wydarzyło się podczas jednego z pojedynków?", a:"Maryś ratuje życie Trauguttowi", b:"Jagmin traci broń w walce", c:"Wróg odbiera im dowódcę", d:"Oddział zostaje rozproszony"},
+
+{cat:"Gloria Victis", q:"O czym rozmawiali Jagmin i Maryś przed bitwą?", a:"O konieczności walki", b:"O planach powrotu do domu", c:"O budowie nowego obozu", d:"O przeniesieniu rannych żołnierzy"},
+
+{cat:"Gloria Victis", q:"Kto przybywa do obozu powstańców?", a:"Poseł Kaliksta", b:"Nieznany kupiec", c:"Ranny żołnierz", d:"Gość z Warszawy"},
+
+{cat:"Gloria Victis", q:"O czym informuje przybyły Kaliksta?", a:"O zmierzających oddziałach rosyjskich z wielką przewagą", b:"O nadciągającej głodowej zimie w okolicy", c:"O możliwej pomocy szlacheckiej", d:"O zdobyciu broni przez włościan"},
+
+{cat:"Gloria Victis", q:"Kto został trafiony kulą i przeniesiony do namiotu z rannymi?", a:"Maryś", b:"Traugutt", c:"Poseł", d:"Dowódca zwiadu"},
+
+{cat:"Gloria Victis", q:"Co zrobili Rosjanie po przedarciu się do obozu?", a:"Wtargnęli do namiotu i dobili rannych", b:"Odcięli drogę odwrotu oddziałowi", c:"Zabrali konie powstańcom", d:"Zniszczyli część broni i zapasów"},
+
+{cat:"Gloria Victis", q:"Kto umiera podczas końcowych wydarzeń noweli?", a:"Jagmin i Maryś", b:"Traugutt i Kaliksta", c:"Aniela i Maryś", d:"Brzoza i Świerk"},
+
+{cat:"Gloria Victis", q:"Komu Jagmin miał przekazać chusteczkę od Marysia?", a:"Anieli", b:"Matce powstańców", c:"Siostrze posła", d:"Żonie dowódcy"},
+
+{cat:"Gloria Victis", q:"Co zrobiła Aniela na miejscu bitwy?", a:"Wbiła krzyż dla oddania hołdu powstańcom", b:"Pozostawiła wiązankę świeżych kwiatów", c:"Ułożyła dłonie rannym żołnierzom", d:"Zebrała resztki porzuconej broni"},
+
+{cat:"Gloria Victis", q:"Z czym nie zgadza się wiatr, słysząc opowieść drzew?", a:"Z hasłem 'vae victis' i głosi 'Gloria victis'", b:"Z opisem samej bitwy pod lasem", c:"Z oceną odwagi powstańców", d:"Z osądem czynów Traugutta"},
+
+{cat:"Gloria Victis", q:"Co oznacza hasło 'vae victis'?", a:"Biada zwyciężonym", b:"Chwała bohaterom", c:"Zwycięstwo nad wrogiem", d:"Cześć pokonanym"},
+
+{cat:"Gloria Victis", q:"Co oznacza hasło 'Gloria victis'?", a:"Chwała zwyciężonym", b:"Potęga walczących", c:"Zwycięstwo do końca", d:"Pamięć o bohaterach"},
+
+{cat:"Zbrodnia i Kara", q:"Kto nadał tytuł pierwotny polskiemu przekładowi powieści?", 
+ a:"Pierwszy tłumacz utworu", 
+ b:"Znany dziewiętnastowieczny wydawca", 
+ c:"Znany redaktor literacki tamtej epoki", 
+ d:"Jeden z popularnych krytyków gazety"},
+
+{cat:"Zbrodnia i Kara", q:"Jaki jest rosyjski tytuł powieści?", 
+ a:"Priestupliénie i nakazánije",
+ b:"Powieść o czynach i skutkach",
+ c:"Historia winy i pokuty",
+ d:"Opowieść o przestępstwie i sądzie"},
+
+{cat:"Zbrodnia i Kara", q:"Co oznacza słowo „Priestupliénie”?", 
+ a:"Przekroczenie prawa",
+ b:"Nieuzasadniony czyn",
+ c:"Poważne naruszenie zasad",
+ d:"Złamanie ważnych reguł"},
+
+{cat:"Zbrodnia i Kara", q:"Co oznacza słowo „nakazánije”?", 
+ a:"Kara, przestroga, nauczka",
+ b:"Wyrok, decyzja, pouczenie",
+ c:"Nagana, potępienie, osąd",
+ d:"Reprymenda, uwaga, ostrzeżenie"},
+
+{cat:"Zbrodnia i Kara", q:"Jaki jest czas akcji powieści?", 
+ a:"14 dni lipca 1865 roku",
+ b:"Dwa tygodnie lata 1864 roku",
+ c:"Około kilkunastu dni w 1866 roku",
+ d:"Początek lipca w połowie lat sześćdziesiątych"},
+
+{cat:"Zbrodnia i Kara", q:"Gdzie rozgrywa się akcja powieści?", 
+ a:"Rosja, Petersburg",
+ b:"Rosja, Moskwa",
+ c:"Rosja, Niżny Nowogród",
+ d:"Rosja, Krasnojarsk"},
+
+{cat:"Zbrodnia i Kara", q:"Jaki rodzaj narratora występuje w powieści?", 
+ a:"Trzecioosobowy wszechwiedzący",
+ b:"Pierwszoosobowy pamiętnikarski",
+ c:"Narrator ograniczony sytuacyjny",
+ d:"Relator o niepełnej wiedzy"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Rodion Roskolnikow?", 
+ a:"Ubogo żyjącym studentem prawa",
+ b:"Drobnomieszczańskim urzędnikiem w stolicy",
+ c:"Zamożnym kupcem o trudnej przeszłości",
+ d:"Znanym uczniem prestiżowej akademii"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Sonia Marmieładow?", 
+ a:"Córką urzędnika, zmuszoną do pracy dla rodziny",
+ b:"Krewną policjanta zajmującą się domem",
+ c:"Siostrą kupca pomagającą krewnym",
+ d:"Daleką kuzynką Roskolnikowa utrzymującą się z posług"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Dymitr Razumichin?", 
+ a:"Najbliższym przyjacielem Rodiona",
+ b:"Znajomym rodziny Roskolnikowów",
+ c:"Pomocnikiem z lokalnego urzędu",
+ d:"Współlokatorem z poprzedniego mieszkania"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Eudoksja Roskolnikow – Dunia?", 
+ a:"Siostrą Rodiona",
+ b:"Ubogą krewną mieszkającą na prowincji",
+ c:"Pomocnicą w domu sąsiadów",
+ d:"Znajomą matki Rodiona z młodości"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Pulcheria Roskolnikow?", 
+ a:"Matką Rodiona",
+ b:"Ciotką mieszkającą na wsi",
+ c:"Kuzynką, która opiekuje się domem",
+ d:"Opiekunką rodziny z sąsiedniego miasta"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Siemion Marmieładow?", 
+ a:"Zadłużonym urzędnikiem i ojcem Soni",
+ b:"Byłym kupcem utrzymującym rodzinę",
+ c:"Robotnikiem pracującym w dokach",
+ d:"Emerytowanym pisarzem urzędowym"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Piotr Łużyn?", 
+ a:"Narzeczonym Duni i egoistycznym karierowiczem",
+ b:"Znajomym matki Roskolnikowa z pracy",
+ c:"Skromnym lekarzem pomagającym rodzinie",
+ d:"Młodym kupcem zainteresowanym Dunią"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Arkadiusz Swidrygajłow?", 
+ a:"Bogaczem o mrocznej przeszłości",
+ b:"Nauczycielem pracującym na prowincji",
+ c:"Byłym urzędnikiem próbującym się dorobić",
+ d:"Znanym kupcem z odległej dzielnicy"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Porfiry Pietrowicz?", 
+ a:"Sędzią śledczym prowadzącym sprawę",
+ b:"Lekarzem badającym podejrzanych",
+ c:"Urzędnikiem związanym z rodziną Roskolnikowa",
+ d:"Pomocnikiem policji w prostych sprawach"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Aleksander Zamiotow?", 
+ a:"Młodym urzędnikiem policyjnym",
+ b:"Asystentem kupca z centralnej dzielnicy",
+ c:"Znajomym Razumichina z uczelni",
+ d:"Pisarzem współpracującym z sądem"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Alona Iwanowna?", 
+ a:"Starą lichwiarką",
+ b:"Znajomą sąsiadów Roskolnikowa",
+ c:"Właścicielką sklepu z odzieżą",
+ d:"Opiekunką jednego z mieszkańców kamienicy"},
+
+{cat:"Zbrodnia i Kara", q:"Kim jest Lizawieta Limanowa?", 
+ a:"Siostrą lichwiarki",
+ b:"Nianią z pobliskiego domu",
+ c:"Znajomą Razumichina z ulicy",
+ d:"Pomocnicą w jednej z kamienic"},
+
+{cat:"Zbrodnia i Kara", q:"Do czego odnosi się część pierwsza powieści?", 
+ a:"Do zbrodni, czyli zamiaru i popełnienia przestępstwa",
+ b:"Do drogi moralnej bohatera i jego rozterek",
+ c:"Do reakcji rodziny na zachowanie Rodiona",
+ d:"Do życia ubogich mieszkańców Petersburga"},
+
+{cat:"Zbrodnia i Kara", q:"Do czego odnoszą się pozostałe pięć części powieści?", 
+ a:"Do kary i przemiany wnętrza Rodiona",
+ b:"Do opisania codzienności miasta i mieszkańców",
+ c:"Do konfliktów rodzinnych i osobistych bohatera",
+ d:"Do rozmaitych wątków pobocznych fabuły"},
+
+{cat:"Zbrodnia i Kara", q:"Skąd pochodził Roskolnikow?", 
+ a:"Zubożałej rodziny szlacheckiej z prowincji",
+ b:"Rodziny bogatych mieszczan z centrum",
+ c:"Znanej rodziny kupieckiej z miasta",
+ d:"Dawnej rodziny rzemieślniczej z okolic"},
+
+{cat:"Zbrodnia i Kara", q:"Dokąd wyjechał Rodion, by studiować prawo?", 
+ a:"Do Petersburga",
+ b:"Do Moskwy",
+ c:"Do Tweru",
+ d:"Do Smoleńska"},
+
+{cat:"Zbrodnia i Kara", q:"Jak był ubrany Roskolnikow?", 
+ a:"Nędznie, w tachmany",
+ b:"Starannie, w schludny surdut",
+ c:"Elegancko, w nowy płaszcz",
+ d:"Zwyczajnie, w prosty ubiór miejski"},
+
+{cat:"Zbrodnia i Kara", q:"Co charakterystycznego nosił Rodion?", 
+ a:"Walcowaty kapelusz",
+ b:"Długi wełniany szalik",
+ c:"Stary płócienny worek",
+ d:"Zniszczone rękawiczki skórzane"},
+
+{cat:"Zbrodnia i Kara", q:"Jak wyglądał kapelusz Rodiona?", 
+ a:"Bez rondla, dziurawy, z plamami i przekrzywiony",
+ b:"Szeroki, gładki, ozdobiony tasiemką",
+ c:"Wąski, czysty, z niewielką klamrą",
+ d:"Zwykły, ciemny, lekko wyblakły"},
+
+{cat:"Zbrodnia i Kara", q:"Jak dzielił ludzi Rodion?", 
+ a:"Na przeciętnych i wybitnych",
+ b:"Na słabych i stanowczych",
+ c:"Na biednych i zamożnych",
+ d:"Na ostrożnych i impulsywnych"},
+
+ {cat:"Zbrodnia i Kara", q:"Co stanowi fundament relacji Rodiona z Sonią?", 
+a:"Wzajemne wsparcie moralne prowadzące go ku odrodzeniu", 
+b:"Dążenie do wspólnych celów materialnych i zyskownych", 
+c:"Rywalizacja o wpływy i znaczenie w otoczeniu", 
+d:"Unikanie rozmów z powodu różnic światopoglądowych"},
+
+{cat:"Zbrodnia i Kara", q:"Dlaczego Sonia jest kluczowa w życiu Rodiona?", 
+a:"Pomaga mu pojąć winę i odnaleźć drogę przemiany", 
+b:"Umożliwia mu rozwój zawodowy i zdobycie kontaktów", 
+c:"Wprowadza go do bogatego środowiska znajomych", 
+d:"Wskazuje mu sposoby na poprawę codziennych finansów"},
+
+{cat:"Zbrodnia i Kara", q:"Co wyróżnia relację Rodiona z Razumichinem?", 
+a:"Szczera przyjaźń oraz stałe i lojalne wsparcie", 
+b:"Wspólne interesy prowadzone dla osiągania zysków", 
+c:"Konkurencja o względy mieszkających w okolicy", 
+d:"Chłodne relacje wynikające z rzadkich spotkań"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Razumichin reaguje na zachowanie Rodiona?", 
+a:"Próbuje pomagać mimo braku zrozumienia jego działań", 
+b:"Traktuje go obojętnie i unika wszelkich rozmów", 
+c:"Wykorzystuje jego słabości dla własnych celów", 
+d:"Całkowicie zrywa kontakt z powodu jego zachowań"},
+
+{cat:"Zbrodnia i Kara", q:"Co dominuje w relacji Rodiona z Dunią i matką?", 
+a:"Troska połączona z dystansem wynikającym z winy", 
+b:"Ciągłe konflikty prowadzące do rozpadu więzi", 
+c:"Wspólna praca nad poprawą finansów rodziny", 
+d:"Chłód emocjonalny wynikający z obojętności Rodiona"},
+
+{cat:"Zbrodnia i Kara", q:"Dlaczego Rodion dystansuje się od bliskich?", 
+a:"Obawia się skrzywdzenia ich ciężarem swojej tajemnicy", 
+b:"Chce zerwać kontakty z powodu narastającej złości", 
+c:"Uważa więzi rodzinne za całkowicie niepotrzebne", 
+d:"Woli skupić się na karierze zamiast na rodzinie"},
+
+{cat:"Zbrodnia i Kara", q:"Jak wygląda relacja Rodiona z Łużynem?", 
+a:"Rodion odrzuca egoistyczne i manipulacyjne intencje Łużyna", 
+b:"Obaj współpracują dla dobra całej rodziny", 
+c:"Łączy ich wzajemny podziw oraz podobne poglądy", 
+d:"Tworzą silną przyjaźń opartą na zaufaniu"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Rodion ocenia zamiary Łużyna wobec Duni?", 
+a:"Uważa je za manipulacyjne i skierowane przeciw siostrze", 
+b:"Traktuje je jako korzystne dla bliskiej rodziny", 
+c:"Widzi je jako dowód jego szczerości i dobroci", 
+d:"Ignoruje je, uznając za zupełnie obojętne"},
+
+{cat:"Zbrodnia i Kara", q:"Co jest główną ideą filozofii Rodiona o wyjątkowych ludziach?", 
+a:"Przekonanie, że wybrani mogą przekraczać prawo dla dobra", 
+b:"Założenie, że wszyscy muszą bezwzględnie przestrzegać prawa", 
+c:"Przekonanie, że żadne działania nie zmieniają świata", 
+d:"Twierdzenie o jednakowych możliwościach dla każdego"},
+
+{cat:"Zbrodnia i Kara", q:"Jak artykuł Rodiona wpływa na jego myślenie?", 
+a:"Wzmacnia wiarę w wyjątkowość i konieczność eksperymentu moralnego", 
+b:"Zniechęca go do zastanawiania się nad własnymi poglądami", 
+c:"Prowadzi do odrzucenia wszelkich wcześniejszych idei", 
+d:"Skłania do spokojnego i bezrefleksyjnego życia"},
+
+{cat:"Zbrodnia i Kara", q:"Jakie znaczenie mają sny Rodiona?", 
+a:"Ukazują jego lęki oraz moralne rozdarcie przed zbrodnią", 
+b:"Nadają mu odwagę i pewność w podejmowaniu decyzji", 
+c:"Oddzielają go od rzeczywistości prowadząc do fantazji", 
+d:"Ukazują mu wyłącznie chorobę bez głębszych emocji"},
+
+{cat:"Zbrodnia i Kara", q:"Co pokazują sny o przemocy wobec zwierzęcia?", 
+a:"Wewnętrzny konflikt między ideą a sumieniem Rodiona", 
+b:"Akceptację okrucieństwa wobec słabszych osób", 
+c:"Brak kontaktu z rzeczywistością i pogłębiające się urojenia", 
+d:"Obojętność na cierpienie innych ludzi"},
+
+{cat:"Zbrodnia i Kara", q:"Jak warunki życia wpływają na decyzje Rodiona?", 
+a:"Bieda i samotność popychają go ku myśli o zbrodni", 
+b:"Dostatek daje mu spokój i poczucie stabilizacji", 
+c:"Bogate otoczenie wzmacnia jego pewność siebie", 
+d:"Stałe wsparcie rodziny rozwiązuje jego problemy"},
+
+{cat:"Zbrodnia i Kara", q:"Co odczuwa Rodion w swojej codzienności?", 
+a:"Beznadzieję wynikającą z nędzy i narastającej izolacji", 
+b:"Harmonię wynikającą z bliskich relacji rodzinnych", 
+c:"Radość z osiąganych postępów i sukcesów", 
+d:"Stabilność zapewnianą przez regularne dochody"},
+
+{cat:"Zbrodnia i Kara", q:"Jak został przygotowany plan zbrodni?", 
+a:"Został starannie opracowany, lecz wymknął się spod kontroli", 
+b:"Powstał spontanicznie bez żadnego wcześniejszego namysłu", 
+c:"Został ustalony wspólnie z zaufanymi znajomymi", 
+d:"Został narzucony Rodionowi przez innych ludzi"},
+
+{cat:"Zbrodnia i Kara", q:"Co najbardziej burzy plan zbrodni Rodiona?", 
+a:"Nagłe pojawienie się Lizawiety podczas wykonywania czynu", 
+b:"Wczesne odnalezienie narzędzia przez sąsiadów", 
+c:"Brak możliwości dotarcia do pokoju lichwiarki", 
+d:"Przerwanie działań przez niespodziewanych policjantów"},
+
+{cat:"Zbrodnia i Kara", q:"Co dzieje się z Rodionem po zbrodni?", 
+a:"Ogarnia go choroba, gorączka i paniczny niepokój", 
+b:"Uspokaja się i czuje ulgę po ciężkiej decyzji", 
+c:"Skupia się wyłącznie na pracy zapominając o wszystkim", 
+d:"Uzyskuje pewność siebie i zaczyna nowe inicjatywy"},
+
+{cat:"Zbrodnia i Kara", q:"Co staje się największą karą dla Rodiona?", 
+a:"Wyrzuty sumienia oraz długotrwałe cierpienie psychiczne", 
+b:"Problemy związane z brakiem przyjaciół i kontaktów", 
+c:"Obowiązek częstych wizyt w komisariacie policji", 
+d:"Trudności finansowe utrudniające codzienne życie"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Sonia pomaga Rodionowi?", 
+a:"Uczy go pokory i odpowiedzialności za popełniony czyn", 
+b:"Dostarcza mu nowych możliwości pracy i rozwoju", 
+c:"Wskazuje sposoby ukrywania prawdy przed policją", 
+d:"Zachęca go do unikania jakichkolwiek rozmów"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Sonia wpływa na wyznanie winy przez Rodiona?", 
+a:"Skłania go do odwagi oraz moralnego oczyszczenia", 
+b:"Przekonuje go do ucieczki z miasta i ukrycia się", 
+c:"Pomaga mu w ukryciu dowodów i śladów", 
+d:"Prosi go o milczenie oraz brak wyznań"},
+
+{cat:"Zbrodnia i Kara", q:"Co oznacza przyznanie się do winy dla Rodiona?", 
+a:"Początek pokuty oraz duchowego odrodzenia", 
+b:"Zerwanie wszelkich kontaktów z rodziną", 
+c:"Rezygnację z własnych dotychczasowych poglądów", 
+d:"Wejście w środowisko osób łamiących prawo"},
+
+{cat:"Zbrodnia i Kara", q:"Jak Syberia wpływa na dalsze losy Rodiona?", 
+a:"Umożliwia mu przemianę dzięki wsparciu i obecności Sonii", 
+b:"Zamyka go na emocje i oddala od wszelkiej refleksji", 
+c:"Pogłębia jego nienawiść do ludzi i świata", 
+d:"Umacnia go w przekonaniu o całkowitej niewinności"}
+];
+
+let current = 0;
+let life = 3;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("pozytywizm3") || 0;
+
+function newGame(){
+    life = 3; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        updateStats();
+        setTimeout(()=>nextQuestion(), 300);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 2000); }
+        else{ setTimeout(()=>nextQuestion(), 3000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("pozytywizm3", record);
+    }
+
+    document.getElementById("record").innerText = record;
+}
+
+newGame();
+</script>
+</body>
+</html>
