@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Potop - Henryk Sienkiewicz</title>
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">10</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Potop", q:"Co oznacza tytuł \"Potop\"?", a:"Najazd Szwedów – porównany do potopu", b:"Powódź na Wiśle", c:"Katastrofę morską", d:"Mitologiczny potop grecki"},
+  {cat:"Potop", q:"Jaką część trylogii stanowi „Potop”?", 
+a:"Środkową część Trylogii", 
+b:"Pierwszą część Trylogii", 
+c:"Ostatnią część powieści", 
+d:"Niezależną część utworu"},
+
+{cat:"Potop", q:"Jakie są inne części Trylogii?", 
+a:"„Ogniem i Mieczem” oraz „Pan Wołodyjowski”", 
+b:"„Quo Vadis” oraz „Krzyżacy”", 
+c:"„Latarnik” i „W pustyni i w puszczy”", 
+d:"„Chłopi” oraz „Ziemia Obiecana”"},
+
+{cat:"Potop", q:"Czym jest powieść historyczna?", 
+a:"Powieścią, której akcja rozgrywa się w zamkniętym okresie historycznym", 
+b:"Utworem opisującym wyłącznie wydarzenia fantastyczne", 
+c:"Opowieścią całkowicie oderwaną od realiów epoki", 
+d:"Dziełem przedstawiającym tylko fikcyjne krainy"},
+
+{cat:"Potop", q:"Co cechuje powieść historyczną?", 
+a:"Ukazanie wydarzeń na tle autentycznych realiów historycznych", 
+b:"Całkowite pomijanie faktów i dat", 
+c:"Oparcie narracji jedynie na mitach", 
+d:"Skupienie wyłącznie na opisie przyrody"},
+
+{cat:"Potop", q:"Jakie elementy gatunkowe występują w „Potopie”?", 
+a:"Epos antyczny, dramat szekspirowski, realizm, baśń i western", 
+b:"Wyłącznie baśń i przypowieść moralna", 
+c:"Tylko elementy romansu dworskiego", 
+d:"Wyłącznie komedia i satyra polityczna"},
+
+{cat:"Potop", q:"Do czego odnosi się tytuł „Potop”?", 
+a:"Do biblijnej historii zesłanego przez Boga potopu", 
+b:"Do opisu handlowej wyprawy bohaterów", 
+c:"Do fikcyjnej powodzi w Rzeczypospolitej", 
+d:"Do legendy o zatopionym mieście"},
+
+{cat:"Potop", q:"Jak nazwano najazd Szwedów na Polskę w XVII wieku?", 
+a:"Potopem", 
+b:"Wielką wojną północną", 
+c:"Zimową kampanią królewską", 
+d:"Najazdem karpackim"},
+
+{cat:"Potop", q:"Jaki charakter ma książka „Potop”?", 
+a:"Poucza i niesie nadzieję ku pokrzepieniu serc", 
+b:"Jest przede wszystkim satyrą obyczajową", 
+c:"Pełni funkcję wyłącznie humorystyczną", 
+d:"Stanowi jedynie dramat osobisty bohaterów"},
+
+{cat:"Potop", q:"Pod wpływem czego Kmicic przechodzi przemianę?", 
+a:"Wydarzeń wojennych i miłości", 
+b:"Wyłącznie bogactwa i zaszczytów", 
+c:"Przymusu ze strony króla", 
+d:"Zazdrości wobec innych dowódców"},
+
+{cat:"Potop", q:"Jaką przemianę przechodzi Kmicic?", 
+a:"Moralną i ideową", 
+b:"Fizyczną i zdrowotną", 
+c:"Towarzyską i majątkową", 
+d:"Wyłącznie zawodową"},
+
+{cat:"Potop", q:"Do jakiej kobiety miłość żywi Andrzej Kmicic?", 
+a:"Do Oleńki Bilewiczównej", 
+b:"Do Heleny Kurcewiczówny", 
+c:"Do Izabeli Łęckiej", 
+d:"Do Baśki Wołodyjowskiej"},
+
+{cat:"Potop", q:"Jaki jest czas akcji powieści?", 
+a:"Lata potopu szwedzkiego 1655–1657", 
+b:"Wiek XVIII podczas konfederacji barskiej", 
+c:"Okres zaborów w XIX wieku", 
+d:"Czasy panowania Bolesława Chrobrego"},
+
+{cat:"Potop", q:"Jakie jest miejsce akcji powieści?", 
+a:"Większość terytorium Rzeczypospolitej", 
+b:"Jedynie okolice Warszawy", 
+c:"Wyłącznie tereny Małopolski", 
+d:"Tylko Kresy Wschodnie"},
+
+{cat:"Potop", q:"Jaka jest narracja w „Potopie”?", 
+a:"Trzecioosobowa, wszechwiedzącego narratora", 
+b:"Pierwszoosobowa pamiętnikarska", 
+c:"W formie listów między bohaterami", 
+d:"Zmienna, zależna od humoru postaci"},
+
+{cat:"Potop", q:"Jakim językiem mówi narrator?", 
+a:"Językiem stylizowanym na XVII-wieczny", 
+b:"Współczesnym slangiem młodzieżowym", 
+c:"Językiem czysto naukowym", 
+d:"Wyłącznie prostą gwarą ludową"},
+
+{cat:"Potop", q:"Kim jest Andrzej Kmicic?", 
+a:"Szlachcicem, żołnierzem i patriotą", 
+b:"Chłopem pracującym na roli", 
+c:"Królewskim skrybą i kupcem", 
+d:"Zakonnikiem pełniącym służbę"},
+
+{cat:"Potop", q:"Jakie włosy ma Kmicic?", 
+a:"Jasne i mocno podgolone", 
+b:"Ciemne i bardzo długie", 
+c:"Rude i splecione w warkocz", 
+d:"Czarne i kręcone po ramiona"},
+
+{cat:"Potop", q:"Jaki ma stosunek Kmicic do rodaków?", 
+a:"Jest gotów poświęcić się dla ich dobra", 
+b:"Uważa rodaków za nieważnych", 
+c:"Traktuje ich jak wrogów", 
+d:"Zachowuje wobec nich całkowitą obojętność"},
+
+{cat:"Potop", q:"Dlaczego Kmicic jest krytyczny wobec szlachty?", 
+a:"Bo uważa, że brakuje jej patriotyzmu", 
+b:"Bo jest zbyt przedsiębiorcza", 
+c:"Bo nadmiernie wspiera króla", 
+d:"Bo unika udziału w wojnie ze Szwedami"},
+
+{cat:"Potop", q:"Dlaczego Kmicic jest bohaterem złożonym?", 
+a:"Bo sprzymierzył się ze zdrajcą, a jednocześnie jest patriotą", 
+b:"Bo nie przeżywa żadnych konfliktów wewnętrznych", 
+c:"Bo zawsze podejmuje te same decyzje", 
+d:"Bo nie odczuwa odpowiedzialności za swe czyny"},
+
+{cat:"Potop", q:"Jak zachowywał się Kmicic przed przemianą?", 
+a:"Był agresywny, porywczy i skłonny do przemocy", 
+b:"Był statecznym i spokojnym uczonym", 
+c:"Słynął z wyjątkowej łagodności", 
+d:"Unikał wszelkich konfliktów i sporów"},
+
+{cat:"Potop", q:"Jak zachowywał się Kmicic przed przemianą?", 
+a:"Uważał, że jest bezkarny", 
+b:"Postępował zawsze zgodnie z prawem", 
+c:"Był wzorem pokory i skromności", 
+d:"Przesadnie unikał trudnych decyzji"},
+
+{cat:"Potop", q:"Jak zachowywał się Kmicic przed przemianą?", 
+a:"Był egoistyczny, ale opiekował się swoimi żołnierzami", 
+b:"Nigdy nie interesował się losem podkomendnych", 
+c:"Był obojętny wobec towarzyszy broni", 
+d:"Całkowicie unikał kontaktu z innymi"},
+
+{cat:"Potop", q:"Co było okolicznością zmiany Kmicica?", 
+a:"Zaufał zdrajcy Januszowi Radziwiłłowi", 
+b:"Otrzymał list od króla Jana Kazimierza", 
+c:"Został ranny w pierwszej bitwie", 
+d:"Stracił cały majątek rodzinny"},
+
+{cat:"Potop", q:"Co zrobił Janusz Radziwiłł?", 
+a:"Oddał Litwę królowi szwedzkiemu Karolowi Gustawowi", 
+b:"Podpisał pokój z Polską", 
+c:"Wsparł obronę Warszawy", 
+d:"Utworzył własną armię przeciw Szwedom"},
+
+{cat:"Potop", q:"Jaką postawę ma Kmicic po przemianie?", 
+a:"Jest odważny, stanowczy i patriotyczny", 
+b:"Unika walki i odpowiedzialności", 
+c:"Skupia się wyłącznie na własnym majątku", 
+d:"Jest obojętny wobec losu kraju"},
+
+{cat:"Potop", q:"Dlaczego Kmicic był odważny?", 
+a:"Bo brał udział w obronie Jasnej Góry", 
+b:"Bo przebywał tylko w bezpiecznych miejscach", 
+c:"Bo unikał udziału w większych bitwach", 
+d:"Bo zajmował się wyłącznie dyplomacją"},
+
+{cat:"Potop", q:"Dlaczego Kmicic jest wewnętrznie rozdarty i cierpi za ojczyznę?", 
+a:"Bo ojczyzna została zniewolona przez Szwedów", 
+b:"Bo czuje brak uznania od króla", 
+c:"Bo utracił włości rodowe", 
+d:"Bo nie ma kontaktu z rodziną"},
+
+{cat:"Potop", q:"Na jakie nazwisko zmienia się Andrzej Kmicic?", 
+a:"Babinicz", 
+b:"Zagłoba", 
+c:"Wołodyjowski", 
+d:"Rosiński"},
+
+{cat:"Potop", q:"Jakie cechy romantyczne ma Kmicic?", 
+a:"Przemianę moralną i wewnętrzne rozdarcie", 
+b:"Chłodny realizm bez emocji", 
+c:"Stałość charakteru bez zmian", 
+d:"Obojętność wobec uczuć i ojczyzny"},
+
+{cat:"Potop", q:"Jak dzieli się polska szlachta w powieści?", 
+a:"Na zdrajców i patriotów", 
+b:"Na mieszczan i chłopów", 
+c:"Na duchownych i kupców", 
+d:"Na dworzan i rzemieślników"},
+
+{cat:"Potop", q:"Kim był Wejchart Wrzeszczowicz?", 
+a:"Oficerem wojsk szwedzkich", 
+b:"Posłańcem królowej szwedzkiej", 
+c:"Dowódcą obrony Krakowa", 
+d:"Kupcem podróżującym z Litwy"},
+
+{cat:"Potop", q:"Czym zajmował się Wejchart Wrzeszczowicz?", 
+a:"Dostarczaniem żywności", 
+b:"Pisaniem listów dyplomatycznych", 
+c:"Budową umocnień w miastach", 
+d:"Nadzorem nad królewskimi archiwami"},
+
+{cat:"Potop", q:"Kim był Lisola?", 
+a:"Niemieckim szpiegiem działającym dla cesarza", 
+b:"Szwedzkim lekarzem wojskowym", 
+c:"Litewskim kupcem i doradcą", 
+d:"Rosyjskim posłem na dworze"},
+
+{cat:"Potop", q:"Jakie jest miejsce akcji w scenach z Lisolą?", 
+a:"Karczma", 
+b:"Zamek królewski", 
+c:"Obóz wojskowy", 
+d:"Dwór magnacki"}
+];
+
+let current = 0;
+let life = 10;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("pozytywizm3") || 0;
+
+function newGame(){
+    life = 10; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        updateStats();
+        setTimeout(()=>nextQuestion(), 300);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 2000); }
+        else{ setTimeout(()=>nextQuestion(), 3000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("pozytywizm3", record);
+    }
+
+    document.getElementById("record").innerText = record;
+}
+
+newGame();
+</script>
+</body>
+</html>
