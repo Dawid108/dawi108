@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz o Węglu</title>
+    <link rel="icon" href="dawi108.png">
 <style>
 body {
     font-family: Arial, sans-serif;
@@ -64,6 +65,7 @@ button:hover {
 </div>
 
 <script>
+let dawid108 = localStorage.getItem("dawid108") || 0;
 const questions = [
     { q: "Co zaliczamy do związków organicznych?", answers: ["Sole", "Węglowodany", "Tlenki", "Kwasy nieorganiczne"], correct: 1 },
     { q: "Ile wiązań może tworzyć atom węgla?", answers: ["2", "3", "4", "5"], correct: 2 },
@@ -190,6 +192,9 @@ function checkAnswer(selected, correct, q) {
         setTimeout(() => {
             messageDiv.textContent = "";
             showNextQuestion();
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
         }, 1000);
     } else {
         messageDiv.textContent = `❌ Zła odpowiedź! Poprawna to: "${q.answers[correct]}".`;
