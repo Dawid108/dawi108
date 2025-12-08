@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quiz Historyczny XIX wiek</title>
+    <link rel="icon" href="dawi108.png">
 <style>
     body {
         background: linear-gradient(135deg, #1e3c72, #2a5298);
@@ -156,6 +157,7 @@ const questions = [
 
 // ===================== ZMIENNE =======================
 let lives, currentIndex, shuffled, correctCount;
+let dawid108 = localStorage.getItem("dawid108") || 0;
 const questionEl = document.getElementById("question");
 const answersEl = document.getElementById("answers");
 const progressEl = document.getElementById("progress");
@@ -206,6 +208,9 @@ function checkAnswer(selected, correctIndex) {
     const q = shuffled[currentIndex];
     if (selected === correctIndex) {
         currentIndex++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
         showQuestion();
     } else {
         lives--;
