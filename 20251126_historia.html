@@ -168,6 +168,7 @@ const questions = [
 ];
 
 // ===================== ZMIENNE =======================
+let dawid108 = localStorage.getItem("dawid108") || 0;
 let lives, currentIndex, shuffled, correctCount;
 const questionEl = document.getElementById("question");
 const answersEl = document.getElementById("answers");
@@ -225,6 +226,9 @@ function checkAnswer(selected, correctIndex) {
     const q = shuffled[currentIndex];
     if (selected === correctIndex) {
         currentIndex++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
         showQuestion();
     } else {
         lives--;
