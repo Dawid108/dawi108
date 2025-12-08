@@ -128,6 +128,7 @@
 
   <script>
     // ====== NARZĘDZIA ======
+    let dawid108 = localStorage.getItem("dawid108") || 0;
     const storageKey = 'inf03_game_2526';
     const recordKey = storageKey + '_record';
     const lastKey = storageKey + '_last';
@@ -2128,6 +2129,9 @@
 
       if(isCorrect){
         points += 1; $points.textContent = String(points);
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
         el.classList.add('correct');
       }else{
         lives -= 1; $lives.textContent = String(lives);
