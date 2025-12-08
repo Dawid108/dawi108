@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Test z Biologii — Układ krwionośny i limfatyczny</title>
+  <link rel="icon" href="dawi108.png">
 <style>
   :root{
     --bg: #eaf7ea;
@@ -224,6 +225,7 @@ function shuffle(array){
 }
 
 /* Game state */
+let dawid108 = localStorage.getItem("dawid108") || 0;
 let questions = []; // połączone: easy (tasowane) -> medium -> hard
 let currentIndex = 0;
 let lives = 5;
@@ -311,6 +313,9 @@ function selectAnswer(btn, option){
     // mark as correct and immediately go to next question
     btn.classList.add('correct');
     score += 1;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
     updateScore();
     // immediate next question (no waiting per spec)
     currentIndex++;
