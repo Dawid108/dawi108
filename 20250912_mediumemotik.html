@@ -801,6 +801,7 @@
     const RECORD_KEY = 'medium_emotik_best';
 
     // Game state
+    let dawid108 = localStorage.getItem("dawid108") || 0;
     let timeLeft = 60;
     let score = 0;
     let timerInterval = null;
@@ -921,6 +922,9 @@
         .filter(Boolean).map(normalizeAnswer);
       if(accepted.includes(answer)){
         score += 1;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
         const bonus = (roundCount === 1) ? 4 : 1;
         timeLeft += bonus;
         updateHUD();
