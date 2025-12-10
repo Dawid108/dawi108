@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historia</title>
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">30</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Historia", q:"W jakim zaborze były najlepsze warunki rozwoju rolnictwa?", 
+ a:"W zaborze pruskim", 
+ b:"W zaborze rosyjskim", 
+ c:"W zaborze czeskim", 
+ d:"W zaborze litewskim"},
+
+{cat:"Historia", q:"W jakim zaborze były najgorsze warunki dla rozwoju rolnictwa?", 
+ a:"W zaborze austriackim", 
+ b:"W zaborze pruskim", 
+ c:"W zaborze ukraińskim", 
+ d:"W zaborze śląskim"},
+
+{cat:"Historia", q:"Co to Industrializacja Ziem Królestwa Polskiego?", 
+ a:"Proces szybkiego rozwoju przemysłu w Królestwie Polskim", 
+ b:"System wspólnej uprawy ziem w Królestwie Polskim", 
+ c:"Program odbudowy wsi na ziemiach południowych", 
+ d:"Metoda reorganizacji szkolnictwa w Królestwie"},
+
+{cat:"Historia", q:"Jakie dwa okręgi stały się ważne?", 
+ a:"Łódzki i Warszawski", 
+ b:"Krakowski i Poznański", 
+ c:"Lwowski i Lubelski", 
+ d:"Toruński i Wileński"},
+
+{cat:"Historia", q:"Co zaczęto prowadzić w zaborze austriackim?", 
+ a:"Wydobycie ropy naftowej", 
+ b:"Wydobycie rudy żelaza", 
+ c:"Eksport drewna na zachód", 
+ d:"Produkcję maszyn rolniczych"},
+
+{cat:"Historia", q:"Co było na Górnym Śląsku?", 
+ a:"Kopalnie i huty", 
+ b:"Tartaki i młyny", 
+ c:"Warsztaty i cegielnie", 
+ d:"Porty i magazyny"},
+
+{cat:"Historia", q:"Co to Proletariat?", 
+ a:"Najuboższa warstwa pracowników fabrycznych", 
+ b:"Zamożna grupa właścicieli gospodarstw", 
+ c:"Średnia warstwa kupców miejskich", 
+ d:"Elitarna grupa urzędników państwowych"},
+
+{cat:"Historia", q:"Jaka powstaje idea?", 
+ a:"Że każdy naród powinien mieć swoje państwo", 
+ b:"Że wszystkie kraje powinny mieć jeden rząd", 
+ c:"Że miasta powinny być całkowicie samodzielne", 
+ d:"Że armia powinna kierować państwem"},
+
+{cat:"Historia", q:"Co to praca organiczna?", 
+ a:"Wspólne działanie społeczeństwa dla rozwoju kraju", 
+ b:"Praca wyłącznie w rolnictwie i ogrodnictwie", 
+ c:"Program odnowy zabytków miejskich", 
+ d:"System produkcji zdrowej żywności"},
+
+{cat:"Historia", q:"Jak zmieniła się Łódź przez kilkadziesiąt lat?", 
+ a:"Ze wsi stała się wielkim miastem przemysłowym", 
+ b:"Z miasta stała się małą wioską handlową", 
+ c:"Z ośrodka przemysłu stała się strefą rolniczą", 
+ d:"Ze wsi stała się krótkotrwałym kurortem"},
+
+{cat:"Historia", q:"Gdzie następował najlepszy wzrost przemysłu w zaborze pruskim?", 
+ a:"Na Górnym Śląsku", 
+ b:"Na Mazurach", 
+ c:"Na Pomorzu", 
+ d:"W Wielkopolsce"},
+
+{cat:"Historia", q:"Jakie grupy społeczne zyskały na znaczeniu?", 
+ a:"Ziemiaństwo, drobnomieszczaństwo, inteligencja i proletariat", 
+ b:"Szlachta, magnateria, artyści i poeci", 
+ c:"Kupcy, rzemieślnicy, duchowieństwo i uczniowie", 
+ d:"Koloniści, rybacy, marynarze i rolnicy"},
+
+{cat:"Historia", q:"Co to asymilacja Żydów?", 
+ a:"Proces włączania Żydów do życia społeczeństwa", 
+ b:"Izolowanie Żydów od reszty mieszkańców", 
+ c:"Przesiedlanie Żydów do specjalnych stref", 
+ d:"Nakaz wykonywania wybranych zawodów"},
+
+{cat:"Historia", q:"Co rozwijało się w tym okresie?", 
+ a:"Ruch emancypacyjny i asymilacja Żydów", 
+ b:"Rozwój kolonii zamorskich i żeglugi", 
+ c:"Ekspansja rolnictwa i górnictwa miedzi", 
+ d:"Nowe systemy obronne i fortyfikacje"},
+
+{cat:"Historia", q:"Co to PPS?", 
+ a:"Polska Partia Socjalistyczna", 
+ b:"Polska Partia Społeczno-Handlowa", 
+ c:"Polskie Porozumienie Szkoleniowe", 
+ d:"Państwowy Program Społeczny"},
+
+{cat:"Historia", q:"Co to SDKPiL?", 
+ a:"Socjaldemokracja Królestwa Polskiego i Litwy", 
+ b:"Sekcja Działań Kulturalnych i Literackich", 
+ c:"Stowarzyszenie Doświadczalnej Kartografii i Logistyki", 
+ d:"System Demokratycznej Kontroli Ludności"},
+
+{cat:"Historia", q:"Jakie dwie główne partie wyodrębniły się pod koniec XIX wieku?", 
+ a:"PPS i SDKPiL", 
+ b:"PPS i SLD", 
+ c:"ND i Sanacja", 
+ d:"PSL i Piast"},
+
+{cat:"Historia", q:"Jaka była największa różnica między PPS a SDKPiL?", 
+ a:"Podejście do odzyskania przez Polskę niepodległości", 
+ b:"Stosunek do handlu zagranicznego i ceł", 
+ c:"Podejście do reformy szkolnictwa", 
+ d:"Różnice w rolnictwie i podatkach"},
+
+{cat:"Historia", q:"Jakie były główne założenia Ruchu Narodowego?", 
+ a:"Obrona polskiej tożsamości i dążenie do silnego państwa", 
+ b:"Całkowita likwidacja granic i wspólny rząd Europy", 
+ c:"Wprowadzenie gospodarki opartej na rolnictwie", 
+ d:"Utworzenie jedynie lokalnych wspólnot miejskich"},
+
+{cat:"Historia", q:"Jakie były główne założenia Ruchu Ludowego?", 
+ a:"Obrona interesów chłopów i walka o reformy społeczne", 
+ b:"Wspieranie wyłącznie fabrykantów i przemysłowców", 
+ c:"Rozbudowa floty morskiej i kolonii zamorskich", 
+ d:"Tworzenie systemu elitarnych szkół prywatnych"},
+
+  {cat:"Historia", q:"Jakie były skutki dla ziem polskich rewolucji w latach 1905–1907?", 
+ a:"Wzrost świadomości społecznej i politycznej", 
+ b:"Silna odbudowa floty morskiej i portów", 
+ c:"Pełna niezależność gospodarcza całego regionu", 
+ d:"Powstanie nowych kolonii na wschodzie"},
+
+{cat:"Historia", q:"Co to autonomia galicyjska?", 
+ a:"Częściowa samodzielność Galicji w ramach Austro-Węgier", 
+ b:"Projekt budowy wspólnej floty Galicji i Śląska", 
+ c:"Całkowita izolacja Galicji od reszty kraju", 
+ d:"Reforma tworząca jednolite prawo dla całej Europy"},
+
+{cat:"Historia", q:"Co polonizowano dzięki reformom monarchii austriackiej?", 
+ a:"Administrację Galicji", 
+ b:"Szlaki morskie i porty regionu", 
+ c:"Rozbudowę kolei w Europie", 
+ d:"System produkcji i dystrybucji węgla"},
+
+{cat:"Historia", q:"Co przyczyniło się do rozwoju Królestwa Polskiego?", 
+ a:"Zniesienie granicy celnej", 
+ b:"Wprowadzenie obowiązkowych podatków eksportowych", 
+ c:"Całkowita likwidacja handlu zagranicznego", 
+ d:"Zastąpienie fabryk rolniczymi osadami"},
+
+{cat:"Historia", q:"Między czym przebiegała granica celna?", 
+ a:"Między Kongresówką a Rosją", 
+ b:"Między Galicją a Węgrami", 
+ c:"Między Śląskiem a Saksonią", 
+ d:"Między Pomorzem a Danią"},
+
+{cat:"Historia", q:"Kto wynalazł lampę naftową w zaborze austriackim?", 
+ a:"Ignacy Łukasiewicz", 
+ b:"Kazimierz Wyszyński", 
+ c:"Adam Karpiński", 
+ d:"Jerzy Kowalewicz"},
+
+{cat:"Historia", q:"Co to Haskala?", 
+ a:"Żydowski ruch oświeceniowy", 
+ b:"System podatkowy dla kupców", 
+ c:"Nowoczesna metoda nauki rolnictwa", 
+ d:"Związek cechów miejskich"},
+
+{cat:"Historia", q:"Co uważali Syjoniści?", 
+ a:"Że ludność żydowska jest oddzielnym narodem", 
+ b:"Że wszyscy powinni przyjąć kulturę europejską", 
+ c:"Że społeczeństwo powinno żyć bez żadnych granic", 
+ d:"Że każdy kraj musi kierować się jednym prawem"},
+
+{cat:"Historia", q:"Jak był podzielony ruch socjalistyczny?", 
+ a:"Na SDKPiL i PPS", 
+ b:"Na SL i PSL", 
+ c:"Na ZLN i SN", 
+ d:"Na KPP i OKR"},
+
+{cat:"Historia", q:"Do czego dążyło SDKPiL?", 
+ a:"Do rewolucji proletariackiej", 
+ b:"Do odbudowy wielkich posiadłości ziemskich", 
+ c:"Do rozwijania floty morskiej państwa", 
+ d:"Do unowocześnienia szkolnictwa wyższego"},
+
+{cat:"Historia", q:"Co chciało SDKPiL?", 
+ a:"Pozostawić Polskę jako część komunistycznej republiki z innymi narodami", 
+ b:"Stworzyć niezależne królestwo oparte na handlu", 
+ c:"Zbudować państwo oparte tylko na rolnictwie", 
+ d:"Zorganizować dobrowolną unię krajów nadmorskich"},
+
+{cat:"Historia", q:"Co chcieli działacze SDKPiL?", 
+ a:"Odrzucić walkę o niepodległość i dążyć do rewolucji światowej", 
+ b:"Budować sieć szkół rolniczych w całej Europie", 
+ c:"Tworzyć lokalne milicje na terenach wiejskich", 
+ d:"Wprowadzić jednolity system ceł w państwach regionu"},
+
+{cat:"Historia", q:"Kto był założycielem SDKPiL?", 
+ a:"Róża Luksemburg i Julian Marchlewski", 
+ b:"Władysław Grabski i Roman Zaremba", 
+ c:"Aleksander Limanowski i Stefan Kruczek", 
+ d:"Jan Zatorski i Henryk Dębski"},
+
+{cat:"Historia", q:"Jaki był najważniejszy cel PPS?", 
+ a:"Wywalczenie niepodległości", 
+ b:"Zbudowanie wspólnej floty dla Europy", 
+ c:"Utworzenie jednej dużej partii ludowej", 
+ d:"Przekształcenie miast w centra handlowe"},
+
+{cat:"Historia", q:"Jakie reformy chciało PPS?", 
+ a:"Dotyczące nierówności społecznej", 
+ b:"Związane z rozwojem floty rybackiej", 
+ c:"Dotyczące budowy nowych fortów", 
+ d:"Związane z ujednoliceniem handlu"},
+
+{cat:"Historia", q:"Jaki działacz PPS uznał walkę o niepodległość za najważniejszy cel?", 
+ a:"Józef Piłsudski", 
+ b:"Jan Kowalewski", 
+ c:"Marek Strzelecki", 
+ d:"Witold Ostrowski"},
+
+{cat:"Historia", q:"Kto był przedstawicielem Ruchu Narodowego?", 
+ a:"Roman Dmowski", 
+ b:"Władysław Sikorski", 
+ c:"Kazimierz Bartel", 
+ d:"Eugeniusz Jagiełło"},
+
+{cat:"Historia", q:"Co było celem Ligi Narodowej?", 
+ a:"Obrona interesów polskiego społeczeństwa", 
+ b:"Rozwój żeglugi i budowy portów w regionie", 
+ c:"Tworzenie wspólnego systemu monetarnego", 
+ d:"Zjednoczenie państw w jedno wielkie imperium"},
+
+{cat:"Historia", q:"W jakim zaborze Liga Narodowa uzyskała silne poparcie?", 
+ a:"W zaborze pruskim", 
+ b:"W zaborze rosyjskim", 
+ c:"W zaborze austriackim", 
+ d:"W zaborze litewskim"},
+
+{cat:"Historia", q:"Kto był zasłużonym działaczem na Górnym Śląsku?", 
+ a:"Wojciech Korfanty", 
+ b:"Józef Wieniawski", 
+ c:"Teodor Krzywiecki", 
+ d:"Marek Lubelski"},
+
+  {cat:"Historia", q:"Jaka partia powstała w 1897 roku w Królestwie Polskim?", 
+ a:"Stronnictwo Narodowo-Demokratyczne", 
+ b:"Związek Robotniczo-Patriotyczny", 
+ c:"Komitet Zjednoczenia Obywatelskiego", 
+ d:"Liga Polityczno-Rolnicza"},
+
+{cat:"Historia", q:"Jakie było główne miejsce działalności Stronnictwa Narodowo-Demokratycznego?", 
+ a:"Lwów", 
+ b:"Grodno", 
+ c:"Piotrków", 
+ d:"Brześć"},
+
+{cat:"Historia", q:"Jakie pismo wydał Roman Dmowski?", 
+ a:"Przegląd Wszechpolski", 
+ b:"Nowy Kurier Ludowy", 
+ c:"Głos Obywatelski", 
+ d:"Tygodnik Społeczny"},
+
+{cat:"Historia", q:"Kto był trzykrotnym premierem II Rzeczypospolitej z ruchu ludowego?", 
+ a:"Wincenty Witos", 
+ b:"Aleksander Bogacki", 
+ c:"Marian Rutkowski", 
+ d:"Józef Stańczyk"},
+
+{cat:"Historia", q:"Kiedy powstała pierwsza partia chłopska?", 
+ a:"28 lipca 1895", 
+ b:"3 września 1894", 
+ c:"12 sierpnia 1896", 
+ d:"15 czerwca 1893"},
+
+{cat:"Historia", q:"Rozwiń skrót SL.", 
+ a:"Stronnictwo Ludowe", 
+ b:"Stowarzyszenie Ludu", 
+ c:"Sekcja Ludności", 
+ d:"Struktura Lokalna"},
+
+{cat:"Historia", q:"Kto został pierwszym prezesem Stronnictwa Ludowego w 1895 roku?", 
+ a:"Karol Lewakowski", 
+ b:"Andrzej Sarnowski", 
+ c:"Bolesław Karczewski", 
+ d:"Stanisław Niemojewski"},
+
+{cat:"Historia", q:"Gdzie powołano Stronnictwo Ludowe?", 
+ a:"W Rzeszowie", 
+ b:"W Tarnowie", 
+ c:"W Sandomierzu", 
+ d:"W Kielcach"},
+
+{cat:"Historia", q:"Jakie były główne cele Stronnictwa Ludowego?", 
+ a:"Obniżenie podatków, budowa szkół, rozwój dróg", 
+ b:"Rozwój żeglugi, reforma armii, budowa portów", 
+ c:"Wspieranie górnictwa, reforma kolei, handel zagraniczny", 
+ d:"Zwiększenie podatków, rozbiór dóbr, kontrola rynku"},
+
+{cat:"Historia", q:"Na co przekształciło się SL w 1903 roku?", 
+ a:"PSL", 
+ b:"ZRL", 
+ c:"PLN", 
+ d:"GKP"},
+
+{cat:"Historia", q:"Rozwiń skrót PSL.", 
+ a:"Polskie Stronnictwo Ludowe", 
+ b:"Państwowy Samorząd Ludowy", 
+ c:"Polski System Liberalny", 
+ d:"Partia Społecznej Lewicy"},
+
+{cat:"Historia", q:"Kto przekształcił SL w PSL?", 
+ a:"Jan Strupiński", 
+ b:"Franciszek Malinowski", 
+ c:"Kazimierz Borucki", 
+ d:"Stanisław Nowicki"},
+
+{cat:"Historia", q:"Na co podzielił Strupiński PSL?", 
+ a:"PSL-Lewicę i PSL-Piast", 
+ b:"PSL-Zjednoczone i PSL-Wschód", 
+ c:"PSL-Miejski i PSL-Wiejski", 
+ d:"PSL-Republika i PSL-Centrum"},
+
+{cat:"Historia", q:"Kto był przedstawicielem PSL-Lewica?", 
+ a:"Jan Strupiński", 
+ b:"Piotr Siemieński", 
+ c:"Władysław Rutkowski", 
+ d:"Edward Gierszewski"},
+
+{cat:"Historia", q:"Kto był przedstawicielem PSL-Piast?", 
+ a:"Wincenty Witos", 
+ b:"Józef Rakowski", 
+ c:"Marek Olbrycht", 
+ d:"Leon Borski"},
+
+{cat:"Historia", q:"Kiedy wybuchła rewolucja w Rosji, która objęła Polskę?", 
+ a:"1905", 
+ b:"1898", 
+ c:"1910", 
+ d:"1895"},
+
+{cat:"Historia", q:"Kiedy i gdzie miała miejsce Krwawa Niedziela?", 
+ a:"22 stycznia 1905 w Petersburgu", 
+ b:"10 marca 1904 w Moskwie", 
+ c:"5 kwietnia 1906 w Kijowie", 
+ d:"14 lutego 1903 w Smoleńsku"},
+
+{cat:"Historia", q:"Do czego doszło w Królestwie Kongresowym podczas rewolucji?", 
+ a:"Do strajków i powstań", 
+ b:"Do rozwoju żeglugi rzecznej", 
+ c:"Do pełnej odbudowy armii", 
+ d:"Do reorganizacji systemu podatkowego"},
+
+{cat:"Historia", q:"Dlaczego w Królestwie Kongresowym strajkowali nauczyciele i uczniowie?", 
+ a:"Chcieli nauczania po polsku i bezpłatnej edukacji", 
+ b:"Żądali zwiększenia czasu pracy w szkołach", 
+ c:"Chcieli wprowadzenia obowiązkowych zajęć rolniczych", 
+ d:"Domagali się zmiany kalendarza szkolnego"},
+
+{cat:"Historia", q:"Kto stał na czele Powstania Organizacji Bojowej?", 
+ a:"Józef Piłsudski", 
+ b:"Aleksander Sobański", 
+ c:"Marek Lewicki", 
+ d:"Tomasz Nowiński"},
+
+{cat:"Historia", q:"Co było jednym ze skutków rewolucji 1905 roku?", 
+ a:"Zgoda na tworzenie szkół prywatnych i nauczanie po polsku", 
+ b:"Obowiązek nauki wyłącznie w języku rosyjskim", 
+ c:"Całkowity zakaz prowadzenia szkół przez obywateli", 
+ d:"Wprowadzenie jednolitego systemu podatkowego"},
+
+{cat:"Historia", q:"Co było innym skutkiem rewolucji 1905 roku?", 
+ a:"Zakończenie dyskryminacji kościoła rzymsko- i grekokatolickiego", 
+ b:"Likwidacja wszystkich świątyń w regionie", 
+ c:"Wprowadzenie zakazu nabożeństw publicznych", 
+ d:"Oddzielenie kościołów od gmin miejskich"},
+
+{cat:"Historia", q:"Czym zostały zastąpione idee romantyczne?", 
+ a:"Pozytywizmem", 
+ b:"Symbolizmem", 
+ c:"Modernizmem", 
+ d:"Ekspresjonizmem"},
+
+{cat:"Historia", q:"Jakie hasła głosili pozytywiści?", 
+ a:"Praca organiczna i praca u podstaw", 
+ b:"Rozwój floty i handlu zamorskiego", 
+ c:"Wzmacnianie armii i budowa fortyfikacji", 
+ d:"Tworzenie kolonii i ekspansja terytorialna"},
+
+{cat:"Historia", q:"Kto był malarzem historycznym?", 
+ a:"Jan Matejko", 
+ b:"Jacek Florczyk", 
+ c:"Piotr Bocianowski", 
+ d:"Leon Marczyński"},
+
+{cat:"Historia", q:"Kto był popularny w literaturze?", 
+ a:"Henryk Sienkiewicz", 
+ b:"Tomasz Wawrzyniec", 
+ c:"Edward Krajewski", 
+ d:"Franciszek Oborski"},
+
+{cat:"Historia", q:"Kto był zwolennikiem legalnej działalności i kompromisu z zaborcą?", 
+a:"Biali", 
+b:"Czerwoni", 
+c:"Zieloni", 
+d:"Rząd Narodowy"},
+
+{cat:"Historia", q:"Kim byli biali?", 
+a:"Zwolennikami legalnej działalności i kompromisu", 
+b:"Zwolennikami powstania zbrojnego", 
+c:"Zwolennikami germanizacji", 
+d:"Polską armią podziemną"},
+
+{cat:"Historia", q:"Co głosili czerwoni?", 
+a:"Hasło do zbrojnego powstania", 
+b:"Potrzebę pracy organicznej", 
+c:"Polonizację administracji", 
+d:"Lojalność wobec Austrii"},
+
+{cat:"Historia", q:"W jakich miastach odbywały się patriotyczne manifestacje w latach 60.?", 
+a:"W Warszawie i miastach Królestwa Polskiego", 
+b:"Tylko w Krakowie", 
+c:"Tylko w Poznaniu", 
+d:"Wyłącznie na wsi"},
+
+{cat:"Historia", q:"W którym roku użyto wojska rosyjskiego do rozpędzenia manifestacji?", 
+a:"1861", 
+b:"1855", 
+c:"1863", 
+d:"1864"},
+
+{cat:"Historia", q:"Kogo car mianował dyrektorem Komisji Wyznań i Oświecenia Publicznego?", 
+a:"Aleksandra Wielopolskiego", 
+b:"Romualda Traugutta", 
+c:"Mariana Langiewicza", 
+d:"Ludwika Mierosławskiego"},
+
+{cat:"Historia", q:"Co NIE było zasługą Aleksandra Wielopolskiego?", 
+a:"Organizacja tajnego nauczania", 
+b:"Utworzenie Szkoły Głównej Warszawskiej", 
+c:"Polonizacja administracji", 
+d:"Reformy dotyczące chłopów i Żydów"},
+
+{cat:"Historia", q:"Co przyspieszyło wybuch Powstania Styczniowego?", 
+a:"Branka", 
+b:"Rugowanie Polaków z Prus", 
+c:"Wprowadzenie języka polskiego do szkół", 
+d:"Podpisanie pokoju w Paryżu"},
+
+{cat:"Historia", q:"Czym była branka?", 
+a:"Przymusowym poborem do wojska", 
+b:"Podatkiem", 
+c:"Zakazem manifestacji", 
+d:"Nowym kodeksem prawnym"},
+
+{cat:"Historia", q:"Kto ogłosił manifest wzywający do powstania?", 
+a:"Tymczasowy Rząd Narodowy", 
+b:"Biali", 
+c:"Rząd Austriacki", 
+d:"Hakata"},
+
+{cat:"Historia", q:"Jaki charakter miało Powstanie Styczniowe?", 
+a:"Wojny partyzanckiej", 
+b:"Wojny dyplomatycznej", 
+c:"Wojny morskiej", 
+d:"Regularnej wojny frontowej"},
+
+{cat:"Historia", q:"W co przekształcił się Tymczasowy Rząd Narodowy?", 
+a:"Rząd Narodowy", 
+b:"Hakata", 
+c:"Sejm Krajowy", 
+d:"Centralna Rada Wojenna"},
+
+{cat:"Historia", q:"Jakie państwa udzieliły pomocy powstańcom?", 
+a:"Żadne państwo", 
+b:"Francja i Anglia", 
+c:"Austria i Niemcy", 
+d:"Turcja"},
+
+{cat:"Historia", q:"Kto NIE był przywódcą powstania?", 
+a:"Aleksander Wielopolski", 
+b:"Romuald Traugutt", 
+c:"Marian Langiewicz", 
+d:"Ludwik Mierosławski"},
+
+{cat:"Historia", q:"W którym roku upadło Powstanie Styczniowe?", 
+a:"1864", 
+b:"1851", 
+c:"1871", 
+d:"1901"},
+
+{cat:"Historia", q:"Co otrzymali chłopi po powstaniu?", 
+a:"Ziemię na własność bez odszkodowania", 
+b:"Zwolnienie z podatków", 
+c:"Rosyjskie obywatelstwo", 
+d:"Przywileje szlacheckie"},
+
+{cat:"Historia", q:"Co zlikwidowano po upadku powstania?", 
+a:"Królestwo Polskie", 
+b:"Senat", 
+c:"Sejm Wielki", 
+d:"Uniwersytet Wileński"},
+
+{cat:"Historia", q:"Jak nazwano Królestwo Polskie po zmianach administracyjnych?", 
+a:"Kraj Przywiślański", 
+b:"Imperium Polskie", 
+c:"Kraina Nadwiślańska", 
+d:"Królestwo Królewskie"},
+
+{cat:"Historia", q:"Co stało się z Kościołem katolickim po powstaniu?", 
+a:"Został podporządkowany Petersburgowi", 
+b:"Uniezależnił się od państwa", 
+c:"Otrzymał większe prawa", 
+d:"Przeniesiono go do Poznania"},
+
+{cat:"Historia", q:"Jak Polacy walczyli o zachowanie polskości po powstaniu?", 
+a:"Organizując tajne nauczanie", 
+b:"Germanizując szkoły", 
+c:"Tworząc powstania zbrojne", 
+d:"Oddając władzę Rosji"},
+
+{cat:"Historia", q:"Jak nazywano okres silnej rusyfikacji szkolnictwa po powstaniu?", 
+a:"Nocą apuchtinowską", 
+b:"Rugami pruskimi", 
+c:"Kulturkampfem", 
+d:"Nocą styczniową"},
+
+{cat:"Historia", q:"Na jakiej idei opierała się praca organiczna?", 
+a:"Rozwoju edukacji, kultury i gospodarki", 
+b:"Walce militarnej", 
+c:"Bierności", 
+d:"Współpracy z Prusami"},
+
+{cat:"Historia", q:"W którym zaborze germanizacja była szczególnie silna po 1871 roku?", 
+a:"Pruskim", 
+b:"Austriackim", 
+c:"Rosyjskim", 
+d:"Tureckim"},
+
+{cat:"Historia", q:"Co było elementem polityki pruskiej przeciw Polakom?", 
+a:"Hakata", 
+b:"Branka", 
+c:"Manifestacje patriotyczne", 
+d:"Powstanie listopadowe"},
+
+{cat:"Historia", q:"Kto był inicjatorem budowy Bazaru w Poznaniu?", 
+a:"Karol Marcinkowski", 
+b:"Hipolit Cegielski", 
+c:"Aleksander Wielopolski", 
+d:"Romuald Traugutt"},
+
+{cat:"Historia", q:"Kim był Hipolit Cegielski?", 
+a:"Przemysłowcem", 
+b:"Lekarzem i społecznikiem", 
+c:"Poetą", 
+d:"Działaczem Hakaty"},
+
+{cat:"Historia", q:"W którym roku miał miejsce strajk dzieci we Wrześni?", 
+a:"1901", 
+b:"1867", 
+c:"1871", 
+d:"1918"},
+
+{cat:"Historia", q:"W którym zaborze Polacy mieli największą autonomię?", 
+a:"Austriackim", 
+b:"Rosyjskim", 
+c:"Pruskim", 
+d:"Żadnym"},
+
+{cat:"Historia", q:"Co sprzyjało rozwojowi nauki i kultury w Galicji?", 
+a:"Największa autonomia", 
+b:"Germanizacja", 
+c:"Upadek Austrii", 
+d:"Polityka Hakaty"},
+
+{cat:"Historia", q:"Kiedy powołano Sejm Krajowy we Lwowie?", 
+a:"1861", 
+b:"1867", 
+c:"1864", 
+d:"1901"},
+
+{cat:"Historia", q:"W którym roku powstała monarchia austro-węgierska?", 
+a:"1867", 
+b:"1901", 
+c:"1850", 
+d:"1871"},
+
+{cat:"Historia", q:"Co wprowadzono w Galicji w 1867 roku?", 
+a:"Język polski jako język nauczania", 
+b:"Zakaz języka polskiego", 
+c:"Hakatę", 
+d:"Tajne nauczanie"},
+
+{cat:"Historia", q:"Kto był premierem rządu wiedeńskiego?", 
+a:"Kazimierz Badeni", 
+b:"Aleksander Wielopolski", 
+c:"Marian Langiewicz", 
+d:"Romuald Traugutt"},
+
+{cat:"Historia", q:"Co było symbolem działalności Polaków w zaborze pruskim?", 
+a:"Bazar w Poznaniu", 
+b:"Szkoła Główna Warszawska", 
+c:"Rząd Narodowy", 
+d:"Sejm Krajowy"},
+
+{cat:"Historia", q:"Kto dowodził powstaniem jako ostatni przywódca?", 
+a:"Traugutt", 
+b:"Langiewicz", 
+c:"Mierosławski", 
+d:"Badeni"},
+
+{cat:"Historia", q:"Na co głównie stawiała praca organiczna?", 
+a:"Rozwój gospodarczy i edukacyjny", 
+b:"Walkę zbrojną", 
+c:"Brankę", 
+d:"Germanizację"},
+
+{cat:"Historia", q:"Które z poniższych było konsekwencją powstania?", 
+a:"Nadanie chłopom ziemi", 
+b:"Powstanie monarchii austro-węgierskiej", 
+c:"Rugowanie Polaków z Prus", 
+d:"Powstanie Hakaty"},
+
+{cat:"Historia", q:"Jakie represje stosowano wobec powstańców?", 
+a:"Kary śmierci i zesłania", 
+b:"Nagrody", 
+c:"Stypendia", 
+d:"Zwolnienia z podatków"},
+
+{cat:"Historia", q:"Co wprowadzono po likwidacji Królestwa Polskiego?", 
+a:"Rosyjską administrację", 
+b:"Polskie sądy", 
+c:"Autonomię pełną", 
+d:"Wolność polityczną"}
+];
+
+let current = 0;
+let life = 30;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("historiahs") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 30; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 300);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 2000); }
+        else{ setTimeout(()=>nextQuestion(), 3000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("historiahs", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
