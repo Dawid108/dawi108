@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="style.css">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Szkoła">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="dawi108.png">
+</head>
+<body>
+    <div class="container">
+        <h1>Historia</h1>
+        <div class="table-wrapper">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Lp</th>
+                        <th>Nazwa</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody id="historia"></tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+let historia108 = JSON.parse(localStorage.getItem("historia108")) || [];
+
+let tbody = document.getElementById("historia");
+
+// sortowanie od najnowszych (po dacie dodania)
+historia108 = historia108.reverse();
+
+historia108.forEach((item, index) => {
+
+    let tr = document.createElement("tr");
+
+    // automatyczny numer
+    let tdNr = document.createElement("td");
+    tdNr.textContent = index + 1;
+
+    // link
+    let tdLink = document.createElement("td");
+    let a = document.createElement("a");
+    a.href = item.url;
+    a.textContent = item.name; // np. "szkola"
+    tdLink.appendChild(a);
+
+    // data
+    let tdDate = document.createElement("td");
+    tdDate.textContent = item.date;
+
+    tr.appendChild(tdNr);
+    tr.appendChild(tdLink);
+    tr.appendChild(tdDate);
+
+    tbody.appendChild(tr);
+});
+    </script>
+</body>
+</html>
