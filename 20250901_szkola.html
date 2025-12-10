@@ -15,7 +15,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Szkoła</h1>
+        <h1 id="punkty"></h1>
         <h2>Egzaminy</h2>
         <div class="table-wrapper">
             <table border="1">
@@ -106,6 +106,10 @@
         </div>
     </div>
     <script>
+let dawid108 = localStorage.getItem("dawid108") || 0;
+let punkty = document.getElementById("punkty");
+punkty.innerHTML = "Punkty: " + dawid108;
+        
 function numerateTables() {
     document.querySelectorAll("table:not(.nienumerowana)").forEach(table => {
         let rows = table.querySelectorAll("tr:not(:first-child)");
