@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Test na Prawo Jazdy</title>
+<link rel="icon" href="dawi108.png" type="image/png">
+<script src="script.js"></script>
 <style>
     body {
         font-family: Arial, sans-serif;
@@ -751,6 +753,7 @@ let index = 0;
 let lives = 9;
 let points = 0;
 let answering = true;
+let dawid108 = localStorage.getItem("dawid108") || 0;
 
 const imgEl = document.getElementById("image");
 const qEl = document.getElementById("question");
@@ -803,6 +806,9 @@ function checkAnswer(ans) {
 
     if (ans === correct) {
         points++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
         pointsEl.textContent = points;
         if (ans === "tak") yesBtn.classList.add("correct");
         else noBtn.classList.add("correct");
