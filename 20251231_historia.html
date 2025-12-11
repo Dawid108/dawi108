@@ -34,6 +34,10 @@ let historia108 = JSON.parse(localStorage.getItem("historia108")) || [];
 
 let tbody = document.getElementById("historia");
 
+function capitalize(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 // sortowanie od najnowszych (po dacie dodania)
 historia108 = historia108.reverse();
 
@@ -49,7 +53,7 @@ historia108.forEach((item, index) => {
     let tdLink = document.createElement("td");
     let a = document.createElement("a");
     a.href = item.url;
-    a.textContent = item.name; // np. "szkola"
+    a.textContent = capitalize(item.name);
     tdLink.appendChild(a);
 
     // data
