@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
   <title>Adjectives</title>
   <link rel="stylesheet" href="20250925_slowka.css">
+  <link rel="icon" href="dawi108.png" type="image/png">
+  <script src="script.js"></script>
 </head>
 <body>
   <div class="app" role="application">
@@ -109,6 +111,7 @@
     let score = 0;
     let showingCorrectTimeout = null;
     const STORAGE_KEY = 'adjectives';
+    let dawid108 = localStorage.getItem("dawid108") || 0;
 
     // elementy DOM
     const timeEl = document.getElementById('time');
@@ -192,6 +195,9 @@
       if(candidates.includes(raw.toLowerCase())){
         // poprawna
         score += 1;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
         timeLeft += 3; // +3s
         currentIndex += 1;
         updateHUD();
