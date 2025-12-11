@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>dawi_108</title>
     <link rel="icon" href="dawi108.png" type="image/png">
+    <script src="script.js"></script>
     <link rel="manifest" href="20250831_dawid.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-<h1>Dawid</h1>
+    <h1 id="punkty"></h1>
         <div class="buttons">
             <a href="20250901_szkola.html" class="app-icon">
                 <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1756998192/szkolaklasa3_skhhhs.png" alt="Szkoła 3">
@@ -72,28 +73,16 @@
                 <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1756566447/testy_admuel.png" alt="Testy">
                 <span>Testy</span>
             </a>
-            <a href="20251123_verbs.html" class="app-icon">
-                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1758823572/verbs_nkbuey.png" alt="Verbs">
-                <span>Verbs</span>
-            </a>
-            <a href="20251123_adjectives.html" class="app-icon">
-                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1758823911/adjectives_imvkd0.png" alt="Adjectives">
-                <span>Adjectives</span>
-            </a>
-            <a href="20251123_vocabulary.html" class="app-icon">
-                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1758824207/vocabulary_pbrxms.png" alt="Vocabulary">
-                <span>Vocabulary</span>
-            </a>
-            <a href="20250912_mediumemotik.html" class="app-icon">
-                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1755866451/emotki_lb8pvb.png" alt="Emotki">
-                <span>Emotki</span>
-            </a>
-            <a href="20251130_inne.html" class="app-icon">
+            <a href="20251231_historia.html" class="app-icon">
                 <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1750881328/inne_cqv03n.png" alt="Inne">
                 <span>Inne</span>
             </a>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script>     
+        let dawid108 = localStorage.getItem("dawid108") || 0;
+        let punkty = document.getElementById("punkty");
+        punkty.innerHTML = "Punkty: " + dawid108;
+    </script>
 </body>
 </html>
