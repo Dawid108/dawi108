@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Julka</title>
     <link rel="icon" href="20250813_julka.png" type="image/png">
+    <script src="script.js"></script>
     <link rel="manifest" href="20250813_julka.json">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Julka</h1>
+        <h1 id="punkty"></h1>
         <div class="buttons">
             <a href="20250809_goldrun.html" class="app-icon">
                 <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1754815264/goldrun_fayrn5.png" alt="Gold Run">
@@ -38,5 +39,10 @@
             </a>
         </div>
     </div>
+    <script>
+        let dawid108 = localStorage.getItem("dawid108") || 0;
+        let punkty = document.getElementById("punkty");
+        punkty.innerHTML = "Punkty: " + dawid108;
+    </script>
 </body>
 </html>
