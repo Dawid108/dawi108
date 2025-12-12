@@ -12,6 +12,7 @@ const bestScoreEl = document.getElementById('bestScore');
 const newGameBtn = document.getElementById('newGameBtn');
 const scoreValueEl = document.getElementById('scoreValue');
 
+let dawid108 = localStorage.getItem("dawid108") || 0;
 let score = 0;
 let bombsDropped = 0;
 let running = false;
@@ -124,6 +125,9 @@ function tick(ts){
     if(y > pf.height){
       removeBomb(b);
       score += 1;
+      dawid108++;
+      localStorage.setItem("dawid108", dawid108);
+      console.log("dawid108:", dawid108);
       bombsDropped += 1;
       scoreValueEl.textContent = score;
 
