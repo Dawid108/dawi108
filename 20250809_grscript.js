@@ -65,6 +65,7 @@ const bestEl = document.querySelector('#best span');
 const restartBtn = document.getElementById('restartBtn');
 
 /* --- STATE --- */
+let dawid108 = localStorage.getItem("dawid108") || 0;
 let running = false;
 let score = 0;
 let fallingSpeed = FALLING_BASE_SPEED;
@@ -206,6 +207,9 @@ function checkCollisionsAndBottom(dt){
 
     if(o.y > stageRect.height - 40){
       score += POINTS_PER_HIT_BOTTOM;
+      dawid108++;
+      localStorage.setItem("dawid108", dawid108);
+      console.log("dawid108:", dawid108);
       o.el.remove();
       objs.splice(i,1);
       continue;
