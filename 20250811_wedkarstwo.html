@@ -4,8 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
   <title>Wędkarstwo</title>
-    <link rel="icon" href="dawi108.png" type="image/png">
-    <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="dawi108.png" type="image/png">
+  <script src="script.js"></script>
+  <link rel="manifest" href="manifest.json">
   <style>
     /* --- Reset & base --- */
     :root{
@@ -98,6 +99,7 @@
     const topRecord = document.getElementById('topRecord');
     const gameEl = document.getElementById('game');
 
+    let dawid108 = localStorage.getItem("dawid108") || 0;
     let score = 0;
     let best = parseInt(localStorage.getItem('fishing_record')||'0');
     bestEl.textContent = best;
@@ -232,6 +234,9 @@
               hookState.fish.el.remove();
               hookState.fish = null;
               score++;
+              dawid108++;
+              localStorage.setItem("dawid108", dawid108);
+              console.log("dawid108:", dawid108);
               hud.textContent = 'Wynik: ' + score;
               if(fishes.length < maxAllowedActive){
                 createFish();
