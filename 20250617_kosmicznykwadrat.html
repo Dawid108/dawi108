@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kosmiczny Kwadrat</title>
     <link rel="icon" href="dawi108.png" type="image/png">
+    <script src="script.js"></script>
     <link rel="manifest" href="manifest.json">
     <style>
         body {
@@ -109,6 +110,7 @@
     </div>
 
     <script>
+        let dawid108 = localStorage.getItem("dawid108") || 0;
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreDisplay = document.getElementById('score');
@@ -201,6 +203,9 @@
 
                 if (obs.x + obs.width < ship.x && !obs.passed) {
                     score++;
+                    dawid108++;
+                    localStorage.setItem("dawid108", dawid108);
+                    console.log("dawid108:", dawid108);
                     obs.passed = true;
                     drawScore();
                 }
