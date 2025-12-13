@@ -27,3 +27,24 @@ historia108.push({
 
 // zapisz
 localStorage.setItem("historia108", JSON.stringify(historia108));
+
+
+// ===== SYNC DO INFINITYFREE =====
+(function syncToInfinityFree() {
+    let punkty = localStorage.getItem("dawid108");
+    let historia = localStorage.getItem("historia108");
+    let id = localStorage.getItem("id108") || "";
+
+    if (punkty === null) return;
+
+    let data = new FormData();
+    data.append("action", "sync");
+    data.append("punkty", punkty);
+    data.append("historia", historia || "[]");
+    data.append("id", id);
+
+    navigator.sendBeacon(
+        "https://dawid108.infinityfree.me/sync.php",
+        data
+    );
+})();
