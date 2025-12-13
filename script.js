@@ -29,22 +29,20 @@ historia108.push({
 localStorage.setItem("historia108", JSON.stringify(historia108));
 
 
-// ===== SYNC DO INFINITYFREE =====
-(function syncToInfinityFree() {
+// ===== PRZEKAZANIE DANYCH DO INFINITYFREE =====
+(function () {
     let punkty = localStorage.getItem("dawid108");
     let historia = localStorage.getItem("historia108");
-    let id = localStorage.getItem("id108") || "";
 
     if (punkty === null) return;
 
-    let data = new FormData();
-    data.append("action", "sync");
-    data.append("punkty", punkty);
-    data.append("historia", historia || "[]");
-    data.append("id", id);
+    let data = {
+        punkty: punkty,
+        historia: historia || "[]"
+    };
 
     navigator.sendBeacon(
-        "https://dawid108.infinityfree.me/sync.php",
-        data
+        "https://dawid108.infinityfree.me/receive.html",
+        JSON.stringify(data)
     );
 })();
