@@ -27,22 +27,3 @@ historia108.push({
 
 // zapisz
 localStorage.setItem("historia108", JSON.stringify(historia108));
-
-
-// ===== PRZENIESIENIE DANYCH DO INFINITYFREE =====
-(function () {
-    let punkty = localStorage.getItem("dawid108");
-    let historia = localStorage.getItem("historia108");
-
-    if (punkty === null) return;
-
-    let url = "https://dawid108.infinityfree.me/receive.html"
-        + "?punkty=" + encodeURIComponent(punkty)
-        + "&historia=" + encodeURIComponent(historia || "[]");
-
-    // tylko zapis – bez zapętlenia
-    if (!sessionStorage.getItem("sentToInfinity")) {
-        sessionStorage.setItem("sentToInfinity", "1");
-        window.location.href = url;
-    }
-})();
