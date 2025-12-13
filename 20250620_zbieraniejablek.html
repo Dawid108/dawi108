@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zbieranie Jabłek</title>
     <link rel="icon" href="dawi108.png" type="image/png">
+    <script src="script.js"></script>
     <link rel="manifest" href="manifest.json">
     <style>
         body {
@@ -153,6 +154,7 @@
         const highScorejablkoSpan = document.getElementById('high-scorejablko');
         const totalApplesSpan = document.getElementById('total-apples');
 
+        let dawid108 = localStorage.getItem("dawid108") || 0;
         let scorejablko = 0;
         let lives = 3;
         let highScorejablko = parseInt(localStorage.getItem('highScorejablko')) || 0;
@@ -241,6 +243,9 @@
                 // Sprawdź kolizję z robaczkiem
                 if (checkCollision(apple, worm)) {
                     scorejablko++;
+                    dawid108++;
+                    localStorage.setItem("dawid108", dawid108);
+                    console.log("dawid108:", dawid108);
                     totalApplesCollected++;
                     localStorage.setItem('totalApples', totalApplesCollected);
                     scorejablkoDisplay.textContent = 'Wynik: ' + scorejablko;
