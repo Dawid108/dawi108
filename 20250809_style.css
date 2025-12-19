@@ -17,9 +17,18 @@ body{
   background: linear-gradient(180deg,var(--bg), #04202a 120%);
   color:#eafaf6;
   -webkit-tap-highlight-color: transparent;
+
+  overflow: hidden;              /* ✅ blokuje przewijanie */
+  overscroll-behavior: none;     /* ✅ usuwa gumowanie */
 }
 
-#game{display:flex;flex-direction:column;height:100vh;gap:8px;padding:10px}
+#game{
+  display:flex;
+  flex-direction:column;
+  min-height:100svh;   /* ✅ */
+  gap:8px;
+  padding:10px;
+}
 
 header{
   display:flex;align-items:center;justify-content:space-between;
