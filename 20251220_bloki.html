@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bloki</title>
+    <meta name="description" content="Bloki">
+    <meta name="author" content="Dawid Gustowski">
+
+    <link rel="icon" href="./favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Dawid">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#202028">
+
+    <script src="./script.js"></script>
+    <style>
+        body {
+            background-color: #202028;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center; /* Wyśrodkowanie pionowe */
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            touch-action: none; /* Blokada gestów przeglądarki */
+        }
+
+        h1 { margin: 5px 0; font-size: 24px; text-shadow: 2px 2px #000; }
+
+        #game-wrapper {
+            position: relative;
+            border: 4px solid #444;
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            background-color: #000;
+        }
+
+        canvas {
+            display: block;
+            background-color: #111;
+        }
+
+        /* Punktacja w rogu */
+        #score-board {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            text-align: right;
+            pointer-events: none;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        /* Ekran Koniec Gry */
+        #game-over-modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            z-index: 10;
+        }
+
+        #game-over-modal h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #e74c3c;
+        }
+
+        .stat-box { font-size: 20px; margin: 8px 0; }
+        .highlight { color: #f1c40f; font-weight: bold; }
+
+        button.restart-btn {
+            margin-top: 25px;
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px #27ae60;
+        }
+        button.restart-btn:active {
+            box-shadow: 0 2px #27ae60;
+            transform: translateY(2px);
+        }
+
+        /* Kontrolki mobilne */
+        #mobile-controls {
+            display: none; /* Domyślnie ukryte na PC */
+            width: 100%;
+            max-width: 340px;
+            margin-top: 15px;
+            justify-content: space-between;
+            padding: 0 10px;
+            box-sizing: border-box;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .d-pad-btn {
+            width: 60px;
+            height: 60px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+
+        .d-pad-btn:active { background-color: rgba(255, 255, 255, 0.4); }
+        .d-pad-btn.big { width: 70px; height: 70px; background-color: rgba(46, 204, 113, 0.3); border-color: #2ecc71; }
+
+        /* Wyświetlanie kontrolek tylko na ekranach dotykowych/wąskich */
+        @media (max-width: 800px) {
+            #mobile-controls { display: flex; }
+        }
+
+        .hint { font-size: 12px; color: #777; margin-top: 5px; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Emoji Tetris 🧱</h1>
+
+    <div id="game-wrapper">
+        <canvas id="tetris" width="240" height="400"></canvas>
+        <div id="score-board">
+            Score: <span id="current-score">0</span>
+        </div>
+
+        <div id="game-over-modal">
+            <h2>Koniec Gry</h2>
+            <div class="stat-box">Wynik: <span id="final-score" class="highlight">0</span></div>
+            <div class="stat-box">Rekord: <span id="best-score" class="highlight">0</span></div>
+            <button class="restart-btn" onclick="resetGame()">Nowa Gra 🔄</button>
+        </div>
+    </div>
+
+    <div id="mobile-controls">
+        <div class="control-row">
+            <div class="d-pad-btn" id="btn-left">⬅️</div>
+            <div class="d-pad-btn" id="btn-down">⬇️</div>
+            <div class="d-pad-btn" id="btn-right">➡️</div>
+        </div>
+        <div class="control-row">
+            <div class="d-pad-btn big" id="btn-rotate">🔄</div>
+        </div>
+    </div>
+
+    <div class="hint">PC: Strzałki (Góra=Obrót) | Mobile: Przyciski</div>
+
+<script>
+    const canvas = document.getElementById('tetris');
+    const context = canvas.getContext('2d');
+    const scoreElement = document.getElementById('current-score');
+    const modal = document.getElementById('game-over-modal');
+    const finalScoreEl = document.getElementById('final-score');
+    const bestScoreEl = document.getElementById('best-score');
+
+    // Skalowanie canvas dla ostrości emotek
+    context.scale(20, 20);
+
+    // Paleta emotek odpowiadająca indeksom (1-7)
+    // 0 = puste, T, O, L, J, I, S, Z
+    const colors = [
+        null,
+        '🟪', // T - Fiolet
+        '🟨', // O - Żółty
+        '🟧', // L - Pomarańcz
+        '🟦', // J - Niebieski
+        '💠', // I - Cyjan/Diament
+        '🟩', // S - Zielony
+        '🟥', // Z - Czerwony
+    ];
+
+    // --- Logika Gry ---
+
+    function createPiece(type) {
+        if (type === 'I') {
+            return [
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+                [0, 1, 0, 0],
+            ];
+        } else if (type === 'L') {
+            return [
+                [0, 2, 0],
+                [0, 2, 0],
+                [0, 2, 2],
+            ];
+        } else if (type === 'J') {
+            return [
+                [0, 3, 0],
+                [0, 3, 0],
+                [3, 3, 0],
+            ];
+        } else if (type === 'O') {
+            return [
+                [4, 4],
+                [4, 4],
+            ];
+        } else if (type === 'Z') {
+            return [
+                [5, 5, 0],
+                [0, 5, 5],
+                [0, 0, 0],
+            ];
+        } else if (type === 'S') {
+            return [
+                [0, 6, 6],
+                [6, 6, 0],
+                [0, 0, 0],
+            ];
+        } else if (type === 'T') {
+            return [
+                [0, 7, 0],
+                [7, 7, 7],
+                [0, 0, 0],
+            ];
+        }
+    }
+
+    // Tworzenie planszy (macierz 12x20)
+    function createMatrix(w, h) {
+        const matrix = [];
+        while (h--) {
+            matrix.push(new Array(w).fill(0));
+        }
+        return matrix;
+    }
+
+    // Sprawdzanie kolizji
+    function collide(arena, player) {
+        const m = player.matrix;
+        const o = player.pos;
+        for (let y = 0; y < m.length; ++y) {
+            for (let x = 0; x < m[y].length; ++x) {
+                if (m[y][x] !== 0 &&
+                   (arena[y + o.y] && arena[y + o.y][x + o.x]) !== 0) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    // Rysowanie
+    function draw() {
+        // Tło
+        context.fillStyle = '#000';
+        context.fillRect(0, 0, canvas.width, canvas.height);
+
+        drawMatrix(arena, {x: 0, y: 0});
+        drawMatrix(player.matrix, player.pos);
+    }
+
+    function drawMatrix(matrix, offset) {
+        // Ustawienia tekstu (emotki są traktowane jak tekst)
+        context.font = '1px Arial'; // 1 jednostka to 20px dzięki scale()
+        context.textAlign = 'center';
+        context.textBaseline = 'middle';
+
+        matrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
+                    // Rysujemy emotkę. Przesunięcie +0.5 centruje w kratce
+                    context.fillText(colors[value], x + offset.x + 0.5, y + offset.y + 0.55);
+                }
+            });
+        });
+    }
+
+    // Scalanie klocka z planszą
+    function merge(arena, player) {
+        player.score++;
+        player.matrix.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if (value !== 0) {
+                    arena[y + player.pos.y][x + player.pos.x] = value;
+                }
+            });
+        });
+    }
+
+    // Obrót macierzy
+    function rotate(matrix, dir) {
+        for (let y = 0; y < matrix.length; ++y) {
+            for (let x = 0; x < y; ++x) {
+                [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+            }
+        }
+        if (dir > 0) {
+            matrix.forEach(row => row.reverse());
+        } else {
+            matrix.reverse();
+        }
+    }
+
+    // Kasowanie linii i naliczanie punktów
+    function arenaSweep() {
+        let rowCount = 1;
+        outer: for (let y = arena.length -1; y > 0; --y) {
+            for (let x = 0; x < arena[y].length; ++x) {
+                if (arena[y][x] === 0) {
+                    continue outer;
+                }
+            }
+
+            const row = arena.splice(y, 1)[0].fill(0);
+            arena.unshift(row);
+            ++y;
+
+            player.score += rowCount * 10;
+            rowCount *= 2;
+        }
+    }
+
+    // Główna pętla spadania
+    function playerDrop() {
+        player.pos.y++;
+        if (collide(arena, player)) {
+            player.pos.y--;
+            merge(arena, player);
+            playerReset();
+            arenaSweep();
+            updateScore();
+        }
+        dropCounter = 0;
+    }
+
+    // Ruch lewo/prawo
+    function playerMove(offset) {
+        player.pos.x += offset;
+        if (collide(arena, player)) {
+            player.pos.x -= offset;
+        }
+    }
+
+    // Reset klocka (nowy klocek)
+    function playerReset() {
+        const pieces = 'TJLOSZI';
+        player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+        player.pos.y = 0;
+        player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+
+        // Jeśli od razu kolizja -> Game Over
+        if (collide(arena, player)) {
+            gameOver();
+        }
+    }
+
+    function playerRotate(dir) {
+        const pos = player.pos.x;
+        let offset = 1;
+        rotate(player.matrix, dir);
+        while (collide(arena, player)) {
+            player.pos.x += offset;
+            offset = -(offset + (offset > 0 ? 1 : -1));
+            if (offset > player.matrix[0].length) {
+                rotate(player.matrix, -dir);
+                player.pos.x = pos;
+                return;
+            }
+        }
+    }
+
+    let dropCounter = 0;
+    let dropInterval = 1000;
+    let lastTime = 0;
+    let isPaused = false;
+
+    function update(time = 0) {
+        if (isPaused) return;
+
+        const deltaTime = time - lastTime;
+        lastTime = time;
+
+        dropCounter += deltaTime;
+        if (dropCounter > dropInterval) {
+            playerDrop();
+        }
+
+        draw();
+        requestAnimationFrame(update);
+    }
+
+    function updateScore() {
+        scoreElement.innerText = player.score;
+    }
+
+    // --- Obsługa Game Over i LocalStorage ---
+
+    function gameOver() {
+        isPaused = true;
+        
+        // Zapis rekordu
+        const savedRecord = localStorage.getItem('tetris');
+        let record = savedRecord ? parseInt(savedRecord) : 0;
+        
+        if (player.score > record) {
+            record = player.score;
+            localStorage.setItem('tetris', record);
+        }
+
+        // Wyświetlenie modala
+        finalScoreEl.innerText = player.score;
+        bestScoreEl.innerText = record;
+        modal.style.display = 'flex';
+    }
+
+    function resetGame() {
+        arena.forEach(row => row.fill(0));
+        player.score = 0;
+        updateScore();
+        playerReset();
+        modal.style.display = 'none';
+        isPaused = false;
+        dropInterval = 1000;
+        update();
+    }
+
+    const arena = createMatrix(12, 20);
+
+    const player = {
+        pos: {x: 0, y: 0},
+        matrix: null,
+        score: 0,
+    };
+
+    // --- Sterowanie Klawiaturą ---
+    document.addEventListener('keydown', event => {
+        if (isPaused) return;
+
+        // Blokada scrollowania strzałkami
+        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+            event.preventDefault();
+        }
+
+        if (event.keyCode === 37) { // Left
+            playerMove(-1);
+        } else if (event.keyCode === 39) { // Right
+            playerMove(1);
+        } else if (event.keyCode === 40) { // Down
+            playerDrop();
+        } else if (event.keyCode === 38) { // Up (Rotate)
+            playerRotate(1);
+        }
+    });
+
+    // --- Sterowanie Mobilne (Przyciski) ---
+    // Dodajemy nasłuchiwanie na przyciski ekranowe
+    
+    // Funkcja pomocnicza dla przycisków
+    function addTouchHandler(id, action) {
+        const btn = document.getElementById(id);
+        btn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Zapobiega podwójnym kliknięciom
+            if(!isPaused) action();
+        });
+        btn.addEventListener('mousedown', (e) => {
+            e.preventDefault();
+            if(!isPaused) action();
+        });
+    }
+
+    addTouchHandler('btn-left', () => playerMove(-1));
+    addTouchHandler('btn-right', () => playerMove(1));
+    addTouchHandler('btn-down', () => playerDrop());
+    addTouchHandler('btn-rotate', () => playerRotate(1));
+
+    // Start
+    playerReset();
+    updateScore();
+    update();
+
+</script>
+</body>
+</html>
