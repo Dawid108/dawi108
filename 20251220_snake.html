@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Wąż</title>
+    <meta name="description" content="Wąż">
+    <meta name="author" content="Dawid Gustowski">
+
+    <link rel="icon" href="./favicon.ico">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Dawid">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+
+    <script src="./script.js"></script>
+    <style>
+        body {
+            background-color: #2c3e50;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        h1 { margin: 0 0 10px 0; font-size: 24px; }
+
+        #game-container {
+            position: relative;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        canvas {
+            background-color: #34495e;
+            border-radius: 4px;
+            display: block;
+        }
+
+        #score-board {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 5px 10px;
+            border-radius: 15px;
+            pointer-events: none;
+        }
+
+        #game-over-screen {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 4px;
+            z-index: 10;
+        }
+
+        #game-over-screen h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #e74c3c;
+        }
+
+        .stat-box {
+            font-size: 20px;
+            margin: 5px 0;
+        }
+
+        .highlight {
+            color: #f1c40f;
+            font-weight: bold;
+        }
+
+        button {
+            margin-top: 30px;
+            padding: 12px 24px;
+            font-size: 18px;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+
+        .controls-hint {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #bdc3c7;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Emoji Snake 🐍</h1>
+
+    <div id="game-container">
+        <canvas id="gameCanvas" width="400" height="400"></canvas>
+        <div id="score-board">🍎 0</div>
+
+        <div id="game-over-screen">
+            <h2>💥 Koniec Gry!</h2>
+            <div class="stat-box">Wynik: <span id="final-score" class="highlight">0</span></div>
+            <div class="stat-box">Rekord: <span id="best-score" class="highlight">0</span></div>
+            <button onclick="resetGame()">Nowa Gra</button>
+        </div>
+    </div>
+
+    <div class="controls-hint">PC: Użyj klawiszy strzałek | Mobile: Przesuń palcem</div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreBoard = document.getElementById('score-board');
+    const gameOverScreen = document.getElementById('game-over-screen');
+    const finalScoreEl = document.getElementById('final-score');
+    const bestScoreEl = document.getElementById('best-score');
+
+    const tileCount = 20;
+    let tileSize = canvas.width / tileCount;
+    
+    let score = 0;
+    let velocityX = 0;
+    let velocityY = 0;
+    let snake = [];
+    let apple = { x: 5, y: 5 };
+    let gameInterval;
+    let isGameOver = false;
+
+    function resizeCanvas() {
+        let size = Math.min(window.innerWidth - 20, 400); 
+        canvas.width = size;
+        canvas.height = size;
+        tileSize = size / tileCount;
+        drawGame();
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function startGame() {
+        snake = [{ x: 10, y: 10 }];
+        apple = { x: 15, y: 15 };
+        velocityX = 0;
+        velocityY = 0;
+        score = 0;
+        isGameOver = false;
+        
+        scoreBoard.innerText = `🍎 ${score}`;
+        gameOverScreen.style.display = 'none';
+
+        clearInterval(gameInterval);
+        gameInterval = setInterval(updateGame, 100);
+    }
+
+    function updateGame() {
+        if (isGameOver) return;
+
+        let headX = snake[0].x + velocityX;
+        let headY = snake[0].y + velocityY;
+
+        if (headX < 0 || headX >= tileCount || headY < 0 || headY >= tileCount) {
+            handleGameOver();
+            return;
+        }
+
+        if (velocityX !== 0 || velocityY !== 0) {
+            for (let i = 0; i < snake.length; i++) {
+                if (snake[i].x === headX && snake[i].y === headY) {
+                    handleGameOver();
+                    return;
+                }
+            }
+        }
+
+        const newHead = { x: headX, y: headY };
+        
+        if (velocityX !== 0 || velocityY !== 0) {
+             snake.unshift(newHead);
+        }
+
+        if (headX === apple.x && headY === apple.y) {
+            score++;
+            scoreBoard.innerText = `🍎 ${score}`;
+            placeApple();
+        } else {
+            if (velocityX !== 0 || velocityY !== 0) {
+                snake.pop();
+            }
+        }
+
+        drawGame();
+    }
+
+    function drawGame() {
+        ctx.fillStyle = '#34495e';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        
+        const offset = tileSize / 2;
+        const fontSize = tileSize * 0.8;
+        ctx.font = `${fontSize}px Arial`;
+
+        ctx.fillText('🍎', apple.x * tileSize + offset, apple.y * tileSize + offset);
+
+        snake.forEach((part, index) => {
+            if (index === 0) {
+                ctx.fillText('🟢', part.x * tileSize + offset, part.y * tileSize + offset);
+            } else {
+                ctx.fillText('🟩', part.x * tileSize + offset, part.y * tileSize + offset);
+            }
+        });
+    }
+
+    function placeApple() {
+        let validPosition = false;
+        while (!validPosition) {
+            apple.x = Math.floor(Math.random() * tileCount);
+            apple.y = Math.floor(Math.random() * tileCount);
+            
+            validPosition = true;
+            for (let part of snake) {
+                if (part.x === apple.x && part.y === apple.y) {
+                    validPosition = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    function handleGameOver() {
+        isGameOver = true;
+        clearInterval(gameInterval);
+
+        const savedRecord = localStorage.getItem('snake');
+        let record = savedRecord ? parseInt(savedRecord) : 0;
+
+        if (score > record) {
+            record = score;
+            localStorage.setItem('snake', record);
+        }
+
+        finalScoreEl.innerText = score;
+        bestScoreEl.innerText = record;
+        gameOverScreen.style.display = 'flex';
+    }
+
+    function resetGame() {
+        startGame();
+    }
+
+    // Sterowanie klawiaturą (Fizyczne strzałki)
+    document.addEventListener('keydown', (event) => {
+        // Blokada scrollowania strony strzałkami
+        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].indexOf(event.code) > -1) {
+            event.preventDefault();
+        }
+
+        switch (event.key) {
+            case 'ArrowUp':
+                if (velocityY !== 1) { velocityX = 0; velocityY = -1; }
+                break;
+            case 'ArrowDown':
+                if (velocityY !== -1) { velocityX = 0; velocityY = 1; }
+                break;
+            case 'ArrowLeft':
+                if (velocityX !== 1) { velocityX = -1; velocityY = 0; }
+                break;
+            case 'ArrowRight':
+                if (velocityX !== -1) { velocityX = 1; velocityY = 0; }
+                break;
+        }
+        
+        // Start przy pierwszym naciśnięciu
+        if (snake.length === 1 && velocityX === 0 && velocityY === 0) {
+             // Ruch zostanie zainicjowany w switchu powyżej
+        }
+    });
+
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    canvas.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+        e.preventDefault();
+    }, {passive: false});
+
+    canvas.addEventListener('touchend', (e) => {
+        let touchEndX = e.changedTouches[0].screenX;
+        let touchEndY = e.changedTouches[0].screenY;
+        handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+        e.preventDefault();
+    }, {passive: false});
+
+    function handleSwipe(startX, startY, endX, endY) {
+        let diffX = endX - startX;
+        let diffY = endY - startY;
+
+        if (Math.abs(diffX) < 30 && Math.abs(diffY) < 30) return;
+
+        if (Math.abs(diffX) > Math.abs(diffY)) {
+            if (diffX > 0) {
+                if (velocityX !== -1) { velocityX = 1; velocityY = 0; }
+            } else {
+                if (velocityX !== 1) { velocityX = -1; velocityY = 0; }
+            }
+        } else {
+            if (diffY > 0) {
+                if (velocityY !== -1) { velocityX = 0; velocityY = 1; }
+            } else {
+                if (velocityY !== 1) { velocityX = 0; velocityY = -1; }
+            }
+        }
+    }
+
+    startGame();
+
+</script>
+</body>
+</html>
