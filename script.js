@@ -1,23 +1,17 @@
-// pobierz nazwę pliku, np. "20250901_szkola.html"
-let fileName = window.location.pathname.split("/").pop();
+const fileName = window.location.pathname.split("/").pop() || "index.html";
+const pageUrl = window.location.href;
 
-// pełny adres
-let pageUrl = window.location.href;
+let namePart = fileName.includes("_")
+    ? fileName.split("_")[1].replace(".html", "")
+    : fileName.replace(".html", "");
 
-// pobierz nazwę między _ a .html  → np. "szkola"
-let namePart = fileName.split("_")[1].split(".")[0];
+const now = new Date();
+const dateString = now.toLocaleDateString("pl-PL");
 
-// aktualna data w formacie PL
-let now = new Date();
-let dateString = now.toLocaleDateString("pl-PL");
-
-// pobierz historię albo pustą tablicę
 let historia108 = JSON.parse(localStorage.getItem("historia108")) || [];
 
-// usuń stare wpisy tej samej strony (żeby nie było duplikatów)
 historia108 = historia108.filter(item => item.file !== fileName);
 
-// dodaj NOWY wpis na koniec (sortowaniem zajmiemy się na stronie historii)
 historia108.push({
     file: fileName,
     name: namePart,
@@ -25,5 +19,12 @@ historia108.push({
     date: dateString
 });
 
-// zapisz
+if (historia108.length > 100) {
+    historia108 = historia108.slice(historia108.length - 100);
+}
+
 localStorage.setItem("historia108", JSON.stringify(historia108));
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./20260106_sw.js');
+}
