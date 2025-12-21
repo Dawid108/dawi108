@@ -47,22 +47,5 @@
             </a>
         </div>
     </div>
-    <script>
-// ===== PRZENIESIENIE DANYCH DO INFINITYFREE =====
-(function () {
-    let punkty = localStorage.getItem("dawid108");
-
-    if (punkty === null) return;
-
-    let url = "https://dawid108.infinityfree.me/receive.html"
-        + "?punkty=" + encodeURIComponent(punkty);
-
-    // tylko zapis – bez zapętlenia
-    if (!sessionStorage.getItem("sentToInfinity")) {
-        sessionStorage.setItem("sentToInfinity", "1");
-        window.location.href = url;
-    }
-})();
-    </script>
 </body>
 </html>
