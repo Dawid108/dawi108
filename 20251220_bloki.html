@@ -149,7 +149,7 @@
     <h1>Emoji Tetris 🧱</h1>
 
     <div id="game-wrapper">
-        <canvas id="tetris" width="240" height="400"></canvas>
+        <canvas id="bloczki" width="240" height="400"></canvas>
         <div id="score-board">
             Score: <span id="current-score">0</span>
         </div>
@@ -176,7 +176,7 @@
     <div class="hint">PC: Strzałki (Góra=Obrót) | Mobile: Przyciski</div>
 
 <script>
-    const canvas = document.getElementById('tetris');
+    const canvas = document.getElementById('bloczki');
     const context = canvas.getContext('2d');
     const scoreElement = document.getElementById('current-score');
     const modal = document.getElementById('game-over-modal');
@@ -421,12 +421,12 @@
         isPaused = true;
         
         // Zapis rekordu
-        const savedRecord = localStorage.getItem('tetris');
+        const savedRecord = localStorage.getItem('bloczki');
         let record = savedRecord ? parseInt(savedRecord) : 0;
         
         if (player.score > record) {
             record = player.score;
-            localStorage.setItem('tetris', record);
+            localStorage.setItem('bloczki', record);
         }
 
         // Wyświetlenie modala
