@@ -143,7 +143,7 @@
     let score = 0;
     let velocityX = 0;
     let velocityY = 0;
-    let snake = [];
+    let waz = [];
     let apple = { x: 5, y: 5 };
     let gameInterval;
     let isGameOver = false;
@@ -159,7 +159,7 @@
     resizeCanvas();
 
     function startGame() {
-        snake = [{ x: 10, y: 10 }];
+        waz = [{ x: 10, y: 10 }];
         apple = { x: 15, y: 15 };
         velocityX = 0;
         velocityY = 0;
@@ -176,8 +176,8 @@
     function updateGame() {
         if (isGameOver) return;
 
-        let headX = snake[0].x + velocityX;
-        let headY = snake[0].y + velocityY;
+        let headX = waz[0].x + velocityX;
+        let headY = waz[0].y + velocityY;
 
         if (headX < 0 || headX >= tileCount || headY < 0 || headY >= tileCount) {
             handleGameOver();
@@ -185,8 +185,8 @@
         }
 
         if (velocityX !== 0 || velocityY !== 0) {
-            for (let i = 0; i < snake.length; i++) {
-                if (snake[i].x === headX && snake[i].y === headY) {
+            for (let i = 0; i < waz.length; i++) {
+                if (waz[i].x === headX && waz[i].y === headY) {
                     handleGameOver();
                     return;
                 }
@@ -196,7 +196,7 @@
         const newHead = { x: headX, y: headY };
         
         if (velocityX !== 0 || velocityY !== 0) {
-             snake.unshift(newHead);
+             waz.unshift(newHead);
         }
 
         if (headX === apple.x && headY === apple.y) {
@@ -205,7 +205,7 @@
             placeApple();
         } else {
             if (velocityX !== 0 || velocityY !== 0) {
-                snake.pop();
+                waz.pop();
             }
         }
 
@@ -225,7 +225,7 @@
 
         ctx.fillText('🍎', apple.x * tileSize + offset, apple.y * tileSize + offset);
 
-        snake.forEach((part, index) => {
+        waz.forEach((part, index) => {
             if (index === 0) {
                 ctx.fillText('🟢', part.x * tileSize + offset, part.y * tileSize + offset);
             } else {
@@ -241,7 +241,7 @@
             apple.y = Math.floor(Math.random() * tileCount);
             
             validPosition = true;
-            for (let part of snake) {
+            for (let part of waz) {
                 if (part.x === apple.x && part.y === apple.y) {
                     validPosition = false;
                     break;
@@ -254,12 +254,12 @@
         isGameOver = true;
         clearInterval(gameInterval);
 
-        const savedRecord = localStorage.getItem('snake');
+        const savedRecord = localStorage.getItem('waz');
         let record = savedRecord ? parseInt(savedRecord) : 0;
 
         if (score > record) {
             record = score;
-            localStorage.setItem('snake', record);
+            localStorage.setItem('waz', record);
         }
 
         finalScoreEl.innerText = score;
@@ -294,7 +294,7 @@
         }
         
         // Start przy pierwszym naciśnięciu
-        if (snake.length === 1 && velocityX === 0 && velocityY === 0) {
+        if (waz.length === 1 && velocityX === 0 && velocityY === 0) {
              // Ruch zostanie zainicjowany w switchu powyżej
         }
     });
