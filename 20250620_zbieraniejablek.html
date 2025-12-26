@@ -151,13 +151,13 @@
         const startGameButton = document.getElementById('start-game-button');
         const restartGameButton = document.getElementById('restart-game-button');
         const finalScorejablkoSpan = document.getElementById('final-scorejablko');
-        const highScorejablkoSpan = document.getElementById('high-scorejablko');
+        const jablkoSpan = document.getElementById('high-scorejablko');
         const totalApplesSpan = document.getElementById('total-apples');
 
         let dawid108 = localStorage.getItem("dawid108") || 0;
         let scorejablko = 0;
         let lives = 3;
-        let highScorejablko = parseInt(localStorage.getItem('highScorejablko')) || 0;
+        let jablko = parseInt(localStorage.getItem('jablko')) || 0;
         let totalApplesCollected = parseInt(localStorage.getItem('totalApples')) || 0;
         let gameInterval;
         let appleFallSpeed = 5; // Początkowa prędkość spadania jabłek
@@ -173,7 +173,7 @@
         updateScorejablkosOnScreen();
 
         function updateScorejablkosOnScreen() {
-            highScorejablkoSpan.textContent = highScorejablko;
+            jablkoSpan.textContent = jablko;
             totalApplesSpan.textContent = totalApplesCollected;
         }
 
@@ -210,14 +210,14 @@
             cancelAnimationFrame(gameInterval);
 
             // Zaktualizuj rekord
-            if (scorejablko > highScorejablko) {
-                highScorejablko = scorejablko;
-                localStorage.setItem('highScorejablko', highScorejablko);
+            if (scorejablko > jablko) {
+                jablko = scorejablko;
+                localStorage.setItem('jablko', jablko);
             }
 
             // Wyświetl ekran końca gry
             finalScorejablkoSpan.textContent = scorejablko;
-            updateScorejablkosOnScreen(); // Aktualizuje highScorejablko i totalApples na ekranie końca gry
+            updateScorejablkosOnScreen(); // Aktualizuje jablko i totalApples na ekranie końca gry
             gameOverScreen.classList.remove('hidden');
         }
 
