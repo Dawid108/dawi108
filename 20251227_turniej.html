@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prompt do Turnieju</title>
+    <meta name="description" content="Prompt do Turnieju">
+    <meta name="author" content="Dawid Gustowski">
+
+    <link rel="icon" href="./dawi108.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Dawid">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#020617">
+
+    <script src="./script.js"></script>
+<style>
+:root{
+    --bg:#0f172a;
+    --card:#020617;
+    --accent:#38bdf8;
+    --border:#1e293b;
+    --text:#e5e7eb;
+}
+
+*{
+    box-sizing:border-box;
+    font-family:system-ui, -apple-system, Segoe UI, sans-serif;
+}
+
+body{
+    margin:0;
+    padding:20px;
+    background:linear-gradient(180deg,#020617,#0f172a);
+    color:var(--text);
+}
+
+form{
+    max-width:520px;
+    margin:auto;
+    background:var(--card);
+    padding:20px;
+    border-radius:16px;
+    border:1px solid var(--border);
+}
+
+p{
+    margin:14px 0 6px;
+    font-weight:600;
+}
+
+label{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:8px 10px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:background .2s;
+}
+
+label:hover{
+    background:#020617;
+}
+
+input[type="radio"]{
+    accent-color:var(--accent);
+    cursor:pointer;
+}
+
+input[type="number"],
+input[type="text"]{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid var(--border);
+    background:#020617;
+    color:var(--text);
+    margin-top:6px;
+}
+
+button{
+    margin-top:18px;
+    width:100%;
+    padding:14px;
+    border-radius:14px;
+    border:none;
+    font-size:16px;
+    font-weight:700;
+    background:linear-gradient(135deg,#38bdf8,#0ea5e9);
+    color:#020617;
+    cursor:pointer;
+    transition:transform .15s, box-shadow .15s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+    box-shadow:0 10px 25px rgba(56,189,248,.35);
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+#wynik{
+    max-width:520px;
+    margin:20px auto 0;
+    padding:16px;
+    background:#020617;
+    border-radius:14px;
+    border:1px solid var(--border);
+    white-space:pre-wrap;
+    font-size:14px;
+}
+</style>
+
+</head>
+<body>
+
+<form>
+    <p>Jaki będzie to turniej?</p>
+    <label><input type="radio" name="typ" class="typ" value="osób"> Indywidualny</label>
+    <label><input type="radio" name="typ" class="typ" value="drużyn"> Drużynowy</label>
+
+    <p>Podaj liczbę drużyn / osób:</p>
+    <input type="number" id="liczba_druzyn">
+
+    <p>Czy turniej ma grupy?</p>
+    <label><input type="radio" name="czygrupy" class="czygrupy" value="1"> Tak</label>
+    <label><input type="radio" name="czygrupy" class="czygrupy" value="0"> Nie (same Play-Off)</label>
+
+    <p>Wypisz drużyny / osoby po przecinku:</p>
+    <input type="text" id="druzyny">
+
+    <button type="button" id="wygeneruj">Stwórz prompt</button>
+</form>
+
+<div id="wynik"></div>
+
+<script>
+const wynik = document.getElementById("wynik");
+const liczba = document.getElementById("liczba_druzyn");
+
+function getGroupPrompt(n){
+    let p = "";
+
+    switch(n){
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            p += "Jedna grupa, każdy z każdym.\n";
+            break;
+        case 6:
+            p += "Dwie grupy po 3 drużyny, z każdej grupy awansują 2.\n";
+            break;
+        case 7:
+            p += "Dwie grupy: jedna 3 drużyny, druga 4 drużyny. Z każdej grupy awansują 2.\n";
+            break;
+        case 8:
+            p += "Dwie grupy po 4 drużyny. Z każdej grupy awansują 2.\n";
+            break;
+        case 9:
+            p += "PROMPT 1:\n";
+            p += "- Trzy grupy po 3 drużyny\n";
+            p += "- Z każdej grupy awansuje 1 drużyna\n";
+            p += "- Jedna drużyna z 2. miejsca jest wybierana ręcznie\n\n";
+            p += "PROMPT 2:\n";
+            p += "- Dwie grupy: jedna 4 drużyny, druga 5 drużyn\n";
+            break;
+        case 10:
+            p += "PROMPT 1:\n";
+            p += "- Dwie grupy po 5 drużyn\n\n";
+            p += "PROMPT 2:\n";
+            p += "- Dwie grupy po 3 drużyny i jedna grupa 4 drużyny\n";
+            break;
+        case 11:
+            p += "Trzy grupy: jedna 3 drużyny, dwie po 4 drużyny.\n";
+            break;
+        case 12:
+            p += "Opcja 1: Trzy grupy po 4 drużyny.\n";
+            p += "Opcja 2: Cztery grupy po 3 drużyny.\n";
+            break;
+        case 13:
+            p += "Cztery grupy: trzy po 3 drużyny i jedna 4 drużyny.\n";
+            break;
+        case 14:
+            p += "Cztery grupy: dwie po 4 drużyny i dwie po 3 drużyny.\n";
+            break;
+        case 15:
+            p += "Opcja 1: Trzy grupy po 5 drużyn.\n";
+            p += "Opcja 2: Trzy grupy po 4 drużyny i jedna 3 drużyny.\n";
+            break;
+        case 16:
+            p += "Cztery grupy po 4 drużyny.\n";
+            break;
+        default:
+            p += "Podziel drużyny na równe grupy (3–5 drużyn w grupie) aż do 24 drużyn lub więcej.\n";
+    }
+
+    return p;
+}
+
+document.getElementById("wygeneruj").addEventListener("click", ()=>{
+    let typ = document.querySelector(".typ:checked")?.value;
+    let grupy = document.querySelector(".czygrupy:checked")?.value;
+    let n = Number(liczba.value);
+
+    if(!typ || !n){
+        wynik.innerText = "Uzupełnij wszystkie pola.";
+        return;
+    }
+
+    let text = "";
+    text += `Stwórz turniej dla ${n} ${typ} w jednym pliku HTML (HTML + CSS + JavaScript), zoptymalizowany na telefon.\n\n`;
+
+    if(grupy == "1"){
+        text += "TURNIEJ Z GRUPAMI:\n";
+        text += "- Na górze przyciski: Grupy | Play-Off\n";
+        text += "- Domyślnie pokazuje się Play-Off\n";
+        text += "- W zakładce Grupy:\n";
+        text += "  • tabela: M, Nazwa, Pkt, Bilans\n";
+        text += "  • mecze pod tabelą\n";
+        text += "  • wpisanie wyniku automatycznie aktualizuje tabelę\n\n";
+        text += getGroupPrompt(n);
+        text += "\nZ każdej grupy standardowo awansują 2 drużyny.\n";
+        text += "Jeżeli nie zgadzają się pary w Play-Off, jedna drużyna może być dodana ręcznie.\n";
+        text += "W KODZIE dodaj komentarz jak ręcznie dodać blok meczu Play-Off.\n\n";
+    } else {
+        text += "TURNIEJ BEZ GRUP (SAME PLAY-OFF):\n";
+        text += "- Drabinka pucharowa\n";
+        text += "- Możliwe pauzy (zawodnik przechodzi rundę bez meczu)\n\n";
+    }
+
+    text += "PLAY-OFF:\n";
+    text += "- Drabinka wizualna\n";
+    text += "- Klikalne mecze\n";
+    text += "- Wyniki zapisywane w localStorage\n";
+    text += "- Po odświeżeniu strony wszystko zostaje\n\n";
+
+    text += "localStorage:\n";
+    text += "- Zapis: grupy, wyniki meczów, tabela, play-off\n\n";
+
+    text += "DODAJ KOMENTARZE W KODZIE:\n";
+    text += "- gdzie dodać ręcznie mecz\n";
+    text += "- gdzie ustawić pauzę\n";
+    text += "- gdzie zmienić liczbę awansujących drużyn\n";
+
+    let listaDruzyn = document.getElementById("druzyny").value;
+
+    if(listaDruzyn.trim() !== ""){
+        let tablica = listaDruzyn
+            .split(",")
+            .map(d => d.trim())
+            .filter(d => d !== "");
+
+        text += "\nLISTA DRUŻYN / OSÓB:\n";
+        tablica.forEach((d,i)=>{
+            text += `${i+1}. ${d}\n`;
+        });
+
+        text += "\nUżyj dokładnie powyższej listy do wygenerowania grup i meczów.\n";
+    }
+    
+    wynik.innerText = text;
+});
+</script>
+
+</body>
+</html>
