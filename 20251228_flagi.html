@@ -11,7 +11,7 @@
 
 body {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: linear-gradient(180deg, #eef2f7, #ffffff);
+    background: #f2f4f7;
     margin: 0;
     padding: 12px;
 }
@@ -19,9 +19,10 @@ body {
 h1 {
     text-align: center;
     font-size: 22px;
-    margin: 10px 0 20px;
+    margin: 8px 0 16px;
 }
 
+/* LISTA – JEDEN POD DRUGIM */
 .grid {
     display: flex;
     flex-direction: column;
@@ -32,58 +33,45 @@ h1 {
 .card {
     background: white;
     border-radius: 20px;
-    padding: 16px;
+    padding: 18px 16px;
+    width: 100%;
     text-align: center;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+    transition: transform 0.15s ease;
 }
 
-/* kliknięcie palcem */
+/* efekt dotknięcia */
 .card:active {
     transform: scale(0.97);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
 /* FLAGA */
 .flag {
-    font-size: 96px;
+    font-size: 100px;
     line-height: 1;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 /* NAZWY */
 .pl {
-    font-weight: 700;
     font-size: 18px;
+    font-weight: 700;
 }
 
 .en {
     font-size: 14px;
     color: #555;
-    margin-top: 2px;
+    margin-top: 4px;
 }
 
 .short {
-    margin-top: 8px;
-    font-size: 13px;
-    color: #888;
-    background: #f1f3f6;
-    padding: 4px 10px;
-    border-radius: 999px;
+    margin-top: 10px;
     display: inline-block;
-}
-
-/* TABLET / WIĘKSZY EKRAN */
-@media (min-width: 600px) {
-    .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 18px;
-    }
-
-    .flag {
-        font-size: 88px;
-    }
+    font-size: 13px;
+    color: #666;
+    background: #eef1f5;
+    padding: 6px 14px;
+    border-radius: 999px;
 }
 </style>
 </head>
