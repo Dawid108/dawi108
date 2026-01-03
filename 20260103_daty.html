@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Quiz Historyczny – Daty</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f2f2f2;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .game-container {
+        background: white;
+        width: 420px;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        text-align: center;
+    }
+
+    .top-bar {
+        display: flex;
+        justify-content: space-between;
+        font-weight: bold;
+        margin-bottom: 15px;
+    }
+
+    .event {
+        font-size: 18px;
+        margin-bottom: 15px;
+        min-height: 60px;
+    }
+
+    input {
+        width: 80%;
+        padding: 10px;
+        font-size: 16px;
+        text-align: center;
+    }
+
+    button {
+        margin-top: 15px;
+        padding: 10px 15px;
+        font-size: 16px;
+        cursor: pointer;
+        border-radius: 8px;
+        border: none;
+        background: #2196f3;
+        color: white;
+    }
+
+    button:hover {
+        background: #1976d2;
+    }
+
+    .correct-answer {
+        margin-top: 10px;
+        color: red;
+        font-weight: bold;
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .end-screen button {
+        width: 100%;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
+
+<div class="game-container">
+
+    <!-- GRA -->
+    <div id="game">
+        <div class="top-bar">
+            <div>Życia: <span id="lives">10</span></div>
+            <div>Punkty: <span id="points">0</span></div>
+        </div>
+
+        <div class="event" id="eventText"></div>
+
+        <input type="text" id="answerInput" placeholder="Wpisz datę">
+        <div class="correct-answer hidden" id="correctAnswer"></div>
+    </div>
+
+    <!-- KONIEC GRY -->
+    <div id="endScreen" class="end-screen hidden">
+        <h2>Koniec Gry</h2>
+        <p>Punkty: <strong id="finalScore"></strong></p>
+        <p>Rekord: <strong id="record"></strong></p>
+        <button onclick="startGame()">Nowa Gra</button>
+        <button onclick="window.location.href='https://dawid108.github.io/dawi2026/index.html'">
+            Zagraj w Grę
+        </button>
+    </div>
+
+</div>
+
+<script>
+const data = [
+"776 p.n.e. - Pierwsze Starożytne Igrzyska Olimpijskie",
+"753 p.n.e. - Założenie Rzymu",
+"476 - Upadek Cesarstwa Rzymskiego Zachodniego",
+"966 - Chrzest Polski",
+"997 - Śmierć Św. Wojciecha",
+"1000 - Zjazd w Gnieźnie",
+"1025 - Koronacja Bolesława Chrobrego",
+"1054 - Wielka Schizma Wschodnia",
+"1226 - Sprowadzenie Krzyża do Polski",
+"1364 - Utworzenie Akademia Krakowskiej",
+"1385 - Umowa z Litwą",
+"1386 - Unia z Litwą w Krewie",
+"1409-1411 - Wielka Wojna z Krzyżakami",
+"15.07.1410 - Bitwa Pod Grunwaldem",
+"1411 - Pierwszy Pokój Toruński",
+"1450 - Wynalezienie Druku przez Jana Gutenberga",
+"1453 - Zdobycie Konstantynopola przez Turków",
+"1492 - Odkrycie Ameryki przez Krzysztofa Kolumba",
+"1498 - Vasco da Gama dotarł drogą morską do Indii",
+"1517 - Wystąpienie Marcina Lutra",
+"1519-1522 - Wyprawa Ferdynanda Magellana",
+"1569 - Unia Lubelska z Litwą",
+"1621 - Bitwa pod Chocimiem",
+"1655-1660 - Potop Szwedzki",
+"1683 - Bitwa pod Wiedniem",
+"1744 - Powstanie Kościuszkowskie",
+"1772 - Pierwszy Rozbiór Polski",
+"1792 - Drugi Rozbiór Polski",
+"1795 - Trzeci Rozbiór Polski",
+"1918 - Odzyskanie Niepodległości przez Polskę",
+"27.12.1918 - Wybuch Powstania Wielkopolskiego",
+"1.09.1939 - Rozpoczęcie Drugiej Wojny Światowej"
+];
+
+let shuffled = [];
+let index = 0;
+let lives = 10;
+let points = 0;
+let canGetPoint = true;
+
+const eventText = document.getElementById("eventText");
+const input = document.getElementById("answerInput");
+const correctAnswerDiv = document.getElementById("correctAnswer");
+
+input.addEventListener("keydown", e => {
+    if (e.key === "Enter") checkAnswer();
+});
+
+function startGame() {
+    shuffled = [...data].sort(() => Math.random() - 0.5);
+    index = 0;
+    lives = 10;
+    points = 0;
+    canGetPoint = true;
+
+    document.getElementById("lives").textContent = lives;
+    document.getElementById("points").textContent = points;
+
+    document.getElementById("game").classList.remove("hidden");
+    document.getElementById("endScreen").classList.add("hidden");
+
+    loadEvent();
+}
+
+function loadEvent() {
+    if (index >= shuffled.length || lives <= 0) {
+        endGame();
+        return;
+    }
+
+    const [, description] = shuffled[index].split(" - ");
+    eventText.textContent = description;
+    input.value = "";
+    input.focus();
+    canGetPoint = true;
+}
+
+function checkAnswer() {
+    const correctDate = shuffled[index].split(" - ")[0].trim();
+    const userAnswer = input.value.trim();
+
+    if (userAnswer === correctDate) {
+        if (canGetPoint) {
+            points++;
+            document.getElementById("points").textContent = points;
+        }
+        index++;
+        loadEvent();
+    } else {
+        lives--;
+        document.getElementById("lives").textContent = lives;
+        canGetPoint = false;
+        showCorrect(correctDate);
+    }
+}
+
+function showCorrect(date) {
+    correctAnswerDiv.textContent = "Poprawna data: " + date;
+    correctAnswerDiv.classList.remove("hidden");
+
+    setTimeout(() => {
+        correctAnswerDiv.classList.add("hidden");
+        input.value = "";
+        input.focus();
+    }, 5000);
+
+    if (lives <= 0) endGame();
+}
+
+function endGame() {
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+
+    document.getElementById("finalScore").textContent = points;
+
+    let record = localStorage.getItem("historyRecord") || 0;
+    if (points > record) {
+        record = points;
+        localStorage.setItem("historyRecord", record);
+    }
+    document.getElementById("record").textContent = record;
+}
+
+startGame();
+</script>
+
+</body>
+</html>
