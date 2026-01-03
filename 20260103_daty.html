@@ -230,6 +230,10 @@ function endGame() {
 }
 
 startGame();
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./20260106_sw.js');
+}
 </script>
 
 </body>
