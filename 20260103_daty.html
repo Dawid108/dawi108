@@ -209,9 +209,10 @@ button:active {
 </div>
 
 <script>
+let dawid108 = localStorage.getItem("dawid108") || 0;
 const data = [
-"776 p.n.e. - Pierwsze Starożytne Igrzyska Olimpijskie",
-"753 p.n.e. - Założenie Rzymu",
+"776 pne - Pierwsze Starożytne Igrzyska Olimpijskie",
+"753 pne - Założenie Rzymu",
 "476 - Upadek Cesarstwa Rzymskiego Zachodniego",
 "966 - Chrzest Polski",
 "997 - Śmierć Św. Wojciecha",
@@ -239,7 +240,7 @@ const data = [
 "1772 - Pierwszy Rozbiór Polski",
 "1792 - Drugi Rozbiór Polski",
 "1795 - Trzeci Rozbiór Polski",
-"1918 - Odzyskanie Niepodległości przez Polskę",
+"11.11.1918 - Odzyskanie Niepodległości przez Polskę",
 "27.12.1918 - Wybuch Powstania Wielkopolskiego",
 "1.09.1939 - Rozpoczęcie Drugiej Wojny Światowej"
 ];
@@ -294,13 +295,18 @@ function checkAnswer() {
     if (userAnswer === correctDate) {
         if (canGetPoint) {
             points++;
-            document.getElementById("points").textContent = points;
+dawid108++;
+dawid108++;
+dawid108++;
+dawid108++;
+                   dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108); document.getElementById("points").textContent = points;
         }
         index++;
         loadEvent();
     } else {
-        lives--;
-        document.getElementById("lives").textContent = lives;
+        lives--; document.getElementById("lives").textContent = lives;
         canGetPoint = false;
         showCorrect(correctDate);
     }
