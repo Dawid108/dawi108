@@ -2,6 +2,7 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Daty</title>
 <script src="script.js"></script>
 <style>
@@ -121,6 +122,59 @@ button:active {
 /* UTILS */
 .hidden {
     display: none;
+}
+/* =========================
+   MOBILE STYLE (TELEFONY)
+   ========================= */
+
+@media (max-width: 600px) {
+
+    body {
+        padding: 10px;
+        align-items: flex-start;
+    }
+
+    .game-container {
+        max-width: 100%;
+        border-radius: 0;
+        min-height: 100vh;
+        box-shadow: none;
+        padding: 16px;
+    }
+
+    .top-bar {
+        font-size: 18px;
+        margin-bottom: 20px;
+    }
+
+    .event {
+        font-size: 20px;
+        margin-bottom: 24px;
+        min-height: auto;
+    }
+
+    input {
+        font-size: 20px;
+        padding: 16px;
+    }
+
+    .correct-answer {
+        font-size: 16px;
+        padding: 12px;
+    }
+
+    .end-screen h2 {
+        font-size: 26px;
+    }
+
+    .end-screen p {
+        font-size: 20px;
+    }
+
+    button {
+        font-size: 18px;
+        padding: 16px;
+    }
 }
 </style>
 </head>
