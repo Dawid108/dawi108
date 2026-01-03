@@ -41,7 +41,7 @@ box-shadow:0 0 20px #0006;
 
 <div id="game">
     <div id="stats">
-        <div>Życia: <span id="life">30</span></div>
+        <div>Życia: <span id="life">10</span></div>
         <div>Punkty: <span id="score">0</span></div>
     </div>
     <div class="category" id="category"></div>
@@ -314,7 +314,7 @@ c:"Bitwa pod Grunwaldem",
 d:"Pierwszy Pokój Toruński"},
 
 {cat:"Historia", q:"1385", 
-a:"Umowa z Litwą (Unia w Krewie)", 
+a:"Umowa z Litwą", 
 b:"Bitwa pod Grunwaldem", 
 c:"Unia Lubelska", 
 d:"Zjazd w Gnieźnie"},
@@ -427,7 +427,7 @@ b:"Drugi rozbiór Polski",
 c:"Powstanie Kościuszkowskie", 
 d:"Kongres wiedeński"},
 
-{cat:"Historia", q:"1918", 
+{cat:"Historia", q:"11.11.1918", 
 a:"Odzyskanie niepodległości przez Polskę", 
 b:"Wybuch I wojny światowej", 
 c:"Wybuch II wojny światowej", 
@@ -447,7 +447,7 @@ d:"Koniec I wojny światowej"}
 ];
 
 let current = 0;
-let life = 30;
+let life = 10;
 let score = 0;
 let used = [];
 let maxQ = questions.length;
@@ -455,7 +455,7 @@ let record = localStorage.getItem("historiahs") || 0;
 let dawid108 = localStorage.getItem("dawid108") || 0;
 
 function newGame(){
-    life = 30; score = 0; used = [];
+    life = 10; score = 0; used = [];
     document.getElementById("endScreen").classList.add("hidden");
     document.getElementById("game").classList.remove("hidden");
     updateStats();
