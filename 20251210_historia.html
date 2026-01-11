@@ -760,7 +760,7 @@ function answer(correct, btn){
         localStorage.setItem("dawid108", dawid108);
         console.log("dawid108:", dawid108);
         updateStats();
-        setTimeout(()=>nextQuestion(), 300);
+        setTimeout(()=>nextQuestion(), 1500);
     }else{
         btn.classList.add("wrong");
         // pokaż poprawną
@@ -769,7 +769,7 @@ function answer(correct, btn){
         });
         life--;
         updateStats();
-        if(life <= 0){ setTimeout(()=>gameOver(), 2000); }
+        if(life <= 0){ setTimeout(()=>gameOver(), 5000); }
         else{ setTimeout(()=>nextQuestion(), 3000); }
     }
 }
