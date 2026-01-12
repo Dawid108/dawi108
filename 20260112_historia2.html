@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historia - Inne Pytania</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">10</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Historia", q:"Jakie represje stosowano wobec powstańców?", 
+a:"Kary śmierci i zesłania", 
+b:"Nagrody", 
+c:"Stypendia", 
+d:"Zwolnienia z podatków"},
+
+{cat:"Historia", q:"Kto był założycielem SDKPiL?", 
+ a:"Róża Luksemburg i Julian Marchlewski", 
+ b:"Władysław Grabski i Roman Zaremba", 
+ c:"Aleksander Limanowski i Stefan Kruczek", 
+ d:"Jan Zatorski i Henryk Dębski"},
+
+{cat:"Historia", q:"Kogo car mianował dyrektorem Komisji Wyznań i Oświecenia Publicznego?", 
+a:"Aleksandra Wielopolskiego", 
+b:"Romualda Traugutta", 
+c:"Mariana Langiewicza", 
+d:"Ludwika Mierosławskiego"},
+
+{cat:"Historia", q:"Kto był zwolennikiem legalnej działalności i kompromisu z zaborcą?", 
+a:"Biali", 
+b:"Czerwoni", 
+c:"Zieloni", 
+d:"Rząd Narodowy"},
+
+{cat:"Historia", q:"Co głosili czerwoni?", 
+a:"Hasło do zbrojnego powstania", 
+b:"Potrzebę pracy organicznej", 
+c:"Polonizację administracji", 
+d:"Lojalność wobec Austrii"},
+
+{cat:"Historia", q:"Co przyspieszyło wybuch Powstania Styczniowego?", 
+a:"Branka", 
+b:"Rugowanie Polaków z Prus", 
+c:"Wprowadzenie języka polskiego do szkół", 
+d:"Podpisanie pokoju w Paryżu"},
+
+{cat:"Historia", q:"Czym była branka?", 
+a:"Przymusowym poborem do wojska", 
+b:"Podatkiem", 
+c:"Zakazem manifestacji", 
+d:"Nowym kodeksem prawnym"},
+
+{cat:"Historia", q:"Co otrzymali chłopi po powstaniu?", 
+a:"Ziemię na własność bez odszkodowania", 
+b:"Zwolnienie z podatków", 
+c:"Rosyjskie obywatelstwo", 
+d:"Przywileje szlacheckie"},
+
+{cat:"Historia", q:"Co zlikwidowano po upadku powstania?", 
+a:"Królestwo Polskie", 
+b:"Senat", 
+c:"Sejm Wielki", 
+d:"Uniwersytet Wileński"},
+
+{cat:"Historia", q:"Jak nazwano Królestwo Polskie po zmianach administracyjnych?", 
+a:"Kraj Przywiślański", 
+b:"Imperium Polskie", 
+c:"Kraina Nadwiślańska", 
+d:"Królestwo Królewskie"},
+
+{cat:"Historia", q:"Co stało się z Kościołem katolickim po powstaniu?", 
+a:"Został podporządkowany Petersburgowi", 
+b:"Uniezależnił się od państwa", 
+c:"Otrzymał większe prawa", 
+d:"Przeniesiono go do Poznania"},
+
+{cat:"Historia", q:"Kto dowodził powstaniem jako ostatni przywódca?", 
+a:"Traugutt", 
+b:"Langiewicz", 
+c:"Mierosławski", 
+d:"Badeni"},
+
+{cat:"Historia", q:"W którym roku upadło Powstanie Styczniowe?", 
+a:"1864", 
+b:"1851", 
+c:"1871", 
+d:"1901"},
+
+{cat:"Historia", q:"Jak nazywano okres silnej rusyfikacji szkolnictwa po powstaniu?", 
+a:"Nocą apuchtinowską", 
+b:"Rugami pruskimi", 
+c:"Kulturkampfem", 
+d:"Nocą styczniową"},
+
+{cat:"Historia", q:"W którym zaborze germanizacja była szczególnie silna po 1871 roku?", 
+a:"Pruskim", 
+b:"Austriackim", 
+c:"Rosyjskim", 
+d:"Tureckim"},
+
+{cat:"Historia", q:"Co to autonomia galicyjska?", 
+ a:"Częściowa samodzielność Galicji w ramach Austro-Węgier", 
+ b:"Projekt budowy wspólnej floty Galicji i Śląska", 
+ c:"Całkowita izolacja Galicji od reszty kraju", 
+ d:"Reforma tworząca jednolite prawo dla całej Europy"},
+
+{cat:"Historia", q:"Co sprzyjało rozwojowi nauki i kultury w Galicji?", 
+a:"Największa autonomia", 
+b:"Germanizacja", 
+c:"Upadek Austrii", 
+d:"Polityka Hakaty"},
+
+  {cat:"Historia", q:"W jakim zaborze były najlepsze warunki rozwoju rolnictwa?", 
+ a:"W zaborze pruskim", 
+ b:"W zaborze rosyjskim", 
+ c:"W zaborze czeskim", 
+ d:"W zaborze litewskim"},
+
+{cat:"Historia", q:"W jakim zaborze były najgorsze warunki dla rozwoju rolnictwa?", 
+ a:"W zaborze austriackim", 
+ b:"W zaborze pruskim", 
+ c:"W zaborze ukraińskim", 
+ d:"W zaborze śląskim"},
+
+{cat:"Historia", q:"Co to PPS?", 
+ a:"Polska Partia Socjalistyczna", 
+ b:"Polska Partia Społeczno-Handlowa", 
+ c:"Polskie Porozumienie Szkoleniowe", 
+ d:"Państwowy Program Społeczny"},
+
+{cat:"Historia", q:"Co to SDKPiL?", 
+ a:"Socjaldemokracja Królestwa Polskiego i Litwy", 
+ b:"Sekcja Działań Kulturalnych i Literackich", 
+ c:"Stowarzyszenie Doświadczalnej Kartografii i Logistyki", 
+ d:"System Demokratycznej Kontroli Ludności"},
+
+{cat:"Historia", q:"Jakie były główne założenia Ruchu Narodowego?", 
+ a:"Obrona polskiej tożsamości i dążenie do silnego państwa", 
+ b:"Całkowita likwidacja granic i wspólny rząd Europy", 
+ c:"Wprowadzenie gospodarki opartej na rolnictwie", 
+ d:"Utworzenie jedynie lokalnych wspólnot miejskich"},
+
+{cat:"Historia", q:"Jakie były główne założenia Ruchu Ludowego?", 
+ a:"Obrona interesów chłopów i walka o reformy społeczne", 
+ b:"Wspieranie wyłącznie fabrykantów i przemysłowców", 
+ c:"Rozbudowa floty morskiej i kolonii zamorskich", 
+ d:"Tworzenie systemu elitarnych szkół prywatnych"},
+
+{cat:"Historia", q:"Kto był przedstawicielem Ruchu Narodowego?", 
+ a:"Roman Dmowski", 
+ b:"Władysław Sikorski", 
+ c:"Kazimierz Bartel", 
+ d:"Eugeniusz Jagiełło"},
+  
+  {cat:"Historia", q:"Z jakim zjawiskiem historycznym najbardziej kojarzona jest postać Michała Drzymały?", 
+   a:"Oporem wobec germanizacji w zaborze pruskim", 
+   b:"Walką partyzancką w powstaniu styczniowym", 
+   c:"Rewolucją 1905 roku", 
+   d:"Ruchem socjalistycznym w Królestwie Polskim"},
+
+  {cat:"Historia", q:"Jak nazywały się dwa główne obozy polityczne przed wybuchem powstania styczniowego?", 
+   a:"Biali i czerwoni", 
+   b:"Socjaliści i narodowcy", 
+   c:"Ludowcy i demokraci", 
+   d:"Konserwatyści i liberałowie"},
+
+  {cat:"Historia", q:"Która para poprawnie łączy partię polityczną z jej przywódcą?", 
+   a:"Ruch Narodowy – Roman Dmowski", 
+   b:"PPS – Roman Dmowski", 
+   c:"PSL – Róża Luksemburg", 
+   d:"SDKPiL – Wincenty Witos"},
+
+  {cat:"Historia", q:"Z jakim nurtem politycznym była związana Róża Luksemburg?", 
+   a:"Ruchem socjalistycznym", 
+   b:"Ruchem narodowym", 
+   c:"Ruchem ludowym", 
+   d:"Obozem konserwatystów"},
+
+  {cat:"Historia", q:"Jaką funkcję pełnił Aleksander Wielopolski przed powstaniem styczniowym?", 
+   a:"Naczelnika rządu cywilnego Królestwa Polskiego", 
+   b:"Dyktatora powstania", 
+   c:"Dowódcy wojsk powstańczych", 
+   d:"Przywódcy PPS"},
+
+  {cat:"Historia", q:"Która grupa społeczna najczęściej popierała stronnictwo białych?", 
+   a:"Ziemiaństwo i burżuazja", 
+   b:"Robotnicy fabryczni", 
+   c:"Chłopi bezrolni", 
+   d:"Żołnierze rosyjscy"},
+
+  {cat:"Historia", q:"Która cecha najlepiej charakteryzuje stronnictwo czerwonych?", 
+   a:"Postulat natychmiastowego powstania", 
+   b:"Dążenie do ugody z carem", 
+   c:"Poparcie germanizacji", 
+   d:"Sprzeciw wobec reform społecznych"},
+
+  {cat:"Historia", q:"Jakie działania podejmował Aleksander Wielopolski, by zapobiec powstaniu?", 
+   a:"Wprowadził brankę do wojska rosyjskiego", 
+   b:"Ogłosił manifest powstańczy", 
+   c:"Udzielił autonomii Królestwu", 
+   d:"Zorganizował tajne nauczanie"},
+
+  {cat:"Historia", q:"Jaki był bezpośredni skutek ogłoszenia branki?", 
+   a:"Przyspieszenie wybuchu powstania", 
+   b:"Zakończenie walk zbrojnych", 
+   c:"Poprawa relacji z carem", 
+   d:"Rozwój autonomii Galicji"},
+
+  {cat:"Historia", q:"Dlaczego powstanie styczniowe zakończyło się klęską?", 
+   a:"Brak realnej pomocy zagranicznej", 
+   b:"Zbyt małe represje carskie", 
+   c:"Silna armia powstańcza", 
+   d:"Wsparcie Rosji przez Polaków"},
+
+  {cat:"Historia", q:"Jaką rolę odegrał Marian Langiewicz w czasie powstania?", 
+   a:"Pełnił funkcję dyktatora powstania", 
+   b:"Był rosyjskim generałem", 
+   c:"Stał na czele ruchu narodowego", 
+   d:"Kierował rusyfikacją szkolnictwa"},
+
+  {cat:"Historia", q:"Za czyich rządów powstanie styczniowe weszło w ostatnią fazę?", 
+   a:"Romualda Traugutta", 
+   b:"Mariana Langiewicza", 
+   c:"Aleksandra Wielopolskiego", 
+   d:"Romana Dmowskiego"},
+
+  {cat:"Historia", q:"Które wydarzenie symbolicznie zamknęło dzieje powstania styczniowego?", 
+   a:"Egzekucja Romualda Traugutta", 
+   b:"Wybuch rewolucji 1905 roku", 
+   c:"Strajk dzieci we Wrześni", 
+   d:"Powstanie zabajkalskie"},
+
+  {cat:"Historia", q:"Dlaczego uwłaszczenie chłopów było ważne społecznie?", 
+   a:"Zlikwidowało zależność chłopów od panów", 
+   b:"Wzmocniło pozycję szlachty", 
+   c:"Zwiększyło pańszczyznę", 
+   d:"Ograniczyło migrację do miast"},
+
+  {cat:"Historia", q:"Która kara była najczęściej stosowana po upadku powstania?", 
+   a:"Zsyłka na Syberię", 
+   b:"Obniżenie podatków", 
+   c:"Przyznanie autonomii", 
+   d:"Amnestia dla powstańców"},
+
+  {cat:"Historia", q:"Czego dotyczyła tzw. noc apuchtinowska?", 
+   a:"Zaostrzenia kontroli nad szkołami", 
+   b:"Walk ulicznych w Warszawie", 
+   c:"Strajków robotniczych", 
+   d:"Reform administracyjnych"},
+
+  {cat:"Historia", q:"Jaki był główny cel germanizacji?", 
+   a:"Wynarodowienie Polaków", 
+   b:"Rozwój polskiej kultury", 
+   c:"Poprawa sytuacji chłopów", 
+   d:"Unowocześnienie rolnictwa"},
+
+  {cat:"Historia", q:"Kogo dotyczyły rugi pruskie?", 
+   a:"Polaków nieposiadających obywatelstwa niemieckiego", 
+   b:"Robotników fabrycznych", 
+   c:"Szlachty galicyjskiej", 
+   d:"Urzędników rosyjskich"},
+
+  {cat:"Historia", q:"Dlaczego Michał Drzymała stał się symbolem oporu?", 
+   a:"Obchodził pruskie przepisy budowlane", 
+   b:"Dowodził oddziałem powstańczym", 
+   c:"Kierował strajkiem szkolnym", 
+   d:"Tworzył prasę narodową"},
+
+  {cat:"Historia", q:"Która idea zastąpiła walkę zbrojną po klęsce powstań?", 
+   a:"Praca organiczna", 
+   b:"Powstanie powszechne", 
+   c:"Rewolucja społeczna", 
+   d:"Germanizacja"},
+
+  {cat:"Historia", q:"Do kogo głównie była skierowana praca u podstaw?", 
+   a:"Chłopów i najuboższych warstw", 
+   b:"Arystokracji", 
+   c:"Urzędników carskich", 
+   d:"Przedsiębiorców"},
+
+  {cat:"Historia", q:"Który pisarz tworzył literaturę ku pokrzepieniu serc?", 
+   a:"Henryk Sienkiewicz", 
+   b:"Stanisław Wyspiański", 
+   c:"Bolesław Prus", 
+   d:"Kazimierz Przerwa-Tetmajer"},
+
+  {cat:"Historia", q:"Dlaczego Galicja była wyjątkowa na tle innych zaborów?", 
+   a:"Posiadała szeroką autonomię", 
+   b:"Była najlepiej uprzemysłowiona", 
+   c:"Nie stosowano tam germanizacji", 
+   d:"Nie istniała tam cenzura"},
+
+  {cat:"Historia", q:"Dlaczego w Prusach rolnictwo rozwijało się najlepiej?", 
+   a:"Dzięki wcześniejszemu uwłaszczeniu chłopów", 
+   b:"Z powodu dużych połaci ziemi", 
+   c:"Dzięki taniej sile roboczej", 
+   d:"Z powodu braku podatków"},
+
+  {cat:"Historia", q:"Które miasta były centrami przemysłu w zaborze rosyjskim?", 
+   a:"Łódź i Warszawa", 
+   b:"Kraków i Lwów", 
+   c:"Poznań i Gdańsk", 
+   d:"Wilno i Kowno"},
+
+  {cat:"Historia", q:"Jaką rolę społeczną pełnili robotnicy?", 
+   a:"Stanowili podstawę przemysłu", 
+   b:"Zarządzali majątkami ziemskimi", 
+   c:"Tworzyli elity polityczne", 
+   d:"Sprawowali władzę lokalną"},
+
+  {cat:"Historia", q:"Z czym wiązał się rozwój burżuazji?", 
+   a:"Rozwojem przemysłu i handlu", 
+   b:"Upadkiem miast", 
+   c:"Zanikaniem rzemiosła", 
+   d:"Likwidacją fabryk"},
+
+  {cat:"Historia", q:"Jakie było główne założenie asymilacji Żydów?", 
+   a:"Włączenie ich w życie społeczeństwa", 
+   b:"Izolacja kulturowa", 
+   c:"Przymusowa emigracja", 
+   d:"Zakaz używania języka polskiego"},
+
+  {cat:"Historia", q:"Która partia łączyła socjalizm z walką o niepodległość?", 
+   a:"PPS", 
+   b:"SDKPiL", 
+   c:"PSL", 
+   d:"Endecja"},
+
+  {cat:"Historia", q:"Dlaczego SDKPiL różniła się od PPS?", 
+   a:"Nie uznawała walki o niepodległość", 
+   b:"Popierała germanizację", 
+   c:"Była partią chłopską", 
+   d:"Wspierała carat"},
+
+  {cat:"Historia", q:"Jakie cele stawiał sobie ruch ludowy?", 
+   a:"Obronę interesów chłopów", 
+   b:"Walkę o germanizację", 
+   c:"Interesy arystokracji", 
+   d:"Rozwój wielkiego przemysłu"},
+
+  {cat:"Historia", q:"Co było najwyższą wartością dla Ruchu Narodowego?", 
+   a:"Naród", 
+   b:"Klasa robotnicza", 
+   c:"Chłopstwo", 
+   d:"Monarchia"},
+
+  {cat:"Historia", q:"Jak nazywano modernizm na ziemiach polskich?", 
+   a:"Młoda Polska", 
+   b:"Pozytywizm", 
+   c:"Romantyzm", 
+   d:"Realizm"}
+];
+
+let current = 0;
+let life = 10;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 10; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
