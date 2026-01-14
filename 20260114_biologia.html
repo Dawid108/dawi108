@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biologia</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">30</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Biologia", q:"W jakim narządzie zachodzi cykl mocznikowy?", 
+a:"W wątrobie", 
+b:"W nerkach", 
+c:"W pęcherzu moczowym", 
+d:"W jelicie cienkim"},
+
+{cat:"Biologia", q:"Dlaczego amoniak w cyklu mocznikowym jest przekształcany w mocznik?", 
+a:"Ponieważ amoniak jest toksyczny dla organizmu", 
+b:"Ponieważ mocznik jest bardziej energetyczny", 
+c:"Ponieważ amoniak nie rozpuszcza się w wodzie", 
+d:"Ponieważ mocznik powstaje w nerkach"},
+
+{cat:"Biologia", q:"Gdzie gromadzi się mocz przed wydaleniem?", 
+a:"W pęcherzu moczowym", 
+b:"W cewce moczowej", 
+c:"W miedniczce nerkowej", 
+d:"W moczowodach"},
+
+{cat:"Biologia", q:"Przez jaki narząd mocz jest usuwany z organizmu?", 
+a:"Przez cewkę moczową", 
+b:"Przez moczowód", 
+c:"Przez pęcherz moczowy", 
+d:"Przez nerki"},
+
+{cat:"Biologia", q:"Gdzie wytwarzany jest mocz?", 
+a:"W nerkach", 
+b:"W pęcherzu moczowym", 
+c:"W moczowodach", 
+d:"W wątrobie"},
+
+{cat:"Biologia", q:"Które struktury odprowadzają mocz z nerek do pęcherza?", 
+a:"Moczowody", 
+b:"Cewka moczowa", 
+c:"Kanaliki nerkowe", 
+d:"Tętnice nerkowe"},
+
+{cat:"Biologia", q:"Które z poniższych są zbędnymi produktami przemiany materii?", 
+a:"Dwutlenek węgla, woda i mocznik", 
+b:"Tlen, glukoza i witaminy", 
+c:"Białka i tłuszcze", 
+d:"Hormony i enzymy"},
+
+{cat:"Biologia", q:"Jakie narządy biorą udział w wydalaniu produktów przemiany materii?", 
+a:"Nerki, płuca i skóra", 
+b:"Serce, jelita i żołądek", 
+c:"Mózg i rdzeń kręgowy", 
+d:"Trzustka i wątroba"},
+
+{cat:"Biologia", q:"Jakie elementy wchodzą w skład nefronu?", 
+a:"Ciałko nerkowe, kanaliki i kanalik zbiorczy", 
+b:"Kora, rdzeń i miedniczka nerkowa", 
+c:"Moczowód i pęcherz moczowy", 
+d:"Tętnica i żyła nerkowa"},
+
+{cat:"Biologia", q:"Czym różni się filtracja od resorpcji i sekrecji?", 
+a:"Filtracja to przesączanie krwi, resorpcja to wchłanianie zwrotne, a sekrecja to wydzielanie do moczu", 
+b:"Filtracja zachodzi tylko w pęcherzu", 
+c:"Resorpcja usuwa toksyny z organizmu", 
+d:"Sekrecja zachodzi wyłącznie w wątrobie"},
+
+{cat:"Biologia", q:"Czym jest wazopresyna (ADH)?", 
+a:"Hormonem regulującym ilość wody w organizmie", 
+b:"Enzymem trawiennym", 
+c:"Produktem przemiany materii", 
+d:"Neuroprzekaźnikiem"},
+
+{cat:"Biologia", q:"Jakie jest znaczenie hormonu ADH?", 
+a:"Zwiększa wchłanianie zwrotne wody w nerkach", 
+b:"Pobudza wydzielanie potu", 
+c:"Hamuje filtrację krwi", 
+d:"Zwiększa ilość glukozy we krwi"},
+
+{cat:"Biologia", q:"Kiedy erytropoetyna ma największe znaczenie?", 
+a:"Przy niedoborze tlenu we krwi", 
+b:"Podczas trawienia", 
+c:"Po spożyciu dużej ilości wody", 
+d:"Podczas snu"},
+
+{cat:"Biologia", q:"Dlaczego erytropoetyna jest ważna dla organizmu?", 
+a:"Pobudza wytwarzanie erytrocytów", 
+b:"Reguluje ilość moczu", 
+c:"Usuwa toksyny z krwi", 
+d:"Kontroluje ciśnienie krwi"},
+
+{cat:"Biologia", q:"Jakie są funkcje układu moczowego?", 
+a:"Wydalanie i osmoregulacja", 
+b:"Oddychanie i trawienie", 
+c:"Regulacja temperatury i ruch", 
+d:"Produkcja hormonów płciowych"},
+
+{cat:"Biologia", q:"Czym jest wydalanie?", 
+a:"Usuwaniem zbędnych produktów przemiany materii", 
+b:"Procesem trawienia pokarmu", 
+c:"Wchłanianiem składników odżywczych", 
+d:"Transportem tlenu"},
+
+{cat:"Biologia", q:"Czym jest osmoregulacja?", 
+a:"Regulacją ilości wody i soli mineralnych", 
+b:"Usuwaniem dwutlenku węgla", 
+c:"Produkcją moczu", 
+d:"Filtracją krwi"},
+
+{cat:"Biologia", q:"Czym jest cykl mocznikowy?", 
+a:"Procesem przekształcania amoniaku w mocznik w wątrobie", 
+b:"Procesem filtracji krwi w nerkach", 
+c:"Usuwaniem moczu z organizmu", 
+d:"Produkcją erytropoetyny"},
+
+{cat:"Biologia", q:"Czym są jony amonowe?", 
+a:"Toksycznymi produktami przemiany białek", 
+b:"Hormonami regulującymi diurezę", 
+c:"Rodzajem komórek krwi", 
+d:"Składnikami osocza"},
+
+{cat:"Biologia", q:"Jaką rolę pełni asparaginian w cyklu mocznikowym?", 
+a:"Dostarcza atomów azotu do syntezy mocznika", 
+b:"Transportuje tlen we krwi", 
+c:"Reguluje ilość wody w organizmie", 
+d:"Uczestniczy w filtracji"},
+
+{cat:"Biologia", q:"Z jakich elementów składa się układ moczowy?", 
+a:"Nerki, moczowody, pęcherz moczowy i cewka moczowa", 
+b:"Płuca, nerki i skóra", 
+c:"Serce i naczynia krwionośne", 
+d:"Wątroba i trzustka"},
+
+{cat:"Biologia", q:"Jakie elementy budują nerkę?", 
+a:"Kora, rdzeń i miedniczka nerkowa", 
+b:"Pęcherz i cewka moczowa", 
+c:"Moczowody i kanaliki", 
+d:"Przysadka i podwzgórze"},
+
+{cat:"Biologia", q:"Czym jest tętnica nerkowa?", 
+a:"Naczyniem doprowadzającym krew do nerki", 
+b:"Naczyniem odprowadzającym mocz", 
+c:"Częścią nefronu", 
+d:"Hormonem nerkowym"},
+
+{cat:"Biologia", q:"Czym jest żyła nerkowa?", 
+a:"Naczyniem odprowadzającym krew z nerki", 
+b:"Naczyniem doprowadzającym mocz", 
+c:"Częścią kory nerkowej", 
+d:"Elementem pęcherza"},
+
+{cat:"Biologia", q:"Czym jest moczowód?", 
+a:"Przewodem odprowadzającym mocz z nerki do pęcherza", 
+b:"Miejscem produkcji moczu", 
+c:"Częścią nefronu", 
+d:"Narządem filtrującym krew"},
+
+{cat:"Biologia", q:"Czym jest kora nerkowa?", 
+a:"Zewnętrzną warstwą nerki", 
+b:"Przewodem wyprowadzającym mocz", 
+c:"Wewnętrzną częścią pęcherza", 
+d:"Naczyniem krwionośnym"},
+
+{cat:"Biologia", q:"Czym jest miedniczka nerkowa?", 
+a:"Częścią nerki zbierającą mocz", 
+b:"Elementem nefronu", 
+c:"Hormonem regulującym diurezę", 
+d:"Warstwą kory"},
+
+{cat:"Biologia", q:"Czym jest rdzeń nerki?", 
+a:"Wewnętrzną częścią nerki", 
+b:"Zewnętrzną osłoną nerki", 
+c:"Przewodem moczowym", 
+d:"Naczyniem krwionośnym"},
+
+{cat:"Biologia", q:"Czym jest ciałko nerkowe?", 
+a:"Miejscem filtracji krwi", 
+b:"Miejscem magazynowania moczu", 
+c:"Hormonem nerkowym", 
+d:"Rodzajem kanalików"},
+
+{cat:"Biologia", q:"Czym jest kanalik nerkowy?", 
+a:"Miejscem resorpcji i sekrecji", 
+b:"Narządem wydalania", 
+c:"Naczyniem krwionośnym", 
+d:"Zbiornikiem moczu"},
+
+{cat:"Biologia", q:"Jak powstaje mocz?", 
+a:"W wyniku filtracji, resorpcji i sekrecji", 
+b:"Tylko przez filtrację krwi", 
+c:"W pęcherzu moczowym", 
+d:"W wątrobie"},
+
+{cat:"Biologia", q:"Czym jest filtracja?", 
+a:"Przesączaniem osocza krwi do torebki kłębuszka", 
+b:"Wchłanianiem zwrotnym wody", 
+c:"Wydzielaniem hormonów", 
+d:"Usuwaniem moczu"},
+
+{cat:"Biologia", q:"Czym jest mocz pierwotny?", 
+a:"Płynem powstałym po filtracji krwi", 
+b:"Moczem usuwanym z organizmu", 
+c:"Produktem cyklu mocznikowego", 
+d:"Mieszaniną hormonów"},
+
+{cat:"Biologia", q:"Czym jest resorpcja?", 
+a:"Wchłanianiem zwrotnym substancji do krwi", 
+b:"Procesem filtracji", 
+c:"Wydzielaniem leków", 
+d:"Magazynowaniem moczu"},
+
+{cat:"Biologia", q:"Czym jest sekrecja?", 
+a:"Wydzielaniem substancji z krwi do moczu", 
+b:"Przesączaniem osocza", 
+c:"Wchłanianiem wody", 
+d:"Usuwaniem moczu"},
+
+{cat:"Biologia", q:"Czym jest mocz ostateczny?", 
+a:"Moczem gotowym do wydalenia", 
+b:"Płynem po filtracji", 
+c:"Produktem przemiany białek", 
+d:"Składnikiem osocza"},
+
+{cat:"Biologia", q:"Na czym polega wydalanie moczu?", 
+a:"Usuwaniu moczu na zewnątrz organizmu", 
+b:"Produkcji moczu w nerkach", 
+c:"Filtracji krwi", 
+d:"Resorpcji wody"},
+
+{cat:"Biologia", q:"Czym jest ośrodek wydalania?", 
+a:"Ośrodkiem nerwowym kontrolującym oddawanie moczu", 
+b:"Częścią nefronu", 
+c:"Narządem wydalniczym", 
+d:"Hormonem"},
+
+{cat:"Biologia", q:"Jaką rolę pełni rdzeń kręgowy w oddawaniu moczu?", 
+a:"Kontroluje odruch mikcji", 
+b:"Produkuje hormony", 
+c:"Filtruje krew", 
+d:"Magazynuje mocz"},
+
+{cat:"Biologia", q:"Na czym polega regulacja hormonalna tworzenia moczu?", 
+a:"Na działaniu hormonów regulujących ilość wody", 
+b:"Na pracy mięśni pęcherza", 
+c:"Na filtracji osocza", 
+d:"Na transporcie tlenu"},
+
+{cat:"Biologia", q:"Czym jest hormon antydiuretyczny?", 
+a:"Hormonem zmniejszającym ilość wydalanego moczu", 
+b:"Hormonem trawiennym", 
+c:"Produktem przemiany materii", 
+d:"Enzymem nerkowym"},
+
+{cat:"Biologia", q:"Czym jest osocze?", 
+a:"Płynną częścią krwi", 
+b:"Rodzajem moczu", 
+c:"Hormonem", 
+d:"Komórką krwi"},
+
+{cat:"Biologia", q:"Czym jest homeostaza?", 
+a:"Utrzymaniem stałych warunków w organizmie", 
+b:"Procesem wydalania", 
+c:"Produkcją moczu", 
+d:"Oddychaniem komórkowym"},
+
+{cat:"Biologia", q:"Co reguluje ilość wody we krwi i objętość moczu?", 
+a:"Hormon ADH", 
+b:"Insulina", 
+c:"Adrenalina", 
+d:"Tyroksyna"},
+
+{cat:"Biologia", q:"Jaka jest rola nerek w osmoregulacji?", 
+a:"Regulują ilość wody i soli mineralnych", 
+b:"Produkują hormony trawienne", 
+c:"Transportują tlen", 
+d:"Magazynują glukozę"},
+
+{cat:"Biologia", q:"Jakie hormony wydzielają nerki?", 
+a:"Erytropoetynę", 
+b:"Insulinę", 
+c:"Adrenalinę", 
+d:"Tyroksynę"},
+
+{cat:"Biologia", q:"Czym jest erytropoetyna?", 
+a:"Hormonem pobudzającym wytwarzanie erytrocytów", 
+b:"Produktem przemiany materii", 
+c:"Rodzajem moczu", 
+d:"Enzymem trawiennym"},
+
+{cat:"Biologia", q:"Czym jest mocznik?", 
+a:"Końcowym produktem przemiany białek", 
+b:"Hormonem nerkowym", 
+c:"Cukrem prostym", 
+d:"Enzymem"},
+
+{cat:"Biologia", q:"Gdzie zachodzi filtracja?", 
+a:"W ciałku nerkowym", 
+b:"W kanalikach zbiorczych", 
+c:"W pęcherzu", 
+d:"W moczowodzie"},
+
+{cat:"Biologia", q:"Gdzie zachodzi resorpcja?", 
+a:"W kanaliku nerkowym", 
+b:"W ciałku nerkowym", 
+c:"W pęcherzu", 
+d:"W cewce moczowej"},
+
+{cat:"Biologia", q:"Gdzie zachodzi sekrecja?", 
+a:"W kanaliku nerkowym", 
+b:"W kłębuszku", 
+c:"W pęcherzu", 
+d:"W miedniczce"},
+
+{cat:"Biologia", q:"Na czym polega badanie ogólne moczu?", 
+a:"Na analizie fizycznej, chemicznej i osadu", 
+b:"Na badaniu RTG", 
+c:"Na pobraniu krwi", 
+d:"Na badaniu USG"},
+
+{cat:"Biologia", q:"Czym jest USG jamy brzusznej?", 
+a:"Badaniem obrazowym z użyciem ultradźwięków", 
+b:"Badaniem krwi", 
+c:"Badaniem moczu", 
+d:"Zdjęciem rentgenowskim"},
+
+{cat:"Biologia", q:"Czym jest urografia?", 
+a:"Badaniem RTG układu moczowego z kontrastem", 
+b:"Badaniem USG", 
+c:"Badaniem moczu", 
+d:"Dializą"},
+
+{cat:"Biologia", q:"Czym jest dializa?", 
+a:"Leczeniem zastępującym pracę nerek", 
+b:"Badaniem diagnostycznym", 
+c:"Procesem trawienia", 
+d:"Rodzajem hormonu"},
+
+{cat:"Biologia", q:"Czym jest hemodializa?", 
+a:"Rodzajem dializy polegającym na oczyszczaniu krwi poza organizmem", 
+b:"Badaniem obrazowym", 
+c:"Hormonem nerkowym", 
+d:"Procesem filtracji w wątrobie"}
+];
+
+let current = 0;
+let life = 30;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 30; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
