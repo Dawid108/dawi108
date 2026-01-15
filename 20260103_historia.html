@@ -451,7 +451,7 @@ let life = 10;
 let score = 0;
 let used = [];
 let maxQ = questions.length;
-let record = localStorage.getItem("historiahs") || 0;
+let record = localStorage.getItem("szkola") || 0;
 let dawid108 = localStorage.getItem("dawid108") || 0;
 
 function newGame(){
@@ -547,7 +547,7 @@ function endScreen(){
 
     if(score > record){
         record = score;
-        localStorage.setItem("historiahs", record);
+        localStorage.setItem("szkola", record);
     }
 
     document.getElementById("record").innerText = record;
