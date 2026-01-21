@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sklep - rejestracja</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <script src="script.js"></script>
+    <style>
+        *{
+            font-family: Cambria;
+        }
+        body{
+            background-color: linen;
+        }
+        main, header, footer{
+            background-color: steelblue;
+            color: white;
+            text-align: center;
+        }
+        main{
+            width: 25%;
+            float: left;
+            height: 510px;
+            margin: 0 1%;
+            box-shadow: 4px 4px 5px 0 dimgray;
+        }
+        header{
+            width: 73%;
+            height: 80px;
+            float: right;
+        }
+        article{
+            width: 73%;
+            height: 400px;
+            float: right;
+        }
+        input[type="button"]{
+            background-color: steelblue;
+            color: white;
+            width: 20%;
+            padding: 15px;
+            margin-top: 30px;
+            font-size: 130%;
+            border: none;
+            white-space: normal;
+        }
+        input[type="button"]:hover{
+            background-color: navy;
+        }
+        aside{
+            background-color: lightblue;
+            margin-right: 80px;
+            padding: 10px;
+        }
+        #drugi, #trzeci{
+            display: none;
+        }
+        section{
+            width: 73%;
+            background-color: lightgray;
+            float: right;
+            margin-bottom: 10px;
+        }
+        #pasek{
+            background-color: navy;
+            width: 4%;
+            height: 30px;
+        }
+        table{
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px dotted navy;
+        }
+        footer{
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1769012732/obraz_yjnjja.png" alt="promocje">
+        <h2>Sprawdź promocje</h2>
+        <table>
+            <tr><th>co?</th><th>ile taniej?</th></tr>
+            <tr><td>ubrania</td><td>15%</td></tr>
+            <tr><td>buty</td><td>25%</td></tr>
+        </table>
+    </main>
+    <header>
+        <h1>Zarejestruj się w sklepie</h1>
+    </header>
+    <article>
+        <input type="button" value="Klient" id="klient">
+        <input type="button" value="Adres" id="adres">
+        <input type="button" value="Kontakt" id="kontakt">
+        <form>
+        <aside id="pierwszy">
+            <p>Imię</p>
+            <input type="text" placeholder="Wpisz dane..." id="imie">
+            <p>Nazwisko</p>
+            <input type="text" id="nazwisko">
+            <p>Data urodzenia</p>
+            <input type="date" id="ur">
+        </aside>
+        <aside id="drugi">
+            <p>Ulica</p>
+            <input type="text" id="ulica">
+            <p>Numer</p>
+            <input type="number" id="numer">
+            <p>Miasto</p>
+            <input type="text" id="miasto">
+        </aside>
+        <aside id="trzeci">
+            <p>Numer komórkowy</p>
+            <input type="tel" id="tel"><br>
+            <input type="checkbox" id="rodo">Akceptuję RODO<br>
+            <input type="button" id="zatwierdz" value="Zatwierdź dane">
+        </aside>
+        </form>
+    </article>
+    <section><div id="pasek"></div></section>
+    <footer><h4>Rejestrację do sklepu wykonał: Dawid</h4></footer>
+    <script>
+        let klient = document.getElementById("klient");
+        let adres = document.getElementById("adres");
+        let kontakt = document.getElementById("kontakt");
+        let pierwszy = document.getElementById("pierwszy");
+        let drugi = document.getElementById("drugi");
+        let trzeci = document.getElementById("trzeci");
+        let imie = document.getElementById("imie");
+        let nazwisko = document.getElementById("nazwisko");
+        let ur = document.getElementById("ur");
+        let ulica = document.getElementById("ulica");
+        let numer = document.getElementById("numer");
+        let miasto = document.getElementById("miasto");
+        let tel = document.getElementById("tel");
+        let rodo = document.getElementById("rodo");
+        let zatwierdz = document.getElementById("zatwierdz");
+        let szerokosc = 4;
+
+        function pokaz_pierwszy(){
+            pierwszy.style.display = "block";
+            drugi.style.display = "none";
+            trzeci.style.display = "none";
+        }
+
+        function pokaz_drugi(){
+            pierwszy.style.display = "none";
+            drugi.style.display = "block";
+            trzeci.style.display = "none";
+        }
+
+        function pokaz_trzeci(){
+            pierwszy.style.display = "none";
+            drugi.style.display = "none";
+            trzeci.style.display = "block";
+        }
+
+        function pokaz_tekst(){
+            console.log(imie.value + ", " + nazwisko.value + ", " + ur.value + ", " + ulica.value + ", " + numer.value + ", " + miasto.value + ", " + tel.value + ", " + rodo.value);
+        }
+
+        function zwieksz_pasek(){
+            if(szerokosc <= 88){
+                szerokosc = szerokosc + 12;
+                pasek.style.width = szerokosc + "%";
+            }
+        }
+
+        klient.addEventListener("click", pokaz_pierwszy);
+        adres.addEventListener("click", pokaz_drugi);
+        kontakt.addEventListener("click", pokaz_trzeci);
+        zatwierdz.addEventListener("click", pokaz_tekst);
+        imie.addEventListener("focusout", zwieksz_pasek);
+        nazwisko.addEventListener("focusout", zwieksz_pasek);
+        ur.addEventListener("focusout", zwieksz_pasek);
+        ulica.addEventListener("focusout", zwieksz_pasek);
+        numer.addEventListener("focusout", zwieksz_pasek);
+        miasto.addEventListener("focusout", zwieksz_pasek);
+        tel.addEventListener("focusout", zwieksz_pasek);
+        rodo.addEventListener("click", zwieksz_pasek);
+    </script>
+</body>
+</html>
