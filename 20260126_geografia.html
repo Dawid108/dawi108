@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geografia</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Geografia", q:"Jakie czynniki zaliczamy do przyrodniczych czynników lokalizacji przemysłu?", a:"Baza surowcowa, dostęp do wody, czynniki ekologiczne i klimat", b:"Rynek pracy, polityka państwa i zaplecze naukowe", c:"Poziom urbanizacji oraz struktura zatrudnienia", d:"Rozwój usług i infrastruktura społeczna"},
+
+{cat:"Geografia", q:"Co oznacza baza surowcowa w lokalizacji przemysłu?", a:"Dostępność surowców niezbędnych do produkcji", b:"Liczbę zakładów przetwórczych w regionie", c:"Poziom wykształcenia pracowników", d:"Znaczenie transportu międzynarodowego"},
+
+{cat:"Geografia", q:"Który czynnik przyrodniczy jest ważny dla przemysłu zużywającego dużo wody?", a:"Dostęp do wody i jej duże zasoby", b:"Bliskość rynku zbytu", c:"Polityka gospodarcza państwa", d:"Poziom kwalifikacji pracowników"},
+
+{cat:"Geografia", q:"Które czynniki należą do pozaprzyrodniczych?", a:"Rynek zbytu, zasoby pracy, baza energetyczna i polityka państwa", b:"Klimat, gleby i ukształtowanie terenu", c:"Dostęp do wód powierzchniowych", d:"Warunki przyrodnicze regionu"},
+
+{cat:"Geografia", q:"Na czym polega lokalizacja przymusowa przemysłu?", a:"Umieszczaniu zakładów w miejscu występowania surowca", b:"Lokalizowaniu zakładów w centrach miast", c:"Przenoszeniu produkcji do krajów rozwiniętych", d:"Wybieraniu miejsc z dużą liczbą pracowników"},
+
+{cat:"Geografia", q:"Jakie zakłady są przykładem lokalizacji przymusowej?", a:"Kopalnie i platformy wiertnicze", b:"Zakłady AGD i elektroniki", c:"Centra logistyczne i magazyny", d:"Fabryki odzieżowe"},
+
+{cat:"Geografia", q:"Czym charakteryzuje się lokalizacja związana?", a:"Bliskością surowca trudnego w transporcie", b:"Brakiem zależności od surowców", c:"Występowaniem w krajach wysoko rozwiniętych", d:"Opieraniem się na nowoczesnych technologiach"},
+
+{cat:"Geografia", q:"Jakim przykładem jest elektrownia opalana węglem brunatnym?", a:"Lokalizacji związanej z bazą surowcową", b:"Lokalizacji swobodnej", c:"Lokalizacji miejskiej", d:"Lokalizacji usługowej"},
+
+{cat:"Geografia", q:"Na czym polega lokalizacja swobodna przemysłu?", a:"Na niewielkim zużyciu surowców i nowoczesnych technologiach", b:"Na bezpośrednim dostępie do złóż mineralnych", c:"Na uzależnieniu od warunków klimatycznych", d:"Na dużym zapotrzebowaniu na wodę"},
+
+{cat:"Geografia", q:"Jaki przemysł wykorzystuje lokalizację swobodną?", a:"Zakłady produkujące sprzęt gospodarstwa domowego", b:"Kopalnie węgla kamiennego", c:"Elektrownie wodne", d:"Huty metali ciężkich"},
+
+{cat:"Geografia", q:"Czym charakteryzuje się przemysł tradycyjny?", a:"Niewielkim stopniem przetwarzania surowców", b:"Wysokimi nakładami na badania naukowe", c:"Zastosowaniem nowoczesnych technologii", d:"Dużą innowacyjnością produkcji"},
+
+{cat:"Geografia", q:"Gdzie głównie występuje przemysł tradycyjny?", a:"W krajach bogatych w surowce i rozwijających się", b:"Wyłącznie w krajach wysoko rozwiniętych", c:"Tylko w państwach o wysokim PKB", d:"Głównie w metropoliach światowych"},
+
+{cat:"Geografia", q:"Czym charakteryzuje się przemysł zaawansowanych technologii?", a:"Wysokim stopniem przetwarzania i dużymi nakładami finansowymi", b:"Niskimi kosztami produkcji i prostą technologią", c:"Małym znaczeniem wiedzy i kwalifikacji", d:"Zależnością od złóż surowców mineralnych"},
+
+{cat:"Geografia", q:"Jakie znaczenie mają pracownicy w przemyśle zaawansowanych technologii?", a:"Muszą posiadać wysokie kwalifikacje", b:"Nie wymagają specjalistycznej wiedzy", c:"Wykonują głównie pracę fizyczną", d:"Są zastępowani przez surowce naturalne"},
+
+{cat:"Geografia", q:"Jak przemysł zaawansowanych technologii wpływa na środowisko?", a:"Jest stosunkowo mało uciążliwy", b:"Powoduje bardzo duże zanieczyszczenia", c:"Zawsze degraduje środowisko naturalne", d:"Wymaga intensywnej eksploatacji surowców"},
+
+{cat:"Geografia", q:"Czym jest dezindustrializacja?", a:"Spadkiem znaczenia przemysłu w gospodarce kraju", b:"Rozwojem nowoczesnych technologii", c:"Wzrostem zatrudnienia w przemyśle", d:"Zwiększeniem udziału przemysłu w PKB"},
+
+{cat:"Geografia", q:"Jak przejawia się dezindustrializacja?", a:"Spadkiem zatrudnienia w przemyśle i udziału w PKB", b:"Rozwojem zakładów produkcyjnych", c:"Wzrostem liczby fabryk", d:"Zwiększeniem wydobycia surowców"},
+
+{cat:"Geografia", q:"Które działy przemysłu są uzależnione od rynku zbytu?", a:"Mleczarnie, piekarnie i wytwarzanie energii", b:"Hutnictwo metali ciężkich", c:"Górnictwo rud metali", d:"Przemysł wydobywczy"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
