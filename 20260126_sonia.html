@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zbrodnia i Kara</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+
+{cat:"Sonia Marmieładow", q:"Dlaczego Sonia Marmieładow zaczyna się prostytuować?", a:"Jest do tego zmuszana przez rodzinę, aby zarabiać pieniądze", b:"Robi to z własnej ambicji i chęci zysku", c:"Traktuje to jako sposób na awans społeczny", d:"Wybiera ten zawód z ciekawości życia"},
+
+{cat:"Sonia Marmieładow", q:"Jakim człowiekiem jest Sonia pod względem charakteru?", a:"Jest cicha, wycofana i głęboko wierząca", b:"Jest pewna siebie i bardzo dominująca", c:"Jest impulsywna i kieruje się emocjami", d:"Jest chłodna i pozbawiona empatii"},
+
+{cat:"Sonia Marmieładow", q:"Gdzie Sonia odnajduje sens i cel swojego życia?", a:"W Piśmie Świętym i wierze w Boga", b:"W pieniądzach i bezpieczeństwie materialnym", c:"W opinii innych ludzi", d:"W karierze i niezależności"},
+
+{cat:"Sonia Marmieładow", q:"Jak Sonia reaguje na wyznanie Raskolnikowa o zbrodni?", a:"Nie potępia go i stara się mu pomóc", b:"Odrzuca go i zrywa z nim kontakt", c:"Donosi o wszystkim policji", d:"Otwarcie go oskarża i krytykuje"},
+
+{cat:"Sonia Marmieładow", q:"Jaki wpływ ma Sonia na Rodiona Raskolnikowa?", a:"Pomaga mu wrócić na właściwą drogę", b:"Utwardza go w przekonaniu o słuszności zbrodni", c:"Zachęca go do ucieczki z kraju", d:"Namawia go do zapomnienia o winie"},
+
+{cat:"Sonia Marmieładow", q:"Jaką decyzję podejmuje Sonia wobec losu Rodiona?", a:"Wyjeżdża z nim na zesłanie na Syberię", b:"Zostaje w Petersburgu z rodziną", c:"Ukrywa się przed wymiarem sprawiedliwości", d:"Wraca do dawnego życia bez kontaktu z nim"},
+
+{cat:"Sonia Marmieładow", q:"Czego Sonia uczy Raskolnikowa na Syberii?", a:"Poświęcenia, miłości i współczucia", b:"Obojętności wobec ludzkiego cierpienia", c:"Sprytu w omijaniu prawa", d:"Dążenia do władzy nad innymi"},
+
+{cat:"Sonia Marmieładow", q:"Jak można określić duchowość Soni mimo jej zawodu?", a:"Jest czysta duchowo i pełna współczucia", b:"Jest całkowicie obojętna moralnie", c:"Jest pozbawiona zasad i wiary", d:"Jest nastawiona wyłącznie na zysk"},
+
+{cat:"Sonia Marmieładow", q:"Jak Sonia traktuje innych ludzi mimo własnych cierpień?", a:"Potrafi współczuć i pomagać potrzebującym", b:"Skupia się wyłącznie na sobie", c:"Unika kontaktów z ludźmi", d:"Jest nieufna i zamknięta"},
+
+{cat:"Sonia Marmieładow", q:"Jaką rolę pełni Sonia w powieści „Zbrodnia i kara”?", a:"Jest moralnym wsparciem i symbolem miłości", b:"Jest postacią całkowicie drugoplanową", c:"Jest przeciwniczką głównego bohatera", d:"Jest przykładem zepsucia moralnego"}
+
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
