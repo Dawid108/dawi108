@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <link rel="icon" href="dawi108.png">
+    <script src="script.js"></script>
+    <style>
+        *{
+            font-family: Garamond;
+        }
+        body{
+            margin: 0;
+            padding: 0;
+        }
+        header{
+            background-color: tomato;
+            color: white;
+            text-align: center;
+            width: 80%;
+            height: 80px;
+            float: left;
+        }
+        main{
+            width: 80%;
+            height: 600px;
+            float: left;
+        }
+        aside{
+            background-color: coral;
+            width: 20%;
+            height: 680px;
+            float: right;
+        }
+        footer{
+            background-color: tomato;
+            color: white;
+            text-align: center;
+            clear: both;
+        }
+        img{
+            border-radius: 50%;
+            padding: 0 10px;
+        }
+        article{
+            border: 1px solid tomato;
+            margin: 15px;
+            height: 470px;
+            overflow: scroll; /*Nowość! Pasek przewijania*/
+        }
+        section{
+            border-radius: 5px;
+            width: 90%;
+            height: 70px;
+            margin: 2%;
+            padding: 3px;
+            display: flex; /*To jest żeby wartości były obok siebie*/
+        }
+        .jolka{
+            background-color: #eee;
+            text-align: left;
+        }
+        .krzych{
+            background-color: #ccc;
+            flex-direction: row-reverse; /*To jest żeby odwrócić żeby szło od prawej*/
+        }
+        input[type="button"]{
+            background-color: tomato;
+            border: 1px solid darkred;
+            padding: 5px;
+            font-weight: bold;
+        }
+        input[type="text"]{
+            width: 500px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2>Chat</h2>
+    </header>
+    <aside>
+        <h3>Chaty</h3>
+        <ul>
+            <li>Ogólny</li>
+            <li>Tematyczne</li>
+            <ol>
+                <li>Turystyczny</li>
+                <li>Żeglarski</li>
+                <li>Filatelistyczny</li>
+                <li>Hodowla zwierzątek domowych</li>
+            </ol>
+        </ul>
+        <h3>Uczestnicy</h3>
+        <p>Jolanta Nowak</p>
+        <img src="Jolka2.png" alt="Jolanta Nowak">
+        <p>Krzysztof Łukasiński</p>
+        <img src="Krzysiek.jpg" alt="Krzysztof Łukasiński">
+    </aside>
+    <main>
+        <article id="czat">
+            <section class="jolka">
+                <img src="Jolka2.png" alt="Jolka">
+                <p>Cześć idziesz jutro do kina?</p>
+            </section>
+            <section class="krzych">
+                <img src="Krzysiek.jpg" alt="Krzych">
+                <p>Tak! A ty?</p>
+            </section>
+        </article>
+        <nav>
+            <form>
+                Wpisz wiadomość: 
+                <input type="text" id="wiadomosc">
+                <input type="button" id="wyslij" value="Wyślij"><br>
+                <input type="button" id="generuj" value="Generuj losową odpowiedź">
+            </form>
+        </nav>
+    </main>
+    <footer>
+        <h5>Chat wykonał: 6767676767</h5>
+    </footer>
+    <script>
+        let czat = document.getElementById("czat");
+        let wiadomosc = document.getElementById("wiadomosc");
+        let wyslij = document.getElementById("wyslij");
+        let generuj = document.getElementById("generuj");
+        let krzysztof = [
+            "Świetnie!",
+            "Kto gra główną role?",
+            "Lubisz filmy Tego reżysera?",
+            "Będę 10 minut wcześniej",
+            "Może kupimy sobie popcorn?",
+            "Ja wolę Colę",
+            "Zaproszę jeszcze Grześka",
+            "Tydzień temu też byłem w kinie na Diunie",
+            "Ja funduje bilety"
+        ]; /*To jest tablica*/
+
+        function przeslij(){
+            czat.innerHTML += '<section class="jolka"><img src="Jolka2.png" alt="Jolka"><p>' + wiadomosc.value + '</p></section>';
+        }
+
+        /*
+        FUKCJA PANA
+        let jola;
+        let krzys;
+        let foto;
+        let min = 0;
+        let max = 9;
+
+        function mowi_jola(){
+            jola = document.createElement("section");
+            foto = document.createElement("img");
+            foto.src = "Jolka2.png";
+            foto.alt = "Jolanta Nowak";
+
+            jola.classList.add("jolka");
+            czat.appendChild(jola);
+            jola.innerHTML = wiadomosc.value;
+            jola.appendChild(foto);
+        }
+
+        function mowi_krzys(){
+            krzys = document.createElement("section");
+            foto = document.createElement("img");
+            foto.src = "Krzysiek.jpg";
+            foto.alt = "Krzysztof Łukasiński";
+
+            krzys.classList.add("krzych");
+            czat.appendChild(krzys);
+
+            los = Math.floor(Math.random() * (max-min+1)+min);
+
+            krzys.innerHTML = odp_krzycha[los];
+            krzys.appendChild(foto);
+        }
+        */
+
+        function odpowiedz(){
+            const losowanie = Math.floor(Math.random() * 9); /*To jest losowa liczba od 1 do 9*/
+
+            czat.innerHTML += '<section class="krzych"><img src="Krzysiek.jpg" alt="Krzych"><p>' + krzysztof[losowanie] + '</p></section>';
+        }
+
+        wyslij.addEventListener("click", przeslij);
+        generuj.addEventListener("click", odpowiedz);
+    </script>
+</body>
+</html>
