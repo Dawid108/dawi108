@@ -94,18 +94,18 @@
         </ul>
         <h3>Uczestnicy</h3>
         <p>Jolanta Nowak</p>
-        <img src="Jolka2.png" alt="Jolanta Nowak">
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1769699510/Jolka2_adbrsa.png" alt="Jolanta Nowak">
         <p>Krzysztof Łukasiński</p>
-        <img src="Krzysiek.jpg" alt="Krzysztof Łukasiński">
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1769699510/Krzysiek_cezumz.jpg" alt="Krzysztof Łukasiński">
     </aside>
     <main>
         <article id="czat">
             <section class="jolka">
-                <img src="Jolka2.png" alt="Jolka">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1769699510/Jolka2_adbrsa.png" alt="Jolka">
                 <p>Cześć idziesz jutro do kina?</p>
             </section>
             <section class="krzych">
-                <img src="Krzysiek.jpg" alt="Krzych">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1769699510/Krzysiek_cezumz.jpg" alt="Krzych">
                 <p>Tak! A ty?</p>
             </section>
         </article>
@@ -139,7 +139,7 @@
         ]; /*To jest tablica*/
 
         function przeslij(){
-            czat.innerHTML += '<section class="jolka"><img src="Jolka2.png" alt="Jolka"><p>' + wiadomosc.value + '</p></section>';
+            czat.innerHTML += '<section class="jolka"><img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1769699510/Jolka2_adbrsa.png" alt="Jolka"><p>' + wiadomosc.value + '</p></section>';
         }
 
         /*
@@ -181,7 +181,7 @@
         function odpowiedz(){
             const losowanie = Math.floor(Math.random() * 9); /*To jest losowa liczba od 1 do 9*/
 
-            czat.innerHTML += '<section class="krzych"><img src="Krzysiek.jpg" alt="Krzych"><p>' + krzysztof[losowanie] + '</p></section>';
+            czat.innerHTML += '<section class="krzych"><img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1769699510/Krzysiek_cezumz.jpg" alt="Krzych"><p>' + krzysztof[losowanie] + '</p></section>';
         }
 
         wyslij.addEventListener("click", przeslij);
