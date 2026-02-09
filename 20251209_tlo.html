@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+	<meta charset="utf-8">
+	<title>Tło Obrazkowe</title>
+	<link href="dawi108.png" rel="icon">
+	<style>
+		#tlo1 {
+			width: 1000px;
+			height: 600px;
+			margin: 0 auto;
+			background-color: aqua;
+			background-image: url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653152/monkey_iqloas.png");
+			background-repeat: no-repeat;
+				/* repeat, repeat-x, repeat-y, space, round, no-repeat
+				space - zwiększa odleglość, ale nie obcina i nie rozciąga
+				round - nie zwiększa odległości i nie obcina, ale rozciąga */
+			background-position: center center;
+				/* left, right, bottom, center */
+			background-size: contain;
+				/* px, %, cover, contain
+				contain - rozciąga maksymalnioe bez zniekształcenia i nie obcinania
+				cover - rozciąga maksymalnie bez zniekształcenia, ale obcina */
+			background-attachment: fixed;
+				/* scroll (wartość domyślna) - przewijanie tła
+				fixed - tło nieruchome względem okna przeglądarki */
+		}
+		#tlo2 {
+			background-color: lime;
+			width: 1000px;
+			height: 600px;
+			margin: 0 auto;
+			background: 
+				url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653152/monkey_iqloas.png") no-repeat center center / 200px auto, 
+				url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653152/monkey_iqloas.png") no-repeat right 20px bottom 20px / 400px auto,
+				url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653152/monkey_iqloas.png") no-repeat left 20px top 270px / 100px auto,
+				url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653153/landscape_lkzj0n.jpg") no-repeat center center;
+		}
+	</style>
+</head>
+<body>
+    <div id="tlo1">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tellus nisi, accumsan eu lacus eu, dictum efficitur dui. Suspendisse scelerisque ornare leo. Nunc sagittis lectus pretium fermentum interdum. Nulla viverra, purus sit amet tincidunt lobortis, odio leo faucibus nibh, a venenatis quam ex eget ipsum. Duis laoreet ornare ante fermentum ornare. Cras eu accumsan magna. Maecenas porta placerat dolor, dignissim sollicitudin odio sodales mollis. Donec euismod congue diam, a efficitur ante cursus in. Mauris volutpat dapibus auctor. Vivamus sem velit, elementum ac venenatis sit amet, sagittis non massa. Aenean vitae nisi ac lorem rhoncus iaculis nec ac ex. Quisque in neque non lacus mattis ultrices et at libero. In vitae faucibus sem. Ut ex metus, pretium ut dui a, volutpat ullamcorper nunc. Fusce rhoncus finibus est, sed mattis magna vulputate at.<br><br>
+
+Pellentesque a vestibulum mi. Cras dapibus nulla vel facilisis pulvinar. Curabitur ut ligula commodo, euismod justo a, fringilla mi. Vestibulum augue velit, pharetra quis mi a, vehicula posuere orci. Fusce a finibus sem. Cras varius in nunc eu venenatis. Maecenas convallis enim in mauris commodo, in finibus elit hendrerit. Maecenas luctus nibh vitae cursus posuere. Etiam accumsan elit vitae eros sodales, in laoreet ipsum posuere.<br><br>
+
+Vivamus sit amet tellus facilisis, ullamcorper est et, viverra lorem. Mauris imperdiet nisl et mi venenatis facilisis. Aenean pulvinar sem sit amet turpis semper viverra. Nullam id placerat neque. Sed eget velit ipsum. Sed dui augue, accumsan elementum luctus in, varius eget ipsum. Suspendisse porta lorem ac aliquam tempus.<br><br>
+
+Donec laoreet ipsum non risus faucibus, non interdum turpis semper. In gravida metus consectetur, pretium velit eget, posuere massa. Suspendisse commodo massa et convallis sagittis. Aliquam consequat accumsan pulvinar. Phasellus molestie elementum risus sed egestas. Aenean sagittis imperdiet elit vitae tempor. Sed risus leo, commodo eget scelerisque sed, cursus ut sapien. Donec commodo, urna in molestie facilisis, sem erat luctus diam, a aliquet libero erat eget massa. Suspendisse congue velit non velit ornare posuere. Nullam accumsan dolor a congue efficitur. Cras non velit tellus.<br><br>
+
+In interdum porttitor nisi, vitae fringilla ipsum dapibus sollicitudin. Aenean tempus auctor ante, ac pellentesque orci tempor a. Nunc non ligula eu nunc luctus ornare et quis quam. Cras sollicitudin interdum suscipit. Maecenas vel rutrum tellus. Quisque vitae massa tincidunt, dictum elit a, congue justo. Vestibulum ac augue lobortis, suscipit mauris a, eleifend magna. Sed tortor ligula, aliquet ac elementum id, mattis quis libero.
+    </div>
+	<div id="tlo2">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin tellus nisi, accumsan eu lacus eu, dictum efficitur dui. Suspendisse scelerisque ornare leo. Nunc sagittis lectus pretium fermentum interdum. Nulla viverra, purus sit amet tincidunt lobortis, odio leo faucibus nibh, a venenatis quam ex eget ipsum. Duis laoreet ornare ante fermentum ornare. Cras eu accumsan magna. Maecenas porta placerat dolor, dignissim sollicitudin odio sodales mollis. Donec euismod congue diam, a efficitur ante cursus in. Mauris volutpat dapibus auctor. Vivamus sem velit, elementum ac venenatis sit amet, sagittis non massa. Aenean vitae nisi ac lorem rhoncus iaculis nec ac ex. Quisque in neque non lacus mattis ultrices et at libero. In vitae faucibus sem. Ut ex metus, pretium ut dui a, volutpat ullamcorper nunc. Fusce rhoncus finibus est, sed mattis magna vulputate at.<br><br>
+
+Pellentesque a vestibulum mi. Cras dapibus nulla vel facilisis pulvinar. Curabitur ut ligula commodo, euismod justo a, fringilla mi. Vestibulum augue velit, pharetra quis mi a, vehicula posuere orci. Fusce a finibus sem. Cras varius in nunc eu venenatis. Maecenas convallis enim in mauris commodo, in finibus elit hendrerit. Maecenas luctus nibh vitae cursus posuere. Etiam accumsan elit vitae eros sodales, in laoreet ipsum posuere.<br><br>
+
+Vivamus sit amet tellus facilisis, ullamcorper est et, viverra lorem. Mauris imperdiet nisl et mi venenatis facilisis. Aenean pulvinar sem sit amet turpis semper viverra. Nullam id placerat neque. Sed eget velit ipsum. Sed dui augue, accumsan elementum luctus in, varius eget ipsum. Suspendisse porta lorem ac aliquam tempus.<br><br>
+
+Donec laoreet ipsum non risus faucibus, non interdum turpis semper. In gravida metus consectetur, pretium velit eget, posuere massa. Suspendisse commodo massa et convallis sagittis. Aliquam consequat accumsan pulvinar. Phasellus molestie elementum risus sed egestas. Aenean sagittis imperdiet elit vitae tempor. Sed risus leo, commodo eget scelerisque sed, cursus ut sapien. Donec commodo, urna in molestie facilisis, sem erat luctus diam, a aliquet libero erat eget massa. Suspendisse congue velit non velit ornare posuere. Nullam accumsan dolor a congue efficitur. Cras non velit tellus.<br><br>
+
+In interdum porttitor nisi, vitae fringilla ipsum dapibus sollicitudin. Aenean tempus auctor ante, ac pellentesque orci tempor a. Nunc non ligula eu nunc luctus ornare et quis quam. Cras sollicitudin interdum suscipit. Maecenas vel rutrum tellus. Quisque vitae massa tincidunt, dictum elit a, congue justo. Vestibulum ac augue lobortis, suscipit mauris a, eleifend magna. Sed tortor ligula, aliquet ac elementum id, mattis quis libero.
+    </div>
+</body>
+</html>
