@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historia</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+
+{cat:"Historia", q:"Jakie powstały dwa przeciwstawne sojusze państw pod koniec XIX wieku i na początku XX?", a:"Trójprzymierze i Trójporozumienie", b:"Liga Narodów i Święte Przymierze", c:"Ententa i Związek Północny", d:"Sojusz Zachodni i Wschodni"},
+
+{cat:"Historia", q:"O co rywalizowali w walce przeciwstawne sojusze państw?", a:"O kolonie oraz wpływy np. na Bałkanach", b:"O dostęp do mórz i oceanów świata", c:"O dominację religijną w Europie", d:"O rozwój przemysłu ciężkiego"},
+
+{cat:"Historia", q:"Jakie kraje były w trójprzymierzu?", a:"Niemcy, Austro-Węgry, Włochy", b:"Francja, Rosja, Anglia", c:"Hiszpania, Portugalia, Włochy", d:"Turcja, Bułgaria, Rumunia"},
+
+{cat:"Historia", q:"Jakie kraje były w trójporozumieniu?", a:"Anglia, Francja, Rosja", b:"Niemcy, Włochy, Austria", c:"Hiszpania, Belgia, Holandia", d:"Turcja, Serbia, Grecja"},
+
+{cat:"Historia", q:"Jak inaczej nazywano trójprzymierze?", a:"Państwami centralnymi", b:"Państwami sprzymierzonymi", c:"Mocarstwami zachodnimi", d:"Blokiem północnym"},
+
+{cat:"Historia", q:"Jak inaczej nazywano trójporozumienie?", a:"Entento", b:"Ligą Narodów", c:"Sojuszem Wschodnim", d:"Blokiem Centralnym"},
+
+{cat:"Historia", q:"Kiedy wybuchła wojna pomiędzy Rosją a Japonią?", a:"1904", b:"1898", c:"1912", d:"1908"},
+
+{cat:"Historia", q:"O co toczyła się wojna Rosyjsko-Japońska?", a:"O wpływy w Korei", b:"O panowanie nad Syberią", c:"O kolonie w Afryce", d:"O kontrolę nad Chinami"},
+
+{cat:"Historia", q:"Kto poniósł klęskę w wojnie Rosyjsko-Japońskiej?", a:"Rosja", b:"Japonia", c:"Chiny", d:"Korea"},
+
+{cat:"Historia", q:"Jaka była najważniejsza bitwa pomiędzy Rosją a Japonią?", a:"Bitwa morska pod Cusziną", b:"Bitwa pod Mukdenem", c:"Bitwa o Port Artur", d:"Bitwa pod Seulem"},
+
+{cat:"Historia", q:"Co uzyskała Japonia na mocy pokoju?", a:"Port Artur i wpływy w Korei", b:"Sachalin i wpływy w Chinach", c:"Mandżurię i Tajwan", d:"Wyspy Kurylskie i Hongkong"},
+
+{cat:"Historia", q:"Co to Kocioł Bałkański?", a:"Określenie niespokojnego obszaru na półwyspie bałkańskim", b:"Nazwa konfliktu religijnego w Europie", c:"Sojusz państw południowych", d:"Obszar walk kolonialnych"},
+
+{cat:"Historia", q:"Co się ścierało na Kotle Bałkańskim?", a:"Interesy obu bloków państw", b:"Wpływy religijne Kościołów", c:"Rywalizacja gospodarcza miast", d:"Spory dynastyczne monarchów"},
+
+{cat:"Historia", q:"Gdzie Turcja utraciła większość europejskich terytoriów?", a:"W Kotle Bałkańskim", b:"Na Bliskim Wschodzie", c:"W Europie Zachodniej", d:"Na Kaukazie"},
+
+{cat:"Historia", q:"Kiedy był zamach w Sarajewie?", a:"28 czerwca 1914", b:"1 sierpnia 1914", c:"11 listopada 1918", d:"3 maja 1913"},
+
+{cat:"Historia", q:"Gdzie dokonano zamachu na następcę tronu Austro-Węgier?", a:"W Sarajewie", b:"W Wiedniu", c:"W Belgradzie", d:"W Pradze"},
+
+{cat:"Historia", q:"Kto był następcą tronu Austro-Węgier?", a:"Arcyksiążę Franciszek Ferdynand", b:"Cesarz Wilhelm II", c:"Car Mikołaj II", d:"Król Karol I"},
+
+{cat:"Historia", q:"Co w krótkim czasie doprowadziło do wybuchu I wojny światowej?", a:"Zamach na następcę tronu Austro-Węgier", b:"Wybuch rewolucji w Rosji", c:"Konflikt kolonialny w Afryce", d:"Kryzys gospodarczy w Europie"},
+
+{cat:"Historia", q:"Co to Panslawizm?", a:"Idea zakładająca jedność i współpracę wszystkich narodów słowiańskich", b:"Ideologia dominacji Niemiec w Europie", c:"Ruch religijny XIX wieku", d:"Program reform gospodarczych"},
+
+{cat:"Historia", q:"Między kim toczyła się pierwsza wojna światowa?", a:"Państwami centralnymi a Ententą", b:"Między państwami neutralnymi i kolonialnymi", c:"Między monarchiami i republikami", d:"Między Europą i Azją"},
+
+{cat:"Historia", q:"Jakie kraje były w państwach centralnych?", a:"Niemcy, Austro-Węgry, Turcja Bułgaria", b:"Francja, Anglia, Rosja, Włochy", c:"Hiszpania, Portugalia, Belgia, Holandia", d:"USA, Japonia, Kanada, Australia"},
+
+{cat:"Historia", q:"Jakie kraje były w Ententą?", a:"Francja, Wielka Brytania, Rosja, Włochy, Japonią, Rumunia, Serbia, Gracja", b:"Niemcy, Austria, Turcja, Bułgaria", c:"Hiszpania, Portugalia, Szwecja, Norwegia", d:"Kanada, Australia, Indie, Brazylia"},
+
+{cat:"Historia", q:"Kto później dołączył do Ententą?", a:"USA", b:"Chiny", c:"Hiszpania", d:"Szwecja"},
+
+{cat:"Historia", q:"Co się stało na początku sierpnia 1914 roku?", a:"Niemcy przystapiły do ofensywny", b:"Rosja zawarła pokój z Niemcami", c:"Włochy wypowiedziały wojnę Francji", d:"Anglia ogłosiła neutralność"},
+
+{cat:"Historia", q:"Kto miał plan wojny błyskawicznej?", a:"Generał Alfred Schliffen", b:"Marszałek Foch", c:"Generał Kutuzow", d:"Admirał Nelson"},
+
+{cat:"Historia", q:"Co zakładał plan Schliffena?", a:"Wejście Francuskich umocnień przez Belgię i szybkie pokonanie Francji", b:"Atak na Rosję przez Finlandię", c:"Desant morski na Anglię", d:"Obronę granic Niemiec"},
+
+{cat:"Historia", q:"Czy plan wojny błyskawicznej się powiódł?", a:"Nie", b:"Tak", c:"Częściowo", d:"Nie rozpoczęto go"},
+
+{cat:"Historia", q:"Gdzie Niemcy zostali zatrzymani?", a:"W bitwie pod marną", b:"Pod Verdun", c:"Pod Ypres", d:"Pod Berlinem"},
+
+{cat:"Historia", q:"W co przekształciła się wojna błyskawiczna?", a:"W wojnę pozycyjną", b:"W wojnę morską", c:"W wojnę kolonialną", d:"W wojnę powietrzną"},
+
+{cat:"Historia", q:"Na czym polegała wojna pozycyjną?", a:"Na prowadzeniu ataków w okopach", b:"Na bitwach morskich", c:"Na nalotach bombowych", d:"Na działaniach partyzanckich"},
+
+{cat:"Historia", q:"Jakie były nowe bronie?", a:"Czołgi i gazy bojowe", b:"Katapulty i balisty", c:"Łuki i kusze", d:"Proch czarny i armaty"},
+
+{cat:"Historia", q:"Jaka wojna toczyła się na froncie wschodnim?", a:"Wojna manewrowa", b:"Wojna okopowa", c:"Wojna morska", d:"Wojna powietrzna"},
+
+{cat:"Historia", q:"W jakiej bitwie wojska niemieckie rozgromiły wojska niemieckie?", a:"Pod Tannenbergiem", b:"Pod Verdun", c:"Pod Marną", d:"Pod Somą"},
+
+{cat:"Historia", q:"Jak przez propagandę uznawano bitwę pod Tannenbergiem?", a:"Jako rewanż za bitwę pod Grunwaldem", b:"Jako największe zwycięstwo świata", c:"Jako koniec wojny", d:"Jako klęskę Rosji"},
+
+{cat:"Historia", q:"Co dobrowadziło do załamania politycznego i gospodarczego Rosji?", a:"Porażki ponoszone przez Armię Rosyjską", b:"Susza i głód", c:"Rewolucja w Niemczech", d:"Atak Japonii"},
+
+{cat:"Historia", q:"Jak nazywano później demonstracje i protesty które były w marcu 1917 roku?", a:"Rewolucją Lutową", b:"Rewolucją Październikową", c:"Powstaniem styczniowym", d:"Wiosną Ludów"},
+
+{cat:"Historia", q:"W wyniku czego abdykował Car, a władzę przejął rząd tymczasowy?", a:"Rewolucji Lutowej", b:"Wojny domowej", c:"Ataku Niemiec", d:"Zamachu stanu"},
+
+{cat:"Historia", q:"Co ukształtowało się po obaleniu caratu?", a:"Dwa ośrodki władzy", b:"Jedno państwo totalitarne", c:"Monarchia konstytucyjna", d:"Republika prezydencka"},
+
+{cat:"Historia", q:"Co powstało w wyniku caratu obok rządu tymczasowego?", a:"Tymczasowy Komitet Wykonawczy", b:"Duma Państwowa", c:"Partia komunistyczna", d:"Armia Czerwona"},
+
+{cat:"Historia", q:"Co reorezentował Tymczasowy Komitet Wykonawczy?", a:"Radę Delegatów Robotniczych i Żołnierskich", b:"Parlament szlachecki", c:"Kościół prawosławny", d:"Partię liberalną"},
+
+{cat:"Historia", q:"Czym była rewolucja październikowa?", a:"Przejęciem władzy przez bolszewików w Rosji", b:"Powstaniem chłopskim w Polsce", c:"Wojną domową w Niemczech", d:"Reformą gospodarczą w Anglii"},
+
+{cat:"Historia", q:"Jakie były konsekwencje rewolucji październikowej?", a:"Powstanie państwa komunistycznego w Rosji", b:"Powstanie monarchii absolutnej", c:"Zjednoczenie Niemiec", d:"Upadek kolonializmu w Afryce"}
+
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
