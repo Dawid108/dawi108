@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Młoda Polska</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<style>
+body{
+background:#0d102b;
+color:white;
+font-family:Arial;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+margin:0;
+}
+#game, #endScreen{
+width:90%; max-width:500px;
+background:#13173d;
+padding:20px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 20px #0006;
+}
+.category{font-size:18px;margin-bottom:10px;color:#7dd7ff;}
+.question{font-size:20px;margin-bottom:20px;}
+.btn{background:#1c2257;padding:12px;border-radius:10px;margin:10px 0;cursor:pointer;transition:.2s;}
+.btn:hover{background:#27307a;}
+.correct{background:#1fa84f !important;}
+.wrong{background:#c62828 !important;}
+#stats{display:flex;justify-content:space-between;margin-bottom:20px;color:#9bbcff;}
+#counter{margin-top:10px;color:#9bbcff;}
+.hidden{display:none;}
+#endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+</style>
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+
+{cat:"Młoda Polska", q:"Od czego wywodzi się nazwa epoki Młoda Polska?", a:"Od cyklu artykułów Artura Górskiego z 1898 roku", b:"Od powieści Stefana Żeromskiego z 1900 roku", c:"Od manifestu poetów krakowskich z 1895 roku", d:"Od przemówienia Jana Kasprowicza z 1901 roku"},
+
+{cat:"Młoda Polska", q:"Jakie wydarzenie uznaje się za początek epoki Młoda Polska?", a:"Pojawienie się nowej generacji twórców około 1890 roku", b:"Wybuch rewolucji przemysłowej w Europie", c:"Odzyskanie niepodległości przez Polskę", d:"Upadek powstania listopadowego w kraju"},
+
+{cat:"Młoda Polska", q:"Jaka data wyznacza koniec epoki Młoda Polska?", a:"1918 rok – zakończenie I wojny światowej", b:"1905 rok – wybuch rewolucji w Rosji", c:"1939 rok – początek II wojny światowej", d:"1864 rok – upadek powstania styczniowego"},
+
+{cat:"Młoda Polska", q:"Co oznacza termin modernizm?", a:"Nowatorstwo idei i sposobu tworzenia sztuki", b:"Powrót do średniowiecznych wzorców literackich", c:"Odrzucenie wszelkich zmian w kulturze", d:"Naśladowanie antycznych zasad estetycznych"},
+
+{cat:"Młoda Polska", q:"Czym był neoromantyzm w epoce Młodej Polski?", a:"Powrotem do zasad romantyzmu i roli wybitnej jednostki", b:"Całkowitym odrzuceniem idei romantycznych", c:"Nawiązaniem do filozofii oświecenia europejskiego", d:"Skupieniem się wyłącznie na tematyce historycznej"},
+
+{cat:"Młoda Polska", q:"Co oznacza termin fin de siècle?", a:"Koniec wieku i poczucie schyłku epoki", b:"Rozkwit nauki i wiary w postęp", c:"Początek nowej ery technologicznej", d:"Odrzucenie kultury dziewiętnastego wieku"},
+
+{cat:"Młoda Polska", q:"Czym był dekadentyzm?", a:"Pesymistyczną postawą wynikającą z przeczucia końca cywilizacji", b:"Optymistyczną wiarą w rozwój ludzkości", c:"Programem reform społecznych w Europie", d:"Ruchem nawołującym do pracy organicznej"},
+
+{cat:"Młoda Polska", q:"Jakie założenie miał nietzscheanizm?", a:"Silne jednostki mają prawo dominować nad słabszymi", b:"Wszyscy ludzie są sobie całkowicie równi", c:"Człowiek powinien podporządkować się społeczeństwu", d:"Najważniejsza jest pokora i wyrzeczenie się ambicji"},
+
+{cat:"Młoda Polska", q:"Jakie było główne założenie filozofii Schopenhauera?", a:"Człowiek cierpi z powodu nieustannego, niezaspokojonego popędu", b:"Człowiek osiąga szczęście przez rozwój techniki", c:"Cierpienie można całkowicie wyeliminować pracą", d:"Rozum gwarantuje człowiekowi pełnię szczęścia"},
+
+{cat:"Młoda Polska", q:"Co zakładał bergsonizm?", a:"Świat można poznać poprzez intuicję, nie tylko rozum", b:"Jedynym źródłem poznania jest nauka ścisła", c:"Człowiek nie ma wpływu na własny rozwój", d:"Historia rządzi się wyłącznie prawami ekonomii"},
+
+{cat:"Młoda Polska", q:"Na czym polegał impresjonizm?", a:"Utrwalaniu ulotnych chwil i wrażeń", b:"Dokładnym odwzorowaniu szczegółów historycznych", c:"Przedstawianiu scen batalistycznych z realizmem", d:"Ukazywaniu wyłącznie tematów religijnych"},
+
+{cat:"Młoda Polska", q:"Na czym polegał symbolizm?", a:"Ukazywaniu treści niewyrażalnych poprzez symbole", b:"Przedstawianiu wyłącznie realistycznych scen życia", c:"Rezygnacji z metafor i znaczeń przenośnych", d:"Odwzorowaniu rzeczywistości fotograficznie"},
+
+{cat:"Młoda Polska", q:"Na czym polegał ekspresjonizm?", a:"Wyrażaniu silnych emocji i przeżyć wewnętrznych", b:"Przedstawianiu codzienności bez emocji", c:"Skupieniu na harmonii i spokoju kompozycji", d:"Ukazywaniu idealnego piękna natury"},
+
+{cat:"Młoda Polska", q:"Kim była bohema artystyczna?", a:"Grupą artystów żyjących poza normami społecznymi", b:"Związkiem polityków walczących o reformy", c:"Organizacją nauczycieli i profesorów", d:"Stowarzyszeniem przemysłowców miejskich"},
+
+{cat:"Młoda Polska", q:"Jak bohema odnosiła się do mieszczaństwa?", a:"Pogardliwie nazywała mieszczan filistrami", b:"Uznawała ich za wzór do naśladowania", c:"Współpracowała z nimi w tworzeniu sztuki", d:"Przyjmowała ich styl życia bez zastrzeżeń"},
+
+{cat:"Młoda Polska", q:"W którym roku Artur Górski opublikował artykuły, od których pochodzi nazwa epoki?", a:"W 1898 roku", b:"W 1888 roku", c:"W 1905 roku", d:"W 1910 roku"},
+
+{cat:"Młoda Polska", q:"Do jakich zjawisk europejskich porównywał literaturę polską Artur Górski?", a:"Do ruchów takich jak Młode Niemcy i Młoda Francja", b:"Do renesansu włoskiego i baroku hiszpańskiego", c:"Do oświecenia angielskiego i klasycyzmu francuskiego", d:"Do średniowiecznych kronik niemieckich"},
+
+{cat:"Młoda Polska", q:"Co oznacza francuskie słowo 'moderne', od którego pochodzi modernizm?", a:"Nowoczesny", b:"Tradycyjny", c:"Historyczny", d:"Klasyczny"},
+
+{cat:"Młoda Polska", q:"Jaką rolę przypisywał artyście neoromantyzm?", a:"Jednostki wybitnej i wyjątkowej", b:"Rzemieślnika wykonującego polecenia", c:"Urzędnika państwowego kultury", d:"Kronikarza wydarzeń politycznych"},
+
+{cat:"Młoda Polska", q:"Jak według dekadentów postrzegano koniec XIX wieku?", a:"Jako czas upadku i schyłku cywilizacji", b:"Jako okres dynamicznego rozwoju przemysłu", c:"Jako początek złotego wieku nauki", d:"Jako epokę stabilizacji społecznej"},
+
+{cat:"Młoda Polska", q:"Kim według Nietzschego byli nadludzie?", a:"Silnymi jednostkami mającymi prawo do władzy", b:"Ludźmi kierującymi się wyłącznie religią", c:"Osobami podporządkowanymi społeczeństwu", d:"Przedstawicielami najuboższych warstw"},
+
+{cat:"Młoda Polska", q:"Co według Schopenhauera może przynieść człowiekowi ulgę w cierpieniu?", a:"Sztuka lub osiągnięcie stanu nirwany", b:"Bogactwo i wysoka pozycja społeczna", c:"Rozwój techniki i przemysłu", d:"Aktywność polityczna i reformy"},
+
+{cat:"Młoda Polska", q:"Jaką rolę w poznaniu świata przypisywał Bergson intuicji?", a:"Uznawał ją za ważniejszą niż rozum", b:"Uważał ją za całkowicie bezwartościową", c:"Traktował ją jako formę złudzenia", d:"Ograniczał ją wyłącznie do nauk ścisłych"},
+
+{cat:"Młoda Polska", q:"Kto jest autorem obrazu 'Impresja, wschód słońca'?", a:"Claude Monet", b:"Jacek Malczewski", c:"Edvard Munch", d:"Jan Matejko"},
+
+{cat:"Młoda Polska", q:"Kto namalował obraz 'Melancholia'?", a:"Jacek Malczewski", b:"Claude Monet", c:"Edvard Munch", d:"Stanisław Wyspiański"},
+
+{cat:"Młoda Polska", q:"Kto jest twórcą obrazu 'Krzyk'?", a:"Edvard Munch", b:"Jacek Malczewski", c:"Claude Monet", d:"Leonardo da Vinci"},
+
+{cat:"Młoda Polska", q:"Jak ubierali się przedstawiciele bohemy artystycznej?", a:"Nosili czarne kapelusze i charakterystyczne stroje", b:"Ubierali się jak urzędnicy państwowi", c:"Nosili stroje ludowe i regionalne", d:"Preferowali mundury wojskowe"},
+
+{cat:"Młoda Polska", q:"Jaką postawę wobec społeczeństwa przyjmowała bohema?", a:"Funkcjonowała na marginesie i łamała konwenanse", b:"Dostosowywała się do norm mieszczańskich", c:"Angażowała się głównie w politykę", d:"Unikała jakiejkolwiek działalności artystycznej"}
+
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
