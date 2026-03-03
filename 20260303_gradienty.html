@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+	<meta charset="utf-8">
+	<title>gradienty</title>
+	<link href="dawi108.png" rel="icon">
+	<script src="script.js"></script>
+  <style>
+div {
+	height: 300px;
+}	
+
+#g1 {
+	background-image: linear-gradient(red,orange,yellow,green,blue,indigo,purple);
+}
+
+#g2 {
+	background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,purple);
+}
+
+#g3 {
+	background-image: linear-gradient(to left bottom, red,orange,yellow,green,blue,indigo,purple);
+}	
+
+#g4 {
+	background-image: linear-gradient(60deg, red,orange,yellow,green,blue,indigo,purple);
+}
+
+#g5 {
+	background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,purple 75%);
+}
+
+#g6 {
+	background-image: linear-gradient(to right, red 50%, orange,yellow,green,blue,indigo,purple);
+}
+
+#g7 {
+	background-image: linear-gradient(to right,red,orange,yellow 90%,green,blue,indigo,purple);
+}
+
+#g8 {
+	background-image: linear-gradient(to right, red 33.33%, orange,yellow,green,blue,indigo,purple 66.67%);
+}
+
+#g9 {
+	background-image: linear-gradient(to right, red,orange,yellow,green,blue,indigo,purple 50%,gray 1px);
+}
+
+#g10 {
+	background-image: repeating-linear-gradient(to right, red,orange,yellow,green,blue,indigo,purple 25%);
+}	
+
+#g11 {
+	background-image: repeating-linear-gradient(to right, red,orange,yellow,green,blue,indigo,purple 25px);
+}
+#g12 {
+	background-image: radial-gradient(lime, crimson, navy);
+}
+#g13{
+	background-image: radial-gradient(ellipse, lime, crimson, navy);
+}
+#g14{
+	background-image: radial-gradient(circle, lime, crimson, navy);
+}
+#g15{
+	background-image: radial-gradient(ellipse at 100% 50%, lime, crimson, navy);
+}
+#g16{
+	background-image: radial-gradient(ellipse at 0% 100%, lime, crimson, navy);
+}
+#g17{
+	background-image: radial-gradient(circle 100px at 100% 0%, lime, crimson, navy);
+}
+#g18{
+	background-image: repeating-radial-gradient(circle at 0% 0%, lime, crimson, navy 25%);
+}
+#g19{
+	background-image: repeating-radial-gradient(circle, black, white 10px, black 50px);
+}
+#g20{
+	background-image: repeating-radial-gradient(ellipse, black, white 10px, black 50px);
+}
+  </style>
+</head>
+<body>
+	<div id="g1">standardowy, czyli z góry na dół</div>
+	<div id="g2">z lewa na prawo</div>
+	<div id="g3">z prawego górnego rogu do lewego dolnego</div>
+	<div id="g4">obrót o 60%</div>
+	<div id="g5">na prawo + koniec gradientu na 75%</div>
+	<div id="g6">na prawo + początek gradientu od 50%</div>
+	<div id="g7">na prawo + na pierwsze 3 kolory przeznaczone 90% szerokości div-a</div>
+	<div id="g8">na prawo + gradient od 1/3 do 2/3 szerokości div-a"</div>
+	<div id="g9">na prawo + gradient do połowy, a dalej inny jednolity kolor</div>
+	<div id="g10">na prawo + czterokrotne powtórzenie gradientu</div>
+	<div id="g11">na prawo + przeznaczamy na gradient 25px i powtarzamy go, aż wypełni całego div-a</div>
+	<div id="g12">klasyczny radialny</div>
+	<div id="g13">klasyczny radialny ze słowem ellipse</div>
+	<div id="g14">klasyczny radialny ze słowem circle, czyli gradient kołowy</div>
+	<div id="g15">eliptyczny zaczynający sie w połowie prawej krawędzi</div>
+	<div id="g16">eliptyczny zaczynający się w lewym dolnym rogu</div>
+	<div id="g17">kołowy o promieniu 100px rozpoczynajacy się w prawym górnym rogu</div>
+	<div id="g18">kołowy rozpoczynający się w lewym górnym rogu i czterokrotnie powtarzający sie</div>
+	<div id="g19">klasyczny kołowy wielokrotnie powtarzający się, składający się z czarnego, białego i czarnego, na pierwsze dwa kolory 10px, na drugi i trzeci kolor 50px</div>
+	<div id="g20">to samo co poprzednio tylko elipsa</div>
+</body>
+</html>
