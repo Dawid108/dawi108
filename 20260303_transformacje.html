@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformacje</title>
+    <link rel="icon" href="dawi108.png">
+    <script src="script.js"></script>
+    <style>
+        div{
+            width: 200px;
+            height: 50px;
+            text-align: center;
+            background-color: navy;
+            color: yellow;
+            font-size: 45px;
+            border: solid 2px red;
+            margin: 0 auto;
+        }
+        #t2{
+            transform: rotate(30deg);
+        }
+        #t3{
+            /*ustawienie osi transformacji: transform-origin: px lub % lub słowa kluczowe: left, right, center, top, bottom*/
+            transform-origin: left top;
+            transform: rotate(-30deg);
+        }
+        #t4{
+            /*przesunięcie w poziomie i pionie */
+            transform: translateX(50px) translateY(20px);
+        }
+        #t5{
+            transform: translate(-50px, -20px);
+        }
+        #t6{
+            /*skalowanie*/
+            transform: scaleX(0.5) scaleY(2);
+        }
+        #t7{
+            transform: scale(-1,1);
+            /*minus oznacza odbicie*/
+        }
+        #t8{
+            /*ścinanie(pochylanie)*/
+            transform: skewX(30deg);
+        }
+        #t9{
+            transform: skewY(30deg);
+        }
+        #t10{
+            transform: skew(30deg, 30deg);
+        }
+    </style>
+</head>
+<body>
+    <div id="t1">ZSP nr 2</div><br>
+    <div id="t2">ZSP nr 2</div><br>
+    <div id="t3">ZSP nr 2</div><br>
+    <div id="t4">ZSP nr 2</div><br>
+    <div id="t5">ZSP nr 2</div><br>
+    <div id="t6">ZSP nr 2</div><br>
+    <div id="t7">ZSP nr 2</div><br>
+    <div id="t8">ZSP nr 2</div><br>
+    <div id="t9">ZSP nr 2</div><br>
+    <div id="t10">ZSP nr 2</div>
+</body>
+</html>
