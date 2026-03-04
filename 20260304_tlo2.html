@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tlo Od Brodzika</title>
+    <script src="script.js"></script>
+    <link rel="icon" href="dawi108.png">
+    <style>
+#tlo1 {
+    width: 1000px;
+    height: 600px;
+    background-color: aqua;
+    margin: 0 auto;
+    background-image: url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653152/monkey_iqloas.png");
+    background-repeat: no-repeat;
+    /*
+        repeat, repeat-x, repeat-y, space, round, no-repeat,
+        space - zwiększa odległość, ale nie obcina i nie rozciąga
+        round - nie zwiększa odległości i nie obcina, ale rozciąga 
+    */
+    background-position: center center;
+    /*
+        left, right, top, bottom, center
+    */
+    background-size: contain;
+    /*
+        px, %, cover, contain
+        cover -rozciąga maksymalnie bez zniekształcenia, ale obcina 
+    */
+    background-attachment: fixed;
+    /*
+        scroll (wartość domyślna) - przewijanie tła
+        fixed - tło nieruchome względem okna przeglądarki 
+    */
+}
+#tlo2 {
+    width: 1000px;
+    height: 600px;
+    background-color: lime;
+    margin: 0 auto;
+    background: 
+        url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653152/monkey_iqloas.png") no-repeat center center / 200px auto,
+        url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653152/monkey_iqloas.png") no-repeat right 20px bottom 20px / 400px auto,
+        url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653152/monkey_iqloas.png") no-repeat left 35% top 30% / 100px auto, 
+        url("https://res.cloudinary.com/diljpkw9f/image/upload/v1770653153/landscape_lkzj0n.jpg") no-repeat center center;
+    /*
+
+    */
+}
+#rogi{
+    background-color: crimson;
+    width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+
+
+
+    box-shadow: 10px 10px 0px navy, 20px 20px 5px green;
+}
+img[alt="forest na ławce"]{
+    border-radius: 50%;
+}
+img[alt="góry"]{
+    border-radius: 0px 50px;
+}
+img[alt="pielęgniarka"]{
+    border-radius: 10% 100px 50px 50%;
+}
+    </style>
+</head>
+<body>
+    <div id="tlo1">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu commodo odio, faucibus iaculis velit. Integer sit
+        amet augue a metus luctus iaculis. Proin leo sem, porttitor id ultrices pulvinar, lacinia non orci. Curabitur eget sem 
+        fringilla, imperdiet leo ac, vulputate urna. Nunc imperdiet bibendum gravida. Ut sollicitudin non ex eu porta. Fusce in 
+        tincidunt lectus. Praesent tempor mauris vehicula elit commodo, ac interdum tortor fermentum. Duis enim erat, convallis vitae ante eget, 
+        ultricies ultrices metus. Suspendisse eget dolor at risus bibendum finibus eu mattis massa. Nunc erat massa, lobortis id lobortis ac, facilisis eget mi. 
+        Curabitur non bibendum magna, ac tristique justo. Morbi auctor, est quis congue lobortis, nulla mi vestibulum elit, a dignissim nunc sem a augue.<br><br>
+
+        ras viverra nisl tincidunt, interdum massa vel, iaculis turpis. Integer sem diam, varius id urna at, ornare varius magna. Aliquam semper purus in lectus sollicitudin, 
+        sed suscipit velit finibus. Proin sed odio nec dolor euismod efficitur. Morbi nec pretium libero. Curabitur vestibulum aliquet magna, vel scelerisque justo pulvinar sit amet. 
+        Vivamus ornare lectus in dapibus tempus. Aliquam semper purus felis, nec pharetra quam tincidunt a. Etiam commodo, dui sit amet tincidunt posuere, enim nisl ornare enim, ac volutpat tellus est at metus. 
+        Proin vel mauris metus. Aliquam sit amet felis dapibus, dictum risus facilisis, pharetra sapien. Sed eu felis diam. Nullam pharetra massa lectus, nec feugiat turpis consequat in.<br><br>
+
+        Pellente sque mollis tincidunt commodo. Donec tincidunt aliquet eros eu consectetur. Etiam viverra ac felis sit amet viverra. 
+        Aliquam at tristique eros. Praesent in ultricies nibh. In in turpis nisi. In auctor ac leo vel cursus. Suspendisse vulputate suscipit justo nec rutrum. 
+        Quisque efficitur scelerisque arcu. Quisque nulla lectus, egestas vitae risus quis, elementum luctus ligula.<br>
+
+        Ut molestie dui at felis volutpat convallis. Aliquam posuere fringilla augue vel tristique. Curabitur egestas gravida urna sit amet placerat. 
+        Praesent eu tellus tempor, malesuada nulla id, tincidunt massa. Nullam commodo scelerisque erat. In vestibulum consectetur arcu, quis bibendum odio sagittis in. 
+        Phasellus maximus, odio eget vestibulum tempus, lacus leo vulputate dolor, sit amet faucibus nulla elit vitae orci. Donec aliquet interdum pulvinar. Ut posuere porta mi, sed venenatis ex aliquam ac. Suspendisse potenti.<br>
+
+        Aenean malesuada ultricies lectus et tempus. Integer gravida erat non massa tristique, non auctor sapien condimentum. Pellentesque in egestas diam. Nullam hendrerit nulla ut lorem porttitor, 
+        in scelerisque nisl rutrum. Nunc consectetur nibh augue, sit amet mattis augue efficitur a. In lacinia odio quis lectus ornare, in commodo mi laoreet. Aliquam eget nibh viverra, sollicitudin mauris in, 
+        efficitur eros. Donec ultricies odio vel tincidunt vehicula. Quisque ac malesuada elit. Vestibulum vel justo at sem convallis hendrerit ac in risus. Sed id finibus lorem, in feugiat ante. Phasellus tortor tortor, viverra at tincidunt at, tincidunt sed odio.<br>
+    </div>
+    <div id="tlo2">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam eu commodo odio, faucibus iaculis velit. Integer sit
+        amet augue a metus luctus iaculis. Proin leo sem, porttitor id ultrices pulvinar, lacinia non orci. Curabitur eget sem 
+        fringilla, imperdiet leo ac, vulputate urna. Nunc imperdiet bibendum gravida. Ut sollicitudin non ex eu porta. Fusce in 
+        tincidunt lectus. Praesent tempor mauris vehicula elit commodo, ac interdum tortor fermentum. Duis enim erat, convallis vitae ante eget, 
+        ultricies ultrices metus. Suspendisse eget dolor at risus bibendum finibus eu mattis massa. Nunc erat massa, lobortis id lobortis ac, facilisis eget mi. 
+        Curabitur non bibendum magna, ac tristique justo. Morbi auctor, est quis congue lobortis, nulla mi vestibulum elit, a dignissim nunc sem a augue.<br><br>
+
+        ras viverra nisl tincidunt, interdum massa vel, iaculis turpis. Integer sem diam, varius id urna at, ornare varius magna. Aliquam semper purus in lectus sollicitudin, 
+        sed suscipit velit finibus. Proin sed odio nec dolor euismod efficitur. Morbi nec pretium libero. Curabitur vestibulum aliquet magna, vel scelerisque justo pulvinar sit amet. 
+        Vivamus ornare lectus in dapibus tempus. Aliquam semper purus felis, nec pharetra quam tincidunt a. Etiam commodo, dui sit amet tincidunt posuere, enim nisl ornare enim, ac volutpat tellus est at metus. 
+        Proin vel mauris metus. Aliquam sit amet felis dapibus, dictum risus facilisis, pharetra sapien. Sed eu felis diam. Nullam pharetra massa lectus, nec feugiat turpis consequat in.<br><br>
+
+        Pellente sque mollis tincidunt commodo. Donec tincidunt aliquet eros eu consectetur. Etiam viverra ac felis sit amet viverra. 
+        Aliquam at tristique eros. Praesent in ultricies nibh. In in turpis nisi. In auctor ac leo vel cursus. Suspendisse vulputate suscipit justo nec rutrum. 
+        Quisque efficitur scelerisque arcu. Quisque nulla lectus, egestas vitae risus quis, elementum luctus ligula.<br>
+
+        Ut molestie dui at felis volutpat convallis. Aliquam posuere fringilla augue vel tristique. Curabitur egestas gravida urna sit amet placerat. 
+        Praesent eu tellus tempor, malesuada nulla id, tincidunt massa. Nullam commodo scelerisque erat. In vestibulum consectetur arcu, quis bibendum odio sagittis in. 
+        Phasellus maximus, odio eget vestibulum tempus, lacus leo vulputate dolor, sit amet faucibus nulla elit vitae orci. Donec aliquet interdum pulvinar. Ut posuere porta mi, sed venenatis ex aliquam ac. Suspendisse potenti.<br>
+
+        Aenean malesuada ultricies lectus et tempus. Integer gravida erat non massa tristique, non auctor sapien condimentum. Pellentesque in egestas diam. Nullam hendrerit nulla ut lorem porttitor, 
+        in scelerisque nisl rutrum. Nunc consectetur nibh augue, sit amet mattis augue efficitur a. In lacinia odio quis lectus ornare, in commodo mi laoreet. Aliquam eget nibh viverra, sollicitudin mauris in, 
+        efficitur eros. Donec ultricies odio vel tincidunt vehicula. Quisque ac malesuada elit. Vestibulum vel justo at sem convallis hendrerit ac in risus. Sed id finibus lorem, in feugiat ante. Phasellus tortor tortor, viverra at tincidunt at, tincidunt sed odio.<br>
+    </div>
+    <div id="rogi">
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1770653098/forrest_ruvt8p.jpg" alt="forest na ławce">
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1770653113/gory_1_ncab5v.jpg" alt="góry">
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1770653154/siostra_cztwsc.jpg" alt="pielęgniarka">
+    </div>
+</body>
+</html>
