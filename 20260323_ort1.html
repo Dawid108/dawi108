@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ortografia 1</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Ortografia", q:"Jak od 2026 roku zapiszemy mieszkańca Warszawy lub Ochoty?", a:"Warszawianin, Ochocianka", b:"warszawianin, ochocianka", c:"warszawianin, Ochocianka", d:"Warszawianin, ochocianka"},
+  {cat:"Ortografia", q:"Która forma zapisu nieoficjalnych nazw etnicznych jest poprawna?", a:"Angol lub angol", b:"Tylko forma Angol", c:"Tylko forma angol", d:"Zawsze zapis mały"},
+  {cat:"Ortografia", q:"Jak zapisać informację o konkretnym egzemplarzu auta pod oknem?", a:"Pod oknem stoi czerwony Ford.", b:"Pod oknem stoi czerwony ford.", c:"Pod oknem stoi Czerwony ford.", d:"Pod oknem stoi Czerwony Ford."},
+  {cat:"Ortografia", q:"Jaka jest zasada pisowni cząstki 'by' ze spójnikami?", a:"Zastanawiam się, czy by nie pojechać.", b:"Zastanawiam się, czyby nie pojechać.", c:"Zastanawiam się czy-by nie pojechać.", d:"Zastanawiam się, czy,by nie pojechać."},
+  {cat:"Ortografia", q:"Jak od 2026 roku zapisujemy imiesłowy odmienne z 'nie'?", a:"niepalący, niepiszący, nieczytany", b:"nie palący, nie piszący, nie czytany", c:"nie-palący, nie-piszący, nie-czytany", d:"niepalący, nie piszący, nie-czytany"},
+  {cat:"Ortografia", q:"Jak zapiszemy przymiotnik jakościowy od nazwiska Szekspir?", a:"dramat szekspirowski", b:"dramat Szekspirowski", c:"dramat szekspir-owski", d:"dramat Szekspirowski!"},
+  {cat:"Ortografia", q:"Jak można zapisać przymiotnik dzierżawczy 'zosina lalka'?", a:"zosina lalka lub Zosina lalka", b:"Tylko forma: zosina lalka", c:"Tylko forma: Zosina lalka", d:"zosina Lalka lub Zosina Lalka"},
+  {cat:"Ortografia", q:"Jak zapiszemy połączenie wyrazów pół, żartem i serio?", a:"półżartem, półserio", b:"pół-żartem, pół-serio", c:"pół żartem, pół serio", d:"półżartem, pół-serio"},
+  {cat:"Ortografia", q:"Jaki zapis osoby o mieszanym pochodzeniu jest poprawny?", a:"pół-Polka, pół-Francuzka", b:"półPolka, półFrancuzka", c:"pół Polka, pół Francuzka", d:"Półpolka, Półfrancuzka"},
+  {cat:"Ortografia", q:"Ile wersji zapisu par typu 'tuż tuż' dopuszczają nowe zasady?", a:"Trzy: z łącznikiem, przecinkiem lub spacją", b:"Dwie: tylko z łącznikiem lub przecinkiem", c:"Jedną: tylko i wyłącznie z łącznikiem", d:"Cztery: w zależności od kontekstu zdania"},
+  {cat:"Ortografia", q:"Jak od 2026 roku zapisujemy nazwy komet?", a:"Kometa Halleya, Kometa Enckego", b:"kometa Halleya, kometa Enckego", c:"Kometa halleya, Kometa enckego", d:"kometa halleya, kometa enckego"},
+  {cat:"Ortografia", q:"Jak zapisujemy obiekty przestrzeni publicznej jak Aleja Róż?", a:"Aleja Róż, Most Poniatowskiego", b:"aleja Róż, most Poniatowskiego", c:"Aleja róż, Most poniatowskiego", d:"aleja róż, most poniatowskiego"},
+  {cat:"Ortografia", q:"Który zapis nazwy lokalu gastronomicznego jest poprawny?", a:"Restauracja pod Żaglami", b:"Restauracja pod żaglami", c:"restauracja Pod Żaglami", d:"Restauracja Pod żaglami"},
+  {cat:"Ortografia", q:"Jak zapisujemy nazwy nagród takich jak Nagroda Nobla?", a:"Nagroda Nobla, Nagroda Pulitzera", b:"nagroda Nobla, nagroda Pulitzera", c:"Nagroda nobla, Nagroda pulitzera", d:"nagroda nobla, nagroda pulitzera"},
+  {cat:"Ortografia", q:"Jak zapiszemy przedrostek z wyrazem od wielkiej litery?", a:"arcy-Europejczyk", b:"arcyEuropejczyk", c:"arcy Europejczyk", d:"Arcyeuropejczyk"},
+  {cat:"Ortografia", q:"Jaki zapis cząstki 'super' z wyrazem pospolitym jest poprawny?", a:"superpomysł lub super pomysł", b:"Tylko forma: superpomysł", c:"Tylko forma: super pomysł", d:"super-pomysł lub superpomysł"},
+  {cat:"Ortografia", q:"Jak od 2026 roku zapisujemy cząstkę 'quasi' z małą literą?", a:"quasinauka, quasipostępowy", b:"quasi-nauka, quasi-postępowy", c:"quasi nauka, quasi postępowy", d:"Quasinauka, Quasipostępowy"},
+  {cat:"Ortografia", q:"Jak od 2026 roku zapisujemy 'nie' z przymiotnikiem w stopniu wyższym?", a:"niemilszy, nienajmilszy", b:"nie milszy, nie najmilszy", c:"nie-milszy, nie-najmilszy", d:"niemilszy, nie najmilszy"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
