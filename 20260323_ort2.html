@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ortografia 2</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Ortografia", q:"Jak od 2026 roku zapiszemy mieszkańca Warszawy?", a:"Warszawianin", b:"warszawianin", c:"warszawiak", d:"Warszawiak"},
+{cat:"Ortografia", q:"Jaka jest poprawna forma zapisu mieszkańca dzielnicy Ochota?", a:"Ochocianka", b:"ochocianka", c:"Ochocianin", d:"ochocianin"},
+{cat:"Ortografia", q:"Jak zapiszemy mieszkańca Nowej Huty według nowych zasad?", a:"Nowohucianin", b:"nowohucianin", c:"Nowohucianie", d:"nowohucianie"},
+{cat:"Ortografia", q:"Która forma zapisu mieszkańca Zgierza jest poprawna?", a:"Zgierzanin", b:"zgierzanin", c:"Zgierzanka", d:"zgierzanka"},
+{cat:"Ortografia", q:"Jak zapisać mieszkańca wsi Chochołów?", a:"Chochołowianin", b:"chochołowianin", c:"Chochołowianie", d:"chochołowianie"},
+{cat:"Ortografia", q:"Czy nazwy nieoficjalne typu 'angol' mogą być pisane wielką literą?", a:"Tak, dopuszczalny jest zapis Angol lub angol", b:"Nie, wyłącznie małą literą jako wyraz potoczny", c:"Tak, ale tylko w oficjalnych dokumentach państwowych", d:"Nie, ponieważ są to określenia o charakterze obraźliwym"},
+{cat:"Ortografia", q:"Jak od 2026 r. zapiszemy potoczne określenie 'żabojad'?", a:"Żabojad lub żabojad", b:"Tylko żabojad", c:"Tylko Żabojad", d:"Żabo-jad"},
+{cat:"Ortografia", q:"Która pisownia wyrazu 'szkop' jest dopuszczalna?", a:"Szkop lub szkop", b:"Wyłącznie szkop", c:"Wyłącznie Szkop", d:"Szkop-y"},
+{cat:"Ortografia", q:"Jak zapiszemy konkretny egzemplarz samochodu stojący pod oknem?", a:"Pod oknem zaparkował czerwony Ford", b:"Pod oknem zaparkował czerwony ford", c:"Pod oknem zaparkował Czerwony ford", d:"Pod oknem zaparkował Ford czerwony"},
+{cat:"Ortografia", q:"Jak zapisać markę i model wyrobu przemysłowego?", a:"Samochód marki Ford", b:"Samochód marki ford", c:"Samochód Marki Ford", d:"Samochód Marki ford"},
+{cat:"Ortografia", q:"Jak poprawnie zapisać cząstkę 'by' ze spójnikiem 'czy'?", a:"czy by", b:"czyby", c:"czy-by", d:"czy/by"},
+{cat:"Ortografia", q:"Jaka jest pisownia 'bym' w zdaniu: 'Gdyby wiedział, że bym przyszedł'?", a:"że bym", b:"żebym", c:"że-bym", d:"że/bym"},
+{cat:"Ortografia", q:"Jak zapisać 'byście' ze spójnikiem?", a:"Gdybyście wiedzieli, czy byście poszli", b:"Gdybyście wiedzieli, czybyście poszli", c:"Gdybyście wiedzieli, czy-byście poszli", d:"Gdybyście wiedzieli, czy/byście poszli"},
+{cat:"Ortografia", q:"Jaka zasada dotyczy pisowni 'nie-' z imiesłowami odmiennymi?", a:"Obowiązuje wyłącznie pisownia łączna", b:"Można pisać rozdzielnie w znaczeniu czasownikowym", c:"Zależy to od interpretacji przymiotnikowej autora", d:"Zawsze piszemy je oddzielnie bez wyjątku od reguły"},
+{cat:"Ortografia", q:"Jak zapisać słowo 'nie palący' w znaczeniu cechy osoby?", a:"niepalący", b:"nie palący", c:"nie-palący", d:"nie/palący"},
+{cat:"Ortografia", q:"Jak zapiszemy 'nie czytający' (imiesłów odmienny)?", a:"nieczytający", b:"nie czytający", c:"nie-czytający", d:"nie/czytający"},
+{cat:"Ortografia", q:"Jak zapisać przymiotnik 'szekspirowski' w kontekście dramatu?", a:"dramat szekspirowski", b:"dramat Szekspirowski", c:"dramat Szekspira", d:"dramat szekspira"},
+{cat:"Ortografia", q:"Jaka jest pisownia epoki pochodzącej od imienia Zygmunt?", a:"epoka zygmuntowska", b:"epoka Zygmuntowska", c:"epoka zygmunta", d:"epoka Zygmunta"},
+{cat:"Ortografia", q:"Jak zapisać przymiotnik od nazwiska Chopin?", a:"koncert chopinowski", b:"koncert Chopinowski", c:"koncert Chopina", d:"koncert chopina"},
+{cat:"Ortografia", q:"Jaka forma zapisu 'filozofii Sokratesa' jako przymiotnika jest poprawna?", a:"filozofia sokratejska", b:"filozofia Sokratejska", c:"filozofia sokratesa", d:"filozofia Sokratesa"},
+{cat:"Ortografia", q:"Jak zapiszemy przymiotnik 'miłoszowski'?", a:"wiersz miłoszowski", b:"wiersz Miłoszowski", c:"wiersz Miłosza", d:"wiersz miłosza"},
+{cat:"Ortografia", q:"Jak zapisać przymiotnik 'jackowe' (od imienia Jacek)?", a:"jackowe dzieci lub Jackowe dzieci", b:"Tylko jackowe dzieci", c:"Tylko Jackowe dzieci", d:"Jackowo-dzieci"},
+{cat:"Ortografia", q:"Jak zapisać 'lalkę Zosi' przymiotnikiem?", a:"zosina lalka lub Zosina lalka", b:"Tylko zosina lalka", c:"Tylko Zosina lalka", d:"Zosi-na lalka"},
+{cat:"Ortografia", q:"Jaka jest poprawna pisownia wyrazu 'pół' w połączeniu z 'zabawa'?", a:"półzabawa", b:"pół zabawa", c:"pół-zabawa", d:"pół/zabawa"},
+{cat:"Ortografia", q:"Jak zapisać połączenie 'pół' i 'serio'?", a:"półserio", b:"pół serio", c:"pół-serio", d:"pół/serio"},
+{cat:"Ortografia", q:"Jak zapisać 'półżartem'?", a:"półżartem", b:"pół żartem", c:"pół-żartem", d:"pół/żartem"},
+{cat:"Ortografia", q:"Jak zapisać osobę, która jest w połowie Polką?", a:"pół-Polka", b:"półPolka", c:"pół Polka", d:"pół/Polka"},
+{cat:"Ortografia", q:"Która wersja zapisu 'tuż-tuż' jest poprawna?", a:"Wszystkie trzy: tuż-tuż, tuż, tuż oraz tuż tuż", b:"Tylko forma z łącznikiem: tuż-tuż", c:"Tylko forma z przecinkiem: tuż, tuż", d:"Tylko forma rozdzielna: tuż tuż"},
+{cat:"Ortografia", q:"Jak zapisać parę wyrazów 'trzask-prask'?", a:"Można: trzask-prask, trzask, prask lub trzask prask", b:"Wyłącznie z łącznikiem: trzask-prask", c:"Wyłącznie z przecinkiem: trzask, prask", d:"Wyłącznie rozdzielnie: trzask prask"},
+{cat:"Ortografia", q:"Jak poprawnie zapisać nazwę komety Halleya?", a:"Kometa Halleya", b:"kometa Halleya", c:"Kometa halleya", d:"kometa halleya"},
+{cat:"Ortografia", q:"Jak zapisać nazwę komety Enckego?", a:"Kometa Enckego", b:"kometa Enckego", c:"Kometa enckego", d:"kometa enckego"},
+{cat:"Ortografia", q:"Jak zapisać 'aleję róż' jako obiekt przestrzeni publicznej?", a:"Aleja Róż", b:"aleja Róż", c:"aleja róż", d:"Aleja róż"},
+{cat:"Ortografia", q:"Jak zapisać nazwę ulicy Józefa Piłsudskiego?", a:"ulica Józefa Piłsudskiego", b:"Ulica Józefa Piłsudskiego", c:"ulica józefa piłsudskiego", d:"Ulica józefa piłsudskiego"},
+{cat:"Ortografia", q:"Jaka jest pisownia 'placu zbawiciela'?", a:"Plac Zbawiciela", b:"plac Zbawiciela", c:"plac zbawiciela", d:"Plac zbawiciela"},
+{cat:"Ortografia", q:"Jak poprawnie zapisać 'kościół mariacki'?", a:"Kościół Mariacki", b:"kościół Mariacki", c:"kościół mariacki", d:"Kościół mariacki"},
+{cat:"Ortografia", q:"Jak zapisać nazwę mostu Poniatowskiego?", a:"Most Poniatowskiego", b:"most Poniatowskiego", c:"most poniatowskiego", d:"Most poniatowskiego"},
+{cat:"Ortografia", q:"Jak zapisać nazwę 'księgarnia naukowa'?", a:"Księgarnia Naukowa", b:"księgarnia Naukowa", c:"księgarnia naukowa", d:"Księgarnia naukowa"},
+{cat:"Ortografia", q:"Jak zapisać nazwę lokalu 'apteka pod orłem'?", a:"Apteka pod Orłem", b:"Apteka Pod Orłem", c:"apteka pod orłem", d:"Apteka pod orłem"},
+{cat:"Ortografia", q:"Jak zapisać nazwę 'pizzeria napoli'?", a:"Pizzeria Napoli", b:"pizzeria Napoli", c:"pizzeria napoli", d:"Pizzeria napoli"},
+{cat:"Ortografia", q:"Jak poprawnie zapisać 'nagrodę nobla'?", a:"Nagroda Nobla", b:"nagroda Nobla", c:"Nagroda nobla", d:"nagroda nobla"},
+{cat:"Ortografia", q:"Jak zapisać 'nagrodę rektora za wybitne osiągnięcia naukowe'?", a:"Nagroda Rektora za Wybitne Osiągnięcia Naukowe", b:"Nagroda rektora za wybitne osiągnięcia naukowe", c:"Nagroda Rektora Za Wybitne Osiągnięcia Naukowe", d:"nagroda Rektora za wybitne osiągnięcia naukowe"},
+{cat:"Ortografia", q:"Jak zapisać tytuł 'honorowy obywatel miasta krakowa'?", a:"Honorowy Obywatel Miasta Krakowa", b:"honorowy obywatel miasta Krakowa", c:"Honorowy obywatel miasta Krakowa", d:"Honorowy Obywatel miasta Krakowa"},
+{cat:"Ortografia", q:"Jak zapisać przedrostek z wyrazem pisanym wielką literą (np. Europejczyk)?", a:"arcy-Europejczyk", b:"arcyEuropejczyk", c:"arcy Europejczyk", d:"ArcyEuropejczyk"},
+{cat:"Ortografia", q:"Jak dopuszczalnie zapisać słowo 'miniwieża'?", a:"miniwieża lub mini wieża", b:"Tylko miniwieża", c:"Tylko mini wieża", d:"Mini-wieża"},
+{cat:"Ortografia", q:"Jak zapisać słowo 'superpomysł'?", a:"superpomysł lub super pomysł", b:"Tylko superpomysł", c:"Tylko super pomysł", d:"Super-pomysł"},
+{cat:"Ortografia", q:"Jak zapisać cząstkę 'quasi' z wyrazem 'nauka'?", a:"quasinauka", b:"quasi-nauka", c:"quasi nauka", d:"Quasi-Nauka"},
+{cat:"Ortografia", q:"Jak zapisać cząstkę 'niby' z wyrazem 'artysta'?", a:"nibyartysta", b:"niby-artysta", c:"niby artysta", d:"Niby-Artysta"},
+{cat:"Ortografia", q:"Jak zapisać 'nie' z przymiotnikiem w stopniu wyższym (np. milszy)?", a:"niemilszy", b:"nie milszy", c:"nie-milszy", d:"nie/milszy"},
+{cat:"Ortografia", q:"Jak zapisać 'nie' z przymiotnikiem w stopniu najwyższym (np. najmilszy)?", a:"nienajmilszy", b:"nie najmilszy", c:"nie-najmilszy", d:"nie/najmilszy"},
+{cat:"Ortografia", q:"Jak zapisać 'nie' z przysłowiem 'lepiej'?", a:"nielepiej", b:"nie lepiej", c:"nie-lepiej", d:"nie/lepiej"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
