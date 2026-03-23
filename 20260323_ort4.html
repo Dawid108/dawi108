@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ortografia 4</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Ortografia", q:"Od kiedy obowiązują nowe zasady pisowni?", a:"Od 1 stycznia 2026 roku", b:"Od 1 stycznia 2025 roku", c:"Od 1 marca 2026 roku", d:"Od 31 grudnia 2026 roku"},
+
+{cat:"Ortografia", q:"Jak zapisujemy nazwy mieszkańców miast?", a:"Wielką literą zawsze", b:"Zawsze małą literą", c:"Tylko w tekstach oficjalnych", d:"Zależnie od kontekstu zdania"},
+
+{cat:"Ortografia", q:"Jak można zapisać nieoficjalne nazwy etniczne?", a:"Małą lub wielką literą", b:"Wyłącznie wielką literą", c:"Wyłącznie małą literą", d:"Tylko kursywą w tekście"},
+
+{cat:"Ortografia", q:"Jak zapisujemy marki i modele produktów?", a:"Wielką literą zawsze", b:"Małą literą zawsze", c:"Tylko w reklamach wielką", d:"Zależnie od autora tekstu"},
+
+{cat:"Ortografia", q:"Jak zapisujemy egzemplarze produktów np. Ford?", a:"Wielką literą jak nazwę", b:"Małą literą w zdaniu", c:"Kursywą jako wyróżnienie", d:"Zawsze w cudzysłowie tekstowym"},
+
+{cat:"Ortografia", q:"Jak piszemy cząstki -bym, -byś ze spójnikami?", a:"Rozdzielnie od spójnika", b:"Łącznie zawsze razem", c:"Z łącznikiem po środku", d:"Z przecinkiem przed cząstką"},
+
+{cat:"Ortografia", q:"Jak zapisujemy nie z imiesłowami odmiennymi?", a:"Zawsze łącznie razem", b:"Zawsze osobno oddzielnie", c:"Zależnie od znaczenia zdania", d:"Tylko w czasie przeszłym razem"},
+
+{cat:"Ortografia", q:"Jak zapisujemy przymiotniki od nazwisk?", a:"Małą literą zawsze", b:"Wielką literą zawsze", c:"Zależnie od autora tekstu", d:"Tylko w literaturze wielką"},
+
+{cat:"Ortografia", q:"Jak można zapisać przymiotniki od imion?", a:"Małą lub wielką literą", b:"Tylko wielką literą zawsze", c:"Tylko małą literą zawsze", d:"Zależnie od długości wyrazu"},
+
+{cat:"Ortografia", q:"Jak zapisujemy pół w wyrażeniach typu półzabawa?", a:"Łącznie bez odstępu", b:"Zawsze osobno wyrazy", c:"Zawsze z łącznikiem", d:"Z przecinkiem między wyrazami"},
+
+{cat:"Ortografia", q:"Jak zapisujemy pół-Polka?", a:"Z łącznikiem poprawnie", b:"Zawsze razem bez łącznika", c:"Zawsze osobno bez łącznika", d:"Z przecinkiem między wyrazami"},
+
+{cat:"Ortografia", q:"Ile wersji zapisu mają pary typu tuż-tuż?", a:"Trzy poprawne formy", b:"Jedną poprawną formę", c:"Dwie poprawne formy", d:"Cztery różne formy zapisu"},
+
+{cat:"Ortografia", q:"Jak zapisujemy nazwy komet?", a:"Wszystkie człony wielką", b:"Tylko pierwszy wielką literą", c:"Wszystko małą literą", d:"Z łącznikiem między członami"},
+
+{cat:"Ortografia", q:"Jak zapisujemy nazwy typu Aleja Róż?", a:"Pierwszy człon wielką literą", b:"Pierwszy człon małą literą", c:"Wszystko małą literą zawsze", d:"Z przecinkiem między wyrazami"},
+
+{cat:"Ortografia", q:"Jak zapisujemy wyraz ulica w nazwach?", a:"Małą literą zawsze", b:"Wielką literą zawsze", c:"Zależnie od kontekstu zdania", d:"Zawsze w cudzysłowie tekstowym"},
+
+{cat:"Ortografia", q:"Jak zapisujemy nazwy lokali usługowych?", a:"Wielką literą główne człony", b:"Małą literą wszystkie wyrazy", c:"Tylko pierwszy wielką literą", d:"Zależnie od długości nazwy"},
+
+{cat:"Ortografia", q:"Jak zapisujemy nazwy nagród i odznaczeń?", a:"Wielką literą wszystkie człony", b:"Małą literą wszystkie człony", c:"Tylko pierwszy wielką literą", d:"Zależnie od autora tekstu"},
+
+{cat:"Ortografia", q:"Jak zapisujemy przedrostki z wyrazami?", a:"Łącznie z wyrazem", b:"Zawsze osobno oddzielnie", c:"Z łącznikiem po środku", d:"Z przecinkiem przed wyrazem"},
+
+{cat:"Ortografia", q:"Jak zapisujemy przedrostek przed wielką literą?", a:"Z łącznikiem poprawnie", b:"Zawsze razem bez łącznika", c:"Zawsze osobno bez łącznika", d:"Z przecinkiem między wyrazami"},
+
+{cat:"Ortografia", q:"Jak można zapisać superpomysł?", a:"Łącznie lub rozdzielnie", b:"Tylko łącznie poprawnie", c:"Tylko osobno poprawnie", d:"Zawsze z łącznikiem po środku"},
+
+{cat:"Ortografia", q:"Jak zapisujemy niby- i quasi-?", a:"Łącznie z małą literą", b:"Zawsze osobno oddzielnie", c:"Zawsze z łącznikiem", d:"Z przecinkiem przed wyrazem"},
+
+{cat:"Ortografia", q:"Jak zapisujemy niby-Polak?", a:"Z łącznikiem poprawnie", b:"Zawsze razem bez łącznika", c:"Zawsze osobno bez łącznika", d:"Z przecinkiem między wyrazami"},
+
+{cat:"Ortografia", q:"Jak zapisujemy nie z przymiotnikami?", a:"Łącznie w każdej formie", b:"Zawsze osobno oddzielnie", c:"Zależnie od stopnia wyrazu", d:"Tylko w stopniu równym razem"},
+
+{cat:"Ortografia", q:"Jak zapisujemy nie w stopniu wyższym i najwyższym?", a:"Łącznie zawsze razem", b:"Zawsze osobno oddzielnie", c:"Zależnie od kontekstu zdania", d:"Tylko w języku potocznym"},
+
+{cat:"Ortografia", q:"Kto ustala zasady ortografii w Polsce?", a:"Rada Języka Polskiego", b:"Ministerstwo Edukacji Narodowej", c:"Prezydent Rzeczypospolitej", d:"Sejm Rzeczypospolitej Polskiej"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
