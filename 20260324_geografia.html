@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geografia - Energetyka</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Geografia", q:"Co zaliczamy do nieodnawialnych źródeł energii?", a:"Torf, węgiel kamienny, ropę naftową", b:"Wiatr, słońce, biomasę oraz drewno", c:"Wodę, geotermię oraz ciepło ziemi", d:"Wiatr, drewno, energię słoneczną"},
+  {cat:"Geografia", q:"Który pierwiastek jest surowcem promieniotwórczym?", a:"Uran", b:"Ołów", c:"Cynk", d:"Glin"},
+  {cat:"Geografia", q:"Przykładem odnawialnego źródła energii jest:", a:"Promieniowanie słoneczne", b:"Gaz ziemny wydobywany", c:"Węgiel kamienny czarny", d:"Pierwiastek uranu 235"},
+  {cat:"Geografia", q:"Czym jest bilans energetyczny?", a:"Zestawieniem udziału źródeł w produkcji", b:"Pomiarem temperatury wewnątrz ziemi", c:"Wyliczeniem strat energii w sieciach", d:"Sumą wszystkich zasobów węgla kraju"},
+  {cat:"Geografia", q:"Znaczenie którego paliwa rośnie w bilansie świata?", a:"Gazu ziemnego", b:"Węgla brunatnego", c:"Drewna opałowego", d:"Torfu z mokradeł"},
+  {cat:"Geografia", q:"Udział którego surowca maleje w bilansie świata?", a:"Ropy naftowej", b:"Wody płynącej", c:"Wiatru silnego", d:"Ciepła z wnętrza"},
+  {cat:"Geografia", q:"Co dominuje w bilansie energetycznym Polski?", a:"Węgiel kamienny i brunatny", b:"Energia słoneczna i wodna", c:"Gaz ziemny i ropa naftowa", d:"Uran i pierwiastki ciężkie"},
+  {cat:"Geografia", q:"Jaka tendencja dotyczy węgla w Polsce?", a:"Jego udział w bilansie powoli spada", b:"Jego wydobycie gwałtownie rośnie", c:"Jest jedynym źródłem w kraju", d:"Zastępuje całkowicie gaz ziemny"},
+  {cat:"Geografia", q:"Co zwiększa swój udział w energetyce Polski?", a:"Odnawialne źródła energii", b:"Tradycyjne spalanie drewna", c:"Import węgla kamiennego", d:"Wykorzystanie tylko torfu"},
+  {cat:"Geografia", q:"Jak zapotrzebowanie na energię wpływa na środowisko?", a:"Wpływa na nie niekorzystnie", b:"Poprawia stan ekosystemów", c:"Nie ma żadnego znaczenia", d:"Oczyszcza warstwy gleby"},
+  {cat:"Geografia", q:"Gdzie zwalnia tempo wzrostu zużycia energii?", a:"W państwach wysoko rozwiniętych", b:"W krajach bardzo biednych", c:"Na terenach rolniczych Azji", d:"W państwach słabo rozwiniętych"},
+  {cat:"Geografia", q:"Ile energii świata pochodzi ze źródeł nieodnawialnych?", a:"Prawie 75 procent energii", b:"Około 10 procent energii", d:"Dokładnie 50 procent energii", d:"Mniej niż 25 procent energii"},
+  {cat:"Geografia", q:"Które elektrownie wykorzystują źródła nieodnawialne?", a:"Cieplne i jądrowe", b:"Wodne i wiatrowe", c:"Słoneczne i wodne", d:"Wiatrowe i cieplne"},
+  {cat:"Geografia", q:"Jakie elektrownie są oparte na źródłach odnawialnych?", a:"Wodne, słoneczne, wiatrowe", b:"Jądrowe, cieplne, gazowe", c:"Węglowe, torfowe, wodne", d:"Jądrowe, wodne, cieplne"},
+  {cat:"Geografia", q:"Dlaczego nie można zrezygnować z elektrowni cieplnych?", a:"Zapewniają ciągłość dostaw", b:"Są najtańsze w budowie", c:"Nie emitują żadnych pyłów", d:"Działają tylko w nocy"},
+  {cat:"Geografia", q:"Co było przyczyną rozwoju energetyki jądrowej?", a:"Wysoka wydajność i koszty", b:"Małe ryzyko awarii reaktora", c:"Prosta budowa takich sieci", d:"Niskie kwalifikacje kadry"},
+  {cat:"Geografia", q:"Jaki jest trend dla energetyki jądrowej obecnie?", a:"Jej udział na świecie maleje", b:"Staje się dominująca wszędzie", c:"Wypiera całkowicie węgiel", d:"Jest zakazana w każdym kraju"},
+  {cat:"Geografia", q:"Główny argument przeciw elektrowniom jądrowym to:", a:"Niebezpieczeństwo awarii", b:"Zbyt mała moc produkcji", c:"Brak paliwa na świecie", d:"Bardzo szybka budowa"},
+  {cat:"Geografia", q:"Skutkiem awarii jądrowej może być:", a:"Wieloletnie skażenie środowiska", b:"Chwilowy brak prądu w gminie", c:"Nagły wzrost opadów deszczu", d:"Lepsza jakość gleb w okolicy"},
+  {cat:"Geografia", q:"Budowa elektrowni jądrowej w Polsce to szansa na:", a:"Zaspokojenie zapotrzebowania", b:"Zwiększenie wydobycia torfu", c:"Powrót do spalania drewna", d:"Obniżenie cen tylko gazu"},
+  {cat:"Geografia", q:"Reakcja społeczeństwa w Polsce na atom to:", a:"Sprzeciw części obywateli", b:"Pełna zgoda wszystkich osób", c:"Całkowity brak opinii ludzi", d:"Entuzjazm każdego mieszkańca"},
+  {cat:"Geografia", q:"Do odnawialnych źródeł zaliczamy:", a:"Ciepło z wnętrza Ziemi", b:"Węgiel brunatny z kopalni", c:"Gaz ziemny ze odwiertów", d:"Pierwiastki radioaktywne"},
+  {cat:"Geografia", q:"Surowcem energetycznym nieodnawialnym jest:", a:"Węgiel brunatny", b:"Woda płynąca", c:"Silny wiatr", d:"Biomasa leśna"},
+  {cat:"Geografia", q:"Przykładem odnawialnego paliwa jest:", a:"Drewno", b:"Ropa", c:"Torf", d:"Uran"},
+  {cat:"Geografia", q:"Co wchodzi w skład bilansu energetycznego?", a:"Udział różnych źródeł", b:"Tylko zapasy węgla", c:"Liczba elektrowni", d:"Cena prądu w kraju"},
+  {cat:"Geografia", q:"Które źródło zyskuje na znaczeniu na świecie?", a:"Odnawialne (głównie woda)", b:"Tradycyjne drewno opałowe", c:"Węgiel kamienny czarny", d:"Węgiel brunatny polski"},
+  {cat:"Geografia", q:"Zagrożenie dla życia i zdrowia ludzi budzi:", a:"Energia jądrowa (awarie)", b:"Energia słoneczna (panele)", c:"Energia wiatrowa (młyny)", d:"Energia wodna (zapory)"},
+  {cat:"Geografia", q:"Co dzieje się z udziałem odnawialnych źródeł?", a:"Systematycznie się zwiększa", b:"Gwałtownie spada wszędzie", c:"Pozostaje na stałym poziomie", d:"Znika z bilansów krajów"},
+  {cat:"Geografia", q:"Elektrownie geotermalne wykorzystują:", a:"Odnawialne źródła energii", b:"Nieodnawialny gaz ziemny", c:"Surowce promieniotwórcze", d:"Spalanie węgla brunatnego"},
+  {cat:"Geografia", q:"Bezpieczeństwo energetyczne wymaga:", a:"Utrzymania elektrowni cieplnych", b:"Zamknięcia wszystkich kopalń", c:"Rezygnacji z gazu ziemnego", d:"Używania tylko wiatraków"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
