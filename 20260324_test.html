@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geografia</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Geografia", q:"Jaki rodzaj elektrowni przedstawiono na zdjęciu zaporą wodną?", a:"Wodna", b:"Jądrowa", c:"Cieplna", d:"Wiatrowa"},
+  {cat:"Geografia", q:"Co jest źródłem energii w elektrowni przedstawionej na rzece?", a:"Woda", b:"Uran", c:"Wiatr", d:"Słońce"},
+  {cat:"Geografia", q:"Do jakiej grupy zaliczamy energię spadku wód płynących?", a:"Odnawialne", b:"Kopalne", c:"Sztuczne", d:"Nierozwojowe"},
+  {cat:"Geografia", q:"W którym kraju ponad połowa energii pochodzi z wody?", a:"Norwegia", b:"Francja", c:"Polska", d:"Niemcy"},
+  {cat:"Geografia", q:"Jaki rodzaj elektrowni widać na zdjęciu z dużymi kominami?", a:"Cieplna", b:"Jądrowa", c:"Wodna", d:"Wiatrowa"},
+  {cat:"Geografia", q:"Z jakiego źródła najczęściej korzystają elektrownie cieplne?", a:"Węgiel", b:"Słońce", c:"Woda", d:"Wiatr"},
+  {cat:"Geografia", q:"Skąd pochodzi najwięcej energii elektrycznej na świecie?", a:"Z elektrowni cieplnych", b:"Z elektrowni jądrowych", c:"Z elektrowni wodnych", d:"Z paneli słonecznych"},
+  {cat:"Geografia", q:"Jak zmienia się tempo wzrostu zużycia energii w krajach rozwiniętych?", a:"Maleje", b:"Rośnie", c:"Stoi", d:"Skacze"},
+  {cat:"Geografia", q:"Z czego pochodzi ponad 85% energii elektrycznej w Polsce?", a:"Z węgla kamiennego i brunatnego", b:"Z gazu ziemnego i węgla drzewnego", c:"Z energii wiatru oraz słońca", d:"Z biomasy oraz energii wody"},
+  {cat:"Geografia", q:"Kto jest głównym producentem uranu (ok. 40,6% udziału)?", a:"Kazachstan", b:"Australia", c:"Kanada", d:"Namibia"},
+  {cat:"Geografia", q:"Które kraje są największymi producentami energii na świecie?", a:"Chiny i Stany Zjednoczone", b:"Arabia Saudyjska i Iran", c:"Rosja oraz Kazachstan", d:"Polska oraz Norwegia"},
+  {cat:"Geografia", q:"Ile energii na świecie pochodzi ze źródeł nieodnawialnych?", a:"Około 75% produkcji", b:"Około 40% produkcji", c:"Około 15% produkcji", d:"Około 95% produkcji"},
+  {cat:"Geografia", q:"Bezpieczeństwo energetyczne kraju wymaga produkcji energii:", a:"Z obu typów źródeł", b:"Tylko odnawialnych", c:"Tylko jądrowych", d:"Tylko importowanych"},
+  {cat:"Geografia", q:"Który kraj dominuje w wydobyciu węgla kamiennego (46,7%)?", a:"Chiny", b:"Rosja", c:"Indie", d:"USA"},
+  {cat:"Geografia", q:"Który kraj jest liderem w wydobyciu ropy naftowej (15%)?", a:"Stany Zjednoczone", b:"Arabia Saudyjska", c:"Kazachstan", d:"Australia"},
+  {cat:"Geografia", q:"Który argument przeciw budowie elektrowni atomowej jest fałszywy?", a:"Postęp sprawił, że nie ma ryzyka awarii", b:"Budowa zwiększyłaby bezpieczeństwo kraju", c:"Konieczne jest ograniczenie emisji pyłów", d:"OZE nie zaspokoją wszystkich potrzeb"},
+  {cat:"Geografia", q:"Co jest nieprawdą o elektrowniach atomowych w Polsce?", a:"Praca elektrowni trwałaby tylko 20 lat", b:"Atom ograniczyłby emisję zanieczyszczeń", c:"Zwiększyłoby to stabilność dostaw prądu", d:"Społeczeństwo jest w tej kwestii podzielone"},
+  {cat:"Geografia", q:"Jak mieszkańcy mogą ograniczać zużycie energii?", a:"Gasić światło i ocieplić dom", b:"Kupować więcej aut spalinowych", c:"Zostawiać urządzenia w czuwaniu", d:"Częściej korzystać z grzejników"},
+  {cat:"Geografia", q:"Który kraj ma duży udział w wydobyciu gazu ziemnego?", a:"Rosja", b:"Niger", c:"Namibia", d:"Francja"},
+  {cat:"Geografia", q:"Dlaczego kraje rozwijają energetykę jądrową?", a:"Z powodu wysokiej wydajności", b:"Z braku innych możliwości", c:"Bo jest najtańsza w budowie", d:"Przez naciski innych krajów"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 1;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
