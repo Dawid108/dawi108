@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Road to 38:59 - Bieg Misia</title>
+    <script src="script.js"></script>
+    <link rel="icon" href="dawi108.png">
+    <style>
+        :root {
+            --primary: #2ecc71;
+            --secondary: #3498db;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --accent: #e74c3c;
+            --gold: #f1c40f;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 15px;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 15px;
+            background: linear-gradient(135deg, var(--dark) 0%, #34495e 100%);
+            color: white;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        header h1 { margin: 0; font-size: 2rem; letter-spacing: 1px; }
+        header p { opacity: 0.9; margin: 10px 0 0; }
+        .goal-badge {
+            display: inline-block;
+            background: var(--primary);
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            margin: 30px 0 15px;
+            padding-left: 15px;
+            border-left: 5px solid var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 8px solid #ddd;
+            transition: all 0.3s ease;
+        }
+
+        .card.today {
+            border-left-color: var(--primary);
+            background: #fafffa;
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(46, 204, 113, 0.15);
+            border: 2px solid var(--primary);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
+        }
+
+        .date-box { text-align: left; }
+        .date { font-size: 1.1rem; font-weight: bold; color: var(--dark); }
+        .day-name { font-size: 0.85rem; color: #7f8c8d; text-transform: uppercase; }
+
+        .activity-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+
+        .details {
+            font-size: 0.95rem;
+            color: #444;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            color: white;
+        }
+
+        .type-run { border-left-color: var(--secondary); }
+        .tag-run { background: var(--secondary); }
+
+        .type-ball { border-left-color: #f39c12; }
+        .tag-ball { background: #f39c12; }
+
+        .type-match { border-left-color: var(--accent); }
+        .tag-match { background: var(--accent); }
+
+        .type-rest { border-left-color: #95a5a6; }
+        .tag-rest { background: #95a5a6; }
+
+        .type-gory { border-left-color: #8e44ad; }
+        .tag-gory { background: #8e44ad; }
+
+        .type-target { border-left-color: var(--gold); }
+        .tag-target { background: var(--gold); color: black; }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.5rem; }
+            .card { padding: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Bieg Misia 2026</h1>
+        <div class="goal-badge">CEL: 38:59 (3:54 min/km)</div>
+        <p>Twoja życiówka czeka 10 maja!</p>
+    </header>
+
+    <div id="today-section">
+        <div class="section-title">DZISIAJ</div>
+        <div id="today-container"></div>
+    </div>
+
+    <div class="section-title">PLAN TRENINGOWY</div>
+    <div id="full-schedule"></div>
+</div>
+
+<script>
+    const trainingPlan = [
+        // MARZEC
+        { d: "2026-03-25", t: "run", a: "10 km w II zakresie", i: "Zacznij pierwsze 2 km spokojnie (5:15). Potem wejdź na 4:40-4:45 min/km. Na koniec 10 min rozciągania statycznego." },
+        { d: "2026-03-26", t: "ball", a: "Trening piłkarski", i: "Skup się na technice i zwinności. Don't forget o nawodnieniu." },
+        { d: "2026-03-27", t: "rest", a: "Wolne / Trucht regeneracyjny", i: "Max 20 min bardzo lekkiego biegu lub całkowite wolne. Jutro parkrun!" },
+        { d: "2026-03-28", t: "run", a: "Parkrun Błonie Krotoszyn", i: "Cel: 19:30. Rozgrzewka: 2 km truchtu + wymachy. Po biegu 1 km schłodzenia." },
+        { d: "2026-03-29", t: "match", a: "MECZ: Sokół Chwaliszew", i: "Rywal: Sulmirczyk Sulmierzyce. Daj z siebie wszystko!" },
+        { d: "2026-03-30", t: "rest", a: "Regeneracja", i: "Spacer, rolowanie nóg, dużo wody. Zasłużony odpoczynek." },
+        { d: "2026-03-31", t: "ball", a: "Trening piłkarski", i: "Standardowa jednostka na boisku." },
+        
+        // KWIECIEŃ
+        { d: "2026-04-01", t: "run", a: "Interwały: 5 x 1 km", i: "Tempo: 3:50 min/km. Przerwa: 3 min w truchcie. Rozgrzewka: 3 km truchtu + 3 przebieżki 60m." },
+        { d: "2026-04-02", t: "gory", a: "GÓRY - Bieg spokojny", i: "Spokojne rozbieganie w terenie. It's about building strength." },
+        { d: "2026-04-03", t: "gory", a: "GÓRY - Siła biegowa", i: "10 x 150 m podbiegu ostro. Powrót w marszu/truchcie." },
+        { d: "2026-04-04", t: "gory", a: "GÓRY - Rozbieganie", i: "Spokojna dyszka po szlakach." },
+        { d: "2026-04-05", t: "gory", a: "GÓRY - Wycieczka biegowa", i: "Dłuższy czas na nogach, tętno niskie." },
+        { d: "2026-04-06", t: "gory", a: "GÓRY - Aktywność", i: "Lekki rozruch w górskim klimacie." },
+        { d: "2026-04-07", t: "gory", a: "GÓRY - Ostatni bieg", i: "Spokojne 6-8 km przed powrotem." },
+        { d: "2026-04-08", t: "run", a: "Rozbieganie 6 km", i: "Bardzo spokojnie + porządne rozciąganie po powrocie z gór." },
+        { d: "2026-04-09", t: "ball", a: "Trening piłkarski", i: "Powrót na boisko." },
+        { d: "2026-04-10", t: "gory", a: "GÓRY - Szlaki", i: "Wycieczka biegowa. Ciesz się widokami." },
+        { d: "2026-04-11", t: "gory", a: "GÓRY - Szlaki", i: "Dłuższy bieg o niskiej intensywności." },
+        { d: "2026-04-12", t: "gory", a: "GÓRY - Rozruch", i: "Krótko i luźno." },
+        { d: "2026-04-13", t: "rest", a: "Wolne", i: "Pełna regeneracja." },
+        { d: "2026-04-14", t: "ball", a: "Trening piłkarski", i: "Pamiętaj o nawodnieniu!" },
+        { d: "2026-04-15", t: "run", a: "Bieg progowy: 4 km", i: "Tempo: 4:05 min/km. Rozgrzewka: 2-3 km truchtu. To klucz do wytrzymałości." },
+        { d: "2026-04-16", t: "ball", a: "Trening piłkarski", i: "Dynamika na boisku." },
+        { d: "2026-04-17", t: "rest", a: "Wolne / Trucht 5 km", i: "Bardzo lekkie nogi przed jutrzejszym parkrunem." },
+        { d: "2026-04-18", t: "run", a: "Parkrun Błonie Krotoszyn", i: "Cel: 19:30. Przetarcie pod dychę." },
+        { d: "2026-04-19", t: "run", a: "Dłuższe wybieganie: 12-14 km", i: "Tempo: ok. 5:10 min/km. Spokojna baza tlenowa." },
+        { d: "2026-04-20", t: "rest", a: "Wolne", i: "Odpocznij." },
+        { d: "2026-04-21", t: "ball", a: "Trening piłkarski", i: "Intensywność meczowa." },
+        { d: "2026-04-22", t: "run", a: "Szybkość: 10 x 400 m", i: "Tempo: 3:40 min/km. Przerwa: 2 min w marszu. Rozgrzewka obowiązkowa!" },
+        { d: "2026-04-23", t: "ball", a: "Trening piłkarski", i: "Standardowo." },
+        { d: "2026-04-24", t: "rest", a: "Wolne", i: "Zbieraj siły na maraton sobotni (parkrun + mecz)." },
+        { d: "2026-04-25", t: "match", a: "Parkrun (19:30) + MECZ", i: "Mecz: Sokół Chwaliszew - Wisła Borek Wlkp. Ekstremalny dzień!" },
+        { d: "2026-04-26", t: "run", a: "Recovery run: 40 min", i: "Bardzo wolno, żeby wypłukać kwas z nóg po wczoraj." },
+        { d: "2026-04-27", t: "rest", a: "Wolne", i: "Zasłużone!" },
+        { d: "2026-04-28", t: "ball", a: "Trening piłkarski", i: "Boisko." },
+        { d: "2026-04-29", t: "run", a: "Specyfika: 3 x 2 km", i: "Tempo: 3:53 min/km. Przerwa: 4 min w truchcie. Poczuj tempo docelowe." },
+        { d: "2026-04-30", t: "ball", a: "Trening piłkarski", i: "Ostatnia piłka w kwietniu." },
+
+        // MAJ
+        { d: "2026-05-01", t: "rest", a: "Wolne", i: "Relaks w majówkę." },
+        { d: "2026-05-02", t: "run", a: "Parkrun Błonie Krotoszyn", i: "Cel: 19:30. Ostatni mocny sprawdzian." },
+        { d: "2026-05-03", t: "run", a: "Spokojne 8 km", i: "Tlen i dotlenienie mięśni." },
+        { d: "2026-05-04", t: "rest", a: "Wolne", i: "Odpocznij." },
+        { d: "2026-05-05", t: "ball", a: "Trening piłkarski", i: "Uważaj na kontuzje!" },
+        { d: "2026-05-06", t: "run", a: "Rozruch + 4 x 100 m", i: "Bieg 5 km + rytmy na koniec. Don't push too hard." },
+        { d: "2026-05-07", t: "ball", a: "Trening piłkarski", i: "Lekki trening, bez zbędnych spięć." },
+        { d: "2026-05-08", t: "rest", a: "Wolne", i: "Pełen luz. Ładowanie węglowodanów." },
+        { d: "2026-05-09", t: "match", a: "Parkrun (23:00) + MECZ", i: "Parkrun bardzo luźno! Mecz: Zawisza Sośnie. Oszczędzaj nogi!" },
+        { d: "2026-05-10", t: "target", a: "START: BIEG MISIA (10 KM)", i: "Cel: 38:59. Ruszaj po życiówkę! It's your time!" }
+    ];
+
+    function getDayName(dateStr) {
+        return new Date(dateStr).toLocaleDateString('pl-PL', { weekday: 'long' });
+    }
+
+    function createCard(item) {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const isToday = item.d === todayStr;
+        const typeLabels = {
+            run: "Bieganie", ball: "Piłka", match: "MECZ", rest: "Rest", gory: "Góry", target: "START"
+        };
+
+        return `
+            <div class="card type-${item.t} ${isToday ? 'today' : ''}">
+                <div class="card-header">
+                    <div class="date-box">
+                        <div class="date">${item.d}</div>
+                        <div class="day-name">${getDayName(item.d)}</div>
+                    </div>
+                    <span class="tag tag-${item.t}">${typeLabels[item.t]}</span>
+                </div>
+                <div class="activity-title">${item.a}</div>
+                <div class="details">${item.i}</div>
+            </div>
+        `;
+    }
+
+    function init() {
+        const todayStr = new Date().toISOString().split('T')[0];
+        const todayCont = document.getElementById('today-container');
+        const fullCont = document.getElementById('full-schedule');
+
+        let foundToday = false;
+
+        trainingPlan.forEach(item => {
+            const cardHtml = createCard(item);
+            
+            if (item.d === todayStr) {
+                todayCont.innerHTML = cardHtml;
+                foundToday = true;
+            }
+            
+            if (item.d >= todayStr) {
+                fullCont.innerHTML += cardHtml;
+            }
+        });
+
+        if (!foundToday) {
+            todayCont.innerHTML = "<div class='card'>Dzisiaj odpoczywamy! Sprawdź plan na kolejne dni.</div>";
+        }
+    }
+
+    init();
+</script>
+
+</body>
+</html>
