@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Formularz w PHP</title>
+    <script src="script.js"></script>
+    <link rel="icon" href="dawi108.png">
+</head>
+<body>
+    <h1>Twoje ulubione książki</h1>
+    <form action="20260326_folmularzphpplik.php" method="POST">
+        Podaj swoje imię: <input type="text" name="imie"><br>
+        Ile masz lat: <input type="number" name="wiek" min="1"><br>
+        Wybierz ulubione kategorie książek: <br>
+        <label><input type="checkbox" name="kategoria[]" value="przygodowe" checked>przygodowe</label><br>
+        <label><input type="checkbox" name="kategoria[]" value="kryminały">kryminały</label><br>
+        <label><input type="checkbox" name="kategoria[]" value="sci-fi">sci-fi</label><br>
+        <label><input type="checkbox" name="kategoria[]" value="historyczne" checked>historyczne</label><br>
+        <label><input type="checkbox" name="kategoria[]" value="autobiografie">autobiografie</label><br>
+        Podaj ulubionego autora i ulubiony tytuł:<br>
+        <textarea rows="2" cols="80" name="ulubione">Moin ulubionym autorem jest ...</textarea><br>
+        <fieldset>
+            <legend>Ile książek tego autora przeczytałeś?</legend>
+            <label><input type="radio" name="liczba" value="1" checked>1</label><br>
+            <label><input type="radio" name="liczba" value="od 2 do 5">od 2 do 5</label><br>
+            <label><input type="radio" name="liczba" value="od 6 do 10">od 6 do 10</label><br>
+            <label><input type="radio" name="liczba" value="powyżej 10">powyżej 10</label><br>
+        </fieldset><br>
+        Skąd pochodzą Twoje książki?<br>
+        <select name="pochodzenie[]" multiple>
+            <option value="kupuję w księgarni">kupuję w księgarni</option>
+            <option value="wypożyczam w bibliotece" selected>wypożyczam w bibliotece</option>
+            <option value="dostaję w prezencie" selected>dostaję w prezencie</option>
+            <option value="pożyczam od kolegów">pożyczam od kolegów</option>
+        </select><br>
+        Jakie są towje ulubione ekranizacje powieści?<br>
+        <label><input type="checkbox" name="ekranizacje[]" value="W Pustyni i w Puszczy" checked>W Pustyni i w Puszczy</label><br>
+        <label><input type="checkbox" name="ekranizacje[]" value="Władca Pierścieni">Władca Pierścieni</label><br>
+        <label><input type="checkbox" name="ekranizacje[]" value="Hobbit" checked>Hobbit</label><br>
+        <label><input type="checkbox" name="ekranizacje[]" value="Wesele">Wesele</label><br>
+        <label><input type="checkbox" name="ekranizacje[]" value="Lalka">Lalka</label><br>
+        Jakie są twoje ulubione ekranizacje powieści Tolkiena:<br>
+        <select name="Tolkien[]" multiple>
+            <optgroup label="Władca Pierścieni">
+                <option value="Drużyna Pierścienia">Drużyna Pierścienia</option>
+                <option value="Dwie Wieże" selected>Dwie Wieże</option>
+                <option value="Powrót Króla">Powrót Króla</option>
+            </optgroup>
+            <optgroup label="Hobbit">
+                <option value="Niezwykła Podróz">Niezwykła Podróż</option>
+                <option value="Pustkowie Smauga">Pustkowie Smauga</option>
+                <option value="Bitwa Pięciu Armii" selected>Bitwa Pięciu Armii</option>
+            </optgroup>
+        </select><br>
+        <input type="submit" value="Wyślij dane">
+        <input type="reset" value="Wyczyść">
+    </form>
+</body>
+</html>
