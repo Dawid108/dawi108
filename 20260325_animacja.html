@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Animacja w html i CSS</title>
+    <link rel="icon" href="dawi108.png">
+    <script src="script.js"></script>
+    <style>
+        body{
+            background-color: silver;
+        }
+        #pole1{
+            width: 1000px;
+            height: 350px;
+            background-color: blue;
+        }
+        #pole2{
+            clear: both;
+            width: 1000px;
+            height: 150px;
+            background-color: blue;
+        }
+        #main1{
+            width: 50%;
+            float: left;
+        }
+        #main2{
+            width: 50%;
+            float: left;
+        }
+        @keyframes anim1{
+            from{
+                width: 100px;
+                height: 100px;
+                background-color: red;
+                transform: translate(10px, 35px);
+
+            }
+            50%{
+                width: 120px;
+                height: 120px;
+                background-color: darkred;
+                transform: translate(20px, 10px);
+            }
+            to{
+                width: 100px;
+                height: 100px;
+                background-color: red;
+                transform: translate(10px, 35px);
+            }
+        }
+        #paletka1{
+            animation-name: anim1;
+            animation-duration: 3s;
+            animation-timing-function: linear;
+            animation-delay: 1s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-fill-mode: both;
+            animation-play-state: running;
+            border-radius: 50%;
+            border: solid 1px black;
+        }
+        @keyframes anim2{
+            from{
+                width: 100px;
+                height: 100px;
+                background-color: red;
+                transform: translate(380px, 35px);
+
+            }
+            50%{
+                width: 120px;
+                height: 120px;
+                background-color: darkred;
+                transform: translate(335px, 10px);
+            }
+            to{
+                width: 100px;
+                height: 100px;
+                background-color: red;
+                transform: translate(380px, 35px);
+            }
+        }
+        #paletka2{
+            animation-name: anim2;
+            animation-duration: 3s;
+            animation-timing-function: linear;
+            animation-delay: 4s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-fill-mode: both;
+            animation-play-state: running;
+            border-radius: 50%;
+            border: solid 1px black;
+        }
+        @keyframes anim3{
+            from{
+                width: 40px;
+                height: 40px;
+                background-color: white;
+                transform: translate(60px, 350px);
+            }
+            50%{
+                width: 35px;
+                height: 35px;
+                background-color: wheat;
+                transform: translate(500px, 250px);
+            }
+            to{
+                width: 40px;
+                height: 40px;
+                background-color: white;
+                transform: translate(900px, 350px);
+            }
+        }
+        #pilka{
+            animation-name: anim3;
+            animation-duration: 3s;
+            animation-timing-function: linear;
+            animation-delay: 1s;
+            animation-iteration-count: infinite;
+            animation-direction: alternate;
+            animation-fill-mode: both;
+            animation-play-state: running;
+            border-radius: 50%;
+            border: solid 1px black;
+        }
+    </style>
+</head>
+<body>
+    <div id="pole1">
+        <div id="pilka"></div>
+    </div>
+    <div id="pole2">
+        <div id="main1">
+            <div id="paletka1"></div>
+        </div>
+        <div id="main2">
+            <div id="paletka2"></div>
+        </div>
+    </div>
+</body>
+</html>
