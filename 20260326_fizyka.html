@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fizyka</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Fizyka", q:"Czym zajmuje się prawo Hooke'a?", a:"Opisuje zależność siły odkształcającej od wydłużenia sprężyny", b:"Określa wpływ temperatury na stopień rozciągnięcia materiału", c:"Wyjaśnia zasady przepływu prądu przez metalowe przewodniki", d:"Definiuje zależność masy ciała od jego objętości w spoczynku"},
+  {cat:"Fizyka", q:"W jakiej jednostce wyrażamy siłę działającą na sprężynę?", a:"W niutonach oznaczanych symbolem N", b:"W dżulach oznaczanych symbolem J", c:"W watach oznaczanych symbolem W", d:"W hercach oznaczanych symbolem Hz"},
+  {cat:"Fizyka", q:"Co oznacza symbol k we wzorze na prawo Hooke'a?", a:"Współczynnik sprężystości danego ciała", b:"Całkowitą masę zawieszonego ciężarka", c:"Przyspieszenie ziemskie w danym punkcie", d:"Energię kinetyczną układu drgającego"},
+  {cat:"Fizyka", q:"Co się dzieje, gdy współczynnik k jest bardzo duży?", a:"Sprężyna jest twardsza i trudniej ją rozciągnąć", b:"Sprężyna staje się bardziej elastyczna i miękka", c:"Sprężyna wydłuża się znacznie pod małą siłą", d:"Sprężyna traci swoje właściwości odkształcania"},
+  {cat:"Fizyka", q:"Jakie są cechy ruchu drgającego według notatek?", a:"Powtarzalny, impulsywny i ma określony zasięg", b:"Jednostajny, powolny oraz o stałym kierunku", c:"Chaotyczny, nieprzewidywalny i bez punktu stałego", d:"Prostoliniowy, ciągły oraz o zmiennej masie"},
+  {cat:"Fizyka", q:"Co to jest położenie równowagi?", a:"Punkt, w którym siły działające na ciało się równoważą", b:"Najwyższy punkt, do którego dociera drgające ciało", c:"Moment, w którym prędkość drgań spada do zera", d:"Miejsce, gdzie energia kinetyczna jest najniższa"},
+  {cat:"Fizyka", q:"Czym jest siła zwracająca?", a:"Siłą pchającą ciało z powrotem do punktu równowagi", b:"Siłą oporu powietrza hamującą ruch wahadła", c:"Siłą grawitacji działającą zawsze pionowo w dół", d:"Siłą zewnętrzną podtrzymującą drgania wymuszone"},
+  {cat:"Fizyka", q:"Jaki jest związek drgań z falami?", a:"Drganie źródła jest bezpośrednią przyczyną fali", b:"Fale powstają niezależnie od ruchu drgającego", c:"Każda fala musi zaniknąć, aby powstało drganie", d:"Drgania są jedynie skutkiem ubocznym ruchu fali"},
+  {cat:"Fizyka", q:"Jak zdefiniowana jest amplituda (A)?", a:"Jako maksymalne wychylenie z położenia równowagi", b:"Jako całkowita droga przebyta w jednym okresie", c:"Jako liczba pełnych drgań wykonanych w sekundzie", d:"Jako czas potrzebny na powrót do punktu środka"},
+  {cat:"Fizyka", q:"Czym jest okres drgań (T)?", a:"Czasem potrzebnym na wykonanie jednego pełnego drgania", b:"Maksymalną odległością od osi czasu na wykresie", c:"Liczbą drgań przypadających na jednostkę czasu", d:"Momentem, w którym sprężyna jest najbardziej napięta"},
+  {cat:"Fizyka", q:"Jak obliczamy częstotliwość (f)?", a:"Korzystając ze wzoru f = 1 dzielone przez T", b:"Mnożąc amplitudę przez współczynnik sprężystości", c:"Dzieląc siłę przez wydłużenie danej sprężyny", d:"Dodając do siebie energię kinetyczną i potencjalną"},
+  {cat:"Fizyka", q:"Czym są drgania tłumione?", a:"Drganiami, których amplituda maleje wraz z czasem", b:"Drganiami, które wymagają stałej siły zewnętrznej", c:"Drganiami o stałej i niezmiennej częstotliwości", d:"Drganiami odbywającymi się wyłącznie w próżni"},
+  {cat:"Fizyka", q:"Na czym polegają drgania wymuszone?", a:"Na ruchu pod wpływem zewnętrznej siły okresowej", b:"Na stopniowym zatrzymywaniu się przez opór ośrodka", c:"Na swobodnym ruchu ciężarka po jednym pchnięciu", d:"Na zmianie długości sprężyny bez ruchu powrotnego"},
+  {cat:"Fizyka", q:"W jakiej jednostce podajemy częstotliwość?", a:"W Hercach oznaczanych skrótem Hz", b:"W metrach na sekundę kwadrat", c:"W niutonometrach na dżul", d:"W kilogramach na metr sześcienny"},
+  {cat:"Fizyka", q:"Co to jest izochronizm drgań wahadła?", a:"Zasada, że czas pełnego cyklu jest stały", b:"Zjawisko zmiany okresu przy małym kącie", c:"Zależność między masą a długością linki", d:"Proces zanikania drgań przez tarcie liny"},
+  {cat:"Fizyka", q:"Co głosi Zasada Zachowania Energii?", a:"Energia nie ginie, jedynie zmienia swoją formę", b:"Energia kinetyczna zawsze zamienia się w masę", c:"Suma energii w układzie zawsze dąży do zera", d:"Energia potencjalna jest niezależna od wysokości"},
+  {cat:"Fizyka", q:"Z czym związana jest energia kinetyczna?", a:"Z ruchem ciała i jest największa w środku", b:"Z odkształceniem sprężyny w punktach zwrotnych", c:"Z wysokością, na której znajduje się ciężarek", d:"Z twardością materiału, z którego jest sprężyna"},
+  {cat:"Fizyka", q:"Kiedy energia kinetyczna jest maksymalna?", a:"Gdy ciało przechodzi przez położenie równowagi", b:"Gdy sprężyna jest ściśnięta do samego końca", c:"Gdy ciężarek znajduje się w najwyższym punkcie", d:"Gdy prędkość drgającego ciała wynosi zero J"},
+  {cat:"Fizyka", q:"Co charakteryzuje najwyższy punkt drgań?", a:"Energia kinetyczna wynosi zero, a grawitacji max", b:"Energia kinetyczna i potencjalna są sobie równe", c:"Ciężarek porusza się ze swoją największą prędkością", d:"Sprężyna nie posiada żadnej energii sprężystości"},
+  {cat:"Fizyka", q:"Co dzieje się w najniższym punkcie drgań?", a:"Energia sprężystości jest ogromna, a kinetyczna zero", b:"Ciało osiąga najwyższą wartość energii grawitacji", c:"Prędkość ciężarka jest najwyższa w całym cyklu", d:"Sprężyna wraca do swojej naturalnej długości zero"},
+  {cat:"Fizyka", q:"Co jest jednostką okresu (T)?", a:"Sekunda oznaczana małą literą s", b:"Metr oznaczany małą literą m", c:"Gram oznaczany małą literą g", d:"Wolt oznaczany dużą literą V"},
+  {cat:"Fizyka", q:"Jak odczytać amplitudę z wykresu?", a:"To odległość od osi czasu do szczytu wykresu", b:"To czas między dwoma górnymi punktami fali", c:"To długość całej fali narysowanej na papierze", d:"To liczba przecięć wykresu z osią poziomą"},
+  {cat:"Fizyka", q:"Jaka energia zależy od wysokości ciężarka?", a:"Energia potencjalna grawitacji", b:"Energia potencjalna sprężystości", c:"Energia kinetyczna ruchu", d:"Energia wewnętrzna sprężyny"},
+  {cat:"Fizyka", q:"Który przykład drgań pochodzi z notatek?", a:"Drganie strun głosowych człowieka", b:"Ruch samochodu po autostradzie", c:"Spadanie kamienia z dużej góry", d:"Przepływ wody w rurach miejskich"},
+  {cat:"Fizyka", q:"Co oznacza symbol delta l?", a:"Przyrost długości, czyli wydłużenie", b:"Siłę sprężystości w niutonach", c:"Okres drgań w sekundach", d:"Częstotliwość w hercach"},
+  {cat:"Fizyka", q:"W jakim stanie jest ciało w równowadze?", a:"W bezruchu, dopóki coś go nie wytrąci", b:"W ciągłym ruchu o dużej prędkości", c:"W punkcie o najwyższej energii potencjalnej", d:"W miejscu maksymalnego naciągu sprężyny"},
+  {cat:"Fizyka", q:"Jak zmienia się amplituda w drganiach tłumionych?", a:"Maleje wraz z upływem czasu trwania ruchu", b:"Rośnie gwałtownie przy każdym kolejnym cyklu", c:"Pozostaje idealnie stała przez cały czas", d:"Zmienia się w sposób zupełnie losowy"},
+  {cat:"Fizyka", q:"Co dzieje się z ciężarkiem w punktach zwrotnych?", a:"Zatrzymuje się na ułamek sekundy", b:"Przyspiesza do swojej prędkości max", c:"Traci całą energię potencjalną", d:"Zmienia swoją masę na energię"},
+  {cat:"Fizyka", q:"Co jest źródłem fali dźwiękowej?", a:"Ciało, które wykonuje drgania", b:"Ciało, które porusza się prosto", c:"Powietrze, które stoi w miejscu", d:"Próżnia, w której nie ma materii"},
+  {cat:"Fizyka", q:"W jakiej jednostce wyrażamy wydłużenie w SI?", a:"W metrach oznaczanych literą m", b:"W niutonach na metr kwadratowy", c:"W dżulach na kilogram masy", d:"W centymetrach sześciennych"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+}
+
+newGame();
+</script>
+</body>
+</html>
