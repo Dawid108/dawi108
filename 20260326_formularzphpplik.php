@@ -50,7 +50,7 @@
         $ekranizacje = $_POST['ekranizacje'];
         $Tolkien = $_POST['Tolkien'];
 
-        $dp = fopen('dane.txt', 'w'); //dp - deskryptor pliku
+        $dp = fopen('20260326_dane.txt', 'w'); //dp - deskryptor pliku
 
         $tekst1 = "Jesteś $imie i masz $wiek lat.";
         echo "$tekst1<br>";
