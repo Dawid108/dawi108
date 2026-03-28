@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jelenia Góra</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="script.js"></script>
+    <link rel="icon" href="dawi108.png">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #27ae60;
+            --accent: #e67e22;
+            --bg: #f4f7f6;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 2rem 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav {
+            position: sticky;
+            top: 0;
+            background: white;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--primary);
+            font-weight: bold;
+            padding: 5px 15px;
+            border-radius: 20px;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        nav a:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        section {
+            background: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .card {
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 4px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 8px 15px;
+            margin: 5px 5px 5px 0;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .btn-web { background: #3498db; color: white; }
+        .btn-map { background: #e74c3c; color: white; }
+        .btn-trail { background: #27ae60; color: white; }
+
+        .btn:hover { opacity: 0.8; }
+
+        .badge-list { list-style: none; padding: 0; }
+        .badge-item { margin-bottom: 15px; border-bottom: 1px dashed #ddd; padding-bottom: 10px; }
+
+        .stats { font-size: 0.8rem; color: #666; margin: 5px 0; }
+
+        footer { text-align: center; padding: 20px; color: #777; font-size: 0.9rem; }
+
+        @media (max-width: 600px) {
+            .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1><i class="fas fa-mountain"></i> Kierunek: Jelenia Góra</h1>
+    <p>Przewodnik po odznakach, trasach i atrakcjach</p>
+</header>
+
+<nav>
+    <a href="#odznaki">Odznaki</a>
+    <a href="#kaczawskie">Góry Kaczawskie</a>
+    <a href="#rudawy">Rudawy Janowickie</a>
+    <a href="#jelenia">Jelenia Góra</a>
+    <a href="#okolice">Okolice</a>
+</nav>
+
+<div class="container">
+
+    <section id="odznaki">
+        <h2><i class="fas fa-medal"></i> Odznaki Turystyczne i Mapy</h2>
+        <div class="badge-list">
+            <div class="badge-item">
+                <strong>1. Korona Kaczawska</strong><br>
+                <a href="https://dawid108.github.io/ksiazeczki/koronakaczawska.html" class="btn btn-web">Strona</a>
+                <a href="https://maps.app.goo.gl/umeMAnQDZjDNviCh8" class="btn btn-map">Mapa</a>
+            </div>
+            <div class="badge-item">
+                <strong>2. Miłośnik Rudaw Janowickich</strong><br>
+                <a href="https://dawid108.github.io/ksiazeczki/milosnikrudawjanowickich.html" class="btn btn-web">Strona</a>
+                <a href="https://maps.app.goo.gl/5ifJkRZxjojx4HUb6" class="btn btn-map">Mapa</a>
+            </div>
+            <div class="badge-item">
+                <strong>3. Korona Gór Kaczawskich</strong><br>
+                <a href="https://dawid108.github.io/ksiazeczki/koronagorkaczawskichkzkgrp.html" class="btn btn-web">Strona</a>
+                <a href="https://maps.app.goo.gl/y1T2wb4JXC3NPP4Z9" class="btn btn-map">Mapa</a>
+            </div>
+            <div class="badge-item">
+                <strong>4. Korona Rudaw Janowickich</strong><br>
+                <a href="https://dawid108.github.io/ksiazeczki/koronarudawjanowickichkzkgrp.html" class="btn btn-web">Strona</a>
+                <a href="https://maps.app.goo.gl/xcP4eNi5oZ7HFEda9" class="btn btn-map">Mapa</a>
+            </div>
+            <div class="badge-item">
+                <strong>5. Szlak Zamków Piastowskich</strong><br>
+                <a href="https://dawid108.github.io/ksiazeczki/szlakzamkowpiastowskich.html" class="btn btn-web">Strona</a>
+                <a href="https://maps.app.goo.gl/vJZYZDCuogbiWZYV6" class="btn btn-map">Mapa</a>
+            </div>
+            <div class="badge-item">
+                <strong>6. Atrakcje Krainy Wygasłych Wulkanów</strong><br>
+                <a href="https://maps.app.goo.gl/4mJQyn9iM5F6VjzE6" class="btn btn-map">Mapa</a>
+            </div>
+            <div class="badge-item">
+                <strong>7. Wstęga Kaczawy</strong><br>
+                <a href="https://maps.app.goo.gl/WhHE13bL2oU5hZoe8" class="btn btn-map">Mapa</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="kaczawskie">
+        <h2><i class="fas fa-hiking"></i> Trasy: Góry Kaczawskie</h2>
+        <div class="grid">
+            <div class="card">
+                <strong>1. Górzec (442 m)</strong>
+                <div class="stats">3 km | ok. 59 min</div>
+                <a href="https://mapy.com/s/pekujaleba" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>2. Rosocha (464 m)</strong>
+                <div class="stats">728 m | ok. 11 min</div>
+                <a href="https://mapy.com/s/kubugoboju" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>3. Duży Młynik (303 m)</strong>
+                <div class="stats">2,5 km | ok. 38 min</div>
+                <a href="https://mapy.com/s/rapohoreke" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>4. Średnia Góra (427 m)</strong>
+                <div class="stats">2,1 km | ok. 32 min</div>
+                <a href="https://mapy.com/s/rodavujufu" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>5. Dłużek (592 m)</strong>
+                <div class="stats">6,2 km | ok. 1h 49 min</div>
+                <a href="https://mapy.com/s/kejotakuja" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>6. Miłek (596 m)</strong>
+                <div class="stats">3 km | ok. 1h 17 min</div>
+                <a href="https://mapy.com/s/fuduvelefe" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>7. Lubrza (666 m)</strong>
+                <div class="stats">3,5 km | ok. 1h 8 min</div>
+                <a href="https://mapy.com/s/denudopubo" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>8. Leśniak (677 m)</strong>
+                <div class="stats">6 km | ok. 1h 35 min</div>
+                <a href="https://mapy.com/s/jenegezube" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="rudawy">
+        <h2><i class="fas fa-map-marked-alt"></i> Trasy: Rudawy Janowickie</h2>
+        <div class="grid">
+            <div class="card">
+                <strong>1. Mrowiec (507 m)</strong>
+                <div class="stats">2,7 km | 46 min</div>
+                <a href="https://mapy.com/s/pebehubemu" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>2. Zamek Kessela</strong>
+                <div class="stats">1,2 km | 23 min</div>
+                <a href="https://mapy.com/s/razajocesu" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>3. Dłużyna (465 m)</strong>
+                <div class="stats">2 km | 30 min</div>
+                <a href="https://mapy.com/s/koracucako" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>4. Brama Klobera</strong>
+                <div class="stats">1,2 km | 19 min</div>
+                <a href="https://mapy.com/s/gucujohuma" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>5. Brzeźnik (555 m)</strong>
+                <div class="stats">1,5 km | 31 min</div>
+                <a href="https://mapy.com/s/nerosetoba" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>6. Kowarska Skała</strong>
+                <div class="stats">851 m | 18 min</div>
+                <a href="https://mapy.com/s/lorebufunu" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>7. Rudnik (853 m)</strong>
+                <div class="stats">2,8 km | 48 min</div>
+                <a href="https://mapy.com/s/fenujemazo" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>8. Wilkowyja i Jaworowa</strong>
+                <div class="stats">4,3 km | 1h 10 min</div>
+                <a href="https://mapy.com/s/gasohujona" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>9. Pokrzywna i Bucza Góra</strong>
+                <div class="stats">4,8 km | 1h 18 min</div>
+                <a href="https://mapy.com/s/hanozufeve" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+            <div class="card">
+                <strong>10. Świnia Góra (750 m)</strong>
+                <div class="stats">4,5 km | 1h 28 min</div>
+                <a href="https://mapy.com/s/pesuperago" class="btn btn-trail">Zobacz trasę</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="jelenia">
+        <h2><i class="fas fa-city"></i> Atrakcje Jeleniej Góry</h2>
+        <div class="grid">
+            <div class="card">Pałac Paulinum <a href="https://maps.app.goo.gl/6sMz55ukz1kYz6R46" class="btn-map btn">Mapa</a></div>
+            <div class="card">Muzeum Historii i Militariów <a href="https://maps.app.goo.gl/wSM7Nuum2eXLTv7M9" class="btn-map btn">Mapa</a></div>
+            <div class="card">Time Gates - Bramy Czasu <a href="https://maps.app.goo.gl/7ey3ZekNuUEEv7qC8" class="btn-map btn">Mapa</a></div>
+            <div class="card">Muzeum Karkonoskie <a href="https://maps.app.goo.gl/4BZFYTbkG4vDDxhQ7" class="btn-map btn">Mapa</a></div>
+            <div class="card">Geograficzne centrum miasta <a href="https://maps.app.goo.gl/BTc5EGVDwJM96FtS6" class="btn-map btn">Mapa</a></div>
+            <div class="card">Baszta Zamkowa <a href="https://maps.app.goo.gl/P1e4vRm9Jg37vN4Q9" class="btn-map btn">Mapa</a></div>
+        </div>
+    </section>
+
+    <section id="okolice">
+        <h2><i class="fas fa-map-signs"></i> Atrakcje w Pobliżu</h2>
+        <div class="grid">
+            <div class="card">Perła Zachodu <a href="https://maps.app.goo.gl/f323QAGjXmX4L3ra8" class="btn-map btn">Mapa</a></div>
+            <div class="card">Pilchowicka Grzęda <a href="https://maps.app.goo.gl/R5UHLBuEdFVi1Tf66" class="btn-map btn">Mapa</a></div>
+            <div class="card">Zapora Pilchowice <a href="https://maps.app.goo.gl/v5tebU76FzmFFBd9A" class="btn-map btn">Mapa</a></div>
+            <div class="card">Pałac Czernica <a href="https://maps.app.goo.gl/XS6Lk6Z7HujVZmiy7" class="btn-map btn">Mapa</a></div>
+            <div class="card">Wieża Widokowa Radomierz <a href="https://maps.app.goo.gl/XZhi5VhEUDT6hDo46" class="btn-map btn">Mapa</a></div>
+            <div class="card">Parkowa Wieża Widokowa <a href="https://maps.app.goo.gl/94LhTNqHthukN3vP7" class="btn-map btn">Mapa</a></div>
+            <div class="card">Park Miniatur Kowary <a href="https://maps.app.goo.gl/7mrC2yGQ64VEh9iw7" class="btn-map btn">Mapa</a></div>
+            <div class="card">Termy Cieplickie <a href="https://maps.app.goo.gl/QvNqyRvSesnDgThv8" class="btn-map btn">Mapa</a></div>
+            <div class="card">Uzdrowisko Cieplice <a href="https://maps.app.goo.gl/3wZxWA3WZRMNEnyg6" class="btn-map btn">Mapa</a></div>
+            <div class="card">Góra Witosza <a href="https://maps.app.goo.gl/aRQ2NedBwLUVogg29" class="btn-map btn">Mapa</a></div>
+            </div>
+    </section>
+
+</div>
+
+<footer>
+    <p>&copy; 2026 - Twój Mobilny Przewodnik Turystyczny</p>
+</footer>
+
+</body>
+</html>
