@@ -107,7 +107,7 @@
 <body>
   <div class="app">
     <div class="topbar">
-      <div class="pill" id="lifePill"><span class="label">Życia:</span> <span id="lives">3</span> <span id="timerWrap" style="display:none">&nbsp;&nbsp;|&nbsp;&nbsp;<span class="label">Czas:</span> <span id="timer">05:00</span></span></div>
+      <div class="pill" id="lifePill"><span class="label">Życia:</span> <span id="lives">9</span> <span id="timerWrap" style="display:none">&nbsp;&nbsp;|&nbsp;&nbsp;<span class="label">Czas:</span> <span id="timer">05:00</span></span></div>
       <div class="pill"><span class="label">Punkty:</span> <span id="points">0</span></div>
     </div>
 
@@ -130,7 +130,7 @@
   <script>
     // ====== NARZĘDZIA ======
     let dawid108 = localStorage.getItem("dawid108") || 0;
-    const storageKey = 'inf03_game_2526';
+    const storageKey = 'szkola';
     const recordKey = storageKey + '_record';
     const lastKey = storageKey + '_last';
 
@@ -467,7 +467,7 @@
 
     // ====== STAN GRY ======
     let points = 0;
-    let lives = 3;
+    let lives = 9;
     let queue = []; // kolejka pytań (najpierw E, potem M, potem H – każda część przetasowana)
     let idx = 0;    // indeks aktualnego pytania
 
@@ -518,9 +518,9 @@
     // ====== LOGIKA GRY ======
     function startGame(){
       // reset stanu
-      points = 0; lives = 3; idx = 0; hardStarted = false; remaining = HARD_SECONDS;
+      points = 0; lives = 9; idx = 0; hardStarted = false; remaining = HARD_SECONDS;
       $points.textContent = '0';
-      $lives.textContent = '3';
+      $lives.textContent = '9';
       stopTimer();
       $timerWrap.style.display = 'none';
       updateTimerUI();
@@ -613,7 +613,7 @@
       }
 
       // przejście dalej po krótkiej pauzie
-      const delay = isCorrect ? 500 : 5000;
+      const delay = isCorrect ? 500 : 10000;
       setTimeout(()=>{
         if(lives <= 0){
           endGame('Koniec gry – brak żyć.');
