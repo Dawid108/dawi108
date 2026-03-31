@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Ocen Mamy</title>
+    <style>
+        body { font-family: sans-serif; max-width: 600px; margin: 20px auto; padding: 10px; background-color: #f4f4f9; }
+        .card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        h1, h2 { color: #333; text-align: center; }
+        label { display: block; margin: 10px 0 5px; font-weight: bold; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px; }
+        .result { text-align: center; font-size: 1.2em; padding: 15px; border-radius: 8px; background: #e7f3ff; border: 1px solid #b2d7ff; }
+        .grade { font-weight: bold; font-size: 2em; color: #d32f2f; display: block; margin-top: 5px; }
+        table { width: 100%; border-collapse: collapse; background: white; font-size: 14px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #eee; }
+        .container-scroll { overflow-x: auto; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>Kalkulator Ocen</h1>
+        
+        <label for="maxPoints">Maksymalna liczba punktów:</label>
+        <input type="number" id="maxPoints" placeholder="Np. 24" oninput="calculate()">
+
+        <label for="userPoints">Uzyskane punkty:</label>
+        <input type="number" id="userPoints" placeholder="Np. 18" oninput="calculate()">
+
+        <div class="result" id="resultArea">
+            Procent: <span id="percent">0%</span>
+            <span class="grade" id="gradeValue">-</span>
+        </div>
+    </div>
+
+    <h2>Tabela z karteczek (Podgląd)</h2>
+    <div class="container-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>Max Pkt</th>
+                    <th>Ocena 6</th>
+                    <th>Ocena 5</th>
+                    <th>Ocena 4</th>
+                    <th>Ocena 3</th>
+                    <th>Ocena 2</th>
+                    <th>Ocena 1</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        const gradingData = [
+            {max: 40, g6: "40", g5: "39-36", g4: "35-28", g3: "27-18", g2: "17-12", g1: "11-0"},
+            {max: 38, g6: "38", g5: "37-34", g4: "33-27", g3: "26-17", g2: "16-12", g1: "11-0"},
+            {max: 35, g6: "35", g5: "34-32", g4: "31-25", g3: "24-16", g2: "15-11", g1: "10-0"},
+            {max: 33, g6: "33", g5: "32-30", g4: "29-23", g3: "22-15", g2: "14-10", g1: "9-0"},
+            {max: 32, g6: "32", g5: "31-29", g4: "28-23", g3: "22-15", g2: "14-10", g1: "9-0"},
+            {max: 30, g6: "30", g5: "29-27", g4: "26-21", g3: "20-14", g2: "13-9", g1: "8-0"},
+            {max: 28, g6: "28", g5: "27-26", g4: "25-20", g3: "19-13", g2: "12-9", g1: "8-0"},
+            {max: 27, g6: "27", g5: "26-25", g4: "24-19", g3: "18-13", g2: "12-8", g1: "7-0"},
+            {max: 26, g6: "26", g5: "25-24", g4: "23-19", g3: "18-12", g2: "11-8", g1: "7-0"},
+            {max: 25, g6: "25", g5: "24-23", g4: "22-18", g3: "17-11", g2: "10-8", g1: "7-0"},
+            {max: 24, g6: "24", g5: "23-22", g4: "21-17", g3: "16-11", g2: "10-8", g1: "7-0"},
+            {max: 23, g6: "23", g5: "22-21", g4: "20-16", g3: "15-11", g2: "10-7", g1: "6-0"},
+            {max: 22, g6: "22", g5: "21-20", g4: "19-16", g3: "15-10", g2: "9-7", g1: "6-0"},
+            {max: 21, g6: "21", g5: "20-19", g4: "18-15", g3: "14-10", g2: "9-7", g1: "6-0"},
+            {max: 20, g6: "20", g5: "19-18", g4: "17-14", g3: "13-9", g2: "8-6", g1: "5-0"},
+            {max: 19, g6: "19", g5: "18", g4: "17-14", g3: "13-9", g2: "8-6", g1: "5-0"},
+            {max: 18, g6: "18", g5: "17", g4: "16-13", g3: "12-9", g2: "8-6", g1: "5-0"},
+            {max: 17, g6: "17", g5: "16", g4: "15-12", g3: "11-8", g2: "7-6", g1: "5-0"},
+            {max: 16, g6: "16", g5: "15", g4: "14-12", g3: "11-8", g2: "7-5", g1: "4-0"},
+            {max: 15, g6: "15", g5: "14", g4: "13-11", g3: "10-7", g2: "6-5", g1: "4-0"},
+            {max: 12, g6: "12", g5: "11", g4: "10-9", g3: "8-5", g2: "4", g1: "3-0"},
+            {max: 11, g6: "11", g5: "10", g4: "9-8", g3: "7-5", g2: "4", g1: "3-0"},
+            {max: 10, g6: "10", g5: "9-8", g4: "7", g3: "6-5", g2: "4-3", g1: "2-0"},
+            {max: 8, g6: "-", g5: "8", g4: "7-6", g3: "5-4", g2: "3", g1: "2-0"}
+        ];
+
+        // Budowanie tabeli
+        const tableBody = document.getElementById('tableBody');
+        gradingData.forEach(row => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${row.max}</td><td>${row.g6}</td><td>${row.g5}</td><td>${row.g4}</td><td>${row.g3}</td><td>${row.g2}</td><td>${row.g1}</td>`;
+            tableBody.appendChild(tr);
+        });
+
+        function calculate() {
+            const max = parseFloat(document.getElementById('maxPoints').value);
+            const user = parseFloat(document.getElementById('userPoints').value);
+            
+            if (!max || isNaN(user)) {
+                document.getElementById('percent').innerText = "0%";
+                document.getElementById('gradeValue').innerText = "-";
+                return;
+            }
+
+            const percent = (user / max) * 100;
+            document.getElementById('percent').innerText = Math.round(percent) + "%";
+
+            // Logika oceny na podstawie % z kartki (kartkówki)
+            let grade = "1";
+            if (percent >= 90) grade = "6 (bdb)";
+            else if (percent >= 70) grade = "4 (db)";
+            else if (percent >= 45) grade = "3 (dost)";
+            else if (percent >= 30) grade = "2 (dop)";
+            else grade = "1 (ndst)";
+
+            // Specyficzna logika dla sprawdzianów z tabeli (jeśli istnieje wpis)
+            const manualRow = gradingData.find(r => r.max === max);
+            if (manualRow) {
+                if (user >= parseInt(manualRow.g6)) grade = "6";
+                else if (checkRange(manualRow.g5, user)) grade = "5";
+                else if (checkRange(manualRow.g4, user)) grade = "4";
+                else if (checkRange(manualRow.g3, user)) grade = "3";
+                else if (checkRange(manualRow.g2, user)) grade = "2";
+                else grade = "1";
+            }
+
+            document.getElementById('gradeValue').innerText = grade;
+        }
+
+        function checkRange(rangeStr, val) {
+            if (rangeStr.includes('-')) {
+                const parts = rangeStr.split('-').map(Number);
+                const high = Math.max(...parts);
+                const low = Math.min(...parts);
+                return val >= low && val <= high;
+            }
+            return val == parseInt(rangeStr);
+        }
+    </script>
+</body>
+</html>
