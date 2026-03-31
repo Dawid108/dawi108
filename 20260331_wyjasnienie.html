@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyjaśnienie Zadań Egzaminacyjnych</title>
+<script src="script.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+        header {
+            text-align: center;
+            padding: 40px 0;
+            background: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .container {
+            display: grid;
+            gap: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 5px solid #3498db;
+        }
+        .card h2 {
+            margin-top: 0;
+            color: #2c3e50;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .question {
+            font-weight: bold;
+            color: #e67e22;
+        }
+        .answer {
+            background: #e8f6ef;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: bold;
+            color: #27ae60;
+        }
+        .explanation {
+            font-size: 0.95rem;
+            color: #555;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            background: #3498db;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Baza Wiedzy IT</h1>
+    <p>Wyjaśnienie zadań z testu kwalifikacyjnego</p>
+</header>
+
+<div class="container" id="content">
+    </div>
+
+<script>
+    const zadania = [
+        {
+            cat: "CSS",
+            q: "Wcięcie pierwszej linii akapitu na 30 pikseli uzyska się za pomocą zapisu:",
+            a: "p { text-indent: 30px; }",
+            desc: "Właściwość <code>text-indent</code> odpowiada bezpośrednio za wcięcie akapitowe (pierwszego wiersza). Pozostałe opcje jak <code>line-height</code> (interlinia) czy <code>text-spacing</code> (nieistniejąca w tym kontekście) służą do czegoś innego."
+        },
+        {
+            cat: "Grafika",
+            q: "Aby zbadać rozkład ilościowy poszczególnych kolorów zdjęcia, należy użyć:",
+            a: "histogramu",
+            desc: "Histogram to wykres słupkowy, który pokazuje, ile pikseli o danej jasności lub kolorze znajduje się na obrazie. Desaturacja usuwa kolor, a rozmycie Gaussa rozmywa detale."
+        },
+        {
+            cat: "Bazy Danych",
+            q: "Tworzenie raportu sprzedanych książek z tytułami i nazwiskami autorów wymaga:",
+            a: "Zdefiniowania relacji 1..n oraz stworzenia kwerendy łączącej obie tabele",
+            desc: "Jeden autor może napisać wiele książek (relacja 1 do wielu - 1..n). Aby pobrać dane z dwóch tabel (tytuł z jednej, nazwisko z drugiej), musimy je połączyć (JOIN) w jednej kwerendzie."
+        },
+        {
+            cat: "JavaScript",
+            q: "W podanej definicji obiektu metodą jest element o nazwie:",
+            a: "oblicz",
+            desc: "W programowaniu obiektowym 'metoda' to funkcja przypisana do właściwości obiektu. W kodzie <code>oblicz: function() {...}</code>, <code>oblicz</code> staje się metodą, ponieważ przechowuje definicję funkcji."
+        },
+        {
+            cat: "Testowanie",
+            q: "Testy wydajnościowe mają na celu sprawdzenie:",
+            a: "stopnia spełnienia wymagań wydajnościowych przez system lub moduł",
+            desc: "Testy wydajnościowe (Performance Testing) sprawdzają jak system zachowuje się pod obciążeniem, np. czas odpowiedzi, stabilność i przepustowość."
+        },
+        {
+            cat: "PHP",
+            q: "Jaka treść komunikatu powinna być wstawiona w kodzie PHP przy braku połączenia?",
+            a: "Błąd połączenia z serwerem SQL",
+            desc: "Funkcja <code>mysql_connect</code> (choć przestarzała) służy do nawiązywania połączenia. Instrukcja <code>if(!$a)</code> sprawdza, czy połączenie się NIE udało (negacja), więc naturalnym komunikatem jest informacja o błędzie połączenia."
+        },
+        {
+            cat: "PHP",
+            q: "Fragment kodu z pętlą while wypisze:",
+            a: "samą nazwę konta, czyli 'adres'",
+            desc: "Pętla wykonuje się dopóki <code>$i</code> jest mniejsze od długości ciągu ORAZ dopóki bieżący znak NIE jest małpą (<code>@</code>). Gdy napotka '@', przerywa działanie, więc wypisze tylko znaki przed tym symbolem."
+        },
+        {
+            cat: "SQL / Uprawnienia",
+            q: "Po wykonaniu poleceń GRANT ALL i REVOKE SELECT, UPDATE, użytkownik będzie miał prawa do:",
+            a: "tworzenia tabeli i wypełniania jej danymi",
+            desc: "Najpierw nadano wszystkie prawa (GRANT ALL). Potem odebrano (REVOKE) prawo do podglądu (SELECT) i aktualizacji (UPDATE). Zostały więc prawa takie jak INSERT (wypełnianie) czy CREATE (tworzenie)."
+        },
+        {
+            cat: "Grafika",
+            q: "Które ze zdań opisuje grafikę wektorową?",
+            a: "Zapisywany obraz jest opisywany za pośrednictwem figur geometrycznych umieszczonych w układzie współrzędnych",
+            desc: "To kluczowa cecha wektorów – nie składają się z siatki pikseli (to domena rastrów), lecz z matematycznych opisów kształtów (punktów, linii, krzywych), co pozwala na ich dowolne skalowanie bez straty jakości."
+        }
+    ];
+
+    const container = document.getElementById('content');
+
+    zadania.forEach(z => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+            <span class="tag">${z.cat}</span>
+            <p class="question">${z.q}</p>
+            <div class="answer">Poprawna odpowiedź: ${z.a}</div>
+            <p class="explanation"><strong>Dlaczego?</strong> ${z.desc}</p>
+        `;
+        container.appendChild(card);
+    });
+</script>
+
+</body>
+</html>
