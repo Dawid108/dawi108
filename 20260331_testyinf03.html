@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>INF03 – Testy</title>
+  <link rel="icon" href="dawi108.png" type="image/png">
+  <script src="script.js"></script>
+  <link rel="manifest" href="20250830_testy.json">
+  <style>
+    :root{
+      --bg:#0f1226; /* przyjemne, ciemne tło */
+      --card:#171a36;
+      --accent:#6ee7ff;
+      --accent-2:#a78bfa;
+      --text:#eaf2ff;
+      --muted:#9aa4c7;
+      --danger:#ff6b6b;
+      --success:#6bff95;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% -10%, #1d2248, transparent),
+                  radial-gradient(900px 700px at 120% 10%, #1c2b4f, transparent),
+                  var(--bg);
+      color:var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:16px;
+    }
+    .app{
+      width:min(900px, 100%);
+    }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px; margin-bottom:12px;
+      font-weight:700; letter-spacing:.3px;
+    }
+    .pill{
+      background:linear-gradient(135deg, rgba(110,231,255,.2), rgba(167,139,250,.15));
+      border:1px solid rgba(255,255,255,.08);
+      padding:10px 14px; border-radius:999px; backdrop-filter: blur(6px);
+      display:flex; align-items:center; gap:8px;
+      box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    }
+    .pill .label{color:var(--muted); font-weight:600}
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:20px; padding:18px; box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    .question{ margin-bottom:14px; }
+    .question h2{ margin:0 0 10px 0; font-size:20px; font-weight:800; }
+    .question small{ color:var(--muted); font-weight:600 }
+
+    .media{ margin:12px 0; display:grid; gap:10px }
+    .media img{ width:100%; border-radius:14px; border:1px solid rgba(255,255,255,.08); }
+    pre{ margin:0; padding:12px; border-radius:12px; overflow:auto; border:1px solid rgba(255,255,255,.08);
+         background: #0b0e22; color:#dbe7ff; font-size:14px; line-height:1.4 }
+
+    .answers{ display:grid; gap:10px }
+    .answer{
+      width:100%; text-align:left; padding:14px 14px; border-radius:16px; border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.015));
+      cursor:pointer; font-weight:700; position:relative; transition: transform .05s ease; font-size: 18px;
+      color: #6ee7ff;
+    }
+    .answer:active{ transform: scale(.99) }
+    .answer .prefix{ opacity:.8; margin-right:8px; color:var(--accent) }
+
+    .answer.correct{ outline:2px solid rgba(107,255,149,.5); background: rgba(107,255,149,.08) }
+    .answer.wrong{ outline:2px solid rgba(255,107,107,.5); background: rgba(255,107,107,.08) }
+
+    .footer{ display:flex; justify-content:space-between; align-items:center; margin-top:14px; color:var(--muted); font-weight:600 }
+
+    .modal-backdrop{
+      position:fixed; inset:0; display:grid; place-items:center;
+      background: rgba(5, 8, 20, .6); backdrop-filter: blur(6px);
+      z-index:50;
+    }
+    .modal{
+      width:min(520px, 92%);
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid rgba(255,255,255,.14);
+      border-radius:24px; padding:22px; text-align:center; 
+      box-shadow: 0 20px 60px rgba(0,0,0,.45);
+    }
+    .modal h1{ margin:0 0 12px 0; font-size:28px }
+    .score-line{ font-size:18px; margin:8px 0; }
+    .cta{
+      margin-top:14px; padding:12px 16px; border-radius:999px; font-weight:800; border:1px solid rgba(255,255,255,.18);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); color:#0b0e22; cursor:pointer;
+      box-shadow: 0 12px 30px rgba(0,0,0,.35);
+    }
+
+    @media (hover:hover){
+      .answer:hover{ border-color: rgba(255,255,255,.2) }
+      .cta:hover{ filter:brightness(1.05) }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="pill" id="lifePill"><span class="label">Życia:</span> <span id="lives">3</span> <span id="timerWrap" style="display:none">&nbsp;&nbsp;|&nbsp;&nbsp;<span class="label">Czas:</span> <span id="timer">05:00</span></span></div>
+      <div class="pill"><span class="label">Punkty:</span> <span id="points">0</span></div>
+    </div>
+
+    <div class="card">
+      <div class="question" id="question"></div>
+      <div class="media" id="media"></div>
+      <div class="answers" id="answers"></div>
+      <div class="footer"><span id="progress">Pytanie 0/0</span><span id="difficulty"></span></div>
+    </div>
+  </div>
+  <div class="modal-backdrop" id="modal">
+    <div class="modal">
+      <h1>INF03 – Testy</h1>
+      <div class="score-line">Twój Wynik: <strong id="lastScore">0</strong></div>
+      <div class="score-line">Twój Rekord: <strong id="bestScore">0</strong></div>
+      <button class="cta" id="newGameBtn">Nowa Gra</button>
+    </div>
+  </div>
+
+  <script>
+    // ====== NARZĘDZIA ======
+    let dawid108 = localStorage.getItem("dawid108") || 0;
+    const storageKey = 'inf03_game_2526';
+    const recordKey = storageKey + '_record';
+    const lastKey = storageKey + '_last';
+
+    const $ = sel => document.querySelector(sel);
+    const escapeHTML = (str) => String(str)
+      .replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;')
+      .replaceAll('"','&quot;').replaceAll("'",'&#39;');
+
+    // Prosty shuffle (Fisher–Yates)
+    function shuffle(arr){
+      const a = arr.slice();
+      for(let i=a.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [a[i],a[j]]=[a[j],a[i]];
+      }
+      return a;
+    }
+
+    // ====== PYTANIA ======
+    /**
+     * Każdy obiekt pytania:
+     * { pytanie: string, zdjecie?: string, kod?: string,
+     *   poprawna_odpowiedz: string, bledne_odpowiedzi: [string,string,string] }
+     */
+    const easy = [
+        {
+            pytanie: 'Jaka treść komunikatu powinna być wstawiona w przedstawionym kodzie PHP zamiast znaków zapytania?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758885502/pyt282_k3pjag.png',
+            poprawna_odpowiedz: 'Błąd połączenia z serwerem SQL',
+            bledne_odpowiedzi: ['Wybrana baza nie istnieje', 'Pomyślnie dodano rekord do bazy', 'Błąd przetwarzania zapytania SQL']
+        },
+        {
+            pytanie: 'Testy aplikacji internetowej mające za zadanie sprawdzenie skalowalności aplikacji i bazy danych oraz architektury serwera i konfiguracji noszą nazwę testów',
+            poprawna_odpowiedz: 'kompatybilności',
+            bledne_odpowiedzi: ['bezpieczeństwa', 'funkcjonalnych', 'użyteczności']
+        },
+        {
+            pytanie: 'Aby prawidłowo udokumentować linię kodu języka Java Script, należy po znakach // wpisać komentarz',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758885616/pyt284_omt01x.png',
+            poprawna_odpowiedz: 'w zmiennej x maksymalna wartość ze zmiennych a, b, c',
+            bledne_odpowiedzi: ['nieprawidłowe dane', 'wybór losowej wartości ze zmiennych a, b i c', 'w zmiennej x minimalna wartość ze zmiennych a, b, c']
+        },
+        {
+            pytanie: 'Aby stronę WWW można było przesłać do przeglądarki internetowej w postaci zaszyfrowanej, należy użyć protokołu',
+            poprawna_odpowiedz: 'HTTPS',
+            bledne_odpowiedzi: ['HTTP', 'SFTP', 'SSH']
+        },
+        {
+            pytanie: 'Zapis znacznika HTML w postaci',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758885817/pyt287_hsi0os.png',
+            poprawna_odpowiedz: 'jest poprawny, po wybraniu odnośnika aktualna strona zostanie przewinięta do elementu o nazwie "hobby"',
+            bledne_odpowiedzi: ['jest niepoprawny, w atrybucie href należy podać adres URL', 'jest niepoprawny, zastosowano błędnie znak # w atrybucie href', 'jest poprawny, po wybraniu odnośnika otworzy się strona internetowa o adresie "hobby"']
+        },
+        {
+            pytanie: 'W języku CSS, aby zdefiniować niestandardowe odstępy między wyrazami, stosuje się właściwość',
+            poprawna_odpowiedz: 'word-spacing',
+            bledne_odpowiedzi: ['line-spacing', 'white-space', 'letter-space']
+        },
+        {
+            pytanie: 'W języku CSS zdefiniowano następujące formatowanie. Oznacza to, że kolorem niebieskim zostanie zapisany',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758886950/pyt292_ukvgmk.png',
+            poprawna_odpowiedz: 'pochylony tekst paragrafu',
+            bledne_odpowiedzi: ['cały tekst paragrafu niezależnie od jego formatowania', 'cały tekst nagłówków niezależnie od ich formatowania', 'pogrubiony tekst paragrafu']
+        },
+        {
+            pytanie: 'W języku HTML informacje dotyczące autora, streszczenia i słów kluczowych strony należy umieścić',
+            poprawna_odpowiedz: 'pomiędzy znacznikami <head> i </head>, w znaczniku <meta>',
+            bledne_odpowiedzi: ['pomiędzy znacznikami <head> i </head>, w znaczniku <style>', 'pomiędzy znacznikami <body> i </body>, w znaczniku <meta>', 'pomiędzy znacznikami <body> i </body>, w znaczniku <html>']
+        },
+        {
+            pytanie: 'Kolor zapisany kodem RGB o wartości rgb(128, 16, 8) w postaci szesnastkowej ma wartość',
+            poprawna_odpowiedz: ' #801008',
+            bledne_odpowiedzi: ['#FF0F80', '#FF1008', '#800F80']
+        },
+        {
+            pytanie: 'Które ze zdań opisuje grafikę wektorową?',
+            poprawna_odpowiedz: 'Zapisywany obraz jest opisywany za pośrednictwem figur geometrycznych umieszczonych w układzie współrzędnych',
+            bledne_odpowiedzi: ['Jest to prezentacja obrazu za pomocą pionowo-poziomej siatki odpowiednio kolorowanych pikseli na monitorze komputera, drukarce lub innym urządzeniu wyjściowym', 'Może być przechowywana w formacie JPG lub PNG', 'Jest wykorzystywana do zapisu fotografii cyfrowej']
+        },
+        {
+            pytanie: 'Aby zbadać rozkład ilościowy poszczególnych kolorów zdjęcia, należy użyć',
+            poprawna_odpowiedz: 'histogramu',
+            bledne_odpowiedzi: ['desaturacji', 'balansu kolorów', 'rozmycia Gaussa']
+        },
+        {
+            pytanie: 'W standardzie HDTV jest stosowana rozdzielczość',
+            poprawna_odpowiedz: '1920 x 1080 px',
+            bledne_odpowiedzi: ['704 x 576 px', '720 x 480 px', '1280 x 1024 px']
+        },
+        {
+            pytanie: 'Baza danych księgarni zawiera tabelę ksiazki z polami: id, idAutor, tytul, ileSprzedanych oraz tabelę autorzy z polami: id, imie, nazwisko. Aby stworzyć raport sprzedanych książek z tytułami i nazwiskami autorów, należy',
+            poprawna_odpowiedz: 'Zdefiniować relację 1..n dla tabel ksiazki i autorzy, a następnie stworzyć kwerendę łączącą obie tabele',
+            bledne_odpowiedzi: ['stworzyć kwerendę wyszukującą tytuły książek', 'Zdefiniować relację 1..1 dla tabel ksiazki i autorzy, a następnie stworzyć kwerendę łączącą obie tabele', 'stworzyć dwie osobne kwerendy: pierwszą wyszukującą tytuły książek, drugą wyszukującą nazwiska autorów']
+        },
+        {
+            pytanie: 'W tabeli artykuly wykonano następujące polecenia dotyczące praw użytkowania jan. Po wykonaniu poleceń użytkownik jan będzie miał prawa do',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887780/pyt307_ceabhl.png',
+            poprawna_odpowiedz: 'tworzenia tabeli i wypełniania jej danymi',
+            bledne_odpowiedzi: ['tworzenia tabeli i aktualizowania w niej danych', 'aktualizowania danych i przeglądania tabeli', 'przeglądania tabeli']
+        },
+        {
+            pytanie: 'Baza danych MySQL uległa uszkodzeniu. Które z działań NIE pomoże przy jej naprawie?',
+            poprawna_odpowiedz: 'Wykonanie replikacji bazy danych',
+            bledne_odpowiedzi: ['Próba naprawy poleceniem REPAIR', 'Odtworzenie bazy z kopii bezpieczeństwa', 'Stworzenie nowej bazy i przeniesienie do niej tabel']
+        },
+        {
+            pytanie: 'W formularzu, dane z pola input o typie number zostały zapisane do zmiennej a, a następnie przetworzone w skrypcie JavaScript w następujący sposób. Zmienna x będzie typu',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887883/pyt310_aolpug.png',
+            poprawna_odpowiedz: 'liczbowego, całkowitego',
+            bledne_odpowiedzi: ['NaN', 'napisowego', 'zmiennoprzecinkowego']
+        },
+        {
+            pytanie: 'W języku JavaScript metoda document.getElementById(id) ma za zadanie',
+            poprawna_odpowiedz: 'zwrócić odniesienie do pierwszego elementu HTML o podanym id',
+            bledne_odpowiedzi: ['wstawić tekst o treści ’id’ na stronie WWW', 'sprawdzić poprawność formularza o identyfikatorze id', 'pobrać dane z pola formularza i wstawić je do zmiennej id']
+        },
+        {
+            pytanie: 'W instrukcji warunkowej JavaScript należy sprawdzić przypadek, gdy zmienne a oraz b są dodatnie, z czego zmienna b jest mniejsza od 100. Warunek taki powinien być zapisany w następujący sposób:',
+            poprawna_odpowiedz: 'if ( a > 0 && b > 0 && b < 100)',
+            bledne_odpowiedzi: ['if ( a > 0 || b > 0 || b > 100)', 'if ( a > 0 && b > 0 || b > 100)', 'if ( a > 0 || (b > 0 && b < 100))']
+        },
+        {
+            pytanie: 'Zadaniem przedstawionej funkcji zapisanej w języku JavaScript jest',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888160/p316_wcmrza.png',
+            poprawna_odpowiedz: 'wypisanie liczb parzystych z przedziału od a do b',
+            bledne_odpowiedzi: ['zwrócenie wartości parzystych liczb od a do b', 'wypisanie wszystkich liczb z przedziału od a do b', 'sprawdzenie, czy liczba a jest nieparzysta; jeśli tak, wypisanie jej']
+        },
+        {
+            pytanie: 'Przedstawiony kod został zapisany w języku JavaScript. W podanej definicji obiektu metodą jest element o nazwie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888220/p317_nyctrp.png',
+            poprawna_odpowiedz: 'oblicz',
+            bledne_odpowiedzi: ['obj1', 'czescCalkowita', 'czescUlamkowa']
+        },
+        {
+            pytanie: 'Fragment kodu w języku PHP wypisze',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888306/p319_mqrejf.png',
+            poprawna_odpowiedz: 'samą nazwę konta, czyli "adres"',
+            bledne_odpowiedzi: ['nazwę konta ze znakiem @, czyli "adres@"', 'cały adres e-mail, czyli "adres@host.pl"', 'samą nazwę domeny, czyli "host.pl"']
+        },
+        {
+            pytanie: 'W przedstawionym kodzie PHP, zamiast znaków zapytania powinien pojawić się komunikat:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888449/p322_vhiyfs.png',
+            poprawna_odpowiedz: 'Błąd przetwarzania zapytania',
+            bledne_odpowiedzi: ['Zapytanie przetworzono pomyślnie', 'Nieprawidłowa nazwa bazy danych', 'Nieprawidłowe hasło do bazy danych']
+        },
+        {
+            pytanie: 'Testy wydajnościowe mają na celu sprawdzenie',
+            poprawna_odpowiedz: 'stopnia spełnienia wymagań wydajnościowych przez system lub moduł',
+            bledne_odpowiedzi: ['zdolności oprogramowania do działania w warunkach wadliwej pracy sprzętu', 'zdolności oprogramowania do działania w warunkach wadliwej pracy systemu', 'ciągu zdarzeń, w którym prawdopodobieństwo każdego zdarzenia zależy jedynie od wyniku poprzedniego']
+        },
+        {
+            pytanie: 'Aby prawidłowo udokumentować przedstawioną linię kodu języka JavaScript, należy po znakach // wpisać komentarz',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888604/p324_ddgtvi.png',
+            poprawna_odpowiedz: 'wyświetlenie daty i czasu w znaczniku o id = napis',
+            bledne_odpowiedzi: ['nieprawidłowe dane', 'zmiana stylu atrybutu innerHTML', 'wyświetlenie tekstu "Date()" w znaczniku o id = napis']
+        },
+        {
+            pytanie: 'Przekierowanie 301 służące przekierowaniu użytkownika z jednego adresu URL na inny można ustawić w pliku konfiguracji serwera Apache o nazwie',
+            poprawna_odpowiedz: '.htaccess',
+            bledne_odpowiedzi: ['conf.php', '.apacheConf', 'configuration.php']
+        },
+        {
+            pytanie: 'W języku HTML aby zdefiniować słowa kluczowe strony, należy użyć zapisu',
+            poprawna_odpowiedz: '<meta name="keywords" content="psy, koty, gryzonie">',
+            bledne_odpowiedzi: ['<meta keywords="psy, koty, gryzonie">', '<meta name="keywords" ="psy, koty, gryzonie">', '<meta name="description" content="psy, koty, gryzonie">']
+        },
+        {
+            pytanie: 'W języku HTML zdefiniowano znacznik a. Wartość nofollow atrybutu rel',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888742/pyt327_rsxnnh.png',
+            poprawna_odpowiedz: 'jest informacją dla robota wyszukiwarki Google, aby nie podążał za tym linkiem',
+            bledne_odpowiedzi: ['oznacza, że kliknięcie na link nie przeniesie do strony website.com', 'oznacza, że kliknięcie na link otworzy go w osobnej karcie przeglądarki', 'jest informacją dla przeglądarki internetowej, aby nie formatowała słowa "link" jako odnośnika']
+        },
+        {
+            pytanie: 'W języku CSS wcięcie pierwszej linii akapitu na 30 pikseli uzyska się za pomocą zapisu',
+            poprawna_odpowiedz: 'p { text-indent: 30px; }',
+            bledne_odpowiedzi: ['p { text-spacing: 30px; }', 'p { line-height: 30px; }', 'p { line-indent: 30px; }']
+        }
+    ];
+
+    const medium = [
+        {
+            pytanie: 'Zapis CSS w takiej postaci sprawi, że na stronie internetowej',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758889146/PYT335_ek24es.png',
+            poprawna_odpowiedz: 'punktorem listy nienumerowanej będzie rys.gif',
+            bledne_odpowiedzi: ['rys.gif będzie stanowił ramkę dla listy nienumerowanej', 'wyświetli się rys.gif jako tło listy nienumerowanej', 'każdy z punktów listy będzie miał osobne tło pobrane z grafiki rys.gif']
+        }
+    ];
+
+    const hard = [
+        {
+            pytanie: 'W języku CSS, aby sformatować dowolny element języka HTML w ten sposób, że po najechaniu na niego kursorem zmienia on kolor czcionki, należy zastosować pseudoklasę',
+            poprawna_odpowiedz: ':hover',
+            bledne_odpowiedzi: [':active', ':visited', ':coursor']
+        },
+        {
+            pytanie: 'W języku CSS zdefiniowano następujące formatowanie. Kolorem czerwonym zostanie zapisany',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758889038/PYT333_tp8ijm.png',
+            poprawna_odpowiedz: 'tylko tekst pochylony nagłówka pierwszego stopnia',
+            bledne_odpowiedzi: ['tylko tekst pochylony we wszystkich poziomach nagłówków', 'cały tekst nagłówka pierwszego stopnia oraz pochylony tekst akapitu', 'cały tekst nagłówka pierwszego stopnia oraz cały tekst pochylony, niezależnie od tego, w którym miejscu strony się znajduje']
+        },
+        {
+            pytanie: 'Zamieszczony kod HTML formularza zostanie wyświetlony przez przeglądarkę w sposób:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888959/P331_nxqew1.png',
+            poprawna_odpowiedz: 'D',
+            bledne_odpowiedzi: ['A', 'B', 'C']
+        },
+        {
+            pytanie: 'Aby w języku HTML uzyskać takie formatowanie paragrafu dla tekstu należy zastosować kod',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888908/p330_jxvrf3.png',
+            poprawna_odpowiedz: '<p>Tekst może być <mark>zaznaczony</mark> albo <em>istotny</em> dla autora</p>',
+            bledne_odpowiedzi: ['<p>Tekst może być <mark>zaznaczony</mark> albo <em>istotny dla autora</p>', '<p>Tekst może być <mark>zaznaczony albo <i>istotny</i> dla autora</mark></p>', '<p>Tekst może być <mark>zaznaczony albo <em>istotny</em> dla autora</mark></p>']
+        },
+        {
+            pytanie: 'Zapisano kod HTML wstawiający grafikę na stronę internetową. Jeżeli rysunek.png nie zostanie odnaleziony, przeglądarka',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888844/p329_gf0u8m.png',
+            poprawna_odpowiedz: 'w miejscu grafiki wypisze tekst "pejzaż"',
+            bledne_odpowiedzi: ['nie wyświetli strony internetowej', 'w miejscu grafiki wypisze tekst "rysunek.png"', 'w miejscu grafiki wypisze błąd wyświetlania strony']
+        },
+        {
+            pytanie: 'W języku HTML aby zdefiniować poziomą linię, należy użyć znacznika',
+            poprawna_odpowiedz: '<hr>',
+            bledne_odpowiedzi: ['<line>', '<br>', '<hl>']
+        },
+        {
+            pytanie: 'Zadaniem funkcji PHP o nazwie mysql_select_db() jest',
+            poprawna_odpowiedz: 'określić bazę, z której będą pobierane dane',
+            bledne_odpowiedzi: ['połączyć bazę danych z serwerem SQL', 'określić tabelę, z której będą pobierane dane', 'pobrać dane z bazy danych na podstawie kwerendy']
+        },
+        {
+            pytanie: 'Do uruchomienia skryptu JavaScript wymagane jest oprogramowanie',
+            poprawna_odpowiedz: 'przeglądarki internetowej',
+            bledne_odpowiedzi: ['serwera WWW', 'serwera MySQL', 'debugera JavaScript']
+        },
+        {
+            pytanie: 'Aby uzyskać informacje o środowisku pracy serwera obsługującego PHP, należy skorzystać z funkcji',
+            poprawna_odpowiedz: 'phpinfo()',
+            bledne_odpowiedzi: ['php()', 'phpgetinfo()', 'phpinformation()']
+        },
+        {
+            pytanie: 'Ile iteracji będzie miała przedstawiona pętla zapisana w języku PHP, zakładając, że zmienna sterująca nie jest modyfikowana we wnętrzu pętli?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758888045/p313_bqgzgx.png',
+            poprawna_odpowiedz: '11',
+            bledne_odpowiedzi: ['0', '10', 'Nieskończenie wiele']
+        },
+        {
+            pytanie: 'W przedstawonym kodzie JavaScript dla ułatwienia ponumerowano linie. W kodzie znajduje się błąd, gdyż po uruchomieniu żaden komunikat nie zostaje wyświetlony. Aby wyeliminować błąd, należy',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887975/p312_ce2lrm.png',
+            poprawna_odpowiedz: 'wstawić nawiasy klamrowe do sekcji if oraz else',
+            bledne_odpowiedzi: ['wstawić znaki $ przed nazwami zmiennych.', 'w liniach 2 i 5 zmienne a i b wstawić w cudzysłów', 'w liniach 3 i 6 zamienić znaki cudzysłowu na apostrof, np. ’jest mniejsze’']
+        },
+        {
+            pytanie: 'Wstawki kodu JavaScript w dokumencie HTML mogą się znaleźć',
+            poprawna_odpowiedz: 'zarówno w cześci <head>, jak i <body>, w znaczniku <script>',
+            bledne_odpowiedzi: ['tylko w cześci <head>, w znaczniku <script>', 'tylko w cześci <body>, w znaczniku <java>', 'zarówno w cześci <head>, jak i <body>, w znaczniku <java>']
+        },
+        {
+            pytanie: 'Aby przywrócić bazę danych MS SQL z kopii bezpieczeństwa, należy zastosować polecenie',
+            poprawna_odpowiedz: 'RESTORE DATABASE',
+            bledne_odpowiedzi: ['DBCC CHECKDB', 'SAVE DATABASE', 'REBACKUP DATABASE']
+        },
+        {
+            pytanie: 'Istnieje tabela pracownicy z polami: id, imie, nazwisko, pensja. W nowym roku postawiono podnieść pensję wszystkim pracownikom o 100 zł. Aktualizacja ta w bazie danych będzie miała postać',
+            poprawna_odpowiedz: 'UPDATE pracownicy SET pensja = pensja + 100;',
+            bledne_odpowiedzi: ['UPDATE pracownicy SET pensja = 100;', 'UPDATE pensja SET +100;', 'UPDATE pensja SET 100;']
+        },
+        {
+            pytanie: 'W instrukcji CREATE TABLE użycie klauzuli PRIMARY KEY przy deklaracji pola tabeli spowoduje, że pole to stanie się',
+            poprawna_odpowiedz: 'kluczem podstawowym',
+            bledne_odpowiedzi: ['kluczem obcym', 'indeksem klucza', 'indeksem unikalnym']
+        },
+        {
+            pytanie: 'Dana jest tabela programiści o polach: id, nick, ilosc_kodu, ocena. Pole ilosc_kodu zawiera liczbę linii kodu napisanych przez programistę w danym miesiącu. Aby policzyć sumę linii kodu, który napisali wszyscy programiści, należy użyć polecenia',
+            poprawna_odpowiedz: 'SELECT SUM(ilosc_kodu) FROM programisci;',
+            bledne_odpowiedzi: ['SELECT SUM(ocena) FROM ilosc_kodu;', 'SELECT COUNT(programisci) FROM ilosc_kodu;', 'SELECT MAX(ilosc_kodu) FROM programisci']
+        },
+        {
+            pytanie: 'W bazie danych hurtowni zdefiniowano tabelę sprzedaz o polach: id, kontrahent, grupa_cenowa, obrot. Aby wyszukać wyłącznie kontrahentów z drugiej grupy cenowej, których obrót jest większy niż 4000zł, należy zastosować polecenie',
+            poprawna_odpowiedz: 'SELECT kontrahent FROM sprzedaz WHERE grupa_cenowa = 2 AND obrot > 4000;',
+            bledne_odpowiedzi: ['SELECT sprzedaz FROM kontrahent WHERE obrot > 4000;', 'SELECT kontrahent FROM sprzedaz WHERE grupa_cenowa = 2 OR obrot > 4000;', 'SELECT sprzedaz FROM kontrahent WHERE grupa_cenowa = 2 AND obrot > 4000;']
+        },
+        {
+            pytanie: 'Polecenie języka SQL w postaci',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887364/pyt301_fakeu6.png',
+            poprawna_odpowiedz: 'dodaje do tabeli kolumnę o nazwie kod typu text',
+            bledne_odpowiedzi: ['zamienia nazwę tabeli miasta na nazwę kod', 'dodaje do tabeli dwie kolumny o nazwach: kod i text', 'w tabeli miasta zamienia nazwę kolumny kod na nazwę text']
+        },
+        {
+            pytanie: 'Którą klauzulę powinno się zastosować w poleceniu CREATE TABLE języka SQL, aby dane pole rekordu nie było puste?',
+            poprawna_odpowiedz: 'NOT NULL',
+            bledne_odpowiedzi: ['NULL', 'CHECK', 'DEFAULT']
+        },
+        {
+            pytanie: 'Który z przedstawionych kodów XHTML sformatuje tekst według podanego wzoru?',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887169/pyt295_ch3vur.png',
+            poprawna_odpowiedz: 'D',
+            bledne_odpowiedzi: ['A', 'B', 'C']
+        },
+        {
+            pytanie: 'W języku CSS, zapis w następującej postaci sprawi, iż koloru czerwonego będzie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758887020/pyt293_en59sh.png',
+            poprawna_odpowiedz: 'pierwsza litera nagłówka pierwszego stopnia',
+            bledne_odpowiedzi: ['pierwsza linia paragrafu', 'tekst nagłówka pierwszego stopnia', 'pierwsza litera nagłówka drugiego stopnia']
+        },
+        {
+            pytanie: 'W języku CSS, przedstawiony zapis sprawi, że plik rysunek.png będzie',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758886862/pyt290_pbcssp.png',
+            poprawna_odpowiedz: 'tłem każdego paragrafu',
+            bledne_odpowiedzi: ['tłem całej strony', 'wyświetlony obok każdego paragrafu', 'wyświetlony, jeśli w kodzie zostanie zastosowany znacznik img']
+        },
+        {
+            pytanie: 'Przeglądarka internetowa wyświetliła stronę w następujący sposób. Wskaż kod HTML, który poprawnie definiuje przedstawioną hierarchiczną strukturę tekstu:',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758886792/pyt289_ncsouy.png',
+            poprawna_odpowiedz: '<h1>Rozdział 1</h1> <p>tekst</p> <h2>Podrozdział 1.1</h2> <p>tekst</p> <h2>Podrozdział 1.2</h2>',
+            bledne_odpowiedzi: ['<h1>Rozdział 1<p>tekst <h2>Podrozdział 1.1<p>tekst <h2>Podrozdział 1.2', '<ul><li>Rozdział 1<li>tekst<li>Podrozdział 1.1<li>tekst<li>Podrozdział 1.2</ul>', '<big>Rozdział 1</big>tekst<big>Podrozdział 1.1</big>tekst<big>Podrozdział 1.2</big>']
+        },
+        {
+            pytanie: 'W części nagłówkowej kodu HTML zapisano tekst przedstawiony na obrazku. Zapisany tekst zostanie wyświetlony',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758886687/pyt288_jodbg4.png',
+            poprawna_odpowiedz: 'na pasku tytułu przeglądarki',
+            bledne_odpowiedzi: ['w treści strony, na banerze', 'w polu adresu, za wpisanym adresem URL', 'w treści strony, w pierwszym wyświetlonym nagłówku']
+        },
+        {
+            pytanie: 'W języku HTML, aby uzyskać efekt jak na przykładzie, należy zastosować konstrukcję',
+            zdjecie: 'https://res.cloudinary.com/diljpkw9f/image/upload/v1758885694/pyt286_v3jil0.png',
+            poprawna_odpowiedz: '<p><big>Duży tekst</big> zwykły tekst</p>',
+            bledne_odpowiedzi: ['<p><big>Duży tekst</p> zwykły tekst', '<p><big>Duży tekst</p> zwykły tekst', '<p><strike>Duży tekst</strike> zwykły tekst</p>']
+        },
+        {
+            pytanie: 'Zadaniem funkcji PHP o nazwie mysql_num_rows() jest',
+            poprawna_odpowiedz: 'zwrócić liczbę wierszy znajdujących się w wyniku zapytania',
+            bledne_odpowiedzi: ['ponumerować rekordy w bazie danych', 'zwrócić kolejny rekord z wynikami zapytania', 'zwrócić rekord, którego numer podany został w parametrze funkcji']
+        }
+    ];
+
+    // ====== STAN GRY ======
+    let points = 0;
+    let lives = 3;
+    let queue = []; // kolejka pytań (najpierw E, potem M, potem H – każda część przetasowana)
+    let idx = 0;    // indeks aktualnego pytania
+
+    // Timer dla trudnych pytań (start przy pierwszym trudnym)
+    const HARD_SECONDS = 20*60; // 5 minut
+    let hardStarted = false;
+    let remaining = HARD_SECONDS;
+    let timerId = null;
+
+    // ====== UI HOOKS ======
+    const $question = $('#question');
+    const $media = $('#media');
+    const $answers = $('#answers');
+    const $points = $('#points');
+    const $lives = $('#lives');
+    const $progress = $('#progress');
+    const $difficulty = $('#difficulty');
+    const $timerWrap = $('#timerWrap');
+    const $timer = $('#timer');
+
+    const $modal = $('#modal');
+    const $lastScore = $('#lastScore');
+    const $bestScore = $('#bestScore');
+    const $newGameBtn = $('#newGameBtn');
+
+    // ====== MODAL / PERSIST ======
+    function loadScores(){
+      const best = Number(localStorage.getItem(recordKey) || 0);
+      const last = Number(localStorage.getItem(lastKey) || 0);
+      $bestScore.textContent = best;
+      $lastScore.textContent = last;
+    }
+
+    function saveLastAndMaybeRecord(score){
+      localStorage.setItem(lastKey, String(score));
+      const best = Number(localStorage.getItem(recordKey) || 0);
+      if(score > best){ localStorage.setItem(recordKey, String(score)); }
+    }
+
+    function showModal(){
+      loadScores();
+      $modal.style.display = 'grid';
+    }
+    function hideModal(){
+      $modal.style.display = 'none';
+    }
+
+    // ====== LOGIKA GRY ======
+    function startGame(){
+      // reset stanu
+      points = 0; lives = 3; idx = 0; hardStarted = false; remaining = HARD_SECONDS;
+      $points.textContent = '0';
+      $lives.textContent = '3';
+      stopTimer();
+      $timerWrap.style.display = 'none';
+      updateTimerUI();
+
+      // budujemy kolejkę: E (shuffle), potem M (shuffle), potem H (shuffle)
+      const e = shuffle(easy);
+      const m = shuffle(medium);
+      const h = shuffle(hard);
+      queue = [ ...e.map(q=>({...q, level:'Trudne'})), ...m.map(q=>({...q, level:'Średnie'})), ...h.map(q=>({...q, level:'Łatwe'})) ];
+
+      renderCurrent();
+    }
+
+    function renderCurrent(){
+      if(lives<=0){ return endGame('Koniec gry – brak żyć.'); }
+      if(idx >= queue.length){ return endGame('Brawo! Odpowiedziałeś na wszystkie pytania.'); }
+
+      const q = queue[idx];
+
+      // jeśli wchodzimy w sekcję trudne – start czasu (jednorazowo)
+      if(!hardStarted && q.level==='Łatwe'){
+        hardStarted = true;
+        remaining = HARD_SECONDS;
+        $timerWrap.style.display = '';
+        startTimer();
+      }
+
+      $difficulty.textContent = q.level;
+      $progress.textContent = `Pytanie ${idx+1}/${queue.length}`;
+
+      // Treść pytania
+      const num = idx+1; // numer pokazowy
+      $question.innerHTML = `<h2>${num}. ${escapeHTML(q.pytanie)}</h2>`;
+
+      // Media: obraz i/lub kod
+      $media.innerHTML = '';
+      if(q.zdjecie){
+        const img = document.createElement('img');
+        img.src = q.zdjecie; img.alt = 'Ilustracja do pytania';
+        $media.appendChild(img);
+      }
+      if(q.kod){
+        const pre = document.createElement('pre');
+        pre.innerHTML = `<code>${escapeHTML(q.kod)}</code>`;
+        $media.appendChild(pre);
+      }
+
+      // Odpowiedzi – 4 sztuki, zawsze różna kolejność
+      const variants = shuffle([
+        { text:q.poprawna_odpowiedz, correct:true },
+        ...q.bledne_odpowiedzi.map(t=>({text:t, correct:false}))
+      ]);
+
+      $answers.innerHTML = '';
+      const labels = ['A','B','C','D'];
+      variants.forEach((v,i)=>{
+        const btn = document.createElement('button');
+        btn.className = 'answer';
+        btn.innerHTML = `<span class="prefix">${labels[i]}.</span> <span>${escapeHTML(v.text)}</span>`;
+        btn.addEventListener('click',()=>handleAnswer(btn, v.correct));
+        $answers.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(el, isCorrect){
+      // Zablokuj dalsze kliki dla bieżącego zestawu
+      Array.from(document.querySelectorAll('.answer')).forEach(b=>b.disabled = true);
+
+      if(isCorrect){
+        points += 1; $points.textContent = String(points);
+        dawid108++;
+        localStorage.setItem("dawid108", dawid108);
+        console.log("dawid108:", dawid108);
+        el.classList.add('correct');
+      }else{
+        lives -= 1; $lives.textContent = String(lives);
+        el.classList.add('wrong');
+      }
+
+      // Pokaż poprawną, jeśli zaznaczono błędną
+      if(!isCorrect){
+        const answers = Array.from(document.querySelectorAll('.answer'));
+        const correctBtn = answers.find(b=>/prefix"\>.[^<]*<\/span>\s*<span>([\s\S]*)<\/span>/.test(b.innerHTML) ? false : false);
+        // zamiast sprytnego regexu, po prostu sprawdzimy względem danych
+        const q = queue[idx];
+        answers.forEach(b=>{
+          const text = b.textContent.replace(/^\s*[ABCD]\.\s*/,'').trim();
+          if(text === q.poprawna_odpowiedz){ b.classList.add('correct'); }
+        });
+      }
+
+      // przejście dalej po krótkiej pauzie
+      const delay = isCorrect ? 500 : 5000;
+      setTimeout(()=>{
+        if(lives <= 0){
+          endGame('Koniec gry – brak żyć.');
+          return;
+        }
+        idx += 1;
+        renderCurrent();
+      }, delay);
+    }
+
+    function endGame(reason){
+      stopTimer();
+      saveLastAndMaybeRecord(points);
+      loadScores();
+      // Opcjonalnie można wyświetlić reason w modalu (tu: sam wynik/rekord wg wymagań)
+      showModal();
+    }
+
+    // ====== TIMER (tylko dla trudnych) ======
+    function startTimer(){
+      stopTimer();
+      timerId = setInterval(()=>{
+        remaining -= 1; 
+        if(remaining <= 0){ remaining = 0; updateTimerUI(); endGame('Koniec czasu.'); return; }
+        updateTimerUI();
+      }, 1000);
+      updateTimerUI();
+    }
+    function stopTimer(){ if(timerId){ clearInterval(timerId); timerId=null; } }
+    function updateTimerUI(){
+      const m = Math.floor(remaining/60).toString().padStart(2,'0');
+      const s = Math.floor(remaining%60).toString().padStart(2,'0');
+      $timer.textContent = `${m}:${s}`;
+    }
+
+    // ====== INIT ======
+    window.addEventListener('load', ()=>{
+      loadScores();
+      showModal();
+    });
+
+    $newGameBtn.addEventListener('click', ()=>{
+      hideModal();
+      startGame();
+    });
+  </script>
+</body>
+</html>
