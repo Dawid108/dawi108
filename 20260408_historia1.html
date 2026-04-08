@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Historia</title>
+    <meta name="description" content="Historia Rok 2026">
+    <meta name="author" content="Dawid Gustowski">
+
+    <link rel="icon" href="./icon-512.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Dawid">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#E6F7F4">
+
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="container">
+    <h1 id="punkty"></h1>
+    <div class="buttons"></div>
+</div>
+<script>
+let historia108 = JSON.parse(localStorage.getItem("historia108")) || [];
+
+let container = document.querySelector(".buttons");
+
+// funkcja: zamiana nazwy pliku na ładny tytuł
+function getNameFromUrl(url) {
+    let name = url.split("/").pop().replace(".html", "");
+
+    // index.html → Strona
+    if (name === "index") return "Strona";
+
+    // usuń datę jeśli jest (np. 20260306_)
+    if (/^\d{8}_/.test(name)) {
+        name = name.substring(9);
+    }
+
+    // zamień myślniki na spacje
+    name = name.replace(/-/g, " ");
+
+    // rozdziel liczby (np. historia7 → historia 7)
+    name = name.replace(/([a-zA-Ząćęłńóśżź])(\d+)/g, "$1 $2");
+
+    // pierwsza litera wielka
+    return name.charAt(0).toUpperCase() + name.slice(1);
+}
+
+// funkcja: dobór ikony
+function getIcon(name) {
+    name = name.toLowerCase();
+
+    if (name.includes("korona") || name.includes("szczyty"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250778/szczyty2_dbnfv9.png";
+
+    if (name.includes("bieg"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750252653/biegi_ioqich.jpg";
+
+    if (name.includes("szach"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750252388/szachy2_zwtvhi.png";
+
+    if (name.includes("puchar"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750247562/puchar_epccrv.png";
+
+    if (name.includes("medal"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750248036/medal_dhegc0.png";
+
+    if (name.includes("dyplom"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750248438/dyplom_ffqksb.png";
+
+    if (name.includes("numer"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250061/numer_ca7cfz.jpg";
+
+    if (name.includes("stadion"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250373/stadion_oyn8mm.jpg";
+
+    if (name.includes("szkola"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1756998192/szkolaklasa3_skhhhs.png";
+
+    if (name.includes("zabka"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766339973/zabka_kse8oi.png";
+
+    if (name.includes("kosmos"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766408367/kosmos_xgkfai.png";
+
+    if (name.includes("halloween"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766320514/halloween_dcjjsf.png";
+
+    if (name.includes("zombi"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768403831/zombi_caxzwt.png";
+
+    if (name.includes("jabl"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750450328/logozbieraniajablek_kndluj.png";
+
+    if (name.includes("historia"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1761995854/historia_prlmra.png";
+
+    if (name.includes("flag"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754993042/emotkiflagi_n4wrxw.png";
+
+    if (name.includes("pilka"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250889/pilka2_rofvtq.png";
+
+    // domyślna
+    return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750881328/inne_cqv03n.png";
+}
+
+// od najnowszych
+historia108 = historia108.reverse();
+
+// tworzenie kafelków
+historia108.forEach(item => {
+    let name = getNameFromUrl(item.url);
+    let icon = getIcon(name);
+
+    let a = document.createElement("a");
+    a.href = item.url;
+    a.className = "app-icon";
+
+    let img = document.createElement("img");
+    img.src = icon;
+    img.alt = name;
+
+    let span = document.createElement("span");
+    span.textContent = name;
+
+    a.appendChild(img);
+    a.appendChild(span);
+
+    container.appendChild(a);
+});
+</script>
+</body>
+</html>
