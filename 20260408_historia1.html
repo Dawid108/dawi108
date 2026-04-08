@@ -25,6 +25,9 @@
     <div class="buttons"></div>
 </div>
 <script>
+let dawid108 = localStorage.getItem("dawid108") || 0;
+let punkty = document.getElementById("punkty");
+punkty.innerHTML = "Punkty: " + dawid108;
 let historia108 = JSON.parse(localStorage.getItem("historia108")) || [];
 
 let container = document.querySelector(".buttons");
