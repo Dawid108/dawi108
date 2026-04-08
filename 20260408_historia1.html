@@ -58,14 +58,29 @@ function getNameFromUrl(url) {
 function getIcon(name) {
     name = name.toLowerCase();
 
-    if (name.includes("korona") || name.includes("szczyty"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250778/szczyty2_dbnfv9.png";
-
-    if (name.includes("bieg"))
+        if (name.includes("bieg"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750252653/biegi_ioqich.jpg";
+
+    if (name.includes("segment"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1761589755/segmenty_yhhrdw.png";
 
     if (name.includes("szach"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750252388/szachy2_zwtvhi.png";
+
+    if (name.includes("gor") || name.includes("beskid"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250778/szczyty2_dbnfv9.png";
+
+    if (name.includes("szczyt"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1755091286/mapyszczyty_ox3n7n.png";
+
+    if (name.includes("ksiazeczk") || name.includes("koron"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249458/ksiazeczka1_ezd0el.jpg";
+
+    if (name.includes("kraj"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249073/kraje2_fxv6bs.png";
+
+    if (name.includes("stadion"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250373/stadion_oyn8mm.jpg";
 
     if (name.includes("puchar"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750247562/puchar_epccrv.png";
@@ -79,11 +94,17 @@ function getIcon(name) {
     if (name.includes("numer"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250061/numer_ca7cfz.jpg";
 
-    if (name.includes("stadion"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250373/stadion_oyn8mm.jpg";
+    if (name.includes("rekord"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750958780/mojerekordy_dftz90.png";
 
-    if (name.includes("szkola"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1756998192/szkolaklasa3_skhhhs.png";
+    if (name.includes("map"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1755100514/mapylogo_lsvhmi.png";
+
+    if (name.includes("magnes"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249837/megnesy_fhhqhb.jpg";
+
+    if (name.includes("odznak"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750969664/mojeodznakiii_j2okju.png";
 
     if (name.includes("zabka"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766339973/zabka_kse8oi.png";
@@ -100,14 +121,128 @@ function getIcon(name) {
     if (name.includes("jabl"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750450328/logozbieraniajablek_kndluj.png";
 
-    if (name.includes("historia"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1761995854/historia_prlmra.png";
+    if (name.includes("samolot"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766396487/samolot_laxp46.png";
+
+    if (name.includes("banki"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768320738/banki_liepk0.png";
+
+    if (name.includes("blo"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766254392/bloczki_rf1skv.png";
+
+    if (name.includes("deszcz"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768490181/deszcz_sykbog.png";
+
+    if (name.includes("dino"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766414369/dinozaur_jj7ky9.png";
 
     if (name.includes("flag"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754993042/emotkiflagi_n4wrxw.png";
 
+    if (name.includes("gold"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754815264/goldrun_fayrn5.png";
+
+    if (name.includes("gwiazdor"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766836369/gwiazdor2_d9n2ce.png";
+
+    if (name.includes("karn"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766254518/karne_awosir.png";
+
+    if (name.includes("kre"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766517571/krecik_wcv4q5.png";
+
+    if (name.includes("ptak"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768560623/ptak_gnm2j6.png";
+
+    if (name.includes("surf"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768652631/surfing_azx2qe.png";
+
+    if (name.includes("tenis"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766320333/tenis_adypws.png";
+
+    if (name.includes("ufo"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754815441/ufo_utvgyg.png";
+
+    if (name.includes("waz"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766254272/waz_buwjhx.png";
+
+    if (name.includes("wedka"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754934579/wedkarstwo_yyyxnx.png";
+
+    if (name.includes("wspinacz"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768488886/wspinaczka_menjr1.png";
+
+    if (name.includes("gr") || name.includes("apl"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250778/szczyty2_dbnfv9.png";
+
+    if (name.includes("szkola"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1756998192/szkolaklasa3_skhhhs.png";
+
+    if (name.includes("historia"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1761995854/historia_prlmra.png";
+
+    if (name.includes("biologia"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775656531/biologia3_rdlexd.png";
+
+    if (name.includes("geografia"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775656531/geografia_q5ckff.png";
+
+    if (name.includes("chemia"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1761916824/chemiaweglo_icicsv.png";
+
+    if (name.includes("angielski"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1752604207/jezykangielskinauka_zkuudx.png";
+
+    if (name.includes("niemiecki"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775656530/niemiecki_vydruv.png";
+
     if (name.includes("pilka"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250889/pilka2_rofvtq.png";
+
+    if (name.includes("sokol"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1752603290/sokol2_lzrw8f.png";
+
+    if (name.includes("dziennik"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1755772507/dziennik_xpixpf.png";
+
+    if (name.includes("zdj"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754816644/psoty_bqgdbh.png";
+
+    if (name.includes("emot"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1755866451/emotki_lb8pvb.png";
+
+    if (name.includes("kart"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750880191/kartylogo_xlku4l.png";
+
+    if (name.includes("madera"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1753961061/mapamadera_vlmqoc.png";
+
+    if (name.includes("norwe"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1752341895/dofiordownorwegii_gnos2l.png";
+
+    if (name.includes("kolo"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750326763/kolofortuny2_dmzd1w.png";
+
+    if (name.includes("kost"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750327371/kostkadogry_xgh4is.png";
+
+    if (name.includes("kol"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750324262/kolkoikrzyz2_nmidv4.png";
+
+    if (name.includes("prawk"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1763498037/prawko_ndidvf.png";
+
+    if (name.includes("jul"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775657590/20250813_julka_fdlrk4.png";
+
+    if (name.includes("balt"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775658013/baltyk_kwtt1o.png";
+
+    if (name.includes("bieszcz"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775658261/bieszczady_ecoilo.png";
+
+    if (name.includes("karko"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775658841/karkonosze_uzwthy.png";
 
     // domyślna
     return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750881328/inne_cqv03n.png";
