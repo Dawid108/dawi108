@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historia Projektów</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Ostatnio odwiedzane</h1>
+        <div id="historia-grid" class="buttons"></div>
+    </div>
+
+    <script>
+        const historia108 = JSON.parse(localStorage.getItem("historia108")) || [];
+        const grid = document.getElementById("historia-grid");
+
+        // Funkcja czyszcząca nazwę (wycina tekst przed podłogą)
+        function formatName(name) {
+            let finalName = name.includes('_') ? name.split('_')[1] : name;
+            return finalName.charAt(0).toUpperCase() + finalName.slice(1);
+        }
+
+        // Mapowanie ikon na podstawie nazwy (możesz dopisać kolejne)
+        function getIcon(name) {
+            const n = name.toLowerCase();
+            const baseUrl = "https://res.cloudinary.com/diljpkw9f/image/upload/";
+            
+            if (n.includes('zabka')) return baseUrl + "v1766339973/zabka_kse8oi.png";
+            if (n.includes('kosmos')) return baseUrl + "v1766408367/kosmos_xgkfai.png";
+            if (n.includes('halloween')) return baseUrl + "v1766320514/halloween_dcjjsf.png";
+            if (n.includes('zombi')) return baseUrl + "v1768403831/zombi_caxzwt.png";
+            if (n.includes('jablko')) return baseUrl + "v1750450328/logozbieraniajablek_kndluj.png";
+            if (n.includes('samolot')) return baseUrl + "v1766396487/samolot_laxp46.png";
+            if (n.includes('snake')) return baseUrl + "v1766254272/waz_buwjhx.png";
+            
+            // Domyślna ikona jeśli nie pasuje
+            return baseUrl + "v1750251558/gry_nxmlim.jpg";
+        }
+
+        if (historia108.length === 0) {
+            grid.innerHTML = "<p>Historia jest pusta</p>";
+        } else {
+            // Renderowanie od najnowszych
+            const content = [...historia108].reverse().map(item => {
+                const cleanName = formatName(item.name);
+                const icon = getIcon(item.name);
+                
+                return `
+                    <a href="${item.url}" class="app-icon">
+                        <img src="${icon}" alt="${cleanName}">
+                        <span>${cleanName}</span>
+                        <small style="display:block; font-size: 10px; color: #666; margin-top: 4px;">
+                            ${item.date}
+                        </small>
+                    </a>
+                `;
+            }).join('');
+            
+            grid.innerHTML = content;
+        }
+    </script>
+</body>
+</html>
