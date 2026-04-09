@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Długopole Zdrój - Twoje Wycieczki</title>
+    <script src="script.js"></script>
+    <link rel="icon" href="dawi108.png">
+    <style>
+        :root {
+            --bg: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --accent: #4caf50;
+            --text: #e0e0e0;
+            --link: #64b5f6;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { color: var(--accent); margin-bottom: 5px; }
+        .stats { font-size: 0.9em; opacity: 0.8; }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .section {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #3d3d3d;
+            transition: background 0.2s;
+        }
+
+        .item:last-child { border-bottom: none; }
+        .item:hover { background: #353535; }
+
+        .checkbox-container {
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+
+        .content { flex-grow: 1; }
+        .content strong { display: block; margin-bottom: 4px; }
+        .links { font-size: 0.85em; }
+        
+        a {
+            color: var(--link);
+            text-decoration: none;
+            margin-right: 10px;
+        }
+
+        a:hover { text-decoration: underline; }
+
+        .done { text-decoration: line-through; opacity: 0.6; }
+
+        .route-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-map {
+            background: #444;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 600px) {
+            .route-box { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🌲 Długopole Zdrój</h1>
+    <p>Twoja osobista lista górskich podbojów</p>
+    <div class="stats" id="stats">Zdobyto: 0 / 0</div>
+</header>
+
+<div class="container" id="app">
+    </div>
+
+<script>
+    const data = [
+        {
+            title: "Książeczki i Odznaki",
+            items: [
+                { name: "Korona Gór Bystrzyckich PTTK", info: "", book: "https://dawid108.github.io/ksiazeczki/korona-gor-bystrzyckich.html", map: "https://maps.app.goo.gl/PJNEHzDrU8XBFmsy5" },
+                { name: "Korona Gór Bystrzyckich KZKG RP", info: "", book: "https://dawid108.github.io/ksiazeczki/korona-gor-bystrzyckich-kzkg-rp.html", map: "https://maps.app.goo.gl/skBscarvBk93zR248" },
+                { name: "Korona Gór Bardzkich KZKG RP", info: "", book: "https://dawid108.github.io/ksiazeczki/korona-gor-bardzkich.html", map: "https://maps.app.goo.gl/fmH472rYDRy4yutG6" },
+                { name: "Znam Góry Bardzkie", info: "", book: "https://dawid108.github.io/ksiazeczki/znam-gory-bardzkie.html", map: "https://maps.app.goo.gl/inGACxgPBUJsHGJu9" },
+                { name: "Korona Gór Orlickich", info: "", book: "https://dawid108.github.io/ksiazeczki/korona-gor-orlickich.html", map: "https://maps.app.goo.gl/mWK9wEfT7ojYf5Sb7" },
+                { name: "Korona Masywu Śnieżnika PTTK", info: "", book: "korona-masywu-snieznika.html", map: "https://maps.app.goo.gl/byHPTz3Pv9YUAyK39" },
+                { name: "Przyjaciel Międzygórza", info: "", book: "https://dawid108.github.io/ksiazeczki/przyjaciel-miedzygorza.html", map: "https://maps.app.goo.gl/LNDcZrfwu2rUqEFc6" },
+                { name: "Korona Sudetów Polskich", info: "", book: "https://dawid108.github.io/ksiazeczki/korona-sudetow-polskich.html", map: "https://maps.app.goo.gl/4uUi9DugQ54y7Z7o8" },
+                { name: "Sudeckie Schroniska", info: "", book: "https://dawid108.github.io/ksiazeczki/sudeckie-schroniska.html", map: "https://maps.app.goo.gl/AYa6AWxriPwZ6rDW6" },
+                { name: "Korona Widoków Polskich", info: "", book: "https://dawid108.github.io/ksiazeczki/korona-widokow-polskich-gory.html", map: "https://maps.app.goo.gl/BDUqoNi6njp4TYmj6" },
+                { name: "Wieże Widokowe Sudetów", info: "", book: "https://dawid108.github.io/ksiazeczki/wieze-widokowe-gor-i-pogorzy-sudety.html", map: "https://maps.app.goo.gl/cxUUJhSzeprMesYY6" }
+            ]
+        },
+        {
+            title: "Góry Bardzkie",
+            items: [
+                { name: "Brzeźnica (493 m)", info: "41 min / 2,4 km", map: "https://mapy.com/s/jezuvucepo" },
+                { name: "Wilczak (633 m)", info: "24 min / 840 m", map: "https://mapy.com/s/nafubanuto" },
+                { name: "Obszerna (573 m)", info: "44 min / 2,8 km", map: "https://mapy.com/s/jokafamazu" },
+                { name: "Grochowska Góra (432 m)", info: "21 min / 1,2 km", map: "https://mapy.com/s/dedumamode" }
+            ]
+        },
+        {
+            title: "Góry Bystrzyckie",
+            items: [
+                { name: "Trasa 9 szczytów", info: "9:08 g / 36,8 km", map: "https://mapy.com/s/kepanocomo" },
+                { name: "Zamkowa Kopa (784 m)", info: "49 min / 3,3 km", map: "https://mapy.com/s/pacakobege" },
+                { name: "Jedlnik (746 m)", info: "7 min / 567 m", map: "https://mapy.com/s/helosohame" },
+                { name: "Dębowiec (666 m)", info: "20 min / 1,5 km", map: "https://mapy.com/s/nucovoteno" },
+                { name: "Bochniak (713 m)", info: "35 min / 2,4 km", map: "https://mapy.com/s/bebapagane" }
+            ]
+        },
+        {
+            title: "Masyw Śnieżnika",
+            items: [
+                { name: "Sikornik (550 m)", info: "4 s / 8 m", map: "https://mapy.com/s/gepurogute" },
+                { name: "Opacz (741 m)", info: "1:07 g / 3,7 km", map: "https://mapy.com/s/kurecoguke" },
+                { name: "Krzyżowa (500 m)", info: "53 min / 3,1 km", map: "https://mapy.com/s/gepovacapo" },
+                { name: "Sędzisz (489 m)", info: "30 min / 1,7 km", map: "https://mapy.com/s/netusebasa" }
+            ]
+        },
+        {
+            title: "Atrakcje i Trasy",
+            items: [
+                { name: "Wieża Żelazno", info: "Atrakcja", map: "https://maps.app.goo.gl/9GDFCJUxkUHWZaYo7" },
+                { name: "Góra Parkowa Bystrzyca Kłodzka", info: "Atrakcja", map: "https://maps.app.goo.gl/h3HQwYrdphmE5bn17" },
+                { name: "Trasa Piątek (10.04.2026)", info: "Samochód", map: "https://maps.app.goo.gl/UyN5hE1KrvhrBBqM7" },
+                { name: "Trasa Sobota", info: "Samochód", map: "https://maps.app.goo.gl/unuhN4VL1ruhCGAe9" }
+            ]
+        }
+    ];
+
+    const app = document.getElementById('app');
+    const stats = document.getElementById('stats');
+    let db = JSON.parse(localStorage.getItem('dlugopole_progress')) || {};
+
+    function save() {
+        localStorage.setItem('dlugopole_progress', JSON.stringify(db));
+        updateStats();
+    }
+
+    function updateStats() {
+        const total = data.reduce((acc, sec) => acc + sec.items.length, 0);
+        const done = Object.values(db).filter(v => v).length;
+        stats.innerText = `Zdobyto: ${done} / ${total} (${Math.round(done/total*100)}%)`;
+    }
+
+    data.forEach(section => {
+        const secDiv = document.createElement('div');
+        secDiv.className = 'section';
+        secDiv.innerHTML = `<h2>${section.title}</h2>`;
+
+        section.items.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+            const itemId = btoa(item.name).substring(0, 16); // Proste ID na bazie nazwy
+            const isChecked = db[itemId] ? 'checked' : '';
+
+            itemDiv.innerHTML = `
+                <div class="checkbox-container">
+                    <input type="checkbox" id="${itemId}" ${isChecked} onchange="toggleItem('${itemId}')">
+                </div>
+                <div class="content ${db[itemId] ? 'done' : ''}" id="txt-${itemId}">
+                    <strong>${item.name}</strong>
+                    <div class="links">
+                        ${item.info ? `<span>${item.info}</span> | ` : ''}
+                        <a href="${item.map}" target="_blank">🗺️ Mapa</a>
+                        ${item.book ? `<a href="${item.book}" target="_blank">📖 Książeczka</a>` : ''}
+                    </div>
+                </div>
+            `;
+            secDiv.appendChild(itemDiv);
+        });
+        app.appendChild(secDiv);
+    });
+
+    window.toggleItem = function(id) {
+        db[id] = document.getElementById(id).checked;
+        const text = document.getElementById('txt-' + id);
+        if (db[id]) text.classList.add('done');
+        else text.classList.remove('done');
+        save();
+    }
+
+    updateStats();
+</script>
+
+</body>
+</html>
