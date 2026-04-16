@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Podwózki</title>
+    <script src="script.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        h1 { text-align: center; color: #333; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .result-box {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        #totalPrice {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .notes {
+            margin-top: 25px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        ul { padding-left: 20px; color: #555; }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Kalkulator Paliwa</h1>
+    
+    <div class="input-group">
+        <label>Długość trasy (km):</label>
+        <input type="number" id="distance" placeholder="Wpisz km" oninput="calculate()">
+    </div>
+
+    <div class="input-group">
+        <label>Cena gazu za litr (zł):</label>
+        <input type="number" id="gasPrice" value="3.80" step="0.01" oninput="calculate()">
+    </div>
+
+    <div class="input-group">
+        <label>W dwie strony?</label>
+        <select id="roundTrip" onchange="calculate()">
+            <option value="1">Nie</option>
+            <option value="2">Tak</option>
+        </select>
+    </div>
+
+    <div class="result-box">
+        <p>Kumpel powinien oddać:</p>
+        <div id="totalPrice">0,00 zł</div>
+    </div>
+
+    <div class="notes">
+        <h3>Moje zasady:</h3>
+        <ul>
+            <li>Cena za 7,5 km to 3,80 zł.</li>
+            <li>Podwózka na trening za darmo.</li>
+            <li>Płatność najlepiej BLIKiem lub gotówką od razu.</li>
+            <li>Zaokrąglamy końcówki dla świętego spokoju.</li>
+        </ul>
+    </div>
+</div>
+
+<script>
+function calculate() {
+    const distance = parseFloat(document.getElementById('distance').value) || 0;
+    const gasPrice = parseFloat(document.getElementById('gasPrice').value) || 0;
+    const multiplier = parseInt(document.getElementById('roundTrip').value);
+    
+    // Logika: (Trasa / 7.5) * cena * (1 lub 2)
+    const result = (distance / 7.5) * gasPrice * multiplier;
+    
+    document.getElementById('totalPrice').innerText = result.toFixed(2).replace('.', ',') + " zł";
+}
+</script>
+
+</body>
+</html>
