@@ -74,12 +74,14 @@ function getNameFromUrl(url) {
         "sudetow": "Sudetów",
         "zlotych": "Złotych",
         "swietokrzyskich": "Świętokrzyskich",
+        "swietokrzyska": "Świętokrzyska",
         "piatka": "Piątka",
         "wyzyny": "Wyżyny", 
         "wedkarstwo": "Wędkarstwo",
         "banki": "Bańki",
         "jablko": "Jabłko",
         "walbrzyskiej": "Wałbrzyskiej",
+        "walbrzyskich": "Wałbrzyskich",
         "latarn": "Latarń",
         "widokow": "Widoków",
         "rychlebow": "Rychlebów",
@@ -176,9 +178,6 @@ function getIcon(name) {
     
     if (name.includes("jazdy"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776508163/cennik-jazdy_yvujsh.png";
-    
-    if (name.includes("ksiazeczki"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249467/ksiazeczka2_oexveq.png";
 
     if (name.includes("wiez"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775669054/wieze_kj49rl.png";
@@ -392,6 +391,9 @@ function getIcon(name) {
 
     if (name.includes("jul"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775657590/20250813_julka_fdlrk4.png";
+    
+    if (name.includes("ksiazeczki"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249467/ksiazeczka2_oexveq.png";
 
     if (name.includes("aplik"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750251811/aplikacje2_uuvpgl.png";
