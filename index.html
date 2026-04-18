@@ -89,7 +89,7 @@ function getNameFromUrl(url) {
         "slaska": "Śląska",
         "bylem": "Byłem",
         "wyjasnienie": "Wyjaśnienie",
-        "male": "Małe"
+        "stolowych": "Stołowych"
     };
 
     // podziel na słowa
@@ -113,6 +113,57 @@ function getNameFromUrl(url) {
 // funkcja: dobór ikony
 function getIcon(name) {
     name = name.toLowerCase();
+    
+    if (name.includes("zlotych"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776515612/gory-zlote_g04s1f.png";
+    
+    if (name.includes("bialskich"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776515487/gory-bialskie_tjouk9.png";
+    
+    if (name.includes("stolowych"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776515202/gory-stolowe_f5ezmc.png";
+    
+    if (name.includes("izer"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776514997/gory-izerskie_vwqtqy.png";
+    
+    if (name.includes("orlickich"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776514394/gory-orlickie_ch7nhi.png";
+    
+    if (name.includes("opawski"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776514115/gory-opawskie_ymtnam.png";
+    
+    if (name.includes("swietokrzys"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776513898/gory-swietokrzyskie_ox3kw0.png";
+    
+    if (name.includes("sowi"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776513437/gory-sowie_ldzcp0.png";
+    
+    if (name.includes("kruczych"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776513064/gory-krucze_xcoqic.png";
+    
+    if (name.includes("kamiennych"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776512796/gory-kamienne_eozpcb.png";
+    
+    if (name.includes("walbrzy"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776512278/gory-walbrzyskie_fprs7b.png";
+    
+    if (name.includes("rudaw"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776511743/rudawy-janowickie_a7huek.png";
+    
+    if (name.includes("kaczawsk"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776511477/gory-kaczawskie_mh0q58.png";
+    
+    if (name.includes("snieznika"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776511275/masyw-snieznika2_g7lzre.png";
+    
+    if (name.includes("slezy"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776511014/masyw-slezy_tzvrhv.png";
+    
+    if (name.includes("bystrzyckich"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776510774/gory-bystrzyckie_iflomc.png";
+
+    if (name.includes("diadem"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776510293/diadem_xxj29t.png";
 
     if (name.includes("tatr"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775668420/tatry_nppadp.png";
@@ -122,6 +173,12 @@ function getIcon(name) {
     
     if (name.includes("bieszcz"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775658261/bieszczady_ecoilo.png";
+    
+    if (name.includes("jazdy"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776508163/cennik-jazdy_yvujsh.png";
+    
+    if (name.includes("ksiazeczki"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249467/ksiazeczka2_oexveq.png";
 
     if (name.includes("wiez"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775669054/wieze_kj49rl.png";
@@ -158,6 +215,9 @@ function getIcon(name) {
 
     if (name.includes("odznak"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750969664/mojeodznakiii_j2okju.png";
+
+    if (name.includes("tempo"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750251231/tempobiegu_vb1sow.jpg";
 
     if (name.includes("bieg"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750252653/biegi_ioqich.jpg";
@@ -266,6 +326,9 @@ function getIcon(name) {
 
     if (name.includes("szkola"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1756998192/szkolaklasa3_skhhhs.png";
+    
+    if (name.includes("fizyka"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776509483/fizyka_iq6mg4.png";
 
     if (name.includes("historia"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1761995854/historia_prlmra.png";
@@ -284,6 +347,9 @@ function getIcon(name) {
 
     if (name.includes("niemiecki"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775656530/niemiecki_vydruv.png";
+    
+    if (name.includes("polski"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776509795/jezyk-polski2_ef7lyn.png";
 
     if (name.includes("pilka"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250889/pilka2_rofvtq.png";
@@ -315,11 +381,14 @@ function getIcon(name) {
     if (name.includes("kost"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750327371/kostkadogry_xgh4is.png";
 
-    if (name.includes("kol"))
+    if (name.includes("kolko"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750324262/kolkoikrzyz2_nmidv4.png";
 
-    if (name.includes("prawk"))
+    if (name.includes("prawko"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1763498037/prawko_ndidvf.png";
+
+    if (name.includes("inne"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750881328/inne_cqv03n.png";
 
     if (name.includes("jul"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775657590/20250813_julka_fdlrk4.png";
