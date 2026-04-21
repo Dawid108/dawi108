@@ -116,6 +116,12 @@ function getNameFromUrl(url) {
 function getIcon(name) {
     name = name.toLowerCase();
     
+    if (name.includes("slaska"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776779009/kgds23_xicuqq.png";
+    
+    if (name.includes("wroclawia"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776778591/kgw_schary.png";
+    
     if (name.includes("zlotych"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776515612/gory-zlote_g04s1f.png";
     
