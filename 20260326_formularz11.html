@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analiza kodu PHP - Połączenie z bazą</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --primary-color: #474a8a;
+            --accent-color: #2ecc71;
+            --text-color: #333;
+            --code-bg: #2d2d2d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: #ccc;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 1.1em;
+        }
+
+        .explanation {
+            margin-top: 20px;
+        }
+
+        .variable {
+            color: #61afef;
+            font-weight: bold;
+        }
+
+        .string {
+            color: #98c379;
+        }
+
+        .interactive-section {
+            background: #eef2f3;
+            padding: 15px;
+            border-left: 5px solid var(--accent-color);
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background: #fff;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h1>Wyjaśnienie kodu PHP</h1>
+        <p>Twój kod służy do definicji parametrów logowania do bazy danych <strong>MySQL</strong>. It's essential for establishing a connection between the server and the database.</p>
+        
+        <pre>
+<span class="variable">$host</span> = <span class="string">"localhost"</span>;
+<span class="variable">$username</span> = <span class="string">"root"</span>;
+<span class="variable">$password</span> = <span class="string">""</span>;
+<span class="variable">$database</span> = <span class="string">"sklep3e2026"</span>;</pre>
+
+        <div class="explanation" id="explanation-list">
+            </div>
+
+        <div class="interactive-section">
+            <strong>Wskazówka:</strong> Pamiętaj, że w środowisku produkcyjnym hasło nie powinno być puste, a użytkownik "root" isn't recommended for security reasons.
+        </div>
+    </div>
+</div>
+
+<script>
+    const data = [
+        { 
+            var: "$host", 
+            desc: "Adres serwera bazy danych. 'localhost' oznacza, że baza znajduje się na tym samym serwerze co pliki strony." 
+        },
+        { 
+            var: "$username", 
+            desc: "Nazwa użytkownika bazy danych. 'root' to domyślny administrator w środowiskach takich jak XAMPP." 
+        },
+        { 
+            var: "$password", 
+            desc: "Hasło użytkownika. Pusty ciąg znaków oznacza brak hasła (częste w lokalnych testach)." 
+        },
+        { 
+            var: "$database", 
+            desc: "Nazwa konkretnej bazy danych, z którą chcesz się połączyć (tutaj: 'sklep3e2026')." 
+        }
+    ];
+
+    function renderExplanation() {
+        const container = document.getElementById('explanation-list');
+        let html = '<ul>';
+        
+        data.forEach(item => {
+            html += `
+                <li>
+                    <span class="badge">${item.var}</span>
+                    ${item.desc}
+                </li>
+            `;
+        });
+        
+        html += '</ul>';
+        container.innerHTML = html;
+    }
+
+    // Inicjalizacja wyjaśnienia
+    window.onload = renderExplanation;
+</script>
+
+</body>
+</html>
