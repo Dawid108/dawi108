@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analiza Kodu PHP - Wyjaśnienie</title>
+    <script src="script.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f4f7f6;
+            --code-bg: #1e1e1e;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            color: #dcdcdc;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Consolas', monospace;
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .explanation {
+            background: #e8f4fd;
+            border-left: 5px solid var(--accent);
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .tag {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            margin-right: 5px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        li::before {
+            content: "➔";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        .badge {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Analiza Skryptu PHP</h1>
+    
+    <p>Poniżej znajduje się analiza Twojego fragmentu kodu, który łączy strukturę HTML z logiką backendową PHP.</p>
+
+    <div class="code-block" id="original-code">
+<pre>
+&lt;?php
+    $dodaj = $_POST['dodaj'];
+    require_once '20260326_connect.php';
+?&gt;
+</pre>
+    </div>
+
+    <h2>Wyjaśnienie krok po kroku</h2>
+    
+    <ul id="explanation-list">
+        <li>
+            <span class="tag">$dodaj = $_POST['dodaj'];</span>
+            Ta linia pobiera dane przysłane z formularza metodą <strong>POST</strong>. Zmienna <code>$dodaj</code> przechowuje teraz wartość elementu HTML, który miał atrybut <code>name="dodaj"</code>. It's essential for processing user input.
+        </li>
+        <li>
+            <span class="tag">require_once</span>
+            To instrukcja, która dołącza zewnętrzny plik PHP. W tym przypadku jest to <code class="badge">20260326_connect.php</code>. Jeśli pliku brakuje, skrypt wyrzuci krytyczny błąd i przestanie działać.
+        </li>
+        <li>
+            <span class="tag">_once</span>
+            Sufiks <code>_once</code> zapewnia, że plik zostanie dołączony tylko jeden raz, nawet jeśli wywołasz tę komendę ponownie. Don't forget that this prevents redeclaring functions or variables.
+        </li>
+        <li>
+            <span class="tag">connect.php</span>
+            Zazwyczaj pliki o takiej nazwie zawierają parametry połączenia z bazą danych (host, użytkownik, hasło, nazwa bazy).
+        </li>
+    </ul>
+
+    <div class="explanation">
+        <strong>Uwaga:</strong> Twój kod znajduje się wewnątrz sekcji <code>&lt;body&gt;</code>. Choć jest to poprawne, logikę przetwarzania danych (jak pobieranie z POST) często umieszcza się na samym początku pliku, przed tagiem <code>&lt;html&gt;</code>, aby uniknąć problemów z nagłówkami.
+    </div>
+</div>
+
+<script>
+    // Prosta interakcja - podświetlanie składni przy najechaniu (opcjonalnie)
+    document.querySelectorAll('.tag').forEach(item => {
+        item.addEventListener('mouseover', () => {
+            item.style.transform = 'scale(1.05)';
+            item.style.transition = '0.2s';
+        });
+        item.addEventListener('mouseout', () => {
+            item.style.transform = 'scale(1)';
+        });
+    });
+
+    console.log("Analiza kodu załadowana pomyślnie.");
+</script>
+
+</body>
+</html>
