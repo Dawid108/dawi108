@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyjaśnienie skryptu Lokaty</title>
+    <script src="script.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e67e22;
+            --bg: #f4f7f6;
+            --code-bg: #282c34;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--secondary);
+            border-bottom: 2px solid var(--secondary);
+            padding-bottom: 10px;
+        }
+
+        .explanation-section {
+            margin-bottom: 30px;
+            padding: 15px;
+            border-left: 5px solid var(--secondary);
+            background: #ecf0f1;
+        }
+
+        code {
+            background: var(--code-bg);
+            color: #abb2bf;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: #d19a66;
+            font-weight: bold;
+        }
+
+        .comment {
+            color: #5c6370;
+            font-style: italic;
+        }
+
+        .step-btn {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+
+        .step-btn:hover {
+            background: #2980b9;
+        }
+
+        #interactive-demo {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px dashed var(--secondary);
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Analiza Skryptu Kalkulatora Lokaty</h1>
+
+    <p>Ten skrypt PHP służy do symulacji wzrostu oszczędności na lokacie przy wykorzystaniu <strong>kapitalizacji złożonej</strong>. Poniżej znajdziesz rozbicie kodu na czynniki pierwsze.</p>
+
+    <div class="explanation-section">
+        <h3>1. Pobieranie danych (Metoda GET)</h3>
+        <p>Kod zaczyna od pobrania wartości z adresu URL (przesłanych przez formularz):</p>
+        <pre><code>$kwota = $_GET['kwota'];     <span class="comment">// Kapitał początkowy</span>
+$procenty = $_GET['procenty']; <span class="comment">// Roczne oprocentowanie</span>
+$czas = $_GET['czas'];         <span class="comment">// Liczba lat</span>
+$kapit = $_GET['kapit'];       <span class="comment">// Częstotliwość kapitalizacji (np. 4 dla kwartalnej)</span></code></pre>
+    </div>
+
+    <div class="explanation-section">
+        <h3>2. Przygotowanie obliczeń</h3>
+        <p>Zanim ruszy pętla, musimy przygotować parametry matematyczne:</p>
+        <ul>
+            <li><code>$ile_razy</code>: Całkowita liczba dopisań odsetek (Lata × Częstotliwość).</li>
+            <li><code>$procent_na_okres</code>: Oprocentowanie dzielone przez 100 (zamiana na ułamek) i przez liczbę kapitalizacji w roku.</li>
+        </ul>
+    </div>
+
+    <div class="explanation-section">
+        <h3>3. Mechanizm pętli FOR</h3>
+        <p>To serce skryptu. Pętla <code>for ($i = 1; $i <= $ile_razy; $i++)</code> powtarza proces dla każdego okresu:</p>
+        <ol>
+            <li>Oblicza odsetki od <strong>aktualnej</strong> kwoty.</li>
+            <li>Dodaje te odsetki do puli (zwiększając bazę dla następnego kroku).</li>
+            <li>Wyświetla stan konta po każdej operacji.</li>
+        </ol>
+    </div>
+
+    <div id="interactive-demo">
+        <h3>Podgląd logiczny (JavaScript)</h3>
+        <p>Kliknij przycisk, aby zobaczyć jak zmienne zmieniają się w "pamięci" serwera:</p>
+        <button class="step-btn" onclick="explainLogic()">Uruchom symulację logiczną</button>
+        <div id="output"></div>
+    </div>
+</div>
+
+<script>
+    function explainLogic() {
+        const output = document.getElementById('output');
+        const logic = [
+            {cat:"Pojęcia", q:"Czym jest $ile_razy?", a:"To iloczyn lat i częstotliwości kapitalizacji", b:"To kwota wpłacona do banku", c:"To podatek Belki", d:"To nazwa banku"},
+            {cat:"Pojęcia", q:"Co robi round($kwota, 2)?", a:"Zaokrągla wynik do dwóch miejsc po przecinku", b:"Mnoży kwotę razy dwa", c:"Usuwa wszystkie liczby po przecinku", d:"Zmienia walutę na PLN"}
+        ];
+
+        let html = "<h4>Format danych zgodny z Twoimi wytycznymi:</h4><pre>[";
+        logic.forEach((item, index) => {
+            html += `\n  { "cat": "${item.cat}", "q": "${item.q}", "a": "${item.a}" }${index < logic.length - 1 ? ',' : ''}`;
+        });
+        html += "\n]</pre>";
+        
+        html += "<p><strong>Krótka lekcja:</strong> Pętla <code>for</code> to don't't stop mechanism, dopóki licznik <code>$i</code> nie osiągnie wartości <code>$ile_razy</code>. It's the most efficient way to handle repeating financial calculations!</p>";
+        
+        output.innerHTML = html;
+    }
+</script>
+
+</body>
+</html>
