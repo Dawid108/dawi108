@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP to JS - Analiza Funkcji Tablic</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: #4F5D95;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        h2 { color: #4F5D95; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+        code {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre {
+            background-color: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+        }
+        .output-box {
+            background-color: #e7f3fe;
+            border-left: 6px solid #2196F3;
+            padding: 10px;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .label { font-size: 0.8em; color: #666; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Tłumacz: PHP &rarr; JavaScript</h1>
+    <p>Konwersja operacji na tablicach</p>
+</header>
+
+<div id="content"></div>
+
+<script>
+    const content = document.getElementById('content');
+
+    function createSection(title, phpCode, jsCode, explanation, result) {
+        const section = document.createElement('div');
+        section.className = 'card';
+        section.innerHTML = `
+            <h2>${title}</h2>
+            <p>${explanation}</p>
+            <div class="comparison">
+                <div><span class="label">PHP</span><pre><code>${phpCode}</code></pre></div>
+                <div><span class="label">JavaScript</span><pre><code>${jsCode}</code></pre></div>
+            </div>
+            <div class="label">Wynik operacji JS:</div>
+            <div class="output-box">${result}</div>
+        `;
+        content.appendChild(section);
+    }
+
+    // 1. Implode / Join
+    const cyfry = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+    createSection(
+        "Łączenie elementów (Implode)",
+        "$cyfry = [0..9];\necho implode(', ', $cyfry);",
+        "const cyfry = [0,1,2,3,4,5,6,7,8,9];\ncyfry.join(', ');",
+        "W PHP używamy <code>implode()</code>, natomiast w JS metodą tablicy jest <code>join()</code>.",
+        cyfry.join(', ')
+    );
+
+    // 2. Reverse
+    const reversed = [...cyfry].reverse();
+    createSection(
+        "Odwracanie (Reverse)",
+        "$cyfry2 = array_reverse($cyfry);",
+        "const cyfry2 = [...cyfry].reverse();",
+        "Uwaga: W JS <code>reverse()</code> zmienia oryginalną tablicę, dlatego używamy <code>[...tablica]</code>, aby stworzyć kopię.",
+        reversed.join(', ')
+    );
+
+    // 3. Sum & Product
+    const sum = cyfry.reduce((a, b) => a + b, 0);
+    const product = cyfry.reduce((a, b) => a * b, 0);
+    createSection(
+        "Suma i Iloczyn",
+        "array_sum($cyfry);\narray_product($cyfry);",
+        "cyfry.reduce((a, b) => a + b, 0);\ncyfry.reduce((a, b) => a * b, 1);",
+        "JS nie ma wbudowanych funkcji sumy/iloczynu. Używamy metody <code>reduce()</code>, która kumuluje wartości.",
+        `Suma: ${sum} | Iloczyn: ${product}`
+    );
+
+    // 4. Range
+    const rangeArray = Array.from({length: 10}, (_, i) => i + 90);
+    createSection(
+        "Generowanie zakresu (Range)",
+        "$tab = range(90, 99);",
+        "Array.from({length: 10}, (_, i) => i + 90);",
+        "W JS nie ma bezpośredniego odpowiednika <code>range()</code>. Najczęściej używamy <code>Array.from()</code>.",
+        rangeArray.join(', ')
+    );
+
+    // 5. Associative Arrays (Objects)
+    let owoce = ["jabłko", "banan"];
+    let warzywa = { "czerwone": "pomidor", "zielone": "ogórek" };
+    owoce.push("gruszka");
+    warzywa["białe"] = "pietruszka";
+    createSection(
+        "Tablice asocjacyjne i dodawanie",
+        "$warzywa['białe'] = 'pietruszka';\narray_push($owoce, 'śliwka');",
+        "warzywa['białe'] = 'pietruszka';\nowoce.push('śliwka');",
+        "Tablice asocjacyjne w PHP to w JS po prostu <b>Obiekty</b>. Dodawanie do zwykłej tablicy to <code>push()</code>.",
+        `Owoce: ${owoce.join(', ')} <br> Warzywa (klucze): ${Object.keys(warzywa).join(', ')}`
+    );
+
+    // 6. Sorting
+    owoce.push("śliwka", "czereśnia");
+    owoce.sort();
+    createSection(
+        "Sortowanie",
+        "sort($owoce);\nrsort($owoce);",
+        "owoce.sort();\nowoce.reverse();",
+        "<code>sort()</code> w JS domyślnie sortuje alfabetycznie. Aby uzyskać malejące (rsort), najpierw sortujemy, potem odwracamy.",
+        `Posortowane owoce: ${owoce.join(', ')}`
+    );
+
+    // 7. Sorting Objects (Key/Value)
+    const sortedKeys = Object.keys(warzywa).sort();
+    createSection(
+        "Sortowanie wg kluczy (ksort)",
+        "ksort($warzywa);",
+        "Object.keys(warzywa).sort();",
+        "W JS obiekty nie gwarantują kolejności. Aby posortować 'asocjacyjnie', wyciągamy klucze i to je sortujemy.",
+        `Posortowane klucze warzyw: ${sortedKeys.join(', ')}`
+    );
+
+</script>
+
+</body>
+</html>
