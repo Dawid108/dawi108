@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analiza Kodu PHP na JavaScript</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        .section { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 30px; }
+        .code-box, .explanation-box {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .code-box {
+            background: #272822;
+            color: #f8f8f2;
+            font-family: 'Courier New', Courier, monospace;
+            white-space: pre-wrap;
+        }
+        .explanation-box {
+            background: #e7f3fe;
+            border-left: 5px solid #2196F3;
+        }
+        .output {
+            background: #2c3e50;
+            color: #2ecc71;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        code { font-weight: bold; color: #d63384; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Analiza i Przepisanie Kodu</h2>
+
+    <div class="section">
+        <div class="code-box">
+// JavaScript (odpowiednik Twojego PHP)
+const kolory = ["czerwony", "pomarańczowy", "żółty", "zielony"];
+console.log("Pierwszy kolor: " + kolory[0]);
+
+kolory[4] = "niebieski";
+kolory[5] = 22;
+kolory[6] = 3.141593;
+kolory[7] = 'w';
+
+// Pętla for
+for(let i=0; i < kolory.length; i++) {
+    console.log(kolory[i]);
+}
+
+// Tablica asocjacyjna (Obiekt w JS)
+const RGB = {
+    "R": "czerwony",
+    "G": "zielony",
+    "B": "niebieski"
+};
+        </div>
+
+        <div class="explanation-box">
+            <h3>Co się dzieje w kodzie?</h3>
+            <ul>
+                <li><code>$kolory = array(...)</code>: W JS używamy nawiasów kwadratowych <code>[]</code>. Tablice są dynamiczne – mogą przechowywać różne typy danych (stringi, liczby) jednocześnie.</li>
+                <li><code>$kolory[4] = "niebieski"</code>: Dodajemy nowy element na konkretnym indeksie. Jeśli indeks 4 nie istniał, tablica się powiększy.</li>
+                <li><code>count($cyfry)</code>: W JS używamy właściwości <code>.length</code>, aby sprawdzić długość tablicy.</li>
+                <li><b>Tablice Asocjacyjne:</b> PHP pozwala na klucze tekstowe w tablicach. W JavaScript do tego celu służą <b>Obiekty</b> <code>{}</code>.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>Wynik działania (Live Output)</h2>
+    <div id="output" class="output"></div>
+</div>
+
+<script>
+    const outputDiv = document.getElementById('output');
+    let content = "";
+
+    // Logika z Twojego zadania przepisana na JS
+    const kolory = ["czerwony", "pomarańczowy", "żółty", "zielony"];
+    content += "Oto pierwszy kolor: " + kolory[0] + "<br>";
+    
+    kolory[4] = "niebieski";
+    content += "Oto wszystkie elementy tablicy: ";
+    for(let i=0; i<=4; i++){
+        content += kolory[i] + ", ";
+    }
+
+    kolory[5] = 22;
+    kolory[6] = 3.141593;
+    kolory[7] = 'w';
+
+    content += "<br>Oto rozszerzona tablica: ";
+    for(let i=0; i < kolory.length; i++){
+        content += kolory[i] + ", ";
+    }
+
+    const cyfry = [0,1,2,3,4,5,6,7,8,9];
+    content += "<br>Oto wszystkie cyfry: ";
+    for(let i=0; i < cyfry.length; i++){
+        content += cyfry[i] + (i === cyfry.length - 1 ? "" : ", ");
+    }
+
+    content += "<h3>W JS zamiast tablic asocjacyjnych używamy OBIEKTÓW</h3>";
+    const RGB = {
+        "R": "czerwony",
+        "G": "zielony",
+        "B": "niebieski"
+    };
+    content += "Klucz R to: " + RGB["R"];
+
+    outputDiv.innerHTML = content;
+</script>
+
+</body>
+</html>
