@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analiza Kodu PHP - Formularz</title>
+    <script src="script.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --bg: #f4f7f6;
+            --code-bg: #272822;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg);
+            color: var(--primary);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+        }
+
+        pre {
+            background-color: var(--code-bg);
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+
+        .explanation {
+            background: #e1f5fe;
+            border-left: 5px solid #03a9f4;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .demo-box {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        /* Style skopiowane z oryginalnego kodu PHP dla wizualizacji */
+        .php-output-preview {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        
+        .php-output-preview ul { list-style-type: square; }
+        .php-output-preview p { background-color: yellow; color: red; font-weight: bold; padding: 5px; }
+        .php-output-preview .div-main { text-align: center; margin: 0 auto; background-color: navy; color: yellow; width: 80%; padding: 10px; }
+        .php-output-preview .div2 { border: 1px dotted red; background-color: yellow; color: navy; margin-bottom: 5px; }
+        .php-output-preview ol { list-style-type: lower-greek; }
+        .php-output-preview span { background-color: crimson; color: yellow; font-weight: bold; border: 1px dashed green; padding: 2px; display: inline-block; margin-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Analiza Skryptu PHP</h1>
+
+    <section>
+        <h2>1. Oryginalny Logika PHP</h2>
+        <p>Kod ten służy do odbierania danych z formularza metodą <strong>POST</strong> i ich dynamicznego wyświetlania. It's important to remember that PHP runs on the server side.</p>
+        <pre>
+$imie = $_POST['imie']; // Pobranie wartości tekstowej
+$kategoria = $_POST['kategoria']; // Pobranie tablicy (np. z checkboxów)
+
+foreach($kategoria as $element){
+    echo "&lt;li&gt;$element&lt;/li&gt;"; // Iteracja przez zaznaczone opcje
+}</pre>
+    </section>
+
+    <section class="explanation">
+        <h2>2. Jak to działa? (Wyjaśnienie)</h2>
+        <ul>
+            <li><strong>$_POST:</strong> Superglobalna tablica przechowująca dane wysłane z formularza.</li>
+            <li><strong>Zmienne:</strong> Skrypt przypisuje dane z pól (imie, wiek, liczba) do zmiennych.</li>
+            <li><strong>Foreach:</strong> Ta pętla jest kluczowa. Jeśli użytkownik zaznaczył kilka opcji (np. kategorie książek), PHP przechodzi przez każdą z nich i generuje odpowiedni kod HTML (li, div lub span).</li>
+            <li><strong>Style CSS:</strong> Kod używa specyficznych stylów, takich jak żółte tła dla paragrafów czy greckie litery w listach numerowanych.</li>
+        </ul>
+    </section>
+
+    <section>
+        <h2>3. Symulacja Działania (JS)</h2>
+        <p>Wpisz dane poniżej, aby zobaczyć, jak PHP wygenerowałoby wynik na stronie:</p>
+        
+        <div class="demo-box" id="inputForm">
+            <input type="text" id="name" placeholder="Imię" value="Jan">
+            <input type="number" id="age" placeholder="Wiek" value="25">
+            <br><br>
+            <label>Kategorie (rozdziel przecinkiem):</label><br>
+            <input type="text" id="cats" value="Fantasy, Kryminał, Biografia" style="width: 100%"><br><br>
+            <button onclick="simulatePHP()">Generuj Podgląd</button>
+        </div>
+
+        <div id="output" class="php-output-preview" style="display:none;">
+            </div>
+    </section>
+</div>
+
+<script>
+    function simulatePHP() {
+        const name = document.getElementById('name').value;
+        const age = document.getElementById('age').value;
+        const cats = document.getElementById('cats').value.split(',');
+        const output = document.getElementById('output');
+
+        // Resetowanie i budowanie HTML tak jak robi to PHP
+        let html = `<p>Jesteś ${name} i masz ${age} lat.</p>`;
+        
+        html += `Oto twoje ulubione kategorie książek: <ul>`;
+        cats.forEach(el => {
+            if(el.trim() !== "") html += `<li>${el.trim()}</li>`;
+        });
+        html += `</ul>`;
+
+        html += `<div class="div-main"><br>Przykład stylizowanego kontenera "div" z kodu</div><br>`;
+        
+        html += `Twoje książki pochodzą z:`;
+        html += `<div class="div2">Przykładowe Źródło 1</div>`;
+        html += `<div class="div2">Przykładowe Źródło 2</div>`;
+
+        html += `<span>Przykład elementu Tolkien (span)</span>`;
+
+        output.innerHTML = html;
+        output.style.display = 'block';
+
+        console.log("PHP Simulation executed. It isn't real PHP, but it shows the logic.");
+    }
+</script>
+
+</body>
+</html>
