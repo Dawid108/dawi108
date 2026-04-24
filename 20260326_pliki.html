@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analiza Operacji na Plikach w PHP</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f4f7f6;
+            --code-bg: #282c34;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1, h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Fira Code', monospace;
+            margin: 20px 0;
+        }
+
+        .explanation {
+            display: grid;
+            gap: 15px;
+        }
+
+        .method-card {
+            border-left: 4px solid var(--accent);
+            background: #eef7ff;
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .method-card h3 {
+            margin-top: 0;
+            color: #2980b9;
+        }
+
+        .highlight {
+            color: #d19a66;
+            font-weight: bold;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        button {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        #quiz-area {
+            margin-top: 30px;
+            padding: 20px;
+            border: 2px dashed #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Analiza kodu PHP: Odczyt Plików</h1>
+    
+    <p>Poniżej znajduje się analiza trzech metod odczytu pliku <code>20260326_kotek.txt</code> użytych w Twoim skrypcie.</p>
+
+    <div class="code-block">
+<pre>
+// Metoda 1: fpassthru
+$dp = fopen('20260326_kotek.txt', 'r');
+$liczba_bajtow = fpassthru($dp);
+fclose($dp);
+
+// Metoda 2: readfile
+$lb = readfile('20260326_kotek.txt');
+
+// Metoda 3: file + nl2br
+$wiersze = file('20260326_kotek.txt');
+foreach ($wiersze as $wiersz){
+    $wiersz2 = nl2br($wiersz);
+    echo $wiersz2;
+}
+</pre>
+    </div>
+
+    <div class="explanation">
+        <div class="method-card">
+            <h3>1. Funkcja <code>fpassthru()</code></h3>
+            <p>Wymaga wcześniejszego otwarcia pliku przez <code class="highlight">fopen()</code>. Odczytuje dane od aktualnego miejsca wskaźnika do końca pliku i wypisuje je bezpośrednio do bufora wyjściowego.</p>
+            <span class="tag">Zwraca: liczbę przeczytanych bajtów.</span>
+        </div>
+
+        <div class="method-card">
+            <h3>2. Funkcja <code>readfile()</code></h3>
+            <p>Najprostsza metoda. Nie potrzebujesz <code>fopen()</code>. Otwiera plik, wypisuje zawartość i natychmiast go zamyka.</p>
+            <span class="tag">Zaleta: Najszybsza przy przesyłaniu dużych plików bezpośrednio do przeglądarki.</span>
+        </div>
+
+        <div class="method-card">
+            <h3>3. Funkcja <code>file()</code> i <code>nl2br()</code></h3>
+            <p><code>file()</code> wczytuje cały plik do <strong>tablicy</strong>, gdzie każdy element to jedna linia. <code class="highlight">nl2br()</code> zamienia znaki nowej linii (\n) na znacznik HTML &lt;br&gt;, co pozwala zachować formatowanie tekstu w przeglądarce.</p>
+        </div>
+    </div>
+
+    <div id="quiz-area">
+        <h3>Sprawdź swoją wiedzę!</h3>
+        <p>Kliknij przycisk, aby wygenerować test dotyczący tych funkcji.</p>
+        <button onclick="generateQuiz()">Generuj Test</button>
+        <div id="quiz-result"></div>
+    </div>
+</div>
+
+<script>
+    function generateQuiz() {
+        const quizData = [
+            {
+                cat: "Funkcje PHP", 
+                q: "Która funkcja zwraca zawartość pliku w formie tablicy?", 
+                a: "file()", 
+                b: "readfile()", 
+                c: "fpassthru()", 
+                d: "fopen()"
+            },
+            {
+                cat: "Formatowanie", 
+                q: "Do czego służy funkcja nl2br()?", 
+                a: "Do zamiany nowych linii na tagi <br>", 
+                b: "Do usuwania spacji", 
+                c: "Do szyfrowania pliku", 
+                d: "Do zamykania połączenia z plikiem"
+            }
+        ];
+
+        let html = "<h4>Wynik generowania (format tablicy JS):</h4><pre style='background:#eee; padding:10px; border-radius:5px;'>";
+        html += JSON.stringify(quizData, null, 2);
+        html += "</pre>";
+        
+        document.getElementById('quiz-result').innerHTML = html;
+        console.log("Wygenerowano test:", quizData);
+    }
+</script>
+
+</body>
+</html>
