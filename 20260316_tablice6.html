@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analiza i Konwersja PHP na JS</title>
+    <script src="script.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #e67e22; margin-top: 30px; }
+        h3 { color: #2980b9; }
+        .code-block {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+        .explanation {
+            background: #e8f4fd;
+            border-left: 5px solid #3498db;
+            padding: 15px;
+            margin: 10px 0 20px 0;
+        }
+        .result {
+            background: #f0fff0;
+            border: 1px dashed #27ae60;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        .tag {
+            display: inline-block;
+            background: #34495e;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Analiza Tablic: PHP vs JavaScript</h1>
+
+    <section>
+        <h2>1. Tablice Indeksowane Numerycznie</h2>
+        <div class="explanation">
+            W PHP tablice tworzy się przez <code>array()</code> lub <code>[]</code>. JavaScript używa wyłącznie <code>[]</code>. Obie technologie pozwalają na przechowywanie różnych typów danych w jednej tablicy.
+        </div>
+        <div class="code-block">
+            // PHP: $kolory = array("czerwony", "zielony"); <br>
+            // JS: const kolory = ["czerwony", "zielony"];
+        </div>
+        <div id="res-1" class="result"></div>
+    </section>
+
+    <section>
+        <h2>2. Tablice Asocjacyjne (Klucz => Wartość)</h2>
+        <div class="explanation">
+            W PHP tablica asocjacyjna to wciąż <code>array</code>. W JavaScript "tablice z kluczami tekstowymi" realizuje się za pomocą <strong>Obiektów {}</strong> lub Map. Przebiegamy po nich pętlą <code>for...in</code> lub <code>Object.entries()</code>.
+        </div>
+        <div id="res-2" class="result"></div>
+    </section>
+
+    <section>
+        <h2>3. Tablice Dwuwymiarowe (Macierze)</h2>
+        <div class="explanation">
+            Zarówno w PHP, jak i JS, macierz to tablica zawierająca inne tablice. Do sumowania elementów używamy zagnieżdżonych pętli.
+        </div>
+        <div id="res-3" class="result"></div>
+    </section>
+
+    <section>
+        <h2>4. Filtrowanie i Agregacja Danych</h2>
+        <div class="explanation">
+            Przykład z samochodami pokazuje, jak wyciągać konkretne dane (np. spalanie) z obiektów i wykonywać na nich operacje logiczne (if) oraz matematyczne (suma mocy).
+        </div>
+        <div id="res-4" class="result"></div>
+    </section>
+</div>
+
+<script>
+    // 1. TABLICE INDEKSOWANE
+    const res1 = document.getElementById('res-1');
+    let kolory = ["czerwony", "pomarańczowy", "żółty", "zielony"];
+    let out1 = `Oto pierwszy kolor: ${kolory[0]}<br>`;
+    
+    kolory[4] = "niebieski";
+    kolory[5] = 22;
+    kolory[6] = 3.141593;
+    kolory[7] = "w";
+
+    out1 += "Wszystkie elementy: " + kolory.join(", ") + "<br>";
+    
+    const cyfry = [0,1,2,3,4,5,6,7,8,9];
+    out1 += "Cyfry pętlą: ";
+    for(let i=0; i < cyfry.length; i++) {
+        out1 += cyfry[i] + (i === cyfry.length - 1 ? "" : ", ");
+    }
+    res1.innerHTML = out1;
+
+    // 2. TABLICE ASOCJACYJNE (W JS jako Obiekty)
+    const res2 = document.getElementById('res-2');
+    const RGB = { "R": "czerwony", "G": "zielony", "B": "niebieski" }; // Poprawione z kodu PHP (tam był 3x czerwony)
+    
+    let out2 = "<strong>Model RGB:</strong><br>";
+    for(let [klucz, wartosc] of Object.entries(RGB)) {
+        out2 += `${klucz}: ${wartosc}, `;
+    }
+
+    const bociany = {
+        "mama": "Klotylda Bocian",
+        "tata": "Saturnin Bocian",
+        "córka": "Balbina Bocian",
+        "syn": "Andrzej Bocian"
+    };
+    out2 += `<br><br><strong>Rodzina Bocianów:</strong><br>`;
+    Object.keys(bociany).forEach(rola => {
+        out2 += `${rola} - ${bociany[rola]}<br>`;
+    });
+    out2 += `Córka to: ${bociany['córka']}`;
+    res2.innerHTML = out2;
+
+    // 3. MACIERZE
+    const res3 = document.getElementById('res-3');
+    const macierz = [
+        [1,1,1,1,1,1],
+        [2,2,2,2,2,2],
+        [3,3,3,3,3,3]
+    ];
+    let suma = 0;
+    let out3 = "";
+    macierz.forEach(wiersz => {
+        wiersz.forEach(el => {
+            out3 += el;
+            suma += el;
+        });
+        out3 += "<br>";
+    });
+    out3 += `Suma macierzy: ${suma}`;
+    res3.innerHTML = out3;
+
+    // 4. AUTA (Obiekt asocjacyjny z tablicami)
+    const res4 = document.getElementById('res-4');
+    const auta = {
+        "BMW": [120, "szary", 7.2],
+        "Audi": [200, "zielony", 9.9],
+        "Fiat": [90, "czerwony", 5.5],
+        "Opel": [100, "biały", 5.8]
+    };
+
+    let out4 = "<strong>Ekonomiczne (spalanie < 6l):</strong><br>";
+    let sumaMocy = 0;
+
+    for(let marka in auta) {
+        let dane = auta[marka];
+        if(dane[2] < 6) {
+            out4 += `${marka}: ${dane[2]} l/100km<br>`;
+        }
+        sumaMocy += dane[0];
+    }
+    out4 += `<br>Sumaryczna moc: ${sumaMocy} KM<br><br>`;
+    out4 += "<strong>Pełna lista:</strong><br>";
+    for(let [marka, dane] of Object.entries(auta)) {
+        out4 += `Marka: ${marka} | Moc: ${dane[0]}KM | Kolor: ${dane[1]} | Spalanie: ${dane[2]}l<br>`;
+    }
+    res4.innerHTML = out4;
+
+</script>
+
+</body>
+</html>
