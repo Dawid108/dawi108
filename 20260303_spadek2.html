@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyjaśnienie kodu PHP - Symulacja Wydatków</title>
+    <script src="script.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f7f6;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        h1, h2 { color: #2c3e50; }
+        code {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 8px 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover { background: #219150; }
+        #output {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 4px solid #27ae60;
+            background: #e8f5e9;
+        }
+        .explanation {
+            margin-top: 30px;
+            border-top: 2px solid #eee;
+            padding-top: 20px;
+        }
+        .step {
+            margin-bottom: 15px;
+        }
+        .keyword { color: #f92672; }
+        .variable { color: #a6e22e; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Analiza Algorytmu Pętli <code>do...while</code></h1>
+
+    <section>
+        <h2>Oryginalny Kod PHP</h2>
+        <pre>
+<span class="variable">$spadek</span> = $_GET['spadek']; 
+<span class="variable">$wydatek_pocz</span> = $_GET['wydatek_pocz'];
+<span class="variable">$wzrost</span> = $_GET['wzrost']; 
+
+<span class="variable">$nr</span> = 1;
+<span class="variable">$wydatek_miesieczny</span> = <span class="variable">$wydatek_pocz</span>;
+<span class="variable">$pozostalo</span> = <span class="variable">$spadek</span>;
+
+<span class="keyword">do</span> {
+    <span class="variable">$pozostalo</span> = <span class="variable">$pozostalo</span> - <span class="variable">$wydatek_miesieczny</span>;
+    <span class="keyword">echo</span> "Miesiąc: <span class="variable">$nr</span> | Wydatek: <span class="variable">$wydatek_miesieczny</span> zł...";
+    <span class="variable">$nr</span>++;
+    <span class="variable">$wydatek_miesieczny</span> += <span class="variable">$wzrost</span>;
+} <span class="keyword">while</span> (<span class="variable">$pozostalo</span> >= <span class="variable">$wydatek_miesieczny</span>);
+        </pre>
+    </section>
+
+    <section class="explanation">
+        <h2>Wyjaśnienie Działania</h2>
+        <div class="step">
+            <strong>1. Pobieranie danych:</strong> Kod używa tablicy <code>$_GET</code>, co oznacza, że wartości są pobierane z adresu URL (np. po wysłaniu formularza).
+        </div>
+        <div class="step">
+            <strong>2. Pętla <code>do...while</code>:</strong> To specyficzna pętla, która <strong>zawsze wykona się przynajmniej raz</strong>. Warunek jest sprawdzany dopiero na samym końcu wykonania bloku kodu.
+        </div>
+        <div class="step">
+            <strong>3. Logika:</strong> W każdym kroku od puli pieniędzy (<code>$pozostalo</code>) odejmowany jest aktualny wydatek. Następnie wydatek rośnie o określoną kwotę (<code>$wzrost</code>) na kolejny miesiąc.
+        </div>
+        <div class="step">
+            <strong>4. Warunek końcowy:</strong> Pętla działa tak długo, jak długo stan konta pozwala na pokrycie <em>kolejnego</em> pełnego wydatku miesięcznego.
+        </div>
+    </section>
+
+    <section class="explanation">
+        <h2>Symulator Live (JavaScript)</h2>
+        <p>Wprowadź dane, aby zobaczyć jak pętla przetworzy te informacje:</p>
+        <div class="input-group">
+            <input type="number" id="spadek" placeholder="Spadek (np. 1000)">
+            <input type="number" id="wydatek" placeholder="Wydatek pocz. (np. 200)">
+            <input type="number" id="wzrost" placeholder="Wzrost co miesiąc (np. 50)">
+            <button onclick="symuluj()">Uruchom pętlę</button>
+        </div>
+        <div id="output">Wynik pojawi się tutaj...</div>
+    </section>
+</div>
+
+<script>
+    function symuluj() {
+        // Pobranie wartości z pól (odpowiednik $_GET w PHP)
+        let pozostalo = parseFloat(document.getElementById('spadek').value);
+        let wydatek_miesieczny = parseFloat(document.getElementById('wydatek').value);
+        let wzrost = parseFloat(document.getElementById('wzrost').value);
+        let output = document.getElementById('output');
+        
+        // Walidacja danych
+        if (isNaN(pozostalo) || isNaN(wydatek_miesieczny) || isNaN(wzrost)) {
+            output.innerHTML = "Proszę podać poprawne liczby.";
+            return;
+        }
+
+        let nr = 1;
+        let resultHTML = "";
+
+        // Pętla do...while (identyczna logika jak w PHP)
+        do {
+            pozostalo = pozostalo - wydatek_miesieczny;
+            
+            resultHTML += `Miesiąc: <strong>${nr}</strong> | ` +
+                          `Wydatek: <strong>${wydatek_miesieczny} zł</strong> | ` +
+                          `Pozostało: <span style="color: ${pozostalo < 0 ? 'red' : 'green'}">${pozostalo.toFixed(2)} zł</span><br>`;
+
+            nr++;
+            wydatek_miesieczny = wydatek_miesieczny + wzrost;
+
+        } while (pozostalo >= wydatek_miesieczny);
+
+        resultHTML += "<br><strong>Skończyły się pieniądze lub nie starczy na kolejny pełny miesiąc.</strong>";
+        
+        // Wyświetlenie wyniku
+        output.innerHTML = resultHTML;
+    }
+</script>
+
+</body>
+</html>
