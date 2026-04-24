@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analiza Skryptu PHP - Kieszonkowe</title>
+    <script src="script.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        pre {
+            background: #272822;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 0.9em;
+        }
+        .explanation {
+            background: #e8f4fd;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            margin: 20px 0;
+        }
+        .calculator {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .input-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Analiza Skryptu: Symulacja Kieszonkowego</h1>
+
+    <section>
+        <h2>1. Oryginalny kod PHP</h2>
+        <p>Kod pobiera dane z adresu URL (metoda GET) i oblicza, po ilu miesiącach suma odłożonych pieniędzy przekroczy założony limit.</p>
+        <pre>
+$kwota_pocz = $_GET['kwota_pocz']; // startowa kwota co miesiąc
+$wzrost = $_GET['wzrost'];         // o ile rośnie co miesiąc
+$kwota_konc = $_GET['kwota_konc']; // cel (suma oszczędności)
+$kwota = $kwota_pocz;              // aktualna stawka miesięczna
+$suma = $kwota_pocz;               // całkowite oszczędności
+$nr = 1;                           // licznik miesięcy
+
+while($suma < $kwota_konc){
+    echo "$nr $kwota $suma&lt;br&gt;";
+    $kwota = $kwota + $wzrost;     // zwiększ stawkę
+    $suma = $suma + $kwota;        // dodaj do skarbonki
+    $nr++;
+}
+echo "$nr $kwota $suma&lt;br&gt;";        // ostatni krok po przekroczeniu celu
+        </pre>
+    </section>
+
+    <section class="explanation">
+        <h2>2. Jak to działa? (Wyjaśnienie)</h2>
+        <ul>
+            <li><strong>Pętla <code>while</code>:</strong> Działa tak długo, aż uzbierana <code>$suma</code> jest mniejsza niż <code>$kwota_konc</code>.</li>
+            <li><strong>Logika wzrostu:</strong> To nie jest tylko odkładanie tej samej kwoty. Co miesiąc samo "kieszonkowe" (<code>$kwota</code>) rośnie o wartość <code>$wzrost</code>.</li>
+            <li><strong>Wyświetlanie:</strong> Skrypt wypisuje numer miesiąca, aktualną stawkę miesięczną oraz stan konta po dodaniu wpłaty.</li>
+        </ul>
+    </section>
+
+    <section class="calculator">
+        <h2>3. Symulator (JavaScript)</h2>
+        <div class="input-group">
+            <label>Początkowe kieszonkowe:</label>
+            <input type="number" id="inp_pocz" value="10">
+        </div>
+        <div class="input-group">
+            <label>Miesięczny wzrost:</label>
+            <input type="number" id="inp_wzrost" value="5">
+        </div>
+        <div class="input-group">
+            <label>Cel (suma końcowa):</label>
+            <input type="number" id="inp_konc" value="100">
+        </div>
+        <button onclick="calculate()">Uruchom symulację</button>
+
+        <div id="result">
+            Kliknij przycisk, aby zobaczyć wynik...
+        </div>
+    </section>
+</div>
+
+<script>
+    function calculate() {
+        // Pobieranie wartości z pól (odpowiednik $_GET w PHP)
+        let kwota_pocz = parseFloat(document.getElementById('inp_pocz').value);
+        let wzrost = parseFloat(document.getElementById('inp_wzrost').value);
+        let kwota_konc = parseFloat(document.getElementById('inp_konc').value);
+
+        // Inicjalizacja zmiennych
+        let kwota = kwota_pocz;
+        let suma = kwota_pocz;
+        let nr = 1;
+        let output = "";
+
+        // Logika pętli przepisana 1:1 z PHP
+        while(suma < kwota_konc) {
+            output += nr + " | Miesięczna rata: " + kwota + " | Suma: " + suma + "<br>";
+            kwota = kwota + wzrost;
+            suma = suma + kwota;
+            nr++;
+        }
+
+        // Ostatnia linia (po wyjściu z pętli)
+        output += "<strong>" + nr + " | Miesięczna rata: " + kwota + " | Suma: " + suma + "</strong><br>";
+        output += "<br><em>Cel osiągnięty w miesiącu nr " + nr + "!</em>";
+
+        // Wyświetlenie wyniku
+        document.getElementById('result').innerHTML = output;
+    }
+</script>
+
+</body>
+</html>
