@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Czytelnika</title>
+    <script src="script.js"></script>
+    <style>
+        /* CSS */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #d35400;
+            --bg: #f9f9f9;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--secondary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .wrapper {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        h1 { margin: 0; color: var(--primary); }
+        .age-info { font-style: italic; color: #7f8c8d; }
+
+        section { margin-bottom: 30px; }
+        
+        h2 { 
+            font-size: 1.2rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: var(--accent);
+            border-left: 4px solid var(--accent);
+            padding-left: 10px;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .label { font-weight: bold; }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background: #edf2f7;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .tolkien {
+            background: #fef5e7;
+            border: 1px solid #f39c12;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <h1 id="user-name">Użytkownik</h1>
+            <p class="age-info" id="user-age">Wiek: -- lat</p>
+        </header>
+
+        <section>
+            <h2>Preferencje czytelnicze</h2>
+            <div class="data-row">
+                <span class="label">Ulubione kategorie:</span>
+                <span>Przygodowe, Historyczne</span>
+            </div>
+            <div class="data-row">
+                <span class="label">Ulubiony autor:</span>
+                <span id="author-name">...</span>
+            </div>
+            <div class="data-row">
+                <span class="label">Przeczytane książki autora:</span>
+                <span>1</span>
+            </div>
+            <div class="data-row">
+                <span class="label">Źródła książek:</span>
+                <span>Biblioteka, Prezenty</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>Ulubione ekranizacje</h2>
+            <div class="tags">
+                <span class="tag">W Pustyni i w Puszczy</span>
+                <span class="tag">Hobbit</span>
+            </div>
+        </section>
+
+        <section>
+            <h2>Ekranizacje Tolkiena</h2>
+            <div class="tags">
+                <span class="tag tolkien">Dwie Wieże</span>
+                <span class="tag tolkien">Bitwa Pięciu Armii</span>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // JS
+        (function() {
+            // Przykładowe dane - możesz je zmienić
+            const profile = {
+                name: "Marek",
+                age: 28,
+                favAuthor: "Henryk Sienkiewicz"
+            };
+
+            const nameEl = document.getElementById('user-name');
+            const ageEl = document.getElementById('user-age');
+            const authorEl = document.getElementById('author-name');
+
+            // Logika wyświetlania
+            if (profile.name) {
+                nameEl.textContent = `Jesteś ${profile.name}`;
+            }
+
+            if (profile.age) {
+                ageEl.textContent = `Masz ${profile.age} lat`;
+            } else {
+                // Przykład użycia "isn't" zgodnie z Twoją prośbą
+                console.log("Age data isn't available.");
+            }
+
+            if (profile.favAuthor) {
+                authorEl.textContent = profile.favAuthor;
+            } else {
+                // Przykład użycia "don't"
+                console.warn("I don't have the author's name.");
+                authorEl.textContent = "Nieokreślony";
+            }
+        })();
+    </script>
+
+</body>
+</html>
