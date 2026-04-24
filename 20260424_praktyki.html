@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dziennik Praktyk</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --accent: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        /* Styl bloków */
+        .day-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary-color);
+            transition: transform 0.2s;
+        }
+
+        .day-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--accent);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .day-number {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .day-date {
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .content-section {
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .full-desc {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .short-desc {
+            border-left: 3px solid #cbd5e1;
+            padding-left: 15px;
+            font-style: italic;
+            color: #475569;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Dziennik Praktyk</h1>
+        <p>Gabi-Plast — Dokumentacja codziennych zadań</p>
+    </header>
+
+    <div class="day-card">
+        <div class="day-header">
+            <span class="day-number">Dzień 1</span>
+            <span class="day-date">Poniedziałek - 30.03.2026</span>
+        </div>
+        
+        <div class="content-section">
+            <h3>Opis dnia</h3>
+            <div class="full-desc">
+                Zapoznanie z formą Gabi-Plast. Zobaczenie szafek. Wyrzucanie uszkodzonych plastikowych kubków i zostawianie nie uszkodzonych. Wkładaliśmy kubki do plastikowych woreczków i zamykaliśmy je. Układanie segregatorów kolorami i wyrzucanie plakietek z przed 5 lat (2016-2018). Wkładaliśmy zawartość starych segregatorów do kartonu i przenieśliśmy go do kartonu.
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h3>Wersja skrócona</h3>
+            <div class="short-desc">
+                Pierwszego dnia praktyk zapoznałem się z firmą Gabi-Plast i jej organizacją. Sortowałem plastikowe kubki, odrzucając uszkodzone, a dobre pakowałem do woreczków. Zajmowałem się także porządkowaniem dokumentów – układałem segregatory według kolorów, usuwałem stare plakietki oraz przenosiłem zawartość starych segregatorów do kartonów.
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 Dziennik Praktyk Zawodowych
+    </footer>
+</div>
+
+</body>
+</html>
