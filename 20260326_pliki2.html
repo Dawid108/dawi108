@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wlazł kotek na płotek - Gra</title>
+    <style>
+        :root {
+            --sky-blue: #87CEEB;
+            --fence-brown: #8B4513;
+            --cat-gray: #808080;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--sky-blue);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        #game-container {
+            position: relative;
+            width: 600px;
+            height: 400px;
+            background: linear-gradient(to bottom, #87CEEB 70%, #4CAF50 70%);
+            border: 5px solid #fff;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        #fence {
+            position: absolute;
+            bottom: 60px;
+            width: 100%;
+            height: 60px;
+            background: repeating-linear-gradient(
+                90deg,
+                var(--fence-brown),
+                var(--fence-brown) 20px,
+                #A0522D 20px,
+                #A0522D 40px
+            );
+            border-top: 5px solid #5D2E0C;
+        }
+
+        #cat {
+            position: absolute;
+            bottom: 120px;
+            left: 50px;
+            font-size: 50px;
+            transition: all 0.5s ease;
+            z-index: 10;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3));
+        }
+
+        .note {
+            position: absolute;
+            font-size: 30px;
+            cursor: pointer;
+            user-select: none;
+            animation: float 2s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        #ui {
+            margin-top: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover { transform: scale(1.1); }
+
+        #lyrics-display {
+            font-weight: bold;
+            color: #333;
+            height: 1.5em;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <div id="cat">🐱</div>
+        <div id="fence"></div>
+    </div>
+
+    <div id="ui">
+        <div id="lyrics-display">Kliknij Start, by zacząć!</div>
+        <button id="start-btn">Zacznij śpiewać!</button>
+    </div>
+
+    <script>
+        const lyrics = [
+            {cat:"Pojęcia", q:"Wlazł kotek na płotek i mruga,", a:"🐱", b:"🐶", c:"🐭", d:"🐹"},
+            {cat:"Pojęcia", q:"Ładna to piosenka nie długa,", a:"🎵", b:"📚", c:"🚗", d:"🏢"},
+            {cat:"Pojęcia", q:"Nie długa nie krótka lecz w sam raz,", a:"📏", b:"📐", c:"🎨", d:"🎸"},
+            {cat:"Pojęcia", q:"Zaśpiewaj koteczku jeszcze raz.", a:"🎤", b:"🍕", c:"⚽", d:"🚲"}
+        ];
+
+        const cat = document.getElementById('cat');
+        const startBtn = document.getElementById('start-btn');
+        const lyricsDisplay = document.getElementById('lyrics-display');
+        const gameContainer = document.getElementById('game-container');
+
+        let currentStep = 0;
+
+        function spawnNote(correctEmoji) {
+            const note = document.createElement('div');
+            note.className = 'note';
+            note.innerText = correctEmoji;
+            note.style.left = Math.random() * 500 + 50 + 'px';
+            note.style.top = Math.random() * 200 + 50 + 'px';
+            
+            note.onclick = () => {
+                note.remove();
+                nextStep();
+            };
+            
+            gameContainer.appendChild(note);
+        }
+
+        function nextStep() {
+            if (currentStep < lyrics.length) {
+                const step = lyrics[currentStep];
+                lyricsDisplay.innerText = step.q;
+                
+                // Ruch kota
+                cat.style.left = (50 + (currentStep * 130)) + 'px';
+                if(currentStep % 2 === 0) {
+                    cat.style.transform = 'translateY(-20px)';
+                    cat.innerText = '😿'; // Mruga/zmienia minę
+                } else {
+                    cat.style.transform = 'translateY(0px)';
+                    cat.innerText = '🐱';
+                }
+
+                spawnNote(step.a);
+                currentStep++;
+            } else {
+                lyricsDisplay.innerText = "Miau! Zaśpiewaliśmy wszystko! 🐾";
+                cat.style.transform = 'scale(1.5)';
+                cat.innerText = '😸';
+                startBtn.innerText = "Zagraj jeszcze raz";
+                startBtn.style.display = "inline-block";
+            }
+        }
+
+        startBtn.addEventListener('click', () => {
+            currentStep = 0;
+            cat.style.left = '50px';
+            cat.innerText = '🐱';
+            startBtn.style.display = "none";
+            
+            // Clean up old notes if any
+            document.querySelectorAll('.note').forEach(n => n.remove());
+            
+            nextStep();
+        });
+
+        // Log formatted data to console as requested
+        console.log("Dane testu:", lyrics);
+    </script>
+</body>
+</html>
