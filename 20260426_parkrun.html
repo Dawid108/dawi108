@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runner Stats | Parkrun Krotoszyn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
+        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); }
+        .card-grad { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-800">Panel Biegacza 🏃‍♂️</h1>
+                <p class="text-gray-500">Statystyki startów: Parkrun Błonie Krotoszyn</p>
+            </div>
+            <div class="flex gap-3">
+                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 text-center">
+                    <span class="block text-xs uppercase text-gray-400 font-semibold">Liczba Startów</span>
+                    <span class="text-xl font-bold text-blue-600">12</span>
+                </div>
+                <div class="bg-white px-4 py-2 rounded-lg shadow-sm border border-gray-200 text-center">
+                    <span class="block text-xs uppercase text-gray-400 font-semibold">Dystans Łączny</span>
+                    <span class="text-xl font-bold text-blue-600">60 km</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card-grad p-6 rounded-2xl text-white shadow-lg relative overflow-hidden">
+                <i class="fas fa-trophy absolute right-4 bottom-4 text-6xl opacity-20"></i>
+                <h3 class="text-lg opacity-80">Personal Best (5km)</h3>
+                <p class="text-4xl font-bold mt-2">19:15</p>
+                <p class="text-sm mt-2 opacity-90 italic">Osiągnięto: 18.04.2026</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
+                <i class="fas fa-stopwatch absolute right-4 bottom-4 text-6xl text-blue-50 opacity-10"></i>
+                <h3 class="text-lg text-gray-500">Średnie Tempo</h3>
+                <p class="text-4xl font-bold mt-2 text-gray-800">4:08 <span class="text-lg font-normal text-gray-400">min/km</span></p>
+                <div class="w-full bg-gray-100 h-2 mt-4 rounded-full overflow-hidden">
+                    <div class="bg-green-500 h-full" style="width: 85%"></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden">
+                <i class="fas fa-medal absolute right-4 bottom-4 text-6xl text-yellow-50 opacity-10"></i>
+                <h3 class="text-lg text-gray-500">Najwyższe Miejsce</h3>
+                <p class="text-4xl font-bold mt-2 text-gray-800">1 <span class="text-lg font-normal text-gray-400">Open</span></p>
+                <p class="text-sm mt-2 text-green-600 font-semibold">4-krotne zwycięstwo!</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-2xl shadow-sm">
+                <h3 class="text-gray-700 font-semibold mb-4 italic">Progresja Czasu (Sekundy)</h3>
+                <canvas id="progressChart" height="150"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-sm">
+                <h3 class="text-gray-700 font-semibold mb-4 italic">Miejsca w kategorii Open</h3>
+                <canvas id="rankChart" height="150"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100">
+            <div class="p-6 border-b border-gray-50 flex justify-between items-center">
+                <h3 class="font-bold text-gray-800 uppercase tracking-wider">Historia Startów</h3>
+                <span class="text-xs text-gray-400 font-mono italic text-right">Ostatnia aktualizacja: 26.04.2026</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 text-gray-400 text-xs uppercase font-semibold">
+                        <tr>
+                            <th class="px-6 py-4 italic">Zawody</th>
+                            <th class="px-6 py-4 italic">Data</th>
+                            <th class="px-6 py-4 italic text-center">Czas</th>
+                            <th class="px-6 py-4 italic text-center">Tempo</th>
+                            <th class="px-6 py-4 italic text-center">Open</th>
+                            <th class="px-6 py-4 italic text-center">Kat.</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        <tr class="hover:bg-blue-50/50 transition-colors">
+                            <td class="px-6 py-4 font-semibold text-gray-700 font-mono">Parkrun #156</td>
+                            <td class="px-6 py-4 text-gray-500 text-sm">18.04.2026</td>
+                            <td class="px-6 py-4 text-center font-bold text-blue-600">19:15</td>
+                            <td class="px-6 py-4 text-center text-gray-600 text-sm italic">3:51</td>
+                            <td class="px-6 py-4 text-center font-bold text-gray-700">3</td>
+                            <td class="px-6 py-4 text-center text-xs bg-yellow-100 text-yellow-700 font-bold rounded-full m-2 inline-block px-2">1</td>
+                        </tr>
+                         <tr class="hover:bg-blue-50/50 transition-colors">
+                            <td class="px-6 py-4 font-semibold text-gray-700 font-mono text-sm">Parkrun #153</td>
+                            <td class="px-6 py-4 text-gray-500 text-sm">28.03.2026</td>
+                            <td class="px-6 py-4 text-center font-bold text-blue-600">19:39</td>
+                            <td class="px-6 py-4 text-center text-gray-600 text-sm italic">3:57</td>
+                            <td class="px-6 py-4 text-center font-bold text-gray-700">1</td>
+                            <td class="px-6 py-4 text-center text-xs bg-yellow-100 text-yellow-700 font-bold rounded-full m-2 inline-block px-2">1</td>
+                        </tr>
+                        <tr class="hover:bg-blue-50/50 transition-colors">
+                            <td class="px-6 py-4 font-semibold text-gray-700 font-mono text-sm">Parkrun #152</td>
+                            <td class="px-6 py-4 text-gray-500 text-sm">21.03.2026</td>
+                            <td class="px-6 py-4 text-center font-bold text-blue-600 text-sm">22:37</td>
+                            <td class="px-6 py-4 text-center text-gray-600 text-sm italic">4:31</td>
+                            <td class="px-6 py-4 text-center font-bold text-gray-700">5</td>
+                            <td class="px-6 py-4 text-center text-xs bg-yellow-100 text-yellow-700 font-bold rounded-full m-2 inline-block px-2 text-sm">1</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="p-4 bg-gray-50 text-center text-xs text-gray-400">
+                Pokaż wszystkie 12 startów...
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dane do wykresów (skrócone dla przykładu)
+        const labels = ['Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr'];
+        const timeData = [1203, 1292, 1246, 1157, 1179, 1155]; // Sekundy
+        const rankData = [2, 4, 1, 1, 1, 3];
+
+        // Wykres Progresu Czasu
+        new Chart(document.getElementById('progressChart'), {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Czas (sekundy)',
+                    data: timeData,
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#3b82f6'
+                }]
+            },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: false, grid: { display: false } }, x: { grid: { display: false } } }
+            }
+        });
+
+        // Wykres Miejsc
+        new Chart(document.getElementById('rankChart'), {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Miejsce Open',
+                    data: rankData,
+                    backgroundColor: '#fbbf24',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: { 
+                    x: { reverse: true, ticks: { stepSize: 1 } },
+                    y: { grid: { display: false } }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
