@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje Wyniki Sportowe</title>
+    <script src="script.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Oswald:wght@500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #f97316;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 {
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            border-bottom: 4px solid var(--accent);
+            padding-bottom: 10px;
+        }
+
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .race-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s;
+            border-left: 5px solid var(--accent);
+        }
+
+        .race-card:hover {
+            transform: translateY(-5px);
+            background-color: #263449;
+        }
+
+        .race-date {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .race-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+
+        .race-location {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .metric-value {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .rank-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Historia Startów</h1>
+
+    <div class="stats-container">
+        <div class="race-card">
+            <div class="rank-badge">Open: 1</div>
+            <div class="race-date">25.01.2026</div>
+            <div class="race-title">Krotoszyński Bieg Po Zdrowie</div>
+            <div class="race-location">📍 Krotoszyn</div>
+            <div class="metrics">
+                <div class="metric"><span class="metric-label">Dystans</span><span class="metric-value">25,36 km</span></div>
+                <div class="metric"><span class="metric-label">Czas</span><span class="metric-value">02:01:43</span></div>
+                <div class="metric"><span class="metric-label">Tempo</span><span class="metric-value">4:48 min/km</span></div>
+                <div class="metric"><span class="metric-label">Kat (1)</span><span class="metric-value">Zwycięzca</span></div>
+            </div>
+        </div>
+
+        <div class="race-card">
+            <div class="rank-badge">Open: 3</div>
+            <div class="race-date">17.10.2025</div>
+            <div class="race-title">XVII Papieski Bieg Pokoju</div>
+            <div class="race-location">📍 Krotoszyn</div>
+            <div class="metrics">
+                <div class="metric"><span class="metric-label">Dystans</span><span class="metric-value">800 m</span></div>
+                <div class="metric"><span class="metric-label">Czas</span><span class="metric-value">00:02:29</span></div>
+                <div class="metric"><span class="metric-label">Tempo</span><span class="metric-value">3:03 min/km</span></div>
+                <div class="metric"><span class="metric-label">Kat (15-20)</span><span class="metric-value">Miejsce: 3</span></div>
+            </div>
+        </div>
+
+        <div class="race-card">
+            <div class="rank-badge">Open: 1</div>
+            <div class="race-date">06.06.2025</div>
+            <div class="race-title">IX Memoriał im. Dyrektora Grzegorza Nowackiego</div>
+            <div class="race-location">📍 Krotoszyn</div>
+            <div class="metrics">
+                <div class="metric"><span class="metric-label">Dystans</span><span class="metric-value">1500 m</span></div>
+                <div class="metric"><span class="metric-label">Czas</span><span class="metric-value">00:05:09</span></div>
+                <div class="metric"><span class="metric-label">Tempo</span><span class="metric-value">3:26 min/km</span></div>
+                <div class="metric"><span class="metric-label">Kat (15-20)</span><span class="metric-value">Miejsce: 1</span></div>
+            </div>
+        </div>
+
+        <div class="race-card">
+            <div class="rank-badge">Open: 35</div>
+            <div class="race-date">24.04.2025</div>
+            <div class="race-title">Mistrzostwa Wielkopolski w Biegach Przełajowych</div>
+            <div class="race-location">📍 Żerków</div>
+            <div class="metrics">
+                <div class="metric"><span class="metric-label">Dystans</span><span class="metric-value">2 km</span></div>
+                <div class="metric"><span class="metric-label">Czas</span><span class="metric-value">00:07:50</span></div>
+                <div class="metric"><span class="metric-label">Tempo</span><span class="metric-value">3:33 min/km</span></div>
+                <div class="metric"><span class="metric-label">Kat (15-18)</span><span class="metric-value">Miejsce: 35</span></div>
+            </div>
+        </div>
+
+        <div class="race-card">
+            <div class="rank-badge">Open: 2</div>
+            <div class="race-date">27.05.2022</div>
+            <div class="race-title">XVIII Mityng o Puchar Burnistrza Krotoszyna</div>
+            <div class="race-location">📍 Krotoszyn</div>
+            <div class="metrics">
+                <div class="metric"><span class="metric-label">Dystans</span><span class="metric-value">2 km</span></div>
+                <div class="metric"><span class="metric-label">Czas</span><span class="metric-value">00:07:37</span></div>
+                <div class="metric"><span class="metric-label">Tempo</span><span class="metric-value">3:48 min/km</span></div>
+                <div class="metric"><span class="metric-label">Kat (14-15)</span><span class="metric-value">Miejsce: 2</span></div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
