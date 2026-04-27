@@ -116,6 +116,18 @@ function getNameFromUrl(url) {
 function getIcon(name) {
     name = name.toLowerCase();
     
+    if (name.includes("parkrun"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777314644/parkrun_sy5sie.png";
+    
+    if (name.includes("praktyki"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777313846/praktyki_v8qfoy.png";
+    
+    if (name.includes("dlugopole"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777313466/dlugopole_tzcm0n.png";
+    
+    if (name.includes("jelenia"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777313248/jeleniagora_we0gnk.png;
+    
     if (name.includes("slaska"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776779009/kgds23_xicuqq.png";
     
