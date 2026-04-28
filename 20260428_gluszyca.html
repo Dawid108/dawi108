@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wyprawa Głuszyca - Planer</title>
+    <script src="script.js"></script>
     <style>
         :root {
             --primary: #2d5a27;
@@ -189,7 +190,7 @@
         { name: "Kątna i Sucha", meta: "1:23 g / 3,3 km", url: "https://mapy.com/s/papabavero" },
         { name: "Kamyki, Ostoja, Raróg, Bukowa Góra...", meta: "2:01 / 7,2 km", url: "https://mapy.com/s/guhahedeme" },
         { name: "Osówka (716 m)", meta: "50 min / 2,9 km", url: "https://mapy.com/s/juvanuzope" },
-        { name: "Jagodziniec i Jedlińska Kopa", meta: "1:53 g / 6,7 km", url: "https://mapy.com/s/dalagaloso_" }
+        { name: "Jagodziniec i Jedlińska Kopa", meta: "1:53 g / 6,7 km", url: "https://mapy.com/s/dalagaloso" }
     ];
 
     // Renderowanie Odznak
@@ -200,8 +201,8 @@
         card.innerHTML = `
             <span>${b.name}</span>
             <div class="badge-links">
-                <a href="${b.info}" class="btn btn-info" target="_blank">Książeczka</a>
-                <a href="${b.map}" class="btn btn-map" target="_blank">Mapa</a>
+                <a href="${b.info}" class="btn btn-info">Książeczka</a>
+                <a href="${b.map}" class="btn btn-map">Mapa</a>
             </div>
         `;
         badgeContainer.appendChild(card);
@@ -217,7 +218,7 @@
                 <strong>${r.name}</strong>
                 <div class="route-meta">⏱️ ${r.meta}</div>
             </div>
-            <a href="${r.url}" class="btn btn-map" target="_blank">Zobacz mapę</a>
+            <a href="${r.url}" class="btn btn-map">Zobacz mapę</a>
         `;
         routeContainer.appendChild(item);
     });
