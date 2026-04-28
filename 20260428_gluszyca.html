@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyprawa Głuszyca - Planer</title>
+    <style>
+        :root {
+            --primary: #2d5a27;
+            --accent: #d4a373;
+            --bg: #f8f9fa;
+            --text: #333;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), 
+                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: -2rem auto 2rem;
+            padding: 0 1rem;
+        }
+
+        section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        h2 {
+            color: var(--primary);
+            border-bottom: 2px solid var(--accent);
+            padding-bottom: 0.5rem;
+            margin-top: 0;
+        }
+
+        /* Stylizacja Odznak */
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+        }
+
+        .badge-card {
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .badge-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .badge-card span {
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+
+        .badge-links {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        /* Stylizacja Tras */
+        .route-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .route-item {
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .route-item:last-child { border-bottom: none; }
+
+        .route-info {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .route-meta {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.3rem;
+        }
+
+        /* Przyciski */
+        .btn {
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-size: 0.85rem;
+            text-align: center;
+            transition: opacity 0.2s;
+        }
+
+        .btn-info { background-color: var(--primary); color: white; }
+        .btn-map { background-color: var(--accent); color: white; }
+        .btn:hover { opacity: 0.9; }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .route-item { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .btn { width: 100%; box-sizing: border-box; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Głuszyca i Okolice</h1>
+    <p>Twoja baza wypadowa w Góry Sowie i Kamienne</p>
+</header>
+
+<div class="container">
+    <section id="badges">
+        <h2>🎖️ Odznaki do zdobycia</h2>
+        <div class="badge-grid" id="badge-container">
+            </div>
+    </section>
+
+    <section id="routes">
+        <h2>🥾 Zaplanowane Trasy</h2>
+        <div class="route-list" id="route-container">
+            </div>
+    </section>
+</div>
+
+<footer>
+    <p>Projekt wycieczki - Głuszyca. It isn't just a trip, it's an adventure!</p>
+</footer>
+
+<script>
+    const badges = [
+        { name: "Punkty Widokowe Ziemi Wałbrzyskiej", info: "https://dawid108.github.io/ksiazeczki/punkty-widokowe-ziemi-walbrzyskiej.html", map: "https://maps.app.goo.gl/oiBE7KZmyjdbUJJaA" },
+        { name: "Szlak Zamków Piastowskich", info: "https://dawid108.github.io/ksiazeczki/szlak-zamkow-piastowskich.html", map: "https://maps.app.goo.gl/vVY1HWBLi7Kfk8LD7" },
+        { name: "Wieże Widokowe w Sudetach", info: "https://dawid108.github.io/ksiazeczki/wieze-widokowe-gor-i-pogorzy-sudety.html", map: "https://maps.app.goo.gl/kV9CAoXPXrujuhPa7" },
+        { name: "Korona Widoków Polskich Góry", info: "https://dawid108.github.io/ksiazeczki/korona-widokow-polskich-gory.html", map: "https://maps.app.goo.gl/sKK4uUXtB8Y6jXnx7" },
+        { name: "Odznaka Ziemi Wałbrzyskiej", info: "https://dawid108.github.io/ksiazeczki/odznaka-ziemi-walbrzyskiej.html", map: "https://maps.app.goo.gl/1kcU3Fr9ESJdzdam8" },
+        { name: "Znam Góry Sowie", info: "https://dawid108.github.io/ksiazeczki/znam-gory-sowie.html", map: "https://maps.app.goo.gl/RWxWcn6n6KLVVme97" },
+        { name: "Znam Sudety Wałbrzyskie", info: "https://dawid108.github.io/ksiazeczki/znam-sudety-walbrzyskie.html", map: "https://maps.app.goo.gl/gc1ft7Drjd6kh97z5" },
+        { name: "Korona Gór Kamiennych", info: "https://dawid108.github.io/ksiazeczki/korona-gor-kamiennych.html", map: "https://maps.app.goo.gl/AeSP65cbZ98454su9" },
+        { name: "Korona Gór Sowich", info: "https://dawid108.github.io/ksiazeczki/korona-gor-sowich.html", map: "https://maps.app.goo.gl/KdUa5VqwHLcsfkGc7" },
+        { name: "Korona Gór Wałbrzyskich", info: "https://dawid108.github.io/ksiazeczki/korona-gor-walbrzyskich.html", map: "https://maps.app.goo.gl/iYjdKTjL8YPWcSg8A" },
+        { name: "Korona Ziemi Wałbrzyskiej", info: "https://dawid108.github.io/ksiazeczki/korona-ziemi-walbrzyskiej.html", map: "https://maps.app.goo.gl/g9G88SMwY73kfgSbA" }
+    ];
+
+    const routes = [
+        { name: "Skiba (433 m) i Zamek Stary Książ", meta: "48 min / 3,5 km", url: "https://mapy.com/s/nevefajoju" },
+        { name: "Zamek Cisy", meta: "14 min / 875 m", url: "https://mapy.com/s/cojojuduta" },
+        { name: "Sajdak, Wawrzyniak, Jedliniec, Jałowiec...", meta: "2:37 g / 8 km", url: "https://mapy.com/s/cetotacuho" },
+        { name: "Kątna i Sucha", meta: "1:23 g / 3,3 km", url: "https://mapy.com/s/papabavero" },
+        { name: "Kamyki, Ostoja, Raróg, Bukowa Góra...", meta: "2:01 / 7,2 km", url: "https://mapy.com/s/guhahedeme" },
+        { name: "Osówka (716 m)", meta: "50 min / 2,9 km", url: "https://mapy.com/s/juvanuzope" },
+        { name: "Jagodziniec i Jedlińska Kopa", meta: "1:53 g / 6,7 km", url: "https://mapy.com/s/dalagaloso_" }
+    ];
+
+    // Renderowanie Odznak
+    const badgeContainer = document.getElementById('badge-container');
+    badges.forEach(b => {
+        const card = document.createElement('div');
+        card.className = 'badge-card';
+        card.innerHTML = `
+            <span>${b.name}</span>
+            <div class="badge-links">
+                <a href="${b.info}" class="btn btn-info" target="_blank">Książeczka</a>
+                <a href="${b.map}" class="btn btn-map" target="_blank">Mapa</a>
+            </div>
+        `;
+        badgeContainer.appendChild(card);
+    });
+
+    // Renderowanie Tras
+    const routeContainer = document.getElementById('route-container');
+    routes.forEach(r => {
+        const item = document.createElement('div');
+        item.className = 'route-item';
+        item.innerHTML = `
+            <div class="route-info">
+                <strong>${r.name}</strong>
+                <div class="route-meta">⏱️ ${r.meta}</div>
+            </div>
+            <a href="${r.url}" class="btn btn-map" target="_blank">Zobacz mapę</a>
+        `;
+        routeContainer.appendChild(item);
+    });
+</script>
+
+</body>
+</html>
