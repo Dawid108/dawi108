@@ -123,6 +123,9 @@ function getNameFromUrl(url) {
 function getIcon(name) {
     name = name.toLowerCase();
     
+    if (name.includes("rower"))
+        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777473090/rower_ozruni.png";
+    
     if (name.includes("gluszyca"))
         return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777384263/gluszyca_viqiqz.png";
     
