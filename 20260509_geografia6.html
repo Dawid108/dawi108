@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stolice Państw Europy</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Albania?", a:"Tirana", b:"Durrës", c:"Vlorë", d:"Berat"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Andora?", a:"Andora", b:"Escaldes", c:"Encamp", d:"Canillo"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Austria?", a:"Wiedeń", b:"Graz", c:"Linz", d:"Salzburg"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Belgia?", a:"Bruksela", b:"Antwerpia", c:"Gandawa", d:"Brugia"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Białoruś?", a:"Mińsk", b:"Brześć", c:"Grodno", d:"Homel"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Bośnia i Hercegowina?", a:"Sarajewo", b:"Mostar", c:"Banja Luka", d:"Tuzla"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Bułgaria?", a:"Sofia", b:"Płowdiw", c:"Warna", d:"Burgas"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Chorwacja?", a:"Zagrzeb", b:"Split", c:"Rijeka", d:"Zadar"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Czarnogóra?", a:"Podgorica", b:"Nikšić", c:"Cetinje", d:"Kotor"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Czechy?", a:"Praga", b:"Brno", c:"Pilzno", d:"Liberec"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Dania?", a:"Kopenhaga", b:"Aarhus", c:"Odense", d:"Aalborg"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Estonia?", a:"Tallinn", b:"Tartu", c:"Narwa", d:"Parnawa"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Finlandia?", a:"Helsinki", b:"Espoo", c:"Tampere", d:"Vantaa"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Francja?", a:"Paryż", b:"Lyon", c:"Marsylia", d:"Bordeaux"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Grecja?", a:"Ateny", b:"Saloniki", c:"Patras", d:"Heraklion"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Hiszpania?", a:"Madryt", b:"Barcelona", c:"Sewilla", d:"Walencja"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Holandia?", a:"Amsterdam", b:"Rotterdam", c:"Eindhoven", d:"Utrecht"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Irlandia?", a:"Dublin", b:"Cork", c:"Galway", d:"Limerick"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Islandia?", a:"Reykjavík", b:"Akureyri", c:"Keflavík", d:"Selfoss"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Kosowo?", a:"Prisztina", b:"Prizren", c:"Peja", d:"Ferizaj"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Liechtenstein?", a:"Vaduz", b:"Schaan", c:"Triesen", d:"Balzers"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Litwa?", a:"Wilno", b:"Kowno", c:"Kłajpeda", d:"Szawle"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Luksemburg?", a:"Luksemburg", b:"Esch-sur-Alzette", c:"Differdange", d:"Dudelange"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Łotwa?", a:"Ryga", b:"Lipawa", c:"Jelgava", d:"Jurmała"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Macedonia Północna?", a:"Skopje", b:"Bitola", c:"Ochryda", d:"Tetowo"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Malta?", a:"Valletta", b:"Sliema", c:"Mdina", d:"Rabat"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Mołdawia?", a:"Kiszyniów", b:"Tyraspol", c:"Bielce", d:"Bendery"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Monako?", a:"Monako", b:"Monte Carlo", c:"La Condamine", d:"Fontvieille"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Niemcy?", a:"Berlin", b:"Monachium", c:"Hamburg", d:"Frankfurt"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Norwegia?", a:"Oslo", b:"Bergen", c:"Trondheim", d:"Stavanger"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Polska?", a:"Warszawa", b:"Kraków", c:"Wrocław", d:"Gdańsk"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Portugalia?", a:"Lizbona", b:"Porto", c:"Braga", d:"Coimbra"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Rosja?", a:"Moskwa", b:"Sankt Petersburg", c:"Nowosybirsk", d:"Jekaterynburg"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Rumunia?", a:"Bukareszt", b:"Kluż-Napoka", c:"Timisoara", d:"Konstanca"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma San Marino?", a:"San Marino", b:"Serravalle", c:"Borgo Maggiore", d:"Domagnano"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Serbia?", a:"Belgrad", b:"Nowy Sad", c:"Nisz", d:"Kragujevac"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Słowacja?", a:"Bratysława", b:"Koszyce", c:"Preszów", d:"Żylina"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Słowenia?", a:"Lublana", b:"Maribor", c:"Celje", d:"Kranj"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Szwajcaria?", a:"Berno", b:"Zurych", c:"Genewa", d:"Bazylea"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Szwecja?", a:"Sztokholm", b:"Göteborg", c:"Malmö", d:"Uppsala"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Ukraina?", a:"Kijów", b:"Lwów", c:"Charków", d:"Odessa"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Watykan?", a:"Watykan", b:"Rzym", c:"Castel Gandolfo", d:"Borgo"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Węgry?", a:"Budapeszt", b:"Debreczyn", c:"Szeged", d:"Miskolc"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Wielka Brytania?", a:"Londyn", b:"Manchester", c:"Liverpool", d:"Birmingham"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Włochy?", a:"Rzym", b:"Mediolan", c:"Neapol", d:"Turyn"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Kazachstan?", a:"Astana", b:"Ałmaty", c:"Szymkent", d:"Aktau"},
+  {cat:"Państwa i Stolice", q:"Jaką stolicę ma Turcja?", a:"Ankara", b:"Stambuł", c:"Izmir", d:"Antalya"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 1;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
