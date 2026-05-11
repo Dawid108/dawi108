@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chemia - Alkohole</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Chemia", q:"Jaka grupa funkcyjna występuje w alkoholach?", a:"Grupa hydroksylowa (-OH)", b:"Grupa karboksylowa (-COOH)", c:"Grupa aldehydowa (-CHO)", d:"Grupa aminowa (-NH2)"},
+  {cat:"Chemia", q:"Jaką końcówkę dodajemy do nazw systematycznych alkoholi?", a:"-ol", b:"-al", c:"-an", d:"-on"},
+  {cat:"Chemia", q:"Jaki charakter chemiczny (odczyn) mają alkohole?", a:"Charakter kwasowy", b:"Charakter zasadowy", c:"Charakter amfoteryczny", d:"Charakter metaliczny"},
+  {cat:"Chemia", q:"Czym charakteryzują się alkohole monohydroksylowe?", a:"Posiadają dokładnie jedną grupę -OH", b:"Posiadają co najmniej dwie grupy -OH", c:"Nie posiadają żadnej grupy funkcyjnej", d:"Posiadają wyłącznie wiązania potrójne"},
+  {cat:"Chemia", q:"Czym są alkohole polihydroksylowe?", a:"Alkoholami zawierającymi więcej niż jedną grupę -OH", b:"Alkoholami o bardzo długim łańcuchu węglowym", c:"Alkoholami, które nie rozpuszczają się w wodzie", d:"Alkoholami stałymi o zapachu owocowym"},
+  {cat:"Chemia", q:"Jaki wzór półstrukturalny posiada propanol?", a:"CH3-CH2-CH2-OH", b:"CH3-CH2-CH3", c:"CH3-CH2-COOH", d:"CH3-CH2-CHO"},
+  {cat:"Chemia", q:"Która z poniższych właściwości fizycznych opisuje alkohole?", a:"Są łatwopalne i bardziej lotne od wody", b:"Są niepalne i mają gęstość większą od wody", c:"Są substancjami bezwonnymi i bardzo ciężkimi", d:"Są gazami o bardzo słodkim smaku"},
+  {cat:"Chemia", q:"Z czego najczęściej wytwarza się alkohol?", a:"Z roślin i cukru", b:"Z metali i piasku", c:"Z soli i tlenu", d:"Z kamienia i wody"},
+  {cat:"Chemia", q:"Jaka jest gęstość alkoholi w porównaniu do wody?", a:"Gęstość mniejsza od wody", b:"Gęstość taka sama jak wody", c:"Gęstość dwukrotnie większa od wody", d:"Alkohole nie posiadają mierzalnej gęstości"},
+  {cat:"Chemia", q:"Jak nazywa się alkohol o wzorze CH3-OH?", a:"Metanol", b:"Etanol", c:"Propanol", d:"Butanol"},
+  {cat:"Chemia", q:"Jak zmienia się barwa papierka wskaźnikowego lub oranżu metylowego w kontakcie z alkoholem?", a:"Zmienia się na czerwony", b:"Zmienia się na niebieski", c:"Zmienia się na zielony", d:"Pozostaje bez zmian"},
+  {cat:"Chemia", q:"Jakie są cechy organoleptyczne alkoholi według Twoich notatek?", a:"Mają charakterystyczny zapach i nie mają smaku", b:"Są całkowicie bezwonne i bardzo słone w smaku", c:"Pachną jak owoce i mają bardzo słodki smak", d:"Mają zapach siarki i są niezwykle gorzkie"},
+  {cat:"Chemia", q:"Który alkohol jest powszechnie określany jako spożywczy?", a:"Etanol", b:"Metanol", c:"Propanol", d:"Heksanol"},
+  {cat:"Chemia", q:"Do czego najczęściej wykorzystuje się alkohole w życiu codziennym?", a:"Jako rozpuszczalniki, paliwa oraz składniki kosmetyków", b:"Jako główny składnik materiałów budowlanych i cementu", c:"Do produkcji metalowych elementów karoserii samochodowej", d:"Jako jedyny środek do napełniania gaśnic proszkowych"},
+  {cat:"Chemia", q:"Dlaczego po użyciu płynu do dezynfekcji na bazie alkoholu dłonie szybko stają się suche?", a:"Ponieważ alkohol jest bardzo lotny i szybko paruje", b:"Ponieważ alkohol zamarza w temperaturze pokojowej", c:"Ponieważ alkohol reaguje z tlenem, tworząc lód", d:"Ponieważ alkohol ma gęstość znacznie większą od wody"},
+  {cat:"Chemia", q:"Który alkohol jest stosowany jako składnik płynów do spryskiwaczy i jest trujący?", a:"Metanol", b:"Etanol spożywczy", c:"Glicerol", d:"Alkohol pitny"},
+  {cat:"Chemia", q:"Co się dzieje z alkoholem, gdy przyłożymy do niego płomień?", a:"Ulega spalaniu, ponieważ jest łatwopalny", b:"Gasi płomień, działając jak substancja gaśnicza", c:"Zmienia stan skupienia w ciało stałe (lód)", d:"Nie reaguje w żaden sposób na wysoką temperaturę"},
+  {cat:"Chemia", q:"W jakim procesie otrzymuje się alkohol z cukru i drożdży?", a:"W procesie fermentacji", b:"W procesie krystalizacji", c:"W procesie destylacji suchej", d:"W procesie polimeryzacji"},
+  {cat:"Chemia", q:"Jak nazywa się alkohol, który ma dwie grupy -OH w cząsteczce (np. ten z rysunku w zeszycie)?", a:"Poli-hydroksylowy (np. diol)", b:"Mono-hydroksylowy", c:"Wodorotlenek metalu", d:"Alkan bezfunkcyjny"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 1;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
