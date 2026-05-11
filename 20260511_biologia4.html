@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biologia z Podręcznika- Ośrodkowy i Obwodowy Układ Nerwowy</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Biologia z Podręcznika", q:"Czym jest ośrodkowy układ nerwowy?", a:"Układem sterującym pracą całego organizmu", b:"Narządem odpowiedzialnym wyłącznie za trawienie", c:"Systemem transportującym tlen do komórek", d:"Układem odpowiedzialnym tylko za ruch mięśni"},
+
+{cat:"Biologia z Podręcznika", q:"Jakie informacje odbiera OUN?", a:"Z otoczenia i wnętrza ciała", b:"Wyłącznie z narządów ruchu człowieka", c:"Tylko z narządów układu oddechowego", d:"Jedynie z receptorów wzroku i słuchu"},
+
+{cat:"Biologia z Podręcznika", q:"Z czego składa się OUN?", a:"Z mózgowia i rdzenia kręgowego", b:"Z serca oraz układu krwionośnego", c:"Z mięśni i narządów zmysłów", d:"Z neuronów i naczyń limfatycznych"},
+
+{cat:"Biologia z Podręcznika", q:"Jakie części wchodzą w skład mózgowia?", a:"Mózg, pień mózgu i móżdżek", b:"Rdzeń kręgowy, serce i płuca", c:"Móżdżek, krtań i tchawica", d:"Pień mózgu, żołądek i jelita"},
+
+{cat:"Biologia z Podręcznika", q:"Za co odpowiada mózg?", a:"Za myślenie, pamięć i świadome ruchy", b:"Za filtrowanie krwi oraz wydalanie moczu", c:"Za trawienie pokarmu i produkcję hormonów", d:"Za ruchy oddechowe i wydzielanie potu"},
+
+{cat:"Biologia z Podręcznika", q:"Która część mózgowia kontroluje oddychanie?", a:"Pień mózgu", b:"Płat potyliczny", c:"Móżdżek", d:"Płat ciemieniowy"},
+
+{cat:"Biologia z Podręcznika", q:"Za co odpowiada móżdżek?", a:"Za koordynację i równowagę ruchów", b:"Za pamięć oraz analizowanie informacji", c:"Za pracę serca i temperaturę ciała", d:"Za odbieranie bodźców bólowych skóry"},
+
+{cat:"Biologia z Podręcznika", q:"Z ilu półkul zbudowany jest mózg?", a:"Z dwóch półkul mózgowych", b:"Z trzech części połączonych rdzeniem", c:"Z jednej dużej półkuli mózgowej", d:"Z czterech niezależnych segmentów"},
+
+{cat:"Biologia z Podręcznika", q:"Jak nazywa się powierzchnia mózgu?", a:"Kora mózgu", b:"Istota biała", c:"Osłonka mielinowa", d:"Tkanka nerwowa głęboka"},
+
+{cat:"Biologia z Podręcznika", q:"Jaka jest kora mózgu?", a:"Silnie pofałdowana", b:"Całkowicie gładka i cienka", c:"Zbudowana wyłącznie z aksonów", d:"Pozbawiona bruzd i zakrętów"},
+
+{cat:"Biologia z Podręcznika", q:"Co dzieli mózg na płaty?", a:"Największe bruzdy mózgu", b:"Naczynia krwionośne mózgowia", c:"Włókna osłonki mielinowej", d:"Połączenia z rdzeniem kręgowym"},
+
+{cat:"Biologia z Podręcznika", q:"Za co odpowiada płat czołowy?", a:"Za mowę, emocje i planowanie działań", b:"Za odbieranie bodźców temperatury skóry", c:"Za słuch oraz analizowanie dźwięków", d:"Za widzenie i rozpoznawanie obrazów"},
+
+{cat:"Biologia z Podręcznika", q:"Jakie informacje odbiera płat ciemieniowy?", a:"Dotyk, ból i temperaturę", b:"Dźwięki oraz mowę człowieka", c:"Zapachy i smak pokarmów", d:"Wyłącznie obraz odbierany przez oczy"},
+
+{cat:"Biologia z Podręcznika", q:"Za co odpowiada płat skroniowy?", a:"Za słuch i przetwarzanie dźwięków", b:"Za kontrolowanie oddechu człowieka", c:"Za równowagę i precyzję ruchów", d:"Za odruchy kichania i kaszlu"},
+
+{cat:"Biologia z Podręcznika", q:"Za co odpowiada płat potyliczny?", a:"Za wzrok", b:"Za pamięć krótkotrwałą", c:"Za regulowanie temperatury ciała", d:"Za odbieranie bólu oraz ucisku"},
+
+{cat:"Biologia z Podręcznika", q:"Z czego zbudowana jest istota szara?", a:"Z ciał neuronów", b:"Z naczyń limfatycznych i żył", c:"Z włókien mięśniowych organizmu", d:"Z samych osłonek mielinowych"},
+
+{cat:"Biologia z Podręcznika", q:"Gdzie znajduje się istota szara mózgu?", a:"Na zewnątrz mózgu", b:"Wewnątrz rdzenia kręgowego", c:"Pod osłonką mielinową neuronów", d:"Wyłącznie w pniu mózgu człowieka"},
+
+{cat:"Biologia z Podręcznika", q:"Co tworzy istota szara?", a:"Korę mózgu", b:"Rdzeń przedłużony", c:"Płyn mózgowo-rdzeniowy", d:"Kanał kręgowy organizmu"},
+
+{cat:"Biologia z Podręcznika", q:"Z czego zbudowana jest istota biała?", a:"Z włókien nerwowych i aksonów", b:"Z ciał neuronów i dendrytów", c:"Z naczyń krwionośnych mózgowia", d:"Z komórek mięśniowych organizmu"},
+
+{cat:"Biologia z Podręcznika", q:"Gdzie znajduje się istota biała?", a:"Pod istotą szarą", b:"Na powierzchni kory mózgowej", c:"Wyłącznie w móżdżku człowieka", d:"W kanałach naczyń limfatycznych"},
+
+{cat:"Biologia z Podręcznika", q:"Gdzie znajduje się rdzeń kręgowy?", a:"W kanale kręgowym", b:"W komorach półkul mózgowych", c:"W jamie brzusznej człowieka", d:"W obrębie klatki piersiowej"},
+
+{cat:"Biologia z Podręcznika", q:"Jaki kształt ma rdzeń kręgowy?", a:"Lekko spłaszczonego walca", b:"Płaskiej i cienkiej tarczy", c:"Kulistej bryły o miękkiej budowie", d:"Trójkątnego przewodu z chrząstki"},
+
+{cat:"Biologia z Podręcznika", q:"Za pomocą czego rdzeń łączy się z mózgowiem?", a:"Za pomocą pnia mózgu", b:"Za pomocą płata czołowego", c:"Za pomocą półkul mózgowych", d:"Za pomocą komór mózgowych"},
+
+{cat:"Biologia z Podręcznika", q:"Co chroni rdzeń kręgowy?", a:"Opony rdzeniowe i płyn mózgowo-rdzeniowy", b:"Tkanka tłuszczowa oraz mięśnie brzucha", c:"Wyłącznie kręgi odcinka szyjnego", d:"Kości czaszki oraz kora mózgowa"},
+
+{cat:"Biologia z Podręcznika", q:"Jak ułożona jest istota szara w rdzeniu?", a:"Znajduje się wewnątrz rdzenia", b:"Leży na zewnętrznej powierzchni rdzenia", c:"Otacza pień mózgu człowieka", d:"Tworzy warstwę wokół półkul mózgu"},
+
+{cat:"Biologia z Podręcznika", q:"Jaką funkcję pełni rdzeń kręgowy?", a:"Przewodzi impulsy między mózgowiem a ciałem", b:"Produkuje hormony wzrostu organizmu", c:"Odpowiada wyłącznie za trawienie pokarmów", d:"Reguluje jedynie rytm pracy serca"},
+
+{cat:"Biologia z Podręcznika", q:"Jaki odruch jest przykładem reakcji rdzenia?", a:"Odruch kolanowy", b:"Świadome podnoszenie ciężarów", c:"Zapamiętywanie nowych informacji", d:"Analizowanie bodźców wzrokowych"},
+
+{cat:"Biologia z Podręcznika", q:"Za co odpowiada obwodowy układ nerwowy?", a:"Za komunikację między OUN a narządami", b:"Za produkcję krwinek czerwonych organizmu", c:"Za magazynowanie składników odżywczych", d:"Za filtrowanie substancji przez nerki"},
+
+{cat:"Biologia z Podręcznika", q:"Z czego zbudowany jest obwodowy układ nerwowy?", a:"Z nerwów", b:"Z półkul mózgowych i komór", c:"Z kości oraz chrząstek ciała", d:"Z płynów ustrojowych organizmu"},
+
+{cat:"Biologia z Podręcznika", q:"Czym jest nerw?", a:"Pęczkiem włókien nerwowych", b:"Rodzajem mięśnia szkieletowego człowieka", c:"Tkanką budującą kości organizmu", d:"Narządem magazynującym impulsy nerwowe"},
+
+{cat:"Biologia z Podręcznika", q:"Co chroni włókna nerwowe?", a:"Tkanka łączna i osłonka mielinowa", b:"Wyłącznie płyn mózgowo-rdzeniowy", c:"Mięśnie oraz tkanka tłuszczowa", d:"Chrząstki i komórki nabłonkowe"},
+
+{cat:"Biologia z Podręcznika", q:"Od czego odchodzą nerwy czaszkowe?", a:"Od mózgowia", b:"Od mięśni kończyn dolnych", c:"Od odcinka piersiowego rdzenia", d:"Od narządów wewnętrznych człowieka"},
+
+{cat:"Biologia z Podręcznika", q:"Co unerwiają nerwy rdzeniowe?", a:"Skórę, mięśnie i narządy wewnętrzne", b:"Wyłącznie oczy oraz uszy człowieka", c:"Jedynie płuca i przeponę organizmu", d:"Tylko tkanki znajdujące się w głowie"},
+
+{cat:"Biologia z Podręcznika", q:"W jakim kierunku działają nerwy czuciowe?", a:"Od receptorów do OUN", b:"Od mięśni do gruczołów ciała", c:"Od efektorów do receptorów skóry", d:"Od mózgu do wszystkich neuronów"},
+
+{cat:"Biologia z Podręcznika", q:"W jakim kierunku działają nerwy ruchowe?", a:"Od OUN do efektorów", b:"Od receptorów do rdzenia kręgowego", c:"Od skóry do półkul mózgowych", d:"Od mięśni do neuronów czuciowych"},
+
+{cat:"Biologia z Podręcznika", q:"Czym są efektory?", a:"Narządami wykonawczymi organizmu", b:"Komórkami odbierającymi bodźce świetlne", c:"Elementami budującymi korę mózgową", d:"Włóknami przewodzącymi impulsy czuciowe"},
+
+{cat:"Biologia z Podręcznika", q:"Jakie narządy są efektorami?", a:"Mięśnie i gruczoły", b:"Płuca i oskrzela człowieka", c:"Serce oraz naczynia limfatyczne", d:"Oczy i receptory dotykowe skóry"},
+
+{cat:"Biologia z Podręcznika", q:"Jakie włókna zawierają nerwy mieszane?", a:"Czuciowe i ruchowe", b:"Wyłącznie ruchowe organizmu", c:"Jedynie włókna czuciowe skóry", d:"Włókna mięśniowe oraz kostne"},
+
+{cat:"Biologia z Podręcznika", q:"Czym są odruchy?", a:"Szybkimi reakcjami bez udziału świadomości", b:"Świadomymi ruchami wykonywanymi codziennie", c:"Procesami odpowiedzialnymi za pamięć", d:"Długotrwałymi reakcjami hormonalnymi ciała"},
+
+{cat:"Biologia z Podręcznika", q:"Jakie są cechy odruchów?", a:"Są szybkie i zachodzą automatycznie", b:"Są powolne i wymagają koncentracji", c:"Występują wyłącznie podczas snu człowieka", d:"Zależą tylko od świadomej decyzji"},
+
+{cat:"Biologia z Podręcznika", q:"Czym jest łuk odruchowy?", a:"Drogą impulsu od receptora do efektora", b:"Połączeniem półkul mózgowych człowieka", c:"Rodzajem nerwu występującego w mózgu", d:"Układem naczyń wokół rdzenia kręgowego"},
+
+{cat:"Biologia z Podręcznika", q:"Co robi receptor w łuku odruchowym?", a:"Odbiera bodziec", b:"Kurczy mięśnie kończyn człowieka", c:"Przewodzi impulsy do efektora", d:"Tworzy osłonkę mielinową neuronów"},
+
+{cat:"Biologia z Podręcznika", q:"Jaką funkcję pełni neuron czuciowy?", a:"Przewodzi impuls do OUN", b:"Pobudza mięśnie do skurczu", c:"Tworzy korę półkul mózgowych", d:"Odbiera bodźce wzrokowe siatkówki"},
+
+{cat:"Biologia z Podręcznika", q:"Gdzie znajduje się neuron pośredniczący?", a:"W rdzeniu kręgowym", b:"W płacie potylicznym mózgu", c:"W mięśniach kończyn dolnych", d:"W komorach serca człowieka"},
+
+{cat:"Biologia z Podręcznika", q:"Co robi neuron ruchowy?", a:"Prowadzi impuls do efektora", b:"Odbiera bodźce z receptorów skóry", c:"Analizuje informacje w korze mózgu", d:"Chroni neurony przed uszkodzeniem"},
+
+{cat:"Biologia z Podręcznika", q:"Jakie są cechy odruchów bezwarunkowych?", a:"Są wrodzone i automatyczne", b:"Powstają podczas treningu oraz nauki", c:"Zależą wyłącznie od doświadczenia", d:"Mogą być dowolnie modyfikowane"},
+
+{cat:"Biologia z Podręcznika", q:"Czy kora mózgu uczestniczy w odruchach bezwarunkowych?", a:"Nie uczestniczy w ich wykonywaniu", b:"Jest ich najważniejszym elementem", c:"Kontroluje wszystkie ich etapy", d:"Tworzy odruchy podczas nauki"},
+
+{cat:"Biologia z Podręcznika", q:"Który przykład jest odruchem bezwarunkowym?", a:"Kichanie", b:"Jazda na rowerze", c:"Prowadzenie samochodu", d:"Pisanie na klawiaturze"},
+
+{cat:"Biologia z Podręcznika", q:"Czym jest odruch Moro?", a:"Odruch niemowlęcia po nagłym bodźcu", b:"Nabyta reakcja podczas nauki chodzenia", c:"Świadomy ruch wykonywany przez sportowca", d:"Odruch związany wyłącznie z oddychaniem"},
+
+{cat:"Biologia z Podręcznika", q:"Jakie są cechy odruchów warunkowych?", a:"Są nabyte i zależą od doświadczenia", b:"Są wrodzone i identyczne u wszystkich", c:"Powstają bez udziału kory mózgowej", d:"Nie mogą zmieniać się podczas życia"},
+
+{cat:"Biologia z Podręcznika", q:"Podczas czego powstają odruchy warunkowe?", a:"Podczas nauki i treningu", b:"Wyłącznie w czasie snu człowieka", c:"Tylko podczas rozwoju płodowego", d:"Podczas oddychania i pracy serca"},
+
+{cat:"Biologia z Podręcznika", q:"Który przykład jest odruchem warunkowym?", a:"Jazda na rowerze", b:"Kaszel podczas podrażnienia gardła", c:"Mruganie przy silnym świetle", d:"Odruch ssania u niemowlęcia"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 1;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
