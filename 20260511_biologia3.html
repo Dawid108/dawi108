@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biologia - Ośrodkowy i Obwodowy Układ Nerwowy</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {
+    cat: "Biologia",
+    q: "Co wchodzi w skład ośrodkowego układu nerwowego?",
+    a: "Mózgowie oraz rdzeń kręgowy",
+    b: "Mózgowie oraz nerwy czaszkowe",
+    c: "Rdzeń kręgowy oraz nerwy mieszane",
+    d: "Nerwy czaszkowe oraz nerwy rdzeniowe"
+  },
+  {
+    cat: "Biologia",
+    q: "Z jakich części składa się mózgowie?",
+    a: "Mózg, pień mózgu i móżdżek",
+    b: "Mózg, rdzeń i nerwy obwodowe",
+    c: "Półkule, opony i kanał środkowy",
+    d: "Istota szara, biała oraz nerwy"
+  },
+  {
+    cat: "Biologia",
+    q: "Z czego zbudowane są dwie półkule mózgu?",
+    a: "Z istoty szarej na zewnątrz i białej wewnątrz",
+    b: "Z istoty białej na zewnątrz i szarej wewnątrz",
+    c: "Wyłącznie z pofałdowanej kory istoty białej",
+    d: "Z opon mózgowych oraz płynu mózgowego"
+  },
+  {
+    cat: "Biologia",
+    q: "Co tworzy bruzdy dzielące mózg na płaty?",
+    a: "Silnie pofałdowana kora mózgu",
+    b: "Nerwy czaszkowe oraz rdzeniowe",
+    c: "Opony otaczające rdzeń kręgowy",
+    d: "Kanał środkowy wewnątrz mózgu"
+  },
+  {
+    cat: "Biologia",
+    q: "Wymień płaty, na które dzieli się mózg:",
+    a: "Czołowy, ciemieniowy, potyliczny, skroniowy",
+    b: "Czołowy, rdzeniowy, potyliczny, czuciowy",
+    c: "Skroniowy, ruchowy, boczny i przedni",
+    d: "Ciemieniowy, oponowy, tylny i górny"
+  },
+  {
+    cat: "Biologia",
+    q: "Jak ułożona jest istota szara i biała w rdzeniu kręgowym?",
+    a: "Istota szara wewnątrz, a biała na zewnątrz",
+    b: "Istota biała wewnątrz, a szara na zewnątrz",
+    c: "Obie istoty ułożone są warstwami pionowymi",
+    d: "Rdzeń zbudowany jest tylko z istoty szarej"
+  },
+  {
+    cat: "Biologia",
+    q: "Co oprócz istoty szarej i białej buduje rdzeń kręgowy?",
+    a: "Kanał środkowy, opony (3) i nerwy rdzeniowe",
+    b: "Półkule mózgu, opony (2) i nerwy czaszkowe",
+    c: "Pień mózgu, kora mózgowa i nerwy ruchowe",
+    d: "Móżdżek, bruzdy kory i nerwy czuciowe"
+  },
+  {
+    cat: "Biologia",
+    q: "Z czego składa się obwodowy układ nerwowy?",
+    a: "Z nerwów czaszkowych i nerwów rdzeniowych",
+    b: "Z mózgowia oraz z rdzenia kręgowego",
+    c: "Z móżdżku oraz z pnia mózgu",
+    d: "Z płatów kory oraz kanału środkowego"
+  },
+  {
+    cat: "Biologia",
+    q: "Jak dzielimy nerwy ze względu na kierunek przesyłania?",
+    a: "Czuciowe, ruchowe oraz mieszane",
+    b: "Czaszkowe, rdzeniowe oraz oponowe",
+    c: "Warunkowe, bezwarunkowe i proste",
+    d: "Szyjne, piersiowe oraz lędźwiowe"
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie wyróżniamy rodzaje odruchów?",
+    a: "Warunkowe oraz bezwarunkowe",
+    b: "Czuciowe oraz mieszane",
+    c: "Czaszkowe oraz rdzeniowe",
+    d: "Szybkie oraz spowolnione"
+  },
+  {
+    cat: "Biologia",
+    q: "Co jest przykładem odruchu bezwarunkowego?",
+    a: "Ssanie palca u niemowlęcia",
+    b: "Jazda na rowerze po parku",
+    c: "Pisanie długopisem w zeszycie",
+    d: "Czytanie tekstu ze zrozumieniem"
+  },
+  {
+    cat: "Biologia",
+    q: "Podaj przykład odruchu warunkowego:",
+    a: "Reakcja organizmu na zapach cytryny",
+    b: "Cofnięcie ręki po dotknięciu ognia",
+    c: "Mruganie powiekami przy jasnym świetle",
+    d: "Wydzielanie śliny podczas jedzenia"
+  },
+  {
+    cat: "Biologia",
+    q: "W jaki sposób przewodzą impulsy nerwy czuciowe?",
+    a: "Od receptorów do ośrodkowego układu nerwowego",
+    b: "Od ośrodkowego układu nerwowego do efektorów",
+    c: "Od mięśni bezpośrednio do narządów wewnętrznych",
+    d: "Od mózgu do wszystkich zakończeń nerwowych"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaka jest funkcja nerwów ruchowych?",
+    a: "Przewodzenie impulsu z ośrodka do efektorów",
+    b: "Przewodzenie impulsu z receptora do ośrodka",
+    c: "Odbieranie bodźców ze środowiska zewnętrznego",
+    d: "Analizowanie informacji w korze mózgowej"
+  },
+  {
+    cat: "Biologia",
+    q: "Czym charakteryzują się nerwy mieszane?",
+    a: "Zawierają włókna nerwów czuciowych i ruchowych",
+    b: "Łączą tylko nerwy czaszkowe z rdzeniowymi",
+    c: "Składają się wyłącznie z neuronów kojarzeniowych",
+    d: "Przewodzą impulsy tylko w jednym kierunku"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaka jest główna funkcja mózgu według notatki?",
+    a: "Odpowiada za procesy myślenia",
+    b: "Odpowiada za koordynację ruchu",
+    c: "Kontroluje podstawowe funkcje życiowe",
+    d: "Przesyła impulsy do nerwów obwodowych"
+  },
+  {
+    cat: "Biologia",
+    q: "Za co odpowiedzialny jest pień mózgowy?",
+    a: "Za podstawowe funkcje życiowe",
+    b: "Za analizę bodźców wzrokowych",
+    c: "Za odbieranie informacji czuciowych",
+    d: "Za procesy zapamiętywania faktów"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaka jest rola móżdżku w organizmie?",
+    a: "Koordynacja ruchowa organizmu",
+    b: "Kontrola reakcji odruchowych",
+    c: "Odbieranie bodźców słuchowych",
+    d: "Podejmowanie świadomych decyzji"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaka funkcja jest przypisana do rdzenia kręgowego?",
+    a: "Kontrola reakcji (odruchów)",
+    b: "Analiza informacji słuchowych",
+    c: "Zarządzanie procesem myślenia",
+    d: "Utrzymywanie równowagi ciała"
+  },
+  {
+    cat: "Biologia",
+    q: "Z czego zbudowany jest ośrodkowy układ nerwowy?",
+    a: "Z mózgowia oraz rdzenia kręgowego",
+    b: "Z nerwów czaszkowych oraz rdzenia",
+    c: "Z mózgu, pnia mózgu oraz móżdżku",
+    d: "Z receptora, efektora i neuronów"
+  },
+  {
+    cat: "Biologia",
+    q: "Co składa się na budowę mózgowia?",
+    a: "Mózg, pień mózgu oraz móżdżek",
+    b: "Mózg, rdzeń kręgowy oraz opony",
+    c: "Półkule mózgowe i nerwy czaszkowe",
+    d: "Istota szara oraz istota biała kory"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaki ośrodek znajduje się w płacie potylicznym?",
+    a: "Ośrodek odpowiedzialny za wzrok",
+    b: "Ośrodek odpowiedzialny za słuch",
+    c: "Ośrodek czucia i odbierania informacji",
+    d: "Ośrodek kontrolujący ruchy mięśni"
+  },
+  {
+    cat: "Biologia",
+    q: "Za co odpowiada płat skroniowy mózgu?",
+    a: "Za odbieranie bodźców słuchowych",
+    b: "Za analizę obrazów i kolorów",
+    c: "Za koordynację ruchów precyzyjnych",
+    d: "Za odruchy bezwarunkowe organizmu"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaka jest funkcja płata ciemieniowego?",
+    a: "Odbieranie informacji oraz czucia",
+    b: "Kontrola funkcji oddechowych pnia",
+    c: "Generowanie impulsów ruchowych",
+    d: "Analiza dźwięków z otoczenia"
+  },
+  {
+    cat: "Biologia",
+    q: "Które ze zdań dotyczących pnia mózgu jest fałszywe?",
+    a: "Rdzeń kręgowy jest częścią pnia mózgu",
+    b: "Pień mózgu to element mózgowia",
+    c: "Pień kontroluje funkcje życiowe",
+    d: "Mózgowie składa się m.in. z pnia"
+  }
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 1;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
