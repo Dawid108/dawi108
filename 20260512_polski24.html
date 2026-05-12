@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polski - Geneza Wesela</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Geneza Wesela", q:"Kto brał ślub, który stał się inspiracją dla dramatu?", a:"Lucjan Rydel z Jadwigą Mikołajczykówną", b:"Włodzimierz Tetmajer z Anną Mikołajczykówną", c:"Stanisław Wyspiański z Marią Panna Młodą", d:"Kazimierz Przerwa-Tetmajer z chłopką z Bronowic"},
+  {cat:"Geneza Wesela", q:"Gdzie odbył się ślub będący pierwowzorem wydarzeń w utworze?", a:"W Kościele Mariackim w Krakowie", b:"W katedrze na Wawelu w Krakowie", c:"W kościele parafialnym w Bronowicach", d:"W kaplicy w samym domu Tetmajera"},
+  {cat:"Geneza Wesela", q:"W jakiej miejscowości miało miejsce wesele Lucjana Rydla?", a:"W podkrakowskiej wsi Bronowice", b:"W podkrakowskiej wsi Mogila", c:"W podwarszawskiej wsi Czarnolas", d:"W podlaskiej wsi Lipce Reymontowskie"},
+  {cat:"Geneza Wesela", q:"Kiedy dokładnie odbyło się historyczne wesele Rydla?", a:"20 listopada 1900 roku", b:"20 listopada 1901 roku", c:"11 listopada 1899 roku", d:"15 września 1900 roku"},
+  {cat:"Geneza Wesela", q:"W czyim domu odbywało się wesele będące inspiracją dramatu?", a:"U Włodzimierza Tetmajera", b:"U Stanisława Wyspiańskiego", c:"U Lucjana Rydla w Bronowicach", d:"U ojca Panny Młodej, Mikołajczyka"},
+  {cat:"Geneza Wesela", q:"Kim był Gospodarz dla Panny Młodej w rzeczywistości?", a:"Szwagrem, bo jego żona była jej siostrą", b:"Stryjem, który opiekował się jej rodziną", c:"Bratem, który gościł całą rodzinę weselną", d:"Sąsiadem, który udostępnił dom na zabawę"},
+  {cat:"Geneza Wesela", q:"W jakiej roli na weselu pojawił się Stanisław Wyspiański?", a:"Jako gość i przyjaciel Pana Młodego", b:"Jako świadek na ślubie Lucjana Rydla", c:"Jako główny drużba weselny Panny Młodej", d:"Jako wynajęty malarz dokumentujący ślub"},
+  {cat:"Geneza Wesela", q:"Czym w kontekście tytułowym jest „Wesele”?", a:"Jest to konkretne wydarzenie", b:"Jest to metafora stanu duszy", c:"Jest to symboliczna nazwa walki", d:"Jest to nazwa konkretnej idei"},
+  {cat:"Geneza Wesela", q:"Jaki charakter ma akt I dramatu?", a:"Ma charakter realistyczny", b:"Ma charakter symboliczny", c:"Ma charakter metafizyczny", d:"Ma charakter fantastyczny"},
+  {cat:"Geneza Wesela", q:"Co charakteryzuje akt II „Wesela”?", a:"Ma charakter symboliczny - przychodzą duchy", b:"Ma charakter historyczny - opisuje powstania", c:"Ma charakter komediowy - opiera się na żartach", d:"Ma charakter statyczny - goście tylko rozmawiają"},
+  {cat:"Geneza Wesela", q:"Jaki jest charakter aktu III utworu?", a:"Ma charakter symboliczno-realistyczny", b:"Ma charakter wyłącznie fantastyczny", c:"Ma charakter religijno-mistyczny", d:"Ma charakter typowo naturalistyczny"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 1;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
