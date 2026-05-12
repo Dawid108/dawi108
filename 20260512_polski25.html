@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polski - Bohaterowie Wesela</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Bohaterowie Wesela", q:"Kto jest prototypem postaci Pana Młodego?", a:"Lucjan Rydel", b:"Rudolf Starzewski", c:"Włodzimierz Tetmajer", d:"Kazimierz Przerwa-Tetmajer"},
+  {cat:"Bohaterowie Wesela", q:"Który artysta był pierwowzorem Gospodarza?", a:"Włodzimierz Tetmajer", b:"Stanisław Wyspiański", c:"Jacek Mikołajczyk", d:"Lucjan Rydel"},
+  {cat:"Bohaterowie Wesela", q:"Kto w rzeczywistości kryje się pod postacią Poety?", a:"Kazimierz Przerwa-Tetmajer", b:"Stanisław Przybyszewski", c:"Rudolf Starzewski", d:"Włodzimierz Tetmajer"},
+  {cat:"Bohaterowie Wesela", q:"Kto był prototypem postaci Dziennikarza?", a:"Rudolf Starzewski", b:"Kazimierz Pareński", c:"Tadeusz Boy-Żeleński", d:"Lucjan Rydel"},
+  {cat:"Bohaterowie Wesela", q:"Kogo sportretował Wyspiański w postaci Radczyni?", a:"Antoninę Domańską", b:"Annę Rydlównę", c:"Zofię Pareńską", d:"Pepę Singer"},
+  {cat:"Bohaterowie Wesela", q:"Kim w rzeczywistości była Haneczka?", a:"Anną Rydlówną, siostrą Pana Młodego", b:"Jadwigą Mikołajczykówną, siostrą Panny Młodej", c:"Marią Pareńską, córką krakowskiego lekarza", d:"Anną Tetmajerową, żoną Gospodarza"},
+  {cat:"Bohaterowie Wesela", q:"Kim były prototypy Zosi i Maryny?", a:"Córkami wybitnego krakowskiego lekarza, Pareńskiego", b:"Siostrami Panny Młodej z podkrakowskiej wsi", c:"Koleżankami Haneczki ze szkoły pensjonarskiej", d:"Krewnymi Gospodarza przybyłymi z Krakowa"},
+  {cat:"Bohaterowie Wesela", q:"Jaką postać reprezentuje w dramacie Nos?", a:"Artystę młodopolskiego, dekadenta", b:"Chłopa aspirującego do inteligencji", c:"Dziennikarza z krakowskiej gazety", d:"Mieszczanina niechętnego wiejskiej zabawie"},
+  {cat:"Bohaterowie Wesela", q:"Kto był pierwowzorem Panny Młodej?", a:"Jadwiga Mikołajczykówna", b:"Anna Mikołajczykówna", c:"Pepa Singer", d:"Maria Pareńska"},
+  {cat:"Bohaterowie Wesela", q:"Kto jest prototypem Gospodyni?", a:"Anna Mikołajczykówna, żona Gospodarza", b:"Jadwiga Mikołajczykówna, siostra Pana Młodego", c:"Antonina Domańska, krewna Rydla", d:"Klimina, wdowa po wiejskim wójcie"},
+  {cat:"Bohaterowie Wesela", q:"Kim był historyczny prototyp Czepca?", a:"Błażejem Czepcem, wujem Panny Młodej", b:"Janem Mikołajczykiem, bratem Panny Młodej", c:"Jackiem Mikołajczykiem, ojcem Jaśka", d:"Wojtkiem, wiejskim sąsiadem Gospodarzy"},
+  {cat:"Bohaterowie Wesela", q:"Kto był prototypem postaci Ojca?", a:"Jacek Mikołajczyk, ojciec Jaśka i Panny Młodej", b:"Włodzimierz Tetmajer, ojciec Isi i Gospodarz", c:"Błażej Czepiec, najstarszy gospodarz we wsi", d:"Hirsz Singer, ojciec Racheli i karczmarz"},
+  {cat:"Bohaterowie Wesela", q:"Kto kryje się pod postacią Jaśka?", a:"Jan Mikołajczyk, brat Panny Młodej", b:"Jakub Mikołajczyk, brat Gospodyni", c:"Wojtek, mąż Marysi i sąsiad", d:"Kasper, drużba na weselu Rydla"},
+  {cat:"Bohaterowie Wesela", q:"Kto był pierwowzorem Racheli?", a:"Pepa Singer, córka karczmarza Żyda", b:"Zofia Pareńska, córka lekarza", c:"Antonina Domańska, krakowska literatka", d:"Anna Rydlówna, krakowska panna"},
+  {cat:"Bohaterowie Wesela", q:"Kim była autentyczna Klimina?", a:"Przyjaciółką Gospodyni, wdową po wójcie", b:"Siostrą Gospodarza, żoną bogatego chłopa", c:"Matką Panny Młodej, gospodynią z Bronowic", d:"Sąsiadką Mikołajczyków, wiejską swatką"},
+  {cat:"Bohaterowie Wesela", q:"Jakie cechy posiada postać Dziada?", a:"Typowego chłopa, jest starcem", b:"Mędrca wiejskiego, jest prorokiem", c:"Bogatego kmiecia, jest dumnym ojcem", d:"Nędzarza, jest dawnym powstańcem"},
+  {cat:"Bohaterowie Wesela", q:"Kim była Isia w rzeczywistości?", a:"Córką Gospodarzy, która pierwsza zobaczyła Chochoła", b:"Siostrzenicą Pana Młodego, która zaprosiła gości", c:"Młodszą siostrą Panny Młodej, która bawiła się na weselu", d:"Córką karczmarza, która pomagała przy obsłudze gości"},
+  {cat:"Bohaterowie Wesela", q:"Kim był prototyp Wojtka?", a:"Wiejskim sąsiadem, mężem Marysi", b:"Bratem Gospodarza, mężem Haneczki", c:"Drużbą weselnym, bratem Panny Młodej", d:"Pomocnikiem w karczmie, synem Dziada"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 1;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
