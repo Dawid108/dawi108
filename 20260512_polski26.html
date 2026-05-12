@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akt I Wesela</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  {cat:"Akt I Wesela", q:"Dlaczego dialogi między grupami są urywane i pełne stereotypów?", a:"Aby ukryć niepokój, strach oraz wzajemną nieufność i niechęć", b:"Ponieważ goście są zbyt zmęczeni głośną muzyką i tańcami", c:"Gdyż obie grupy nie potrafią posługiwać się tym samym językiem", d:"Żeby wprowadzić radosny nastrój i rozbawić zgromadzonych gości"},
+  {cat:"Akt I Wesela", q:"Jak zaczyna się słynna rozmowa Czepca z Dziennikarzem?", a:"Pytaniem: „Cóż tam, panie, w polityce?”", b:"Pytaniem: „Jak tam, panie, zdrowie dopisuje?”", c:"Pytaniem: „Cóż tam słychać w wielkim mieście?”", d:"Pytaniem: „Jak tam, panie, zbiory w tym roku?”"},
+  {cat:"Akt I Wesela", q:"Jaki jest stosunek Dziennikarza do chłopów w Scenie I?", a:"Uważa, że są za głupi na politykę, a wieś ma być oazą spokoju", b:"Sądzi, że chłopi powinni przejąć rządy i zreformować państwo", c:"Podziwia ich wiedzę o świecie i chce z nimi rzetelnie debatować", d:"Ignoruje ich całkowicie, bo nie zauważa ich obecności w chacie"},
+  {cat:"Akt I Wesela", q:"Jaki błąd popełnia Radczyni w rozmowie z Kliminą?", a:"Pyta o zasiewy w listopadzie, nie znając kalendarza prac rolnych", b:"Pyta o pogodę na jutro, nie wiedząc, że chłopi jej nie śledzą", c:"Prosi o przepis na ciasto, nie znając wiejskich składników dań", d:"Zabrania Kliminie tańczyć, nie znając weselnych tradycji wsi"},
+  {cat:"Akt I Wesela", q:"Dlaczego pytanie Radczyni o ponowny ożenek Kliminy było nietaktowne?", a:"Nie znała obyczaju, że chłopi nie mówią otwarcie o intymności", b:"Wiedziała, że Klimina nienawidziła swojego zmarłego już męża", c:"Zignorowała fakt, że Klimina jest już zaręczona z innym chłopem", d:"Zapomniała, że na wsi wdowom nie wolno ponownie wychodzić za mąż"},
+  {cat:"Akt I Wesela", q:"Jak Panna Młoda reaguje na poetyckie wyznania Pana Młodego?", a:"Nie rozumie jego zachowania i staje się ono dla niej męczące", b:"Jest zachwycona jego słowami i odpowiada mu pięknym wierszem", c:"Śmieje się z niego głośno, uważając go za człowieka niespełna rozumu", d:"Ignoruje go zupełnie, skupiając się tylko na jedzeniu i zabawie"},
+  {cat:"Akt I Wesela", q:"Do czego Pan Młody porównuje swoją żonę w scenie XII?", a:"Do lalki krakowskiej, podziwiając tylko jej wygląd zewnętrzny", b:"Do polnego kwiatu, doceniając jej naturalność i skromny urok", c:"Do mitycznej bogini, wywyższając ją ponad innych gości wesela", d:"Do wiejskiej chaty, widząc w niej ostoję bezpieczeństwa i siły"},
+  {cat:"Akt I Wesela", q:"Co doradza Pan Młody żonie, gdy obcierają ją buty?", a:"Każe jej tańczyć boso, nie znając wiejskich tradycji i zasad", b:"Prosi, aby odpoczęła chwilę, nie dbając o tradycje weselne", c:"Kupuje jej nowe trzewiki, wykazując się dużą hojnością serca", d:"Śmieje się z jej bólu, nie wykazując żadnego zrozumienia sytuacji"},
+  {cat:"Akt I Wesela", q:"O czym marzy Poeta w rozmowie z Gospodarzem?", a:"O napisaniu wielkiego, smutnego dramatu o rycerzu", b:"O stworzeniu radosnej pieśni, która porwie naród do boju", c:"O porzuceniu pisania i osiedleniu się na stałe w Bronowicach", d:"O zostaniu politykiem, który zjednoczy skłócone ze sobą stany"},
+  {cat:"Akt I Wesela", q:"Co o chłopach sądzi Gospodarz (Włodzimierz Tetmajer)?", a:"Widzi ich siłę i podkreśla, że wywodzi się z nich dynastia Piastów", b:"Uważa, że są niebezpieczni i należy ich stale kontrolować", c:"Sądzi, że są leniwi i nie nadają się do żadnej ważnej pracy", d:"Twierdzi, że zatracili swoją wiarę i nie są już religijni"},
+  {cat:"Akt I Wesela", q:"O jakim krwawym wydarzeniu rozmawiają Ojciec z Dziadem?", a:"O rabacji galicyjskiej z 1846 roku pod wodzą Jakuba Szeli", b:"O powstaniu styczniowym, które zakończyło się klęską Polaków", c:"O rzezi wołyńskiej, która miała miejsce wiele lat wcześniej", d:"O bitwie pod Racławicami, gdzie chłopi walczyli u boku szlachty"},
+  {cat:"Akt I Wesela", q:"Jakie traumatyczne wspomnienia rodzinne mają Pan Młody i Gospodarz?", a:"Chłopi pocięli piłą dziadka jednego i zabili ojca drugiego", b:"Ich rodziny straciły majątki przez nieuczciwych wiejskich rządców", c:"Ich przodkowie zostali wygnani z Bronowic przez zbuntowaną wieś", d:"Chłopi spalili dwory ich rodziców podczas ostatniej wielkiej wojny"},
+  {cat:"Akt I Wesela", q:"Co oznacza zdanie „jak się wszystko dziwnie plecie”?", a:"Świadomość, że mimo pozornej zgody, tragiczna historia może wrócić", b:"Radość z faktu, że tradycje chłopskie i szlacheckie się połączyły", c:"Zdziwienie faktem, że jedzenie na weselu jest tak urozmaicone", d:"Przekonanie, że losy Polski są już bezpieczne dzięki ślubom klas"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 1;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
