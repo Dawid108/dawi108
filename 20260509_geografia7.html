@@ -142,7 +142,7 @@ function answer(correct, btn){
         btn.classList.add("correct");
         score++;
         // Zwiększamy ogólną pulę punktów Dawida
-        dawid108 = parseInt(dawid108) + 1;
+        dawid108 = parseInt(dawid108) + 30;
         localStorage.setItem("dawid108", dawid108);
         updateStats();
         setTimeout(()=>nextQuestion(), 1500);
