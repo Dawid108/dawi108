@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biologia na 40 Pytań</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Biologia na 40 Pytań", q:"Czym jest metabolizm?", a:"Ogółem przemian chemicznych i energetycznych zachodzących w organizmie", b:"Procesem rozmnażania komórek podczas podziału organizmu", c:"Mechanizmem transportu tlenu przez czerwone krwinki", d:"Układem odpowiedzialnym za trawienie pokarmów w jelitach"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest katabolizm?", a:"Procesem rozkładu złożonych związków chemicznych do prostych", b:"Tworzeniem związków organicznych z substancji mineralnych", c:"Magazynowaniem energii w komórkach mięśniowych organizmu", d:"Syntezą białek zachodzącą wyłącznie w jądrze komórkowym"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest anabolizm?", a:"Procesem syntezy związków złożonych z prostych substancji", b:"Rozpadem glukozy do prostych cząsteczek wody i gazów", c:"Usuwaniem produktów przemiany materii poza organizm człowieka", d:"Procesem wymiany gazowej zachodzącej w płucach człowieka"},
+
+{cat:"Biologia na 40 Pytań", q:"Jaką funkcję pełni ATP?", a:"Przenosi energię w komórkach organizmu", b:"Magazynuje wodę w komórkach organizmu", c:"Transportuje tlen pomiędzy narządami ciała", d:"Buduje błony komórkowe organizmów żywych"},
+
+{cat:"Biologia na 40 Pytań", q:"Jaką zasadę azotową zawiera ATP?", a:"Adeninę jako zasadę azotową nukleotydu", b:"Tyminę jako podstawowy składnik nukleotydu", c:"Cytozynę jako główny element energetyczny komórki", d:"Guaninę jako składnik ściany komórkowej"},
+
+{cat:"Biologia na 40 Pytań", q:"Jaki cukier występuje w ATP?", a:"Ryboza będąca cukrem pięciowęglowym", b:"Glukoza będąca cukrem prostym organizmu", c:"Laktoza występująca w produktach mlecznych", d:"Fruktoza obecna głównie w owocach roślin"},
+
+{cat:"Biologia na 40 Pytań", q:"Ile reszt fosforanowych zawiera ATP?", a:"Trzy reszty fosforanowe w cząsteczce ATP", b:"Dwie reszty azotanowe w nukleotydzie ATP", c:"Cztery reszty białkowe połączone z ATP", d:"Pięć reszt tłuszczowych związanych z ATP"},
+
+{cat:"Biologia na 40 Pytań", q:"Do czego porównywane jest ADP?", a:"Do baterii wymagającej ponownego doładowania", b:"Do enzymu rozkładającego związki chemiczne organizmu", c:"Do hormonu regulującego pracę serca człowieka", d:"Do kwasu odpowiadającego za trawienie pokarmu"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym są enzymy?", a:"Związkami przyspieszającymi przebieg reakcji chemicznych", b:"Substancjami magazynującymi wodę w organizmie", c:"Elementami budującymi ściany komórkowe roślin", d:"Produktami końcowymi oddychania komórkowego"},
+
+{cat:"Biologia na 40 Pytań", q:"Jaką cechę mają enzymy względem substratu?", a:"Są swoiste względem określonego substratu", b:"Łączą się z każdym związkiem chemicznym komórki", c:"Rozkładają wyłącznie tłuszcze w organizmie", d:"Pracują tylko w wysokiej temperaturze środowiska"},
+
+{cat:"Biologia na 40 Pytań", q:"Co dzieje się z enzymami podczas reakcji?", a:"Nie zużywają się w przebiegu reakcji", b:"Całkowicie rozpadają się po zakończeniu procesu", c:"Zamieniają się w produkty reakcji chemicznej", d:"Tracą wszystkie właściwości biologiczne organizmu"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest centrum aktywne enzymu?", a:"Miejscem wiązania enzymu z substratem", b:"Obszarem magazynowania energii w komórce", c:"Fragmentem odpowiedzialnym za podział komórki", d:"Częścią produkującą wodę podczas oddychania"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest katalizator?", a:"Substancją zapoczątkowującą reakcję chemiczną", b:"Produktem końcowym procesów metabolicznych organizmu", c:"Rodzajem białka budującego błony komórkowe", d:"Pierwiastkiem transportującym tlen do komórek"},
+
+{cat:"Biologia na 40 Pytań", q:"Na czym polega swoistość substratowa?", a:"Enzym wiąże się z określonym substratem", b:"Każdy substrat łączy się z dowolnym enzymem", c:"Substraty działają wyłącznie w wysokim pH", d:"Enzymy rozkładają wszystkie związki jednakowo"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest energia aktywacji?", a:"Energią potrzebną do rozpoczęcia reakcji chemicznej", b:"Energią magazynowaną wyłącznie w tłuszczach organizmu", c:"Procesem wymiany gazowej w mitochondriach komórki", d:"Mechanizmem chłodzenia organizmu podczas wysiłku"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest apoenzym?", a:"Białkową częścią enzymu biologicznego", b:"Nieorganicznym składnikiem błony komórkowej", c:"Produktem rozpadu glukozy w komórce", d:"Substancją hamującą oddychanie tlenowe organizmu"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest kofaktor?", a:"Niebiałkową częścią enzymu biologicznego", b:"Głównym źródłem energii dla mięśni człowieka", c:"Cukrem budującym ścianę komórkową bakterii", d:"Rodzajem tłuszczu magazynowanego w komórce"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest kataliza enzymatyczna?", a:"Przyspieszeniem reakcji chemicznej przez enzym", b:"Rozkładem tłuszczów podczas długiego wysiłku", c:"Tworzeniem nowych komórek organizmu człowieka", d:"Transportem substancji przez błonę komórkową"},
+
+{cat:"Biologia na 40 Pytań", q:"Jaki jest pierwszy etap katalizy enzymatycznej?", a:"Wiązanie substratów z enzymem biologicznym", b:"Rozpad enzymu na związki nieorganiczne komórki", c:"Wydalanie produktów reakcji poza organizm", d:"Magazynowanie energii w mitochondriach komórki"},
+
+{cat:"Biologia na 40 Pytań", q:"Co powstaje po związaniu enzymu z substratem?", a:"Kompleks enzym-substrat podczas reakcji", b:"Dwutlenek węgla w procesie oddychania", c:"Ściana komórkowa zbudowana z celulozy", d:"Nowy enzym odpowiedzialny za fotosyntezę"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest aktywacja enzymów?", a:"Pobudzeniem działania enzymów w komórce", b:"Całkowitym rozpadem enzymów podczas reakcji", c:"Usuwaniem enzymów z organizmu człowieka", d:"Magazynowaniem enzymów w tkance tłuszczowej"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest inhibicja enzymów?", a:"Hamowaniem działania enzymów biologicznych", b:"Przyspieszaniem wszystkich reakcji metabolicznych", c:"Tworzeniem energii w mitochondriach komórki", d:"Procesem syntezy białek w rybosomach"},
+
+{cat:"Biologia na 40 Pytań", q:"Jak można regulować reakcje enzymatyczne?", a:"Za pomocą aktywatorów oraz inhibitorów enzymów", b:"Wyłącznie przez zwiększanie ilości tlenu komórki", c:"Tylko przez obniżanie temperatury organizmu", d:"Jedynie poprzez rozpad białek komórkowych"},
+
+{cat:"Biologia na 40 Pytań", q:"Co może wpływać na szybkość reakcji enzymatycznej?", a:"Temperatura, pH i stężenie substratu", b:"Wyłącznie ilość wody w organizmie człowieka", c:"Jedynie rodzaj tkanki budującej organizm", d:"Kolor komórek obecnych w narządach ciała"},
+
+{cat:"Biologia na 40 Pytań", q:"Które jony są aktywatorami enzymów?", a:"Jony magnezu, żelaza, cynku i miedzi", b:"Jony sodu, chloru, wapnia i wodoru", c:"Jony srebra, złota, helu i neonu", d:"Jony siarki, azotu, tlenu i fosforu"},
+
+{cat:"Biologia na 40 Pytań", q:"Na czym polega ujemne sprzężenie zwrotne?", a:"Hamowaniu szlaku metabolicznego przez produkt końcowy", b:"Przyspieszaniu wszystkich reakcji zachodzących w komórce", c:"Produkowaniu enzymów wyłącznie podczas snu organizmu", d:"Rozpadzie produktów końcowych do prostych substancji"},
+
+{cat:"Biologia na 40 Pytań", q:"Jaką trucizną jest przykład inhibitora?", a:"Cyjanek potasu hamujący działanie enzymów", b:"Dwutlenek węgla potrzebny do fotosyntezy", c:"Tlen uczestniczący w oddychaniu komórkowym", d:"Glukoza dostarczająca energii organizmowi"},
+
+{cat:"Biologia na 40 Pytań", q:"Jaki lek jest przykładem inhibitora?", a:"Penicylina będąca antybiotykiem leczniczym", b:"Insulina regulująca poziom cukru organizmu", c:"Hemoglobina transportująca tlen do komórek", d:"Kolagen budujący tkankę łączną człowieka"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest proenzym?", a:"Nieaktywną formą produkowanego enzymu", b:"Produktem końcowym oddychania komórkowego", c:"Substancją magazynującą energię w mięśniach", d:"Cukrem budującym materiał genetyczny komórki"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest oddychanie tlenowe?", a:"Procesem uzyskiwania energii z udziałem tlenu", b:"Mechanizmem transportu krwi przez organizm", c:"Sposobem wydalania wody przez komórki", d:"Procesem rozmnażania zachodzącym u bakterii"},
+
+{cat:"Biologia na 40 Pytań", q:"Jakie są produkty oddychania tlenowego?", a:"Dwutlenek węgla, woda oraz ATP", b:"Tlen, glukoza oraz kwasy tłuszczowe", c:"Białka, tłuszcze oraz związki mineralne", d:"Sole mineralne, enzymy oraz hormony"},
+
+{cat:"Biologia na 40 Pytań", q:"Czym jest fermentacja?", a:"Uzyskiwaniem energii bez udziału tlenu", b:"Procesem zachodzącym wyłącznie w płucach", c:"Syntezą tłuszczów w tkance mięśniowej", d:"Transportem gazów przez układ krwionośny"},
+
+{cat:"Biologia na 40 Pytań", q:"Gdzie zachodzi glikoliza?", a:"W cytozolu komórki organizmu żywego", b:"W jądrze komórkowym wszystkich organizmów", c:"W ścianie komórkowej komórek roślinnych", d:"W aparacie Golgiego odpowiedzialnym za transport"},
+
+{cat:"Biologia na 40 Pytań", q:"Gdzie zachodzi reakcja pomostowa?", a:"W matrix mitochondrium komórki organizmu", b:"W cytozolu podczas podziału komórkowego", c:"W błonie komórkowej wszystkich bakterii", d:"W chloroplastach komórek roślin zielonych"},
+
+{cat:"Biologia na 40 Pytań", q:"Gdzie zachodzi cykl Krebsa?", a:"W matrix mitochondrium komórki żywej", b:"W rybosomach odpowiedzialnych za syntezę białek", c:"W jądrze komórkowym organizmów wielokomórkowych", d:"W ścianie komórkowej zbudowanej z celulozy"},
+
+{cat:"Biologia na 40 Pytań", q:"Gdzie znajduje się łańcuch oddechowy?", a:"W wewnętrznej błonie mitochondrium komórki", b:"W cytoplazmie wszystkich komórek organizmu", c:"W jądrze odpowiedzialnym za materiał genetyczny", d:"W wodniczce magazynującej wodę komórkową"},
+
+{cat:"Biologia na 40 Pytań", q:"Jakim procesem jest oddychanie komórkowe?", a:"Procesem katabolicznym rozkładającym związki organiczne", b:"Procesem anabolicznym budującym nowe tłuszcze", c:"Mechanizmem rozmnażania komórek organizmu żywego", d:"Sposobem transportowania hormonów przez krew"},
+
+{cat:"Biologia na 40 Pytań", q:"Ile ATP daje oddychanie tlenowe?", a:"Około trzydziestu cząsteczek ATP energii", b:"Około pięciu cząsteczek glukozy zapasowej", c:"Około stu cząsteczek dwutlenku węgla", d:"Około dziesięciu cząsteczek kwasu mlekowego"},
+
+{cat:"Biologia na 40 Pytań", q:"Co wpływa na intensywność oddychania tlenowego?", a:"Zawartość wody obecnej w komórkach", b:"Wyłącznie ilość enzymów w mitochondriach", c:"Rodzaj tkanek budujących organizm człowieka", d:"Kolor błony komórkowej organizmu żywego"},
+
+{cat:"Biologia na 40 Pytań", q:"Jaki czynnik środowiska wpływa na oddychanie tlenowe?", a:"Temperatura wpływająca na przebieg reakcji", b:"Długość włosów występujących u organizmu", c:"Barwa skóry obecnej u danego gatunku", d:"Kształt komórek budujących tkanki ciała"},
+
+{cat:"Biologia na 40 Pytań", q:"Jakie gazy wpływają na intensywność oddychania?", a:"Stężenie dwutlenku węgla oraz tlenu", b:"Obecność helu i neonu w środowisku", c:"Wysokie stężenie azotu w atmosferze", d:"Ilość pary wodnej nad powierzchnią ziemi"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 4;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
