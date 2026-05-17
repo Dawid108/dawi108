@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angielski - Past Tenses</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+  // Zadanie 1
+  {
+    cat: "Past Tenses",
+    q: "The politician _______ an interview when there was a sudden power cut.",
+    a: "was giving",
+    b: "had given",
+    c: "has given",
+    d: "is giving"
+  },
+  {
+    cat: "Past Tenses",
+    q: "As a student, I _______ my parents regularly.",
+    a: "used to visit",
+    b: "would be visiting",
+    c: "had visited",
+    d: "was visiting"
+  },
+  {
+    cat: "Past Tenses",
+    q: "How long _______ before you _______ your first live broadcast?",
+    a: "had you been working / made",
+    b: "did you work / had made",
+    c: "have you worked / made",
+    d: "were you working / have made"
+  },
+  {
+    cat: "Past Tenses",
+    q: "At school, I didn't like doing projects with Beth because she _______ us around.",
+    a: "was always bossing",
+    b: "had always bossed",
+    c: "has always bossed",
+    d: "always bosses"
+  },
+  {
+    cat: "Past Tenses",
+    q: "While I _______ political science, I _______ interested in Middle East politics.",
+    a: "was studying / became",
+    b: "studied / was becoming",
+    c: "had studied / became",
+    d: "was studying / have become"
+  },
+  {
+    cat: "Past Tenses",
+    q: "I feel that in the past journalists _______ to be a lot less biased.",
+    a: "used to",
+    b: "would",
+    c: "had",
+    d: "were"
+  },
+  {
+    cat: "Past Tenses",
+    q: "I _______ really happy to see my former classmates as we _______ each other since graduation.",
+    a: "was / hadn't seen",
+    b: "had been / didn't see",
+    c: "was / haven't seen",
+    d: "have been / didn't see"
+  },
+
+  // Zadanie 2
+  {
+    cat: "Past Tenses",
+    q: "Popraw błąd w zdaniu: I wasn't listening, so I hadn't had any idea what the speech was about.",
+    a: "I wasn't listening, so I didn't have any idea what the speech was about.",
+    b: "I haven't been listening, so I hadn't had any idea what the speech was about.",
+    c: "I wasn't listening, so I wasn't having any idea what the speech was about.",
+    d: "I didn't listen, so I hadn't had any idea what the speech was about."
+  },
+  {
+    cat: "Past Tenses",
+    q: "Popraw błąd w zdaniu: The roads were slippery as it had snowed all night.",
+    a: "The roads were slippery as it had been snowing all night.",
+    b: "The roads had been slippery as it had snowed all night.",
+    c: "The roads were slippery as it was snowing all night.",
+    d: "The roads were slippery as it has snowed all night."
+  },
+  {
+    cat: "Past Tenses",
+    q: "Popraw błąd w zdaniu: When I turned on the TV, the broadcast already started.",
+    a: "When I turned on the TV, the broadcast had already started.",
+    b: "When I was turning on the TV, the broadcast already started.",
+    c: "When I turned on the TV, the broadcast has already started.",
+    d: "When I had turned on the TV, the broadcast already started."
+  },
+  {
+    cat: "Past Tenses",
+    q: "Popraw błąd w zdaniu: I wondered if you could lend me your tablet.",
+    a: "I was wondering if you could lend me your tablet.",
+    b: "I had wondered if you could lend me your tablet.",
+    c: "I am wondering if you could lend me your tablet.",
+    d: "I would wonder if you could lend me your tablet."
+  },
+  {
+    cat: "Past Tenses",
+    q: "Popraw błąd w zdaniu: As a student, I would be keen on politics, but my interests changed...",
+    a: "As a student, I used to be keen on politics, but my interests changed...",
+    b: "As a student, I was being keen on politics, but my interests changed...",
+    c: "As a student, I had been keen on politics, but my interests changed...",
+    d: "As a student, I am used to be keen on politics, but my interests changed..."
+  },
+  {
+    cat: "Past Tenses",
+    q: "Popraw błąd w zdaniu: As I walked out of the building, I was happy to see that the sun shone.",
+    a: "As I walked out of the building, I was happy to see that the sun was shining.",
+    b: "As I had walked out of the building, I was happy to see that the sun shone.",
+    c: "As I walked out of the building, I had been happy to see that the sun shone.",
+    d: "As I was walking out of the building, I was happy to see that the sun has shone."
+  },
+  {
+    cat: "Past Tenses",
+    q: "Popraw błąd w zdaniu: I was rather scared as it was the first time I rode a horse.",
+    a: "I was rather scared as it was the first time I had ridden a horse.",
+    b: "I was rather scared as it was the first time I was riding a horse.",
+    c: "I had been rather scared as it was the first time I rode a horse.",
+    d: "I was rather scared as it was the first time I have ridden a horse."
+  },
+  {
+    cat: "Past Tenses",
+    q: "Popraw błąd w zdaniu: The climber died tragically when he tried to reach the top of the mountain.",
+    a: "The climber died tragically when he was trying to reach the top of the mountain.",
+    b: "The climber had died tragically when he tried to reach the top of the mountain.",
+    c: "The climber died tragically when he had tried to reach the top of the mountain.",
+    d: "The climber was dying tragically when he tried to reach the top of the mountain."
+  },
+
+  // Zadanie 3
+  {
+    cat: "Past Tenses",
+    q: "More than two years had passed before I spoke to Jane again. [SPOKEN] -> I _______ to Jane for more than two years.",
+    a: "hadn't spoken",
+    b: "didn't speak",
+    c: "wasn't speaking",
+    d: "haven't spoken"
+  },
+  {
+    cat: "Past Tenses",
+    q: "My parents had a car in the past. [HAVE] -> My parents _______ a car in the past.",
+    a: "used to have",
+    b: "would have",
+    c: "had had",
+    d: "were having"
+  },
+  {
+    cat: "Past Tenses",
+    q: "We finished watching the show and then Ben arrived. [HAD] -> By the time Ben _______ watching the show.",
+    a: "arrived, we had finished",
+    b: "had arrived, we finished",
+    c: "was arriving, we finished",
+    d: "arrived, we have finished"
+  },
+  {
+    cat: "Past Tenses",
+    q: "The practice before the concert took several months. [BEEN] -> We _______ for several months before the concert.",
+    a: "had been practicing",
+    b: "were practicing",
+    c: "have been practicing",
+    d: "had practiced"
+  },
+  {
+    cat: "Past Tenses",
+    q: "It was actually my first visit to the Science Museum. [HAD] -> It was the _______ the Science Museum.",
+    a: "first time I had visited",
+    b: "first time I visited",
+    c: "first time I have visited",
+    d: "first time I was visiting"
+  },
+  {
+    cat: "Past Tenses",
+    q: "I will finish editing the photos and then I'll get back to you. [FINISHED] -> I'll get back to you as soon as _______ editing the photos.",
+    a: "I've finished",
+    b: "I will finish",
+    c: "I'm finishing",
+    d: "I finished"
+  },
+  {
+    cat: "Past Tenses",
+    q: "You constantly criticise me. I find it irritating. [ARE] -> You _______ me. I find it irritating.",
+    a: "are constantly criticising",
+    b: "have constantly criticised",
+    c: "constantly criticise",
+    d: "were constantly criticising"
+  }
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 4;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
