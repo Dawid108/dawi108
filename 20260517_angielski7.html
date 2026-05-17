@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Angielski - Present Tenses</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+
+  // ZADANIE 1
+  {
+    cat: "Present Tenses",
+    q: "Choose the correct option: 'How many party political broadcasts ______ this week?' 'A lot! The campaign is clearly in full swing!'",
+    a: "have you seen",
+    b: "do you see",
+    c: "are you seeing",
+    d: "did you see"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Choose the correct option: '______ catch-up TV services?' 'Only from time to time. I usually try not to miss my favourite shows.'",
+    a: "Do you ever use",
+    b: "Have you ever used",
+    c: "Are you ever using",
+    d: "Do you use ever"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Choose the correct option: 'Look at this painting! Lisa has certainly improved her skills.' 'Well, she ______ painting lessons for months.'",
+    a: "has been taking",
+    b: "is taking",
+    c: "takes",
+    d: "has taken"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Choose the correct option: 'Are you busy tomorrow evening?' 'A bit. I ______ my sister to the cinema, but I'm free after that.'",
+    a: "am taking",
+    b: "take",
+    c: "have taken",
+    center: "will take"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Choose the correct option: '______ anything interesting at the moment?' 'Not right now. I read a great novel last month though.'",
+    a: "Are you reading",
+    b: "Do you read",
+    c: "Have you read",
+    d: "Will you read"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Choose the correct option: 'Oops, I think the TV set ______.' 'Oh, no! I was going to watch my favourite quiz show!'",
+    a: "has broken down",
+    b: "has been breaking down",
+    c: "breaks down",
+    d: "is breaking down"
+  },
+
+  // ZADANIE 2
+  {
+    cat: "Present Tenses",
+    q: "Complete the sentence with the missing word: Sue has been talking to Ben ______ she came home.",
+    a: "since",
+    b: "for",
+    c: "from",
+    d: "when"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Complete the sentence with the missing word: It seems this drama has been on ______ years now.",
+    a: "for",
+    b: "since",
+    c: "during",
+    d: "over"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Complete the sentence with the missing word: When you ask Thomas about politics, he is ______ ever objective.",
+    a: "hardly",
+    b: "really",
+    c: "almost",
+    d: "mostly"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Complete the sentence with the missing word: Channel 4 is ______ airing two cop dramas, both about NYPD.",
+    a: "currently",
+    b: "recently",
+    c: "already",
+    d: "silently"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Complete the sentence with the missing word: Tina has ______ become prejudiced against working mothers, which is totally unlike her!",
+    a: "recently",
+    b: "already",
+    c: "currently",
+    d: "tomorrow"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Complete the sentence with the missing word: It's the third season of the show and I haven't missed one episode so ______.",
+    a: "far",
+    b: "now",
+    c: "yet",
+    d: "long"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Complete the sentence with the missing word: As an actress, I go to auditions at least ______ a month.",
+    a: "once",
+    b: "time",
+    c: "ever",
+    d: "each"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Complete the sentence with the missing word: Has any of you ______ thought of making a documentary about school life?",
+    a: "ever",
+    b: "never",
+    c: "yet",
+    d: "just"
+  },
+
+  // ZADANIE 3
+  {
+    cat: "Present Tenses",
+    q: "Put the verb in brackets into the correct present form: I can't believe it's the first time you ______ (go out) this year! Are you really that busy with schoolwork?",
+    a: "have gone out",
+    b: "go out",
+    c: "are going out",
+    d: "have been going out"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Put the verb in brackets into the correct present form: Oh, no! We are going to be late! The show ______ (begin) in five minutes!",
+    a: "begins",
+    b: "is beginning",
+    c: "has begun",
+    d: "has been beginning"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Put the verb in brackets into the correct present form: I wonder where Paul is. I think he ______ (travel) somewhere in northern Europe as we speak.",
+    a: "is travelling",
+    b: "travels",
+    c: "has travelled",
+    d: "has been travelling"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Put the verb in brackets into the correct present form: How often ______ (your teacher / allow) you to share opinions about current events?",
+    a: "does your teacher allow",
+    b: "is your teacher allowing",
+    c: "has your teacher allowed",
+    d: "your teacher allows"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Put the verb in brackets into the correct present form: I handed in my social science paper last week, but Mrs Jones still ______ (not mark) it.",
+    a: "hasn't marked",
+    b: "isn't marking",
+    c: "doesn't mark",
+    d: "hasn't been marking"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Put the verb in brackets into the correct present form: Can you show me how it works? I ______ (not use) a smart TV before.",
+    a: "haven't used",
+    b: "don't use",
+    c: "am not using",
+    d: "haven't been using"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Put the verb in brackets into the correct present form: The prices of cable TV ______ (not go up) so fast anymore, which is good as more people can afford it.",
+    a: "aren't going up",
+    b: "don't go up",
+    c: "haven't gone up",
+    d: "haven't been going up"
+  },
+
+  // ZADANIE 4
+  {
+    cat: "Present Tenses",
+    q: "Translate the Polish part into English: I ______ (byłem już na) three live concerts this summer and I intend to go to at least two more.",
+    a: "have already been to",
+    b: "was already in",
+    c: "am already at",
+    d: "have already gone to"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Translate the Polish part into English: Robert ______ (właśnie rozmawiał z) Lisa about your request, but I don't know if she says 'yes'.",
+    a: "has just spoken to",
+    b: "just speaks to",
+    c: "is just speaking to",
+    d: "speaks just to"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Translate the Polish part into English: As a professional musician, Peter ______ (spędza połowę roku) on tour.",
+    a: "spends half the year",
+    b: "is spending half year",
+    c: "has spent half year",
+    d: "spend half of year"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Translate the Polish part into English: I hear you've finally decided to move. So, ______ (kiedy wyjeżdżasz) for Dublin?",
+    a: "when are you leaving",
+    b: "when do you leave",
+    c: "when have you left",
+    d: "when you are leaving"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Translate the Polish part into English: I have no idea which radio stations are popular at the moment – I ______ (rzadko kiedy słucham) to the radio.",
+    a: "hardly ever listen",
+    b: "am rarely listening",
+    c: "have hardly listened",
+    d: "hardly listen ever"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Translate the Polish part into English: To be honest, Lewis ______ (jest uzależniony) to sitcoms ever since I can remember.",
+    a: "has been addicted",
+    b: "is being addicted",
+    c: "is addicted now",
+    d: "was addicted yet"
+  },
+  {
+    cat: "Present Tenses",
+    q: "Translate the Polish part into English: I'm sorry I'm late. ______ (Czekacie) long?",
+    a: "Have you been waiting",
+    b: "Are you waiting",
+    c: "Do you wait",
+    d: "Have you waited"
+  }
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 5;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
