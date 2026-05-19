@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+	<meta charset="utf-8">
+	<title>strona responsywna</title>
+	<script src="script.js"></script>
+	<link rel="icon" href="dawi108.png">
+	<style>
+.content {
+	width: 70%;
+	margin: 0 auto;
+	background-color: #999;
+}	
+
+.menu {
+	width: 70%;
+	height: 50px;
+	margin: 0 auto;
+	background-color: #999;
+	text-align: center;
+}	
+
+ul {
+	list-style-type: none;
+}	
+
+li {
+	float: left;
+}	
+
+li a {
+	display: block;
+	line-height: 50px;
+	padding-right: 50px;
+	margin-right: 50px;
+	font-weight: bold;
+	font-size: 200%;
+	text-decoration: none;
+	color: black;
+}
+
+h1 {
+	padding-left: 1%;
+}	
+
+li:first-child a {
+	background-color: red;
+}	
+
+li:last-child a {
+	background-color: blue;
+}
+
+li:nth-child(2) a {
+	background-color: green;
+}
+
+li:hover a {
+	color: yellow;
+	border-radius: 0 50% 50% 0;
+}	
+
+.box {
+	width: 30%;
+	padding: 1%;
+	float: left;
+}
+
+img {
+	width: 50%;
+}	
+
+.box2 {
+	width: 47%;
+	padding: 1%;
+	float: left;
+}
+
+/* ========== ZAPYTANIA  MEDIALNE ==========*/
+/* ---------- MAX-WIDTH 1024 ----------*/
+@media screen and (max-width: 1024px){
+	.content, .menu{
+		width: 80%;
+	}
+	body{
+		background-color: black;
+	}
+	li a{
+		margin-right: 20px;
+	}
+}
+
+@media screen and (max-width: 768px){
+	.content, .menu{
+		width: 90%;
+	}
+	body{
+		background-color: navy;
+	}
+	li a{
+		margin-right: 0px;
+		padding-right: 20px;
+	}
+	.box, .box2{
+		width: 100%;
+	}
+	.img, .menu {
+		display: none;
+	}
+}
+
+@media screen and (max-width: 480px){
+	.content, .menu{
+		width: 100%;
+	}
+	body{
+		background-color: crimson;
+	}
+	.box, .box2{
+		width: 100%;
+	}
+}
+	</style>
+</head>
+<body>
+	<!-- menu strony -->
+	<div class="menu">
+		<ul>
+			<li><a href="#oferta">Oferta</a></li>
+			<li><a href="#omnie">O mnie</a></li>
+			<li><a href="#kontakt">Kontakt</a></li>
+		</ul>
+	</div>
+	<!-- oferta -->
+	<div class="content">
+		<h1 id="oferta">Oferty</h1>
+		<div class="box">
+			<img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779196889/oferta_nacqmc.png" alt="obrazek z ofertą">
+			<h2>Oferta 1</h2>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in lobortis enim. Suspendisse vestibulum augue in elit bibendum, sit amet facilisis arcu molestie. Nam a finibus turpis. Sed non libero sed eros mollis porttitor eu quis neque. Cras quis scelerisque augue. Ut dignissim risus ac mi ultrices auctor et eu metus. Vestibulum sollicitudin justo nec turpis tempor iaculis. Pellentesque tempus velit et mauris euismod varius. Nam fringilla mollis arcu, a imperdiet ipsum consequat in. Suspendisse vel erat eros. Quisque enim purus, accumsan ac mattis vel, sagittis sit amet nisi.</p>
+			<a href="https://dawid108.github.io/dawi108/20250901_szkola.html">czytaj więcej ...</a>
+		</div>
+		<div class="box">
+			<img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779196889/oferta_nacqmc.png" alt="obrazek z ofertą">
+			<h2>Oferta 2</h2>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in lobortis enim. Suspendisse vestibulum augue in elit bibendum, sit amet facilisis arcu molestie. Nam a finibus turpis. Sed non libero sed eros mollis porttitor eu quis neque. Cras quis scelerisque augue. Ut dignissim risus ac mi ultrices auctor et eu metus. Vestibulum sollicitudin justo nec turpis tempor iaculis. Pellentesque tempus velit et mauris euismod varius. Nam fringilla mollis arcu, a imperdiet ipsum consequat in. Suspendisse vel erat eros. Quisque enim purus, accumsan ac mattis vel, sagittis sit amet nisi.</p>
+			<a href="https://dawid108.github.io/dawi2026/index.html">czytaj więcej ...</a>
+		</div>
+		<div class="box">
+			<img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779196889/oferta_nacqmc.png" alt="obrazek z ofertą">
+			<h2>Oferta 3</h2>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in lobortis enim. Suspendisse vestibulum augue in elit bibendum, sit amet facilisis arcu molestie. Nam a finibus turpis. Sed non libero sed eros mollis porttitor eu quis neque. Cras quis scelerisque augue. Ut dignissim risus ac mi ultrices auctor et eu metus. Vestibulum sollicitudin justo nec turpis tempor iaculis. Pellentesque tempus velit et mauris euismod varius. Nam fringilla mollis arcu, a imperdiet ipsum consequat in. Suspendisse vel erat eros. Quisque enim purus, accumsan ac mattis vel, sagittis sit amet nisi.</p>
+			<a href="https://dawid108.github.io/dawi108/index.html">czytaj więcej ...</a>
+		</div>
+		<div style="clear: both"></div>
+	</div><br>
+	<!-- omnie + kontakt -->
+	<div class="content">
+		<div class="box2">
+			<img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779196889/oferta_nacqmc.png" alt="obrazek z ofertą">
+			<h2 id="omnie">O mnie</h2>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in lobortis enim. Suspendisse vestibulum augue in elit bibendum, sit amet facilisis arcu molestie. Nam a finibus turpis. Sed non libero sed eros mollis porttitor eu quis neque. Cras quis scelerisque augue. Ut dignissim risus ac mi ultrices auctor et eu metus. Vestibulum sollicitudin justo nec turpis tempor iaculis. Pellentesque tempus velit et mauris euismod varius. Nam fringilla mollis arcu, a imperdiet ipsum consequat in. Suspendisse vel erat eros. Quisque enim purus, accumsan ac mattis vel, sagittis sit amet nisi.</p>
+		</div>
+		<div class="box2">
+			<img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779196889/oferta_nacqmc.png" alt="obrazek z ofertą">
+			<h2 id="kontakt">Kontakt</h2>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in lobortis enim. Suspendisse vestibulum augue in elit bibendum, sit amet facilisis arcu molestie. Nam a finibus turpis. Sed non libero sed eros mollis porttitor eu quis neque. Cras quis scelerisque augue. Ut dignissim risus ac mi ultrices auctor et eu metus. Vestibulum sollicitudin justo nec turpis tempor iaculis. Pellentesque tempus velit et mauris euismod varius. Nam fringilla mollis arcu, a imperdiet ipsum consequat in. Suspendisse vel erat eros. Quisque enim purus, accumsan ac mattis vel, sagittis sit amet nisi.</p>
+		</div>
+		<div style="clear: both"></div>
+	</div>
+
+</body>
+</html>	
