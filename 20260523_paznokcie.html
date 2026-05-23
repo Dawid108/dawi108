@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Stylizacja paznokci</title>
+    <script src="script.js"></script>
+    <link rel="icon" href="dawi108.png">
+    <style>
+        *{
+            font-family: Trebuchet MS, sans-serif;
+        }
+        body{
+            background-color: blanchedalmond;
+            text-align: center;
+        }
+        aside{
+            width: 20%;
+            float: left;
+        }
+        aside img{
+            width: 100%;
+        }
+        main{
+            width: 80%;
+            float: left;
+        }
+        nav{
+            text-align: left;
+            margin-left: 10%;
+        }
+        section{
+            background-color: salmon;
+            margin-left: 10%;
+            padding: 10px;
+            height: 250px;
+        }
+        #s1{
+            display: block;
+        }
+        #s2, #s3{
+            display: none;
+        }
+        input[type="button"]{
+            width: 26%;
+            color: white;
+            border: none;
+            font-size: 200%;
+        }
+        #kolor{
+            background-color: salmon;
+        }
+        #ksztalt, #wzor{
+            background-color: crimson;
+        }
+        .wzory{
+            width: 70px;
+            margin: 5px;
+            border-radius: 100%;
+        }
+    </style>
+</head>
+<body>
+    <aside>
+        <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529254/manicure_quuebb.jpg" alt="Stylizacja paznokci">
+    </aside>
+    <main>
+        <header>
+            <h1>Twoje wymarzone paznokcie</h1>
+        </header>
+        <nav>
+            <input type="button" id="kolor" value="Kolor">
+            <input type="button" id="ksztalt" value="Kształt">
+            <input type="button" id="wzor" value="Wzór">
+        </nav>
+        <section id="s1">
+            <h2>Kolor</h2>
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529266/kolory_edayyb.png" alt="Kolory paznokci">
+            <br>
+            <input type="color" value="#FF0000">
+        </section>
+        <section id="s2">
+            <h2>Kształt</h2>
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529254/ksztalt_ge0hnm.png" alt="Kształty paznokci">
+            <br>
+            <select>
+                <option value="migdał">migdał</option>
+                <option value="zaokrąglony">zaokrąglony</option>
+                <option value="kwadratowy">kwadratowy</option>
+                <option value="balerina">balerina</option>
+                <option value="zaokrąglony kwadrat">zaokrąglony kwadrat</option>
+            </select>
+        </section>
+        <section id="s3">
+            <h2>Wzór</h2>
+            <!-- <script>
+                for(let i=1; i<=10; i++){
+                    document.write(`<img class='wzory' src='${i}.jpg' alt='${i}' title='${i}'>`);
+                }
+            </script> -->
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529255/1_ndmx5d.jpg" alt="paznokiec" class="wzory" title="1">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529255/2_baprao.jpg" alt="paznokiec" class="wzory" title="2">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529255/3_alrkry.jpg" alt="paznokiec" class="wzory" title="3">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529255/4_votzw9.jpg" alt="paznokiec" class="wzory" title="4">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529255/5_y2j3dc.jpg" alt="paznokiec" class="wzory" title="5">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529255/6_wuxkhl.jpg" alt="paznokiec" class="wzory" title="6">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529254/7_woeozf.jpg" alt="paznokiec" class="wzory" title="7">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529254/8_mcwogg.jpg" alt="paznokiec" class="wzory" title="8">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529254/9_hwj4ex.jpg" alt="paznokiec" class="wzory" title="9">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1779529255/10_zognh7.jpg" alt="paznokiec" class="wzory" title="10">
+            <br>
+            <input type="number" step="1" min="1" max="10">
+        </section>
+        <footer>
+            <p>Autor strony: <em>Dawid Gustowski</em></p>
+        </footer>
+    </main>
+    <script>
+        let kolor = document.getElementById('kolor');
+        let ksztalt = document.getElementById('ksztalt');
+        let wzor = document.getElementById('wzor');
+        let s1 = document.getElementById('s1');
+        let s2 = document.getElementById('s2');
+        let s3 = document.getElementById('s3');
+
+        function pokaz_kolor(){
+            s1.style.display = "block";
+            kolor.style.backgroundColor = "salmon";
+            s2.style.display = "none";
+            ksztalt.style.backgroundColor = "crimson";
+            s3.style.display = "none";
+            wzor.style.backgroundColor = "crimson";
+        }
+        function pokaz_ksztalt(){
+            s1.style.display = "none";
+            kolor.style.backgroundColor = "crimson";
+            s2.style.display = "block";
+            ksztalt.style.backgroundColor = "salmon";
+            s3.style.display = "none";
+            wzor.style.backgroundColor = "crimson";
+        }
+        function pokaz_wzor(){
+            s1.style.display = "none";
+            kolor.style.backgroundColor = "crimson";
+            s2.style.display = "none";
+            ksztalt.style.backgroundColor = "crimson";
+            s3.style.display = "block";
+            wzor.style.backgroundColor = "salmon";
+        }
+
+        kolor.addEventListener("mouseover", pokaz_kolor);
+        ksztalt.addEventListener("mouseover", pokaz_ksztalt);
+        wzor.addEventListener("mouseover", pokaz_wzor);
+    </script>
+</body>
+</html>
