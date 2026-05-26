@@ -82,24 +82,39 @@ label{
     <footer>Autor strony: 00000000000</footer>
     <script>
         let dodaj = document.getElementById('dodaj');
-
+        
+        const linki = [
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779826944/koliber_fwbkoi.png",
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779826944/smok_lakir4.png",
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779827371/waz_q2dzih.png",
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779827371/delfin_gbnona.png",
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779827371/kwiat_sx9ddy.png",
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779827371/angel_nz33w2.png",
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779827371/tygrys_ljeiku.png",
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779827372/kwiaty_w98yae.png",
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779827372/celtic_oari9r.png",
+            "https://res.cloudinary.com/diljpkw9f/image/upload/v1779827372/rozeta_bsmxz1.png"
+        ];
+        
         function komunikat(){
-            let wzor = document.getElementById('wzor');
             let lista = document.getElementById('lista');
             let cena = document.getElementById('cena');
             let galeria = document.getElementById('galeria');
-            let sciezka = wzor.value;
-            let plik = sciezka.substring(12);
-            alert("Wzór: " + plik + ", kolor " + lista.value + " w cenie " + cena.value + " zł");
-
+            
+            let index = Math.floor(Math.random() * linki.length);
+            let plik = linki[index];
+            
+            let nazwaPliku = plik.substring(plik.lastIndexOf('/') + 1);
+            alert("Wzór: " + nazwaPliku + ", kolor " + lista.value + " w cenie " + cena.value + " zł");
+        
             let obraz = document.createElement('img');
             obraz.src = plik;
-            obraz.alt = plik;
+            obraz.alt = nazwaPliku;
             obraz.className = "miniatury";
-
+        
             galeria.appendChild(obraz);
         }
-
+        
         dodaj.addEventListener("click", komunikat);
     </script>
 </body>
