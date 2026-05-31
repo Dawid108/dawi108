@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Powstanie ZSRR - 1922</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+    {cat:"Powstanie ZSRR", q:"Co wprowadzili bolszewicy po dojściu do władzy?", a:"Komunizm wojenny", b:"Kapitalizm państwowy", c:"Demokrację parlamentarną", d:"Monarchię konstytucyjną"},
+
+{cat:"Powstanie ZSRR", q:"Na czym polegał komunizm wojenny?", a:"Na natychmiastowym upaństwowieniu większości sektorów gospodarki", b:"Na przekazaniu gospodarki prywatnym przedsiębiorcom", c:"Na rozwoju wolnego rynku i konkurencji", d:"Na oddaniu fabryk w ręce zagranicznych firm"},
+
+{cat:"Powstanie ZSRR", q:"Kto przejął władzę w ZSRR w 1924 roku?", a:"Józef Stalin", b:"Włodzimierz Lenin", c:"Lew Trocki", d:"Mikołaj II"},
+
+{cat:"Powstanie ZSRR", q:"W jakich latach obowiązywała Nowa Polityka Ekonomiczna?", a:"1921-1929", b:"1917-1921", c:"1929-1939", d:"1914-1918"},
+
+{cat:"Powstanie ZSRR", q:"Jak nazywała się polityka gospodarcza wprowadzona w latach 1921-1929?", a:"Nowa Polityka Ekonomiczna (NEP)", b:"Polityka Wielkiego Skoku Naprzód", c:"Program Odbudowy Narodowej", d:"Plan Gospodarki Liberalnej"},
+
+{cat:"Powstanie ZSRR", q:"Jaki skutek przyniosło wprowadzenie NEP?", a:"Poprawę sytuacji gospodarczej", b:"Całkowity upadek przemysłu", c:"Rozpad struktur państwowych", d:"Likwidację handlu krajowego"},
+
+{cat:"Powstanie ZSRR", q:"Dzięki czemu komuniści uzyskali szerokie poparcie chłopów?", a:"Zapewnieniu otrzymania ziemi na własność", b:"Obniżeniu cen produktów przemysłowych", c:"Wprowadzeniu obowiązkowej edukacji", d:"Zwiększeniu liczby miejsc pracy w miastach"},
+
+{cat:"Powstanie ZSRR", q:"Co stało się z ziemią po umocnieniu władzy komunistów?", a:"Doszło do kolektywizacji rolnictwa", b:"Została sprzedana zagranicznym inwestorom", c:"Oddano ją w ręce prywatnych firm", d:"Przekazano ją wyłącznie wojsku"},
+
+{cat:"Powstanie ZSRR", q:"Czym była kolektywizacja rolnictwa?", a:"Upaństwowieniem ziemi i tworzeniem wielkich gospodarstw", b:"Podziałem ziemi między wszystkich obywateli", c:"Likwidacją produkcji rolnej w państwie", d:"Przekazaniem ziemi zagranicznym właścicielom"},
+
+{cat:"Powstanie ZSRR", q:"Jakie gospodarstwa tworzono podczas kolektywizacji?", a:"Państwowe i spółdzielcze gospodarstwa rolne", b:"Wyłącznie rodzinne gospodarstwa prywatne", c:"Niewielkie gospodarstwa przydomowe", d:"Międzynarodowe przedsiębiorstwa rolne"},
+
+{cat:"Powstanie ZSRR", q:"Na rozwój jakiej gałęzi gospodarki nastawiony był system komunistyczny?", a:"Przemysłu ciężkiego", b:"Przemysłu rozrywkowego", c:"Turystyki zagranicznej", d:"Usług bankowych"},
+
+{cat:"Powstanie ZSRR", q:"Jak zarządzana była gospodarka komunistyczna?", a:"Poprzez sterowanie centralne", b:"Przez wolny rynek i konkurencję", c:"Przez samorządy lokalne", d:"Przez prywatnych inwestorów"},
+
+{cat:"Powstanie ZSRR", q:"Czym charakteryzowały się rządy Stalina?", a:"Masowymi mordami i czystkami politycznymi", b:"Pełną swobodą działalności politycznej", c:"Brakiem kontroli nad społeczeństwem", d:"Rozwojem demokracji parlamentarnej"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 4;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
