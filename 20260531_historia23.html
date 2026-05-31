@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Historia - Sprawdzian 1 Czerwca</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">30</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+    {cat:"Świat po Wielkiej Wojnie", q:"Kiedy podpisano traktat wersalski między Niemcami a państwami ententy?", a:"28 czerwca 1919 roku", b:"11 listopada 1918 roku", c:"1 września 1939 roku", d:"24 października 1929 roku"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Pomiędzy kim został podpisany traktat wersalski?", a:"Niemcami a państwami ententy", b:"Polską a państwami centralnymi", c:"Rosją a państwami ententy", d:"Włochami a państwami bałkańskimi"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Co stało się z niemieckimi koloniami po I wojnie światowej?", a:"Przeszły na rzecz Francji", b:"Zostały przekazane Niemcom", c:"Uzyskały pełną niezależność", d:"Przejęła je wyłącznie Wielka Brytania"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jakie regiony utraciły Niemcy na rzecz Francji?", a:"Alzację i Lotaryngię", b:"Bawarię i Saksonię", c:"Nadrenię i Westfalię", d:"Pomorze i Śląsk"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaki status otrzymała Nadrenia?", a:"Stała się strefą zdemilitaryzowaną", b:"Stała się republiką niezależną", c:"Została przyłączona do Francji", d:"Przekształcono ją w kolonię"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Na czyją rzecz Niemcy utraciły część swoich ziem?", a:"Odrodzonego państwa polskiego", b:"Nowo powstałej Jugosławii", c:"Państwa czechosłowackiego", d:"Królestwa Rumunii"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaką maksymalną liczebność mogła mieć armia niemiecka?", a:"100 tysięcy żołnierzy", b:"250 tysięcy żołnierzy", c:"500 tysięcy żołnierzy", d:"1 milion żołnierzy"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaki charakter miała mieć armia niemiecka?", a:"Wyłącznie zawodowy", b:"Wyłącznie ochotniczy", c:"Powszechnie poborowy", d:"Międzynarodowy wojskowy"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Czego zakazano Niemcom w ramach ograniczeń wojskowych?", a:"Posiadania czołgów i lotnictwa wojskowego", b:"Produkcji samochodów i motocykli", c:"Budowy dróg i mostów", d:"Szkolenia piechoty zawodowej"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jakie obciążenie finansowe nałożono na Niemcy?", a:"Ogromne reparacje wojenne", b:"Podatek od kolonii zamorskich", c:"Opłaty za członkostwo w Lidze Narodów", d:"Koszty utrzymania armii alianckiej"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"W którym roku powstała Liga Narodów?", a:"1920 roku", b:"1914 roku", c:"1925 roku", d:"1933 roku"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaki był główny cel Ligi Narodów?", a:"Zapobieganie konfliktom międzynarodowym", b:"Rozszerzanie granic państw europejskich", c:"Tworzenie wspólnej armii światowej", d:"Zwiększanie produkcji przemysłowej"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Które państwo nie przystąpiło do Ligi Narodów?", a:"Stany Zjednoczone", b:"Francja", c:"Wielka Brytania", d:"Belgia"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Dlaczego Liga Narodów okazała się nieskuteczna?", a:"Wiele państw stało się niedemokratycznych", b:"Brakowało jej własnej waluty", c:"Miała zbyt mało członków", d:"Działała tylko w Europie"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"W jakim kierunku rozwijała się gospodarka po wojnie?", a:"W kierunku produkcji cywilnej", b:"Wyłącznie produkcji wojskowej", c:"Jedynie wydobycia surowców", d:"Tylko produkcji rolnej"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Na czym polegało niebezpieczne zjawisko rozwijające się głównie w USA?", a:"Sztucznym zawyżaniu cen akcji", b:"Masowym niszczeniu fabryk", c:"Całkowitym zakazie handlu", d:"Likwidacji giełd papierów wartościowych"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jakie zjawisko gospodarcze dotknęło wiele państw europejskich?", a:"Hiperinflacja", b:"Deflacja pieniężna", c:"Nadprodukcja żywności", d:"Brak surowców energetycznych"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaką reakcję w Niemczech wywołał traktat wersalski?", a:"Rodzącą się chęć odwetu", b:"Powszechną radość społeczną", c:"Całkowitą obojętność obywateli", d:"Entuzjazm dla aliantów"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"W jakich latach wybuchła epidemia grypy hiszpanki?", a:"1918–1920", b:"1925–1927", c:"1930–1932", d:"1910–1912"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Ile osób zmarło w wyniku grypy hiszpanki?", a:"Około 50 milionów ludzi", b:"Około 5 milionów ludzi", c:"Około 500 tysięcy ludzi", d:"Około 100 milionów ludzi"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jak nazywa się dzień 24 października 1929 roku?", a:"Czarny czwartek", b:"Krwawa niedziela", c:"Złoty piątek", d:"Wielki poniedziałek"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Co wydarzyło się podczas krachu na Wall Street?", a:"Doszło do załamania gospodarczego", b:"Rozpoczęła się wojna światowa", c:"Powstała Liga Narodów", d:"Wprowadzono wspólną walutę"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Do czego doprowadził wielki kryzys?", a:"Bankructw przedsiębiorstw i ruiny obywateli", b:"Nagłego wzrostu płac pracowników", c:"Likwidacji wszystkich podatków", d:"Powszechnego dobrobytu społeczeństw"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaką metodę walki z kryzysem zastosowały państwa?", a:"Interwencjonizm państwowy", b:"Całkowity brak ingerencji władz", c:"Wyłącznie prywatne inwestycje", d:"Likwidację urzędów państwowych"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaki rodzaj prac organizowano w ramach walki z kryzysem?", a:"Roboty publiczne", b:"Misje kolonialne", c:"Wyprawy wojskowe", d:"Kampanie wyborcze"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Która grupa otrzymywała dopłaty w czasie kryzysu?", a:"Rolnicy", b:"Marynarze", c:"Nauczyciele", d:"Artyści"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jak nazywa się dążenie państwa do oparcia gospodarki na własnych zasobach?", a:"Autarkia", b:"Industrializacja", c:"Globalizacja", d:"Monopolizacja"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Który prezydent USA wprowadził program New Deal?", a:"Franklin Delano Roosevelt", b:"Woodrow Wilson", c:"Herbert Hoover", d:"Dwight Eisenhower"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Czym był program New Deal?", a:"Interwencją państwa w gospodarce", b:"Planem rozbudowy armii USA", c:"Programem kolonizacji nowych terenów", d:"Reformą szkolnictwa wyższego"},
+
+  {cat:"Powstanie ZSRR", q:"Co wprowadzili bolszewicy po dojściu do władzy?", a:"Komunizm wojenny", b:"Kapitalizm państwowy", c:"Demokrację parlamentarną", d:"Monarchię konstytucyjną"},
+
+{cat:"Powstanie ZSRR", q:"Na czym polegał komunizm wojenny?", a:"Na natychmiastowym upaństwowieniu większości sektorów gospodarki", b:"Na przekazaniu gospodarki prywatnym przedsiębiorcom", c:"Na rozwoju wolnego rynku i konkurencji", d:"Na oddaniu fabryk w ręce zagranicznych firm"},
+
+{cat:"Powstanie ZSRR", q:"Kto przejął władzę w ZSRR w 1924 roku?", a:"Józef Stalin", b:"Włodzimierz Lenin", c:"Lew Trocki", d:"Mikołaj II"},
+
+{cat:"Powstanie ZSRR", q:"W jakich latach obowiązywała Nowa Polityka Ekonomiczna?", a:"1921-1929", b:"1917-1921", c:"1929-1939", d:"1914-1918"},
+
+{cat:"Powstanie ZSRR", q:"Jak nazywała się polityka gospodarcza wprowadzona w latach 1921-1929?", a:"Nowa Polityka Ekonomiczna (NEP)", b:"Polityka Wielkiego Skoku Naprzód", c:"Program Odbudowy Narodowej", d:"Plan Gospodarki Liberalnej"},
+
+{cat:"Powstanie ZSRR", q:"Jaki skutek przyniosło wprowadzenie NEP?", a:"Poprawę sytuacji gospodarczej", b:"Całkowity upadek przemysłu", c:"Rozpad struktur państwowych", d:"Likwidację handlu krajowego"},
+
+{cat:"Powstanie ZSRR", q:"Dzięki czemu komuniści uzyskali szerokie poparcie chłopów?", a:"Zapewnieniu otrzymania ziemi na własność", b:"Obniżeniu cen produktów przemysłowych", c:"Wprowadzeniu obowiązkowej edukacji", d:"Zwiększeniu liczby miejsc pracy w miastach"},
+
+{cat:"Powstanie ZSRR", q:"Co stało się z ziemią po umocnieniu władzy komunistów?", a:"Doszło do kolektywizacji rolnictwa", b:"Została sprzedana zagranicznym inwestorom", c:"Oddano ją w ręce prywatnych firm", d:"Przekazano ją wyłącznie wojsku"},
+
+{cat:"Powstanie ZSRR", q:"Czym była kolektywizacja rolnictwa?", a:"Upaństwowieniem ziemi i tworzeniem wielkich gospodarstw", b:"Podziałem ziemi między wszystkich obywateli", c:"Likwidacją produkcji rolnej w państwie", d:"Przekazaniem ziemi zagranicznym właścicielom"},
+
+{cat:"Powstanie ZSRR", q:"Jakie gospodarstwa tworzono podczas kolektywizacji?", a:"Państwowe i spółdzielcze gospodarstwa rolne", b:"Wyłącznie rodzinne gospodarstwa prywatne", c:"Niewielkie gospodarstwa przydomowe", d:"Międzynarodowe przedsiębiorstwa rolne"},
+
+{cat:"Powstanie ZSRR", q:"Na rozwój jakiej gałęzi gospodarki nastawiony był system komunistyczny?", a:"Przemysłu ciężkiego", b:"Przemysłu rozrywkowego", c:"Turystyki zagranicznej", d:"Usług bankowych"},
+
+{cat:"Powstanie ZSRR", q:"Jak zarządzana była gospodarka komunistyczna?", a:"Poprzez sterowanie centralne", b:"Przez wolny rynek i konkurencję", c:"Przez samorządy lokalne", d:"Przez prywatnych inwestorów"},
+
+{cat:"Powstanie ZSRR", q:"Czym charakteryzowały się rządy Stalina?", a:"Masowymi mordami i czystkami politycznymi", b:"Pełną swobodą działalności politycznej", c:"Brakiem kontroli nad społeczeństwem", d:"Rozwojem demokracji parlamentarnej"},
+
+  {cat:"ZSRR - Imperium Komunistyczne", q:"W którym miesiącu 1922 roku Rosja Sowiecka została przekształcona w ZSRS?", a:"W grudniu 1922 roku", b:"W marcu 1922 roku", c:"We wrześniu 1922 roku", d:"W czerwcu 1922 roku"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"W co została przekształcona Rosja Sowiecka w 1922 roku?", a:"W Związek Socjalistycznych Republik Sowieckich", b:"W Federację Republik Demokratycznych", c:"W Zjednoczone Państwo Robotnicze Europy", d:"W Konfederację Republik Ludowych"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Kto przejął władzę w ZSRS w 1924 roku?", a:"Józef Stalin", b:"Włodzimierz Lenin", c:"Lew Trocki", d:"Mikołaj Bucharin"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"W jakich latach Sowieci prowadzili gospodarkę na zasadach komunizmu wojennego?", a:"W latach 1917–1920", b:"W latach 1921–1924", c:"W latach 1928–1932", d:"W latach 1914–1918"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Co stało się z przemysłem podczas komunizmu wojennego?", a:"Został znacjonalizowany", b:"Został całkowicie sprywatyzowany", c:"Został oddany samorządom", d:"Został przekazany zagranicy"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Co stało się z handlem podczas komunizmu wojennego?", a:"Został znacjonalizowany", b:"Został całkowicie uwolniony", c:"Został sprzedany prywatnym firmom", d:"Został przekazany chłopom"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Co narzucono chłopom w okresie komunizmu wojennego?", a:"Przymusowe dostawy żywności", b:"Obowiązkową służbę wojskową", c:"Zakaz uprawy własnej ziemi", d:"Nakaz pracy w fabrykach"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"W jakich latach obowiązywała Nowa Polityka Ekonomiczna?", a:"W latach 1921–1928", b:"W latach 1917–1920", c:"W latach 1928–1935", d:"W latach 1930–1938"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jak nazywała się polityka gospodarcza wprowadzona po komunizmie wojennym?", a:"Nowa Polityka Ekonomiczna (NEP)", b:"Program Wielkiej Industrializacji", c:"Polityka Gospodarki Narodowej", d:"Plan Odbudowy Państwowej"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jaki skutek przyniosło wprowadzenie NEP?", a:"Liberalizację i poprawę sytuacji", b:"Upadek handlu i produkcji", c:"Likwidację prywatnych gospodarstw", d:"Zwiększenie represji gospodarczych"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Co wprowadził Stalin od 1928 roku?", a:"Gospodarkę planową", b:"Wolny rynek gospodarczy", c:"System gospodarki kolonialnej", d:"Model gospodarki prywatnej"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jaki sektor gospodarki rozwijał Stalin?", a:"Przemysł ciężki", b:"Turystykę międzynarodową", c:"Przemysł rozrywkowy", d:"Handel detaliczny"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jakie działania prowadzono wobec rywali politycznych Stalina?", a:"Czystki i masowe mordy", b:"Rozmowy pojednawcze i reformy", c:"Wolne wybory i konsultacje", d:"Programy edukacyjne i szkolenia"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jakie zjawisko rozwinęło się wokół osoby Stalina?", a:"Kult jednostki", b:"Kult demokracji", c:"Kult wolnego rynku", d:"Kult monarchii"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jaką politykę wobec społeczeństwa prowadziły władze stalinowskie?", a:"Politykę terroru", b:"Politykę pełnej swobody", c:"Politykę decentralizacji", d:"Politykę neutralności"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jakie metody stosowały władze stalinowskie wobec obywateli?", a:"Masowe represje", b:"Dobrowolne przesiedlenia", c:"Programy integracyjne", d:"Powszechne konsultacje"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Co robiono z setkami tysięcy ludzi podczas represji?", a:"Mordowano ich lub zsyłano do gułagów", b:"Przyznawano im stanowiska urzędnicze", c:"Wysyłano ich na studia zagraniczne", d:"Przenoszono ich do nowych miast"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Gdzie zsyłano wielu przeciwników i obywateli ZSRS?", a:"Do gułagów", b:"Do kolonii zamorskich", c:"Do państw zachodnich", d:"Do ośrodków wypoczynkowych"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"W jakich latach miał miejsce wielki głód na Ukrainie?", a:"W latach 1932–1933", b:"W latach 1920–1921", c:"W latach 1938–1939", d:"W latach 1941–1942"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Ile osób zmarło podczas głodu na Ukrainie?", a:"Około 8 milionów osób", b:"Około 800 tysięcy osób", c:"Około 2 milionów osób", d:"Około 15 milionów osób"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jaki był charakter głodu na Ukrainie według notatki?", a:"Był celowo wywołany", b:"Był skutkiem powodzi", c:"Był wynikiem suszy naturalnej", d:"Był następstwem epidemii"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jaki traktat zawarli Sowieci i Niemcy w 1922 roku?", a:"Traktat w Rapallo", b:"Traktat wersalski", c:"Traktat brzeski", d:"Traktat ryski"},
+
+{cat:"ZSRR - Imperium Komunistyczne", q:"Jaką współpracę podjęli Sowieci i Niemcy po traktacie w Rapallo?", a:"Militarną i gospodarczą", b:"Wyłącznie kulturalną i naukową", c:"Religijną i edukacyjną", d:"Sportową i turystyczną"},
+
+  {cat:"Powtórzenie", q:"Wymień trzy postanowienia traktatu wersalskiego wobec Niemiec.", a:"Utrata Alzacji i Lotaryngii, ograniczenie armii do 100 tys. żołnierzy, nałożenie reparacji wojennych", b:"Przyłączenie Austrii, zwiększenie armii, zniesienie reparacji", c:"Otrzymanie kolonii, rozwój lotnictwa wojskowego, brak ograniczeń armii", d:"Przejęcie Nadrenii, rozbudowa floty, obniżenie podatków"},
+
+{cat:"Powtórzenie", q:"Jaka choroba w latach 1918–1920 zabiła około 50 milionów ludzi?", a:"Grypa hiszpanka", b:"Dżuma europejska", c:"Cholera azjatycka", d:"Ospa średniowieczna"},
+
+{cat:"Powtórzenie", q:"Czym był Czarny Czwartek?", a:"Krachiem giełdowym na Wall Street rozpoczynającym wielki kryzys w 1929 roku", b:"Bitwą morską kończącą I wojnę światową w 1918 roku", c:"Podpisaniem traktatu pokojowego w 1920 roku", d:"Powstaniem Ligi Narodów w 1921 roku"},
+
+{cat:"Powtórzenie", q:"W którym roku miał miejsce Czarny Czwartek?", a:"1929", b:"1919", c:"1939", d:"1924"},
+
+{cat:"Powtórzenie", q:"Kto stworzył teorię względności?", a:"Albert Einstein", b:"Isaac Newton", c:"Nikola Tesla", d:"Galileusz Galilei"},
+
+{cat:"Powtórzenie", q:"Na czym polegał pakt Ribbentrop-Mołotow?", a:"Na porozumieniu Niemiec i ZSRR o nieagresji oraz podziale stref wpływów w Europie", b:"Na sojuszu Francji i Wielkiej Brytanii przeciw Niemcom", c:"Na utworzeniu wspólnej armii państw bałkańskich", d:"Na porozumieniu USA i Japonii o współpracy gospodarczej"}
+];
+
+
+let current = 0;
+let life = 30;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 30; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 4;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
