@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biologia na 40 Pytań</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">20</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+    {cat:"Akt II - Charakter Symboliczny", q:"Kto zapowiada pojawienie się duchów i widm w Akcie II?", a:"Chochoł rozmawiający z Isią", b:"Wernyhora rozmawiający z Gospodarzem", c:"Stańczyk rozmawiający z Dziennikarzem", d:"Rycerz rozmawiający z Poetą"},
+
+{cat:"Akt II - Charakter Symboliczny", q:"Co symbolizują zjawy pojawiające się gościom weselnym?", a:"Słabości i wady uczestników wesela", b:"Bogactwo i sukces uczestników wesela", c:"Marzenia o podróżach zagranicznych", d:"Przyszłe wydarzenia rodzinne"},
+
+{cat:"Marysia i Widmo", q:"Komu ukazuje się Widmo byłego narzeczonego?", a:"Marysi Mikołajczykównie", b:"Isi Mikołajczykównie", c:"Radczyni z Krakowa", d:"Pannie Młodej"},
+
+{cat:"Marysia i Widmo", q:"Kim był Ludwik de Laveaux?", a:"Romantycznym malarzem i byłym narzeczonym Marysi", b:"Znanym poetą i nauczycielem Marysi", c:"Bogatym ziemianinem z Galicji", d:"Przyjacielem Wojtka Susła"},
+
+{cat:"Marysia i Widmo", q:"Na jaką chorobę zmarł Ludwik de Laveaux?", a:"Gruźlicę", b:"Cholerę", c:"Odrę", d:"Tyfus"},
+
+{cat:"Marysia i Widmo", q:"Za kogo wyszła Marysia po nieszczęśliwej miłości?", a:"Wojtka Susła", b:"Janka Kliminę", c:"Kaspra Czepca", d:"Kubę Sołtysa"},
+
+{cat:"Marysia i Widmo", q:"Co symbolizuje spotkanie Marysi z Widmem?", a:"Romantyczną miłość", b:"Dążenie do bogactwa", c:"Konflikt pokoleń", d:"Walkę o władzę"},
+
+{cat:"Marysia i Widmo", q:"Do jakiego utworu nawiązuje scena Marysi i Widma?", a:"Ballady 'Romantyczność' Adama Mickiewicza", b:"'Pana Tadeusza' Adama Mickiewicza", c:"'Dziadów cz. III' Adama Mickiewicza", d:"'Konrada Wallenroda' Adama Mickiewicza"},
+
+{cat:"Dziennikarz i Stańczyk", q:"Kim był Stańczyk?", a:"Błaznem Zygmunta Starego i Zygmunta Augusta", b:"Dowódcą wojsk królewskich", c:"Kanclerzem królewskim", d:"Poetą renesansowym"},
+
+{cat:"Dziennikarz i Stańczyk", q:"Czego symbolem jest Stańczyk?", a:"Mądrości politycznej", b:"Odwagi wojskowej", c:"Pracy organicznej", d:"Bogactwa szlachty"},
+
+{cat:"Dziennikarz i Stańczyk", q:"Jaką postawę Dziennikarza krytykuje Stańczyk?", a:"Uchylanie się od odpowiedzialności za naród", b:"Zbytnią aktywność polityczną", c:"Nadmierne zainteresowanie sztuką", d:"Brak wykształcenia historycznego"},
+
+{cat:"Dziennikarz i Stańczyk", q:"Do jakiego ugrupowania należał Dziennikarz?", a:"Stańczyków", b:"Filomatów", c:"Legionistów", d:"Pozytywistów"},
+
+{cat:"Dziennikarz i Stańczyk", q:"Co wręcza Stańczyk Dziennikarzowi?", a:"Polski kaduceusz", b:"Złoty róg", c:"Miecz rycerski", d:"Złotą podkowę"},
+
+{cat:"Poeta i Rycerz", q:"Kim jest Rycerz ukazujący się Poecie?", a:"Zawiszą Czarnym", b:"Janem III Sobieskim", c:"Tadeuszem Kościuszką", d:"Kazimierzem Wielkim"},
+
+{cat:"Poeta i Rycerz", q:"Spod jakiego miejsca przybywa Rycerz?", a:"Spod Grunwaldu", b:"Spod Wiednia", c:"Spod Racławic", d:"Spod Cedyni"},
+
+{cat:"Poeta i Rycerz", q:"Kim według Rycerza powinien być Poeta dla narodu?", a:"Poetą-wieszczem", b:"Nauczycielem akademickim", c:"Przedsiębiorcą społecznym", d:"Urzędnikiem państwowym"},
+
+{cat:"Poeta i Rycerz", q:"O czym marzył Poeta?", a:"O stworzeniu wielkiego dramatu narodowego", b:"O zdobyciu majątku ziemskiego", c:"O podróży po Europie", d:"O karierze politycznej"},
+
+{cat:"Poeta i Rycerz", q:"Dlaczego Poeta nie jest zdolny do wielkich czynów?", a:"Jako dekadent odczuwa strach i bezsens", b:"Nie posiada odpowiedniego wykształcenia", c:"Brakuje mu wsparcia rodziny", d:"Jest zbyt młody do działania"},
+
+{cat:"Pan Młody i Hetman", q:"Kim jest Hetman ukazujący się Panu Młodemu?", a:"Branickim, symbolem zdrady narodowej", b:"Czarnieckim, symbolem zwycięstwa", c:"Żółkiewskim, symbolem odwagi", d:"Sobieskim, symbolem potęgi"},
+
+{cat:"Pan Młody i Hetman", q:"Jakie wydarzenie współtworzył Branicki?", a:"Targowicę", b:"Unię Lubelską", c:"Konstytucję 3 maja", d:"Powstanie listopadowe"},
+
+{cat:"Pan Młody i Hetman", q:"O co Hetman oskarża Pana Młodego?", a:"O zdradę własnego stanu", b:"O zdradę przyjaciół", c:"O brak patriotyzmu", d:"O niewierność małżeńską"},
+
+{cat:"Pan Młody i Hetman", q:"Czego nie jest pewien Pan Młody?", a:"Czy małżeństwo z chłopką nie jest zdradą szlachty", b:"Czy powinien wyjechać za granicę", c:"Czy zostanie przyjęty przez chłopów", d:"Czy odziedziczy rodzinny majątek"},
+
+{cat:"Dziad i Upiór", q:"Kim jest Upiór ukazujący się Dziadowi?", a:"Jakubem Szelą", b:"Piotrem Wysockim", c:"Józefem Bemem", d:"Henrykiem Dąbrowskim"},
+
+{cat:"Dziad i Upiór", q:"Jakie wydarzenie pamięta Dziad?", a:"Rzeź galicyjską", b:"Powstanie listopadowe", c:"Bitwę pod Grunwaldem", d:"Wiosnę Ludów"},
+
+{cat:"Dziad i Upiór", q:"Co chce zrobić Szela po przyjściu na wesele?", a:"Zmyć krew i bawić się", b:"Wygłosić patriotyczne przemówienie", c:"Przekazać tajną wiadomość", d:"Wezwać wszystkich do tańca"},
+
+{cat:"Dziad i Upiór", q:"Co symbolizuje krwawa plama na czole Szeli?", a:"Zbrodnię, o której nie można zapomnieć", b:"Bohaterską walkę o wolność", c:"Przynależność do szlachty", d:"Znak przyszłego zwycięstwa"},
+
+{cat:"Dziad i Upiór", q:"Jaki wniosek płynie ze spotkania Dziada z Upiorem?", a:"Nie dojdzie do sojuszu chłopów z inteligencją", b:"Chłopi obejmą władzę w kraju", c:"Szlachta odzyska dawne przywileje", d:"Powstanie nowa dynastia królewska"},
+
+{cat:"Gospodarz i Wernyhora", q:"Kim jest Wernyhora?", a:"Legendarnym ukraińskim poetą i prorokiem", b:"Hetmanem wojsk koronnych", c:"Błaznem królewskim", d:"Przywódcą powstania"},
+
+{cat:"Gospodarz i Wernyhora", q:"Komu ukazuje się Wernyhora?", a:"Gospodarzowi", b:"Poecie", c:"Dziennikarzowi", d:"Panu Młodemu"},
+
+{cat:"Gospodarz i Wernyhora", q:"Co wręcza Wernyhora Gospodarzowi?", a:"Złoty róg", b:"Polski kaduceusz", c:"Rycerski miecz", d:"Srebrny kielich"},
+
+{cat:"Gospodarz i Wernyhora", q:"Do czego miał posłużyć złoty róg?", a:"Do wezwania chłopów do powstania narodowego", b:"Do rozpoczęcia weselnych tańców", c:"Do ogłoszenia nowego króla", d:"Do zakończenia obrad sejmu"},
+
+{cat:"Gospodarz i Wernyhora", q:"Jaki miał być sygnał rozpoczęcia walki?", a:"Odgłos końskich kopyt od strony krakowskiego gościńca", b:"Dźwięk kościelnych dzwonów o północy", c:"Strzał z armaty na rynku miasta", d:"Zapalenie ognia na wzgórzu"},
+
+{cat:"Gospodarz i Wernyhora", q:"Co gubi Wernyhora podczas odjazdu?", a:"Złotą podkowę", b:"Złoty róg", c:"Rycerski miecz", d:"Polski kaduceusz"},
+
+{cat:"Gospodarz i Wernyhora", q:"Kto chowa złotą podkowę do kufra?", a:"Gospodyni", b:"Marysia", c:"Radczyni", d:"Isia"},
+
+{cat:"Gospodarz i Wernyhora", q:"Komu Gospodarz przekazuje złoty róg?", a:"Jaśkowi", b:"Poecie", c:"Dziennikarzowi", d:"Czepcowi"},
+
+{cat:"Gospodarz i Wernyhora", q:"Jaką misję symbolizuje przekazanie złotego rogu Jaśkowi?", a:"Zjednoczenie chłopów i inteligencji w walce narodowej", b:"Organizację kolejnego wesela", c:"Odbudowę zamku królewskiego", d:"Założenie nowej szkoły"},
+
+{cat:"Podsumowanie Aktu II", q:"Jakie jest główne zadanie postaci fantastycznych w Akcie II?", a:"Wskazać wady Polaków i zachęcić do walki o niepodległość", b:"Opowiedzieć historię Polski od początku", c:"Przedstawić życie codzienne chłopów", d:"Ukazać rozwój przemysłu w Galicji"},
+
+{cat:"Symbolika i znaczenie widziadeł", q:"Kto otrzymuje laskę błazeńską (polski kaduceusz)?", a:"Dziennikarz", b:"Poeta", c:"Gospodarz", d:"Pan Młody"},
+
+{cat:"Symbolika i znaczenie widziadeł", q:"Kto otrzymuje miecz do walki?", a:"Poeta", b:"Dziennikarz", c:"Jaśko", d:"Dziad"},
+
+{cat:"Symbolika i znaczenie widziadeł", q:"Kto otrzymuje złoty róg?", a:"Gospodarz", b:"Poeta", c:"Pan Młody", d:"Dziennikarz"},
+
+{cat:"Symbolika i znaczenie widziadeł", q:"Kto gubi złotą podkowę?", a:"Koń Wernyhory", b:"Koń Hetmana", c:"Koń Rycerza", d:"Koń Stańczyka"}
+];
+
+
+let current = 0;
+let life = 20;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 20; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 5;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
