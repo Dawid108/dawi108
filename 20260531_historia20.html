@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Świat po Wielkiej Wojnie</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+    {cat:"Świat po Wielkiej Wojnie", q:"Kiedy podpisano traktat wersalski między Niemcami a państwami ententy?", a:"28 czerwca 1919 roku", b:"11 listopada 1918 roku", c:"1 września 1939 roku", d:"24 października 1929 roku"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Pomiędzy kim został podpisany traktat wersalski?", a:"Niemcami a państwami ententy", b:"Polską a państwami centralnymi", c:"Rosją a państwami ententy", d:"Włochami a państwami bałkańskimi"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Co stało się z niemieckimi koloniami po I wojnie światowej?", a:"Przeszły na rzecz Francji", b:"Zostały przekazane Niemcom", c:"Uzyskały pełną niezależność", d:"Przejęła je wyłącznie Wielka Brytania"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jakie regiony utraciły Niemcy na rzecz Francji?", a:"Alzację i Lotaryngię", b:"Bawarię i Saksonię", c:"Nadrenię i Westfalię", d:"Pomorze i Śląsk"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaki status otrzymała Nadrenia?", a:"Stała się strefą zdemilitaryzowaną", b:"Stała się republiką niezależną", c:"Została przyłączona do Francji", d:"Przekształcono ją w kolonię"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Na czyją rzecz Niemcy utraciły część swoich ziem?", a:"Odrodzonego państwa polskiego", b:"Nowo powstałej Jugosławii", c:"Państwa czechosłowackiego", d:"Królestwa Rumunii"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaką maksymalną liczebność mogła mieć armia niemiecka?", a:"100 tysięcy żołnierzy", b:"250 tysięcy żołnierzy", c:"500 tysięcy żołnierzy", d:"1 milion żołnierzy"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaki charakter miała mieć armia niemiecka?", a:"Wyłącznie zawodowy", b:"Wyłącznie ochotniczy", c:"Powszechnie poborowy", d:"Międzynarodowy wojskowy"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Czego zakazano Niemcom w ramach ograniczeń wojskowych?", a:"Posiadania czołgów i lotnictwa wojskowego", b:"Produkcji samochodów i motocykli", c:"Budowy dróg i mostów", d:"Szkolenia piechoty zawodowej"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jakie obciążenie finansowe nałożono na Niemcy?", a:"Ogromne reparacje wojenne", b:"Podatek od kolonii zamorskich", c:"Opłaty za członkostwo w Lidze Narodów", d:"Koszty utrzymania armii alianckiej"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"W którym roku powstała Liga Narodów?", a:"1920 roku", b:"1914 roku", c:"1925 roku", d:"1933 roku"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaki był główny cel Ligi Narodów?", a:"Zapobieganie konfliktom międzynarodowym", b:"Rozszerzanie granic państw europejskich", c:"Tworzenie wspólnej armii światowej", d:"Zwiększanie produkcji przemysłowej"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Które państwo nie przystąpiło do Ligi Narodów?", a:"Stany Zjednoczone", b:"Francja", c:"Wielka Brytania", d:"Belgia"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Dlaczego Liga Narodów okazała się nieskuteczna?", a:"Wiele państw stało się niedemokratycznych", b:"Brakowało jej własnej waluty", c:"Miała zbyt mało członków", d:"Działała tylko w Europie"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"W jakim kierunku rozwijała się gospodarka po wojnie?", a:"W kierunku produkcji cywilnej", b:"Wyłącznie produkcji wojskowej", c:"Jedynie wydobycia surowców", d:"Tylko produkcji rolnej"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Na czym polegało niebezpieczne zjawisko rozwijające się głównie w USA?", a:"Sztucznym zawyżaniu cen akcji", b:"Masowym niszczeniu fabryk", c:"Całkowitym zakazie handlu", d:"Likwidacji giełd papierów wartościowych"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jakie zjawisko gospodarcze dotknęło wiele państw europejskich?", a:"Hiperinflacja", b:"Deflacja pieniężna", c:"Nadprodukcja żywności", d:"Brak surowców energetycznych"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaką reakcję w Niemczech wywołał traktat wersalski?", a:"Rodzącą się chęć odwetu", b:"Powszechną radość społeczną", c:"Całkowitą obojętność obywateli", d:"Entuzjazm dla aliantów"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"W jakich latach wybuchła epidemia grypy hiszpanki?", a:"1918–1920", b:"1925–1927", c:"1930–1932", d:"1910–1912"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Ile osób zmarło w wyniku grypy hiszpanki?", a:"Około 50 milionów ludzi", b:"Około 5 milionów ludzi", c:"Około 500 tysięcy ludzi", d:"Około 100 milionów ludzi"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jak nazywa się dzień 24 października 1929 roku?", a:"Czarny czwartek", b:"Krwawa niedziela", c:"Złoty piątek", d:"Wielki poniedziałek"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Co wydarzyło się podczas krachu na Wall Street?", a:"Doszło do załamania gospodarczego", b:"Rozpoczęła się wojna światowa", c:"Powstała Liga Narodów", d:"Wprowadzono wspólną walutę"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Do czego doprowadził wielki kryzys?", a:"Bankructw przedsiębiorstw i ruiny obywateli", b:"Nagłego wzrostu płac pracowników", c:"Likwidacji wszystkich podatków", d:"Powszechnego dobrobytu społeczeństw"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaką metodę walki z kryzysem zastosowały państwa?", a:"Interwencjonizm państwowy", b:"Całkowity brak ingerencji władz", c:"Wyłącznie prywatne inwestycje", d:"Likwidację urzędów państwowych"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jaki rodzaj prac organizowano w ramach walki z kryzysem?", a:"Roboty publiczne", b:"Misje kolonialne", c:"Wyprawy wojskowe", d:"Kampanie wyborcze"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Która grupa otrzymywała dopłaty w czasie kryzysu?", a:"Rolnicy", b:"Marynarze", c:"Nauczyciele", d:"Artyści"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Jak nazywa się dążenie państwa do oparcia gospodarki na własnych zasobach?", a:"Autarkia", b:"Industrializacja", c:"Globalizacja", d:"Monopolizacja"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Który prezydent USA wprowadził program New Deal?", a:"Franklin Delano Roosevelt", b:"Woodrow Wilson", c:"Herbert Hoover", d:"Dwight Eisenhower"},
+
+{cat:"Świat po Wielkiej Wojnie", q:"Czym był program New Deal?", a:"Interwencją państwa w gospodarce", b:"Planem rozbudowy armii USA", c:"Programem kolonizacji nowych terenów", d:"Reformą szkolnictwa wyższego"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 4;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
