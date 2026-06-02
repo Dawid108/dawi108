@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geografia - Usługi</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+    {cat:"Usługi", q:"Czego przykładem są usługi w życiu codziennym?", a:"Jazda autobusem, rozmowa przez telefon i nauka w szkole", b:"Produkcja samochodów, budowa dróg i wydobycie węgla", c:"Uprawa roślin, hodowla zwierząt i rybołówstwo", d:"Wytwarzanie energii, stali i materiałów budowlanych"},
+
+{cat:"Usługi", q:"Jaką rolę odgrywają usługi w krajach wysoko rozwiniętych?", a:"Odgrywają bardzo ważną rolę w gospodarce", b:"Mają niewielkie znaczenie dla gospodarki", c:"Są całkowicie zastępowane przez przemysł", d:"Występują wyłącznie na obszarach wiejskich"},
+
+{cat:"Podział usług", q:"Czym są usługi?", a:"Działalnością służącą zaspokajaniu potrzeb innych osób", b:"Procesem wydobywania surowców naturalnych", c:"Masową produkcją dóbr materialnych i energii", d:"Wyłącznie handlem prowadzonym przez firmy"},
+
+{cat:"Podział usług", q:"Jakie usługi zalicza się do usług podstawowych?", a:"Powszechne i łatwo dostępne dla ludności", b:"Dostępne tylko dla największych przedsiębiorstw", c:"Wykonywane wyłącznie przez instytuty naukowe", d:"Przeznaczone jedynie dla mieszkańców stolic"},
+
+{cat:"Podział usług", q:"Który przykład należy do usług podstawowych?", a:"Usługi transportowe", b:"Badania naukowo-rozwojowe", c:"Obsługa giełd papierów wartościowych", d:"Doradztwo dla międzynarodowych korporacji"},
+
+{cat:"Podział usług", q:"Jakie usługi zalicza się do wyspecjalizowanych?", a:"Usługi, z których ludność korzysta rzadziej", b:"Usługi dostępne codziennie dla każdego mieszkańca", c:"Usługi związane wyłącznie z handlem detalicznym", d:"Usługi świadczone jedynie przez rolników"},
+
+{cat:"Podział usług", q:"Który przykład należy do usług wyspecjalizowanych?", a:"Usługi edukacyjne na wyższych uczelniach", b:"Zakupy w sklepie spożywczym", c:"Przejazd autobusem miejskim", d:"Korzystanie z telefonu komórkowego"},
+
+{cat:"Podział usług", q:"Na czyją rzecz często świadczone są usługi wyspecjalizowane?", a:"Na rzecz firm i przedsiębiorstw", b:"Wyłącznie na rzecz turystów zagranicznych", c:"Jedynie na potrzeby gospodarstw rolnych", d:"Tylko dla mieszkańców małych wsi"},
+
+{cat:"Podział usług", q:"Czym są usługi materialne?", a:"Usługami związanymi z oddziaływaniem na dobra materialne", b:"Usługami dotyczącymi wyłącznie edukacji i kultury", c:"Usługami wykonywanymi tylko przez administrację", d:"Usługami przeznaczonymi dla instytucji finansowych"},
+
+{cat:"Podział usług", q:"Który przykład należy do usług materialnych?", a:"Naprawa samochodów", b:"Prowadzenie zajęć szkolnych", c:"Organizacja koncertów muzycznych", d:"Przygotowanie wystawy muzealnej"},
+
+{cat:"Podział usług", q:"Czym są usługi niematerialne?", a:"Czynnościami związanymi z dobrami niematerialnymi", b:"Produkcją energii elektrycznej i cieplnej", c:"Naprawą urządzeń przemysłowych", d:"Transportem surowców na duże odległości"},
+
+{cat:"Podział usług", q:"Który przykład należy do usług niematerialnych?", a:"Usługi edukacyjne", b:"Transport towarów ciężarowych", c:"Naprawa maszyn produkcyjnych", d:"Konserwacja linii technologicznych"},
+
+{cat:"Podział usług", q:"Co oznacza skrót PKD?", a:"Polska Klasyfikacja Działalności", b:"Państwowy Katalog Dóbr", c:"Polityka Krajowego Dochodu", d:"Program Kontroli Działalności"},
+
+{cat:"Podział usług", q:"Ile sekcji usług wyróżnia Polska Klasyfikacja Działalności?", a:"16 sekcji", b:"8 sekcji", c:"24 sekcje", d:"32 sekcje"},
+
+{cat:"Podział usług", q:"Czym są usługi produkcyjne?", a:"Usługami wspierającymi procesy produkcji", b:"Usługami związanymi wyłącznie z handlem", c:"Usługami świadczonymi tylko ludności", d:"Usługami dotyczącymi administracji państwowej"},
+
+{cat:"Podział usług", q:"Na czyją rzecz świadczone są usługi produkcyjne?", a:"Na rzecz przedsiębiorstw", b:"Wyłącznie na rzecz turystów", c:"Tylko na potrzeby szkół", d:"Jedynie dla gospodarstw domowych"},
+
+{cat:"Podział usług", q:"Który przykład należy do usług produkcyjnych?", a:"Konserwacja i naprawa linii produkcyjnych", b:"Remont mieszkania prywatnego", c:"Działalność policji państwowej", d:"Organizacja wydarzeń kulturalnych"},
+
+{cat:"Podział usług", q:"Czym są usługi konsumpcyjne?", a:"Usługami zaspokajającymi potrzeby ludności", b:"Usługami wspierającymi przemysł ciężki", c:"Usługami administracji publicznej", d:"Usługami wykonywanymi wyłącznie dla firm"},
+
+{cat:"Podział usług", q:"Który przykład należy do usług konsumpcyjnych?", a:"Remonty mieszkań", b:"Naprawa linii produkcyjnych", c:"Działalność policji", d:"Badania naukowo-rozwojowe"},
+
+{cat:"Podział usług", q:"Czym są usługi ogólnospołeczne?", a:"Usługami działającymi na rzecz gospodarki i społeczeństwa", b:"Usługami związanymi tylko z handlem detalicznym", c:"Usługami wykonywanymi wyłącznie przez firmy", d:"Usługami przeznaczonymi dla turystów zagranicznych"},
+
+{cat:"Podział usług", q:"Który przykład należy do usług ogólnospołecznych?", a:"Działalność policji", b:"Remont mieszkania", c:"Naprawa samochodu osobowego", d:"Obsługa nieruchomości prywatnych"},
+
+{cat:"Zróżnicowanie sektora usług na świecie", q:"Od czego zależy struktura sektora usług w państwie?", a:"Od poziomu rozwoju społeczno-gospodarczego", b:"Wyłącznie od liczby mieszkańców kraju", c:"Jedynie od wielkości powierzchni państwa", d:"Tylko od położenia nad morzem"},
+
+{cat:"Zróżnicowanie sektora usług na świecie", q:"Jakie usługi przeważają w krajach słabo rozwiniętych?", a:"Usługi podstawowe, głównie handel", b:"Usługi finansowe i ubezpieczeniowe", c:"Usługi badawczo-rozwojowe", d:"Obsługa nieruchomości i firm"},
+
+{cat:"Zróżnicowanie sektora usług na świecie", q:"Który kraj podano jako przykład kraju słabo rozwiniętego?", a:"Sierra Leone", b:"Szwecja", c:"Luksemburg", d:"Grecja"},
+
+{cat:"Zróżnicowanie sektora usług na świecie", q:"Jakie usługi mają duży udział w krajach wysoko rozwiniętych?", a:"Usługi wyspecjalizowane", b:"Wyłącznie usługi handlowe", c:"Jedynie usługi transportowe", d:"Tylko usługi podstawowej edukacji"},
+
+{cat:"Zróżnicowanie sektora usług na świecie", q:"Który kraj jest przykładem państwa wysoko rozwiniętego?", a:"Luksemburg", b:"Etiopia", c:"Sierra Leone", d:"Nepal"},
+
+{cat:"Zróżnicowanie sektora usług na świecie", q:"Jakie usługi są charakterystyczne dla krajów wysoko rozwiniętych?", a:"Finansowe i ubezpieczeniowe", b:"Wyłącznie usługi handlu ulicznego", c:"Tylko podstawowe usługi edukacyjne", d:"Jedynie usługi napraw rowerów"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"O czym świadczy stopień zaspokojenia zapotrzebowania na usługi?", a:"O rozwoju cywilizacyjnym kraju", b:"O wielkości terytorium państwa", c:"O liczbie rzek i jezior", d:"O położeniu geograficznym kraju"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"Czym zobrazowano dostęp do usług podstawowych?", a:"Liczbą lekarzy na tysiąc osób", b:"Liczbą szkół na milion mieszkańców", c:"Długością autostrad w kraju", d:"Liczbą lotnisk międzynarodowych"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"Jak wygląda dostęp do usług podstawowych w Etiopii?", a:"Jest utrudniony", b:"Jest najwyższy na świecie", c:"Jest taki sam jak w Szwecji", d:"Jest większy niż w Japonii"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"Jak wygląda dostęp do usług podstawowych w Szwecji?", a:"Jest powszechny", b:"Jest bardzo ograniczony", c:"Występuje tylko w dużych miastach", d:"Dotyczy wyłącznie turystów"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"W których krajach poziom zaspokojenia usług podstawowych jest wyższy?", a:"W krajach wysoko rozwiniętych", b:"W krajach najsłabiej rozwiniętych", c:"Wyłącznie w krajach rolniczych", d:"Tylko w państwach wyspiarskich"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"Co dzieje się wraz z rozwojem cywilizacyjnym kraju?", a:"Rośnie zapotrzebowanie na usługi wyspecjalizowane", b:"Maleje znaczenie wszystkich usług", c:"Spada liczba usług edukacyjnych", d:"Zmniejsza się rola nowych technologii"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"Jakie usługi są ważne dla przemysłu high-tech?", a:"Usługi badawczo-rozwojowe", b:"Usługi handlu detalicznego", c:"Usługi gastronomiczne", d:"Usługi transportu miejskiego"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"Który kraj podano jako przykład rozwiniętych usług badawczo-rozwojowych?", a:"Izrael", b:"Etiopia", c:"Sierra Leone", d:"Sudan"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"Co świadczy o rozwoju usług badawczo-rozwojowych?", a:"Wysoki udział nakładów na tę działalność w PKB", b:"Duża liczba gospodarstw rolnych", c:"Wysoki eksport surowców mineralnych", d:"Znaczna powierzchnia lasów państwowych"},
+
+{cat:"Stopień zaspokojenia zapotrzebowania na usługi na świecie", q:"Jak wygląda dostępność usług badawczo-rozwojowych w krajach słabo rozwiniętych?", a:"Są w zasadzie niedostępne", b:"Jest najwyższa na świecie", c:"Przewyższa kraje rozwinięte", d:"Jest identyczna jak w Japonii"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 5;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
