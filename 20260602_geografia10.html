@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geografia - Usługi i Transport</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+    {cat:"Usługi", q:"Na jakie dwa główne rodzaje dzieli się usługi?", a:"Na usługi podstawowe i wyspecjalizowane", b:"Na usługi krajowe i zagraniczne", c:"Na usługi publiczne i prywatne", d:"Na usługi lokalne i światowe"},
+
+{cat:"Usługi", q:"Który przykład należy do usług podstawowych?", a:"Handel", b:"Usługi badawczo-rozwojowe", c:"Doradztwo dla korporacji", d:"Projektowanie nowych technologii"},
+
+{cat:"Usługi", q:"Który przykład należy do usług wyspecjalizowanych?", a:"Usługi badawczo-rozwojowe", b:"Handel detaliczny", c:"Podstawowy transport miejski", d:"Sprzedaż artykułów spożywczych"},
+
+{cat:"Usługi", q:"Ile głównych grup usług wyróżnia się w gospodarce?", a:"Trzy grupy usług", b:"Dwie grupy usług", c:"Cztery grupy usług", d:"Pięć grup usług"},
+
+{cat:"Usługi", q:"Jakie usługi należą do trzech głównych grup?", a:"Produkcyjne, konsumpcyjne i ogólnospołeczne", b:"Rolnicze, przemysłowe i handlowe", c:"Lokalne, regionalne i krajowe", d:"Prywatne, państwowe i mieszane"},
+
+{cat:"Usługi", q:"Od czego zależy struktura usług w danym kraju?", a:"Od poziomu rozwoju społeczno-gospodarczego", b:"Od liczby rzek i jezior w państwie", c:"Od wielkości powierzchni kraju", d:"Od długości granic państwowych"},
+
+{cat:"Usługi", q:"Jakie usługi przeważają w krajach o niskim poziomie rozwoju?", a:"Usługi podstawowe", b:"Usługi wyspecjalizowane", c:"Usługi badawcze", d:"Usługi finansowe"},
+
+{cat:"Usługi", q:"Co dzieje się wraz z rozwojem społeczno-gospodarczym kraju?", a:"Zwiększa się udział usług wyspecjalizowanych", b:"Zmniejsza się liczba wszystkich usług", c:"Zanikają usługi podstawowe", d:"Maleje znaczenie gospodarki"},
+
+{cat:"Usługi", q:"W jakich krajach usługi podstawowe są zaspokajane w wyższym stopniu?", a:"W krajach wysoko rozwiniętych gospodarczo", b:"W krajach słabo rozwiniętych gospodarczo", c:"W krajach o małej powierzchni", d:"W krajach o niskiej liczbie ludności"},
+
+{cat:"Usługi", q:"W jakich krajach usługi wyspecjalizowane są zaspokajane w wyższym stopniu?", a:"W krajach wysoko rozwiniętych gospodarczo", b:"W krajach słabo rozwiniętych gospodarczo", c:"W krajach wyłącznie rolniczych", d:"W krajach o niewielkim handlu"},
+
+{cat:"Usługi", q:"Jaki jest stopień zaspokojenia usług podstawowych w krajach słabo rozwiniętych?", a:"Bardzo niski", b:"Bardzo wysoki", c:"Najwyższy na świecie", d:"Taki sam jak w krajach rozwiniętych"},
+
+{cat:"Usługi", q:"Jak wygląda dostępność wielu usług wyspecjalizowanych w krajach słabo rozwiniętych?", a:"Są niedostępne", b:"Są powszechnie dostępne", c:"Są obowiązkowe dla wszystkich", d:"Są najczęściej wykorzystywane"},
+
+{cat:"Transport", q:"Co obejmuje transport?", a:"Przemieszczanie osób, przewóz ładunków i przesyłanie energii", b:"Wyłącznie przewóz osób między miastami", c:"Jedynie przesyłanie informacji i danych", d:"Tylko przewóz towarów masowych"},
+
+{cat:"Transport", q:"Jaki rodzaj transportu należy do podstawowych rodzajów transportu?", a:"Transport samochodowy", b:"Transport handlowy", c:"Transport administracyjny", d:"Transport usługowy"},
+
+{cat:"Transport", q:"Który rodzaj transportu wykorzystuje pociągi?", a:"Transport kolejowy", b:"Transport morski", c:"Transport lotniczy", d:"Transport przesyłowy"},
+
+{cat:"Transport", q:"Który rodzaj transportu odbywa się po morzach i oceanach?", a:"Transport morski", b:"Transport samochodowy", c:"Transport kolejowy", d:"Transport przesyłowy"},
+
+{cat:"Transport", q:"Który rodzaj transportu odbywa się po rzekach i kanałach?", a:"Transport wodny śródlądowy", b:"Transport lotniczy", c:"Transport kolejowy", d:"Transport samochodowy"},
+
+{cat:"Transport", q:"Który rodzaj transportu wykorzystuje samoloty?", a:"Transport lotniczy", b:"Transport morski", c:"Transport kolejowy", d:"Transport przesyłowy"},
+
+{cat:"Transport", q:"Który rodzaj transportu służy do przesyłania energii?", a:"Transport przesyłowy", b:"Transport wodny śródlądowy", c:"Transport samochodowy", d:"Transport morski"},
+
+{cat:"Transport", q:"Od jakich warunków zależy rozwój transportu?", a:"Od warunków przyrodniczych i społeczno-gospodarczych", b:"Od warunków politycznych i religijnych", c:"Od klimatu i języka mieszkańców", d:"Od liczby miast i wsi"},
+
+{cat:"Transport", q:"Jaki czynnik przyrodniczy wpływa na rozwój transportu?", a:"Rzeźba terenu", b:"Liczba szkół w regionie", c:"Poziom wykształcenia ludności", d:"Dochody mieszkańców kraju"},
+
+{cat:"Transport", q:"Jaki czynnik społeczno-gospodarczy wpływa na rozwój transportu?", a:"Rozmieszczenie ludności", b:"Liczba jezior polodowcowych", c:"Wysokość gór w państwie", d:"Długość linii brzegowej"},
+
+{cat:"Transport", q:"Jaki postęp wpływa na rozwój transportu?", a:"Postęp naukowo-techniczny", b:"Postęp artystyczno-kulturalny", c:"Postęp językowo-literacki", d:"Postęp sportowo-rekreacyjny"},
+
+{cat:"Transport", q:"Co zapewnia transport gospodarce światowej?", a:"Sprawne funkcjonowanie gospodarki", b:"Zmniejszenie produkcji przemysłowej", c:"Ograniczenie wymiany handlowej", d:"Likwidację usług publicznych"},
+
+{cat:"Transport", q:"Co umożliwia transport między ludźmi?", a:"Kontakty międzyludzkie", b:"Izolację społeczeństw", c:"Zmniejszenie liczby podróży", d:"Ograniczenie komunikacji"},
+
+{cat:"Transport", q:"Do rozwoju czego przyczynia się transport?", a:"Do rozwoju turystyki", b:"Do zaniku usług", c:"Do zmniejszenia liczby podróży", d:"Do ograniczenia wymiany kulturowej"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 5;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
