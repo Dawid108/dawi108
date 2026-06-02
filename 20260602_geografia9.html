@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geografia - Transport</title>
+<script src="script.js"></script>
+<link rel="icon" href="dawi108.png" type="image/png">
+<link rel="stylesheet" href="20260323_style.css">
+</head>
+<body>
+
+<div id="game">
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+    <div class="category" id="category"></div>
+    <div class="question" id="question"></div>
+    <div id="answers"></div>
+    <div id="counter"></div>
+</div>
+
+<div id="endScreen" class="hidden">
+    <h2 id="endTitle"></h2>
+    <p>Twój wynik: <span id="finalScore"></span></p>
+    <p>Twój rekord: <span id="record"></span></p>
+    <p>Suma punktów: <span id="dawid108"></span></p>
+    <button onclick="newGame()">Nowa Gra</button>
+</div>
+
+<script>
+// PYTANIA
+let questions = [
+    {cat:"Transport", q:"Dlaczego mówi się, że Ziemia się 'skurczyła'?", a:"Dzięki rozwojowi transportu skrócił się czas podróży", b:"Ponieważ zmniejszyła się powierzchnia lądów", c:"Ponieważ ubyło oceanów i mórz", d:"Dzięki rozwojowi rolnictwa i przemysłu"},
+
+{cat:"Czym jest transport?", q:"Czym jest transport?", a:"Zespołem usług związanych z przemieszczaniem osób i ładunków", b:"Procesem wydobywania surowców mineralnych", c:"Sposobem produkcji energii elektrycznej", d:"Działalnością polegającą na uprawie roślin"},
+
+{cat:"Czym jest transport?", q:"Co wraz z transportem tworzy komunikację?", a:"Łączność obejmująca przekazywanie informacji", b:"Rolnictwo zajmujące się produkcją żywności", c:"Przemysł odpowiedzialny za wytwarzanie dóbr", d:"Handel zajmujący się sprzedażą produktów"},
+
+{cat:"Czym jest transport?", q:"Ile rodzajów transportu wyróżnia się ze względu na środki transportu?", a:"Sześć rodzajów transportu", b:"Trzy rodzaje transportu", c:"Osiem rodzajów transportu", d:"Dziesięć rodzajów transportu"},
+
+{cat:"Czym jest transport?", q:"Czym jest infrastruktura transportowa?", a:"Siecią transportową i obiektami towarzyszącymi", b:"Wyłącznie drogami kołowymi i autostradami", c:"Tylko portami morskimi i lotniskami", d:"Jedynie środkami przewozu pasażerów"},
+
+{cat:"Podział transportu i jego infrastruktura", q:"Który z wymienionych jest rodzajem transportu?", a:"Transport samochodowy", b:"Transport przemysłowy lekki", c:"Transport administracyjny", d:"Transport handlowy lokalny"},
+
+{cat:"Podział transportu i jego infrastruktura", q:"Co należy do sieci transportowej?", a:"Drogi, linie kolejowe i szlaki żeglowne", b:"Fabryki, magazyny i elektrownie", c:"Szkoły, urzędy i szpitale", d:"Pola uprawne i gospodarstwa rolne"},
+
+{cat:"Podział transportu i jego infrastruktura", q:"Który obiekt należy do infrastruktury transportowej?", a:"Lotnisko", b:"Kopalnia", c:"Elektrownia", d:"Huta stali"},
+
+{cat:"Czynniki rozwoju transportu", q:"Od ilu głównych czynników zależy rozwój transportu?", a:"Od dwóch głównych czynników", b:"Od czterech głównych czynników", c:"Od sześciu głównych czynników", d:"Od ośmiu głównych czynników"},
+
+{cat:"Czynniki rozwoju transportu", q:"Jakie są dwa główne czynniki rozwoju transportu?", a:"Środowisko przyrodnicze i uwarunkowania społeczno-gospodarcze", b:"Klimat i rolnictwo występujące w kraju", c:"Turystyka i przemysł ciężki regionu", d:"Ludność i handel międzynarodowy"},
+
+{cat:"Czynniki rozwoju transportu", q:"Czemu sprzyja przewaga nizin w kraju?", a:"Rozwojowi transportu samochodowego i kolejowego", b:"Wyłącznie rozwojowi transportu lotniczego", c:"Tylko rozwojowi transportu morskiego", d:"Jedynie rozwojowi transportu przesyłowego"},
+
+{cat:"Czynniki rozwoju transportu", q:"Co ułatwia rozwój transportu wodnego śródlądowego?", a:"Małe wahania stanów wód i odpowiednia głębokość rzek", b:"Duże różnice wysokości i liczne wodospady", c:"Wysokie góry i strome zbocza dolin", d:"Niewielka liczba rzek i jezior kraju"},
+
+{cat:"Czynniki rozwoju transportu", q:"Który czynnik społeczno-gospodarczy wpływa na transport?", a:"Rozmieszczenie ludności", b:"Liczba gatunków roślin w kraju", c:"Położenie względem równika Ziemi", d:"Wysokość najwyższego szczytu kraju"},
+
+{cat:"Czynniki rozwoju transportu", q:"Co umożliwia postęp naukowo-techniczny?", a:"Szybszy i tańszy przewóz osób oraz towarów", b:"Zmniejszenie liczby środków transportu", c:"Całkowitą rezygnację z infrastruktury", d:"Ograniczenie przewozów międzynarodowych"},
+
+{cat:"Czynniki rozwoju transportu", q:"Jaką kolej uruchomiono między Paryżem a Lyonem?", a:"Linię szybkiej kolei TGV", b:"Linię kolei magnetycznej Shinkansen", c:"Linię kolei podziemnej Metro", d:"Linię kolei towarowej CargoRail"},
+
+{cat:"Transport samochodowy", q:"Jakie pojazdy obejmuje transport samochodowy?", a:"Samochody osobowe, ciężarowe, autobusy i trolejbusy", b:"Wyłącznie samochody osobowe i motocykle", c:"Pociągi pasażerskie i lokomotywy towarowe", d:"Statki handlowe i promy pasażerskie"},
+
+{cat:"Transport samochodowy", q:"Czego wymaga sprawne funkcjonowanie transportu samochodowego?", a:"Rozwiniętej sieci dróg kołowych", b:"Rozbudowanej sieci portów morskich", c:"Dużej liczby lotnisk międzynarodowych", d:"Gęstej sieci kanałów żeglugowych"},
+
+{cat:"Transport samochodowy", q:"Gdzie sieć dróg jest najgęstsza?", a:"Na obszarach o dużej gęstości zaludnienia", b:"Na terenach pustynnych i bezludnych", c:"W wysokich górach i na wyżynach", d:"Na obszarach pokrytych lasami równikowymi"},
+
+{cat:"Transport samochodowy", q:"Co utrudnia rozwój sieci drogowej?", a:"Obszary górskie wymagające tuneli i wiaduktów", b:"Rozległe niziny i równiny kraju", c:"Duża liczba mieszkańców regionu", d:"Rozwinięta gospodarka państwa"},
+
+{cat:"Transport samochodowy", q:"Który kraj ma jedną z najdłuższych sieci autostrad?", a:"Stany Zjednoczone", b:"Islandia", c:"Nepal", d:"Mongolia"},
+
+{cat:"Transport kolejowy", q:"Jakie towary przewozi się koleją na dalekich trasach?", a:"Towary masowe, np. węgiel i rudy metali", b:"Wyłącznie żywe zwierzęta hodowlane", c:"Tylko produkty szybko psujące się", d:"Jedynie przesyłki pocztowe i listy"},
+
+{cat:"Transport kolejowy", q:"Który kraj ma jedną z najdłuższych sieci kolejowych?", a:"Rosja", b:"Islandia", c:"Luksemburg", d:"Malta"},
+
+{cat:"Transport kolejowy", q:"Co nie sprzyja rozwojowi transportu kolejowego?", a:"Duże różnice wysokości względnej terenu", b:"Przewaga nizin i równin w kraju", c:"Duża liczba mieszkańców regionu", d:"Rozwinięta sieć przemysłowa państwa"},
+
+{cat:"Transport morski", q:"Jakie znaczenie ma transport morski w handlu światowym?", a:"Ma największe znaczenie w wymianie handlowej", b:"Odgrywa najmniejszą rolę w handlu światowym", c:"Służy wyłącznie przewozom pasażerskim", d:"Wykorzystywany jest tylko lokalnie"},
+
+{cat:"Transport morski", q:"Jaki procent towarów przewozi się statkami?", a:"Około 70% towarów", b:"Około 20% towarów", c:"Około 40% towarów", d:"Około 90% towarów"},
+
+{cat:"Transport morski", q:"Jaki towar najczęściej przewozi się drogą morską?", a:"Ropę naftową i jej produkty", b:"Wyłącznie artykuły spożywcze", c:"Przede wszystkim samochody osobowe", d:"Jedynie sprzęt elektroniczny"},
+
+{cat:"Transport morski", q:"Który kanał skraca żeglugę morską?", a:"Kanał Sueski", b:"Kanał Augustowski", c:"Kanał Elbląski", d:"Kanał Gliwicki"},
+
+{cat:"Transport wodny śródlądowy", q:"Gdzie odbywa się transport wodny śródlądowy?", a:"Po rzekach i jeziorach", b:"Wyłącznie po oceanach i morzach", c:"Tylko po sztucznych zbiornikach", d:"Wyłącznie po kanałach przemysłowych"},
+
+{cat:"Transport wodny śródlądowy", q:"Co przewozi transport wodny śródlądowy?", a:"Ładunki o dużej objętości i pasażerów", b:"Wyłącznie paliwa płynne i gazowe", c:"Tylko przesyłki kurierskie i pocztowe", d:"Jedynie samochody osobowe i autobusy"},
+
+{cat:"Transport lotniczy", q:"Do czego służy przede wszystkim transport lotniczy?", a:"Do przewozów pasażerskich na duże odległości", b:"Do transportu węgla na krótkich trasach", c:"Do przewozu drewna między lasami", d:"Do transportu rzecznego i jeziornego"},
+
+{cat:"Transport lotniczy", q:"Dlaczego transport lotniczy jest najdroższy?", a:"Wymaga kosztownej infrastruktury i specjalistów", b:"Zużywa najmniej paliwa spośród wszystkich", c:"Nie wymaga budowy żadnych lotnisk", d:"Korzysta wyłącznie z tanich technologii"},
+
+{cat:"Transport lotniczy", q:"W jakich krajach transport lotniczy działa najprężniej?", a:"W krajach o wysokim poziomie rozwoju", b:"Wyłącznie w krajach słabo rozwiniętych", c:"Tylko w państwach wyspiarskich", d:"Jedynie w krajach rolniczych"},
+
+{cat:"Transport przemysłowy", q:"Na czym polega transport przesyłowy?", a:"Na przesyłaniu masowych towarów i energii", b:"Na przewozie pasażerów autobusami miejskimi", c:"Na transporcie kontenerów statkami morskimi", d:"Na przewozie turystów samolotami rejsowymi"},
+
+{cat:"Transport przemysłowy", q:"Jak przesyła się energię elektryczną?", a:"Za pośrednictwem sieci energetycznej", b:"Wyłącznie drogą morską i lotniczą", c:"Przez tunele i autostrady krajowe", d:"Za pomocą wagonów i kontenerów"},
+
+{cat:"Transport przemysłowy", q:"Jaki procent ropy naftowej przesyła się rurociągami?", a:"Około 90% wydobywanej ropy", b:"Około 20% wydobywanej ropy", c:"Około 40% wydobywanej ropy", d:"Około 60% wydobywanej ropy"},
+
+{cat:"Znaczenie transportu w rozwoju społeczno-gospodarczym świata", q:"Dlaczego transport jest ważny dla gospodarki?", a:"Umożliwia przepływ surowców, towarów i energii", b:"Ogranicza wymianę handlową między krajami", c:"Zmniejsza liczbę miejsc pracy w usługach", d:"Powoduje rezygnację z produkcji przemysłowej"},
+
+{cat:"Znaczenie transportu w rozwoju społeczno-gospodarczym świata", q:"Co umożliwia transport oprócz przewozu towarów?", a:"Kontakty międzyludzkie i rozwój turystyki", b:"Zmniejszenie liczby podróży mieszkańców", c:"Likwidację wszystkich usług publicznych", d:"Ograniczenie rozwoju regionów turystycznych"},
+
+{cat:"Zalety i wady różnych rodzajów transportu", q:"Jaka jest główna zaleta transportu samochodowego?", a:"Możliwość dostarczania towarów od drzwi do drzwi", b:"Największa ładowność spośród wszystkich środków", c:"Najniższe koszty na trasach międzykontynentalnych", d:"Całkowita niezależność od infrastruktury"},
+
+{cat:"Zalety i wady różnych rodzajów transportu", q:"Jaka jest wada transportu samochodowego?", a:"Emisja dużej ilości zanieczyszczeń do atmosfery", b:"Brak możliwości zmiany trasy przejazdu", c:"Całkowity brak dostępności dla mieszkańców", d:"Najdłuższy czas przewozu wszystkich towarów"},
+
+{cat:"Zalety i wady różnych rodzajów transportu", q:"Jaka jest największa zaleta transportu morskiego?", a:"Największa ładowność statków i niskie koszty", b:"Możliwość przewozu od drzwi do drzwi", c:"Największa szybkość przewozów pasażerskich", d:"Całkowita niezależność od pogody"},
+
+{cat:"Zalety i wady różnych rodzajów transportu", q:"Jaka jest zaleta transportu lotniczego?", a:"Duża szybkość i daleki zasięg", b:"Największa ładowność spośród wszystkich", c:"Najniższe koszty budowy infrastruktury", d:"Możliwość przewozu wyłącznie towarów masowych"},
+
+{cat:"Czynniki rozwoju transportu w Polsce", q:"Jakie położenie Polski sprzyja rozwojowi transportu?", a:"Położenie w środkowej części Europy", b:"Położenie na wyspie oceanicznej", c:"Położenie na krańcu kontynentu", d:"Położenie wyłącznie w strefie górskiej"},
+
+{cat:"Czynniki rozwoju transportu w Polsce", q:"Jakim krajem jest Polska pod względem transportu?", a:"Krajem tranzytowym", b:"Krajem całkowicie odizolowanym", c:"Krajem bez połączeń międzynarodowych", d:"Krajem pozbawionym szlaków handlowych"},
+
+{cat:"Czynniki rozwoju transportu w Polsce", q:"Jaki czynnik najbardziej przyczynił się do rozwoju transportu w Polsce?", a:"Napływ funduszy z Unii Europejskiej", b:"Zmniejszenie liczby inwestycji drogowych", c:"Ograniczenie rozwoju lotnisk regionalnych", d:"Zmniejszenie znaczenia kolei pasażerskiej"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        // Zwiększamy ogólną pulę punktów Dawida
+        dawid108 = parseInt(dawid108) + 5;
+        localStorage.setItem("dawid108", dawid108);
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 3000); }
+        else{ setTimeout(()=>nextQuestion(), 4000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    handleEnd();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    handleEnd();
+}
+
+// TA FUNKCJA ROBI PRZEKIEROWANIE DO TABELI
+function handleEnd(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+
+    // Pobieramy pozostałe wyniki z pamięci, żeby ich nie wyzerować przy wysyłce
+    let zabka = localStorage.getItem("zabka") || 0;
+    let kosmos = localStorage.getItem("kosmos") || 0;
+    let halloween = localStorage.getItem("halloween") || 0;
+    let zombi = localStorage.getItem("zombi") || 0;
+    let jablko = localStorage.getItem("jablko") || 0;
+    let samolot = localStorage.getItem("samolot") || 0;
+    let goldrun = localStorage.getItem("goldrun") || 0;
+    let ufo = localStorage.getItem("ufo") || 0;
+
+    // Przygotowanie adresu URL do Twojej tabeli
+    let url = "https://dawid108.infinityfree.me/receive.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&szkola=" + encodeURIComponent(record) // Wysyłamy rekord z tej gry
+        + "&zabka=" + encodeURIComponent(zabka)
+        + "&kosmos=" + encodeURIComponent(kosmos)
+        + "&halloween=" + encodeURIComponent(halloween)
+        + "&zombi=" + encodeURIComponent(zombi)
+        + "&jablko=" + encodeURIComponent(jablko)
+        + "&samolot=" + encodeURIComponent(samolot)
+        + "&goldrun=" + encodeURIComponent(goldrun)
+        + "&ufo=" + encodeURIComponent(ufo);
+
+    // Przekierowanie po 3 sekundach, żeby użytkownik zdążył zobaczyć swój wynik końcowy
+    setTimeout(() => {
+        window.location.href = url;
+    }, 3000);
+}
+
+newGame();
+</script>
+
+</body>
+</html>
