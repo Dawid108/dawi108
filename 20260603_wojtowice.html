@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wójtowice</title>
+    <script src="script.js"></script>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --accent-tomorrow: #e67e22;
+            --text-color: #333333;
+            --text-muted: #7f8c8d;
+            --border-radius: 12px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #34495e);
+            color: #fff;
+            text-align: center;
+            padding: 2.5rem 1rem;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card-section {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .card-section h2 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 0.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            margin-bottom: 0;
+            border: none;
+            padding: 0;
+        }
+
+        #search-routes {
+            padding: 0.6rem 1rem;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            width: 250px;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        #search-routes:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px rgba(39, 174, 96, 0.3);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.25rem;
+        }
+
+        /* KARTY ODZNAK */
+        .badge-card {
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .badge-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+        }
+
+        .badge-card h3 {
+            font-size: 1.1rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        /* KARTY TRAS */
+        .route-card {
+            border-left: 4px solid var(--accent-color);
+            background: #fafafa;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .route-info {
+            margin-bottom: 0.75rem;
+        }
+
+        .route-meta {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+        }
+
+        /* BUTTONY */
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.5rem 0.75rem;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            flex: 1;
+        }
+
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:hover { background-color: #1a252f; }
+        .btn-accent { background-color: var(--accent-color); color: white; }
+        .btn-accent:hover { background-color: #219653; }
+        .btn-outline { border: 1px solid var(--primary-color); color: var(--primary-color); }
+        .btn-outline:hover { background-color: var(--primary-color); color: white; }
+        .btn-block { width: 100%; padding: 0.8rem; font-size: 1rem; text-align: center; }
+
+        /* PLAN NA JUTRO */
+        .tomorrow-plan {
+            border-top: 5px solid var(--accent-tomorrow);
+        }
+
+        .tomorrow-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .date-badge {
+            background-color: var(--accent-tomorrow);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .main-map-btn {
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline {
+            list-style: none;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 5px;
+            top: 5px;
+            bottom: 5px;
+            width: 2px;
+            background: #e2e8f0;
+        }
+
+        .timeline li {
+            position: relative;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff8f2;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #ffe8d6;
+        }
+
+        .timeline li::before {
+            content: '';
+            position: absolute;
+            left: -19px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-tomorrow);
+        }
+
+        .timeline-btn {
+            max-width: 120px;
+            padding: 0.3rem 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .section-header { flex-direction: column; align-items: flex-start; }
+            #search-routes { width: 100%; }
+            .tomorrow-header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .timeline li { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .timeline-btn { max-width: 100%; width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Górskie Odznaki i Trasy</h1>
+        <p>Twoje osobiste centrum planowania i zdobywania szczytów</p>
+    </header>
+
+    <main class="container">
+        
+        <section class="card-section">
+            <h2>Książeczki i Odznaki</h2>
+            <div class="grid grid-badges"></div>
+        </section>
+
+        <section class="card-section">
+            <div class="section-header">
+                <h2>Trasy Piesze</h2>
+                <input type="text" id="search-routes" placeholder="Filtruj trasy...">
+            </div>
+            <div class="grid grid-routes" id="routes-container"></div>
+        </section>
+
+        <section class="card-section tomorrow-plan">
+            <div class="tomorrow-header">
+                <h2>Trasa Samochodowa na Jutro</h2>
+                <span class="date-badge">Czwartek, 04.06.2026</span>
+            </div>
+            <div class="main-map-btn">
+                <a href="https://maps.app.goo.gl/qVbtCZtzzs1GWXRb7" target="_blank" class="btn btn-primary btn-block">
+                    Otwórz Pełną Mapę Przejazdu
+                </a>
+            </div>
+            <ol class="timeline"></ol>
+        </section>
+
+    </main>
+
+    <script>
+        // DANE WEJŚCIOWE
+        const badges = [
+            { id: 1, name: "Korona Gór Bystrzyckich PTTK", map: "https://maps.app.goo.gl/PJNEHzDrU8XBFmsy5", page: "https://dawid108.github.io/ksiazeczki/korona-gor-bystrzyckich.html" },
+            { id: 2, name: "Korona Gór Bystrzyckich KZKG RP", map: "https://maps.app.goo.gl/skBscarvBk93zR248", page: "https://dawid108.github.io/ksiazeczki/korona-gor-bystrzyckich-kzkg-rp.html" },
+            { id: 3, name: "Znam Góry Bardzkie", map: "https://maps.app.goo.gl/inGACxgPBUJsHGJu9", page: "https://dawid108.github.io/ksiazeczki/znam-gory-bardzkie.html" },
+            { id: 4, name: "Korona Gór Orlickich", map: "https://maps.app.goo.gl/mWK9wEfT7ojYf5Sb7", page: "https://dawid108.github.io/ksiazeczki/korona-gor-orlickich.html" },
+            { id: 5, name: "Sudeckie Schroniska", map: "https://maps.app.goo.gl/AYa6AWxriPwZ6rDW6", page: "https://dawid108.github.io/ksiazeczki/sudeckie-schroniska.html" },
+            { id: 6, name: "Korona Widoków Polskich", map: "https://maps.app.goo.gl/BDUqoNi6njp4TYmj6", page: "https://dawid108.github.io/ksiazeczki/korona-widokow-polskich-gory.html" },
+            { id: 7, name: "Korona Masywu Śnieżnika PTTK", map: "https://maps.app.goo.gl/byHPTz3Pv9YUAyK39", page: "https://dawid108.github.io/ksiazeczki/korona-masywu-snieznika.html" },
+            { id: 8, name: "Przyjaciel Międzygórza", map: "https://maps.app.goo.gl/LNDcZrfwu2rUqEFc6", page: "https://dawid108.github.io/ksiazeczki/przyjaciel-miedzygorza.html" }
+        ];
+
+        const routes = [
+            { name: "Kamienna Góra (704 m)", time: "16 min", dist: "903 m", link: "https://mapy.com/s/fenufukose" },
+            { name: "Barczowa, Anielska Kopa, Łomnicka Równia, Kamienna Góra", time: "2:55 g", dist: "12,9 km", link: "https://mapy.com/s/cozecosava" },
+            { name: "Wolarz (854 m)", time: "55 min", dist: "3,2 km", link: "https://mapy.com/s/gedobahoca" },
+            { name: "Góra Błażkowa", time: "33 min", dist: "1,6 km", link: "https://mapy.com/s/nelakopugo" },
+            { name: "Ptasia Góra (744 m)", time: "18 min", dist: "1,2 km", link: "https://mapy.com/s/besoguluse" },
+            { name: "Biesiec, Kłobuk", time: "2:14 g", dist: "10,3 km", link: "https://mapy.com/s/lofutamebu" },
+            { name: "Torfowisko pod Zieleńcem", time: "19 min", dist: "1,2 km", link: "https://mapy.com/s/guvocofake" },
+            { name: "Trasa 9 szczytów", time: "9:08 g", dist: "36,8 km", link: "https://mapy.com/s/kepanocomo" },
+            { name: "Zamkowa Kopa (784 m)", time: "49 min", dist: "3,3 km", link: "https://mapy.com/s/pacakobege" },
+            { name: "Miejsce Hrabiowskie", time: "21 min", dist: "1,1 km", link: "https://mapy.com/s/navekemuca" },
+            { name: "Góra Różańcowa (380 m)", time: "8 min", dist: "410 m", link: "https://mapy.com/s/rahezemuno" },
+            { name: "Wysoki Kamień (580 m)", time: "21 min", dist: "1,2 km", link: "https://mapy.com/s/buparacume" },
+            { name: "Kapelusz", time: "26 min", dist: "1,2 km", link: "https://mapy.com/s/gezovakofo" },
+            { name: "Mariańska Górka (365 m)", time: "9 min", dist: "419 m", link: "https://mapy.com/s/mujekugedo" },
+            { name: "Sołtysia Kopa (896 m)", time: "2 min", dist: "96 m", link: "https://mapy.com/s/culotutara" }
+        ];
+
+        const tomorrowPlan = [
+            { name: "1. Miejsce Hrabiowskie", link: "https://maps.app.goo.gl/cATTxbrv4TQif72W7" },
+            { name: "2. Różańcowa (380 m)", link: "https://mapy.com/s/remetevode" },
+            { name: "3. Piękny Widok", link: "https://mapy.com/s/pafezodeco" },
+            { name: "4. Pałac Ławica", link: "https://maps.app.goo.gl/m1vMkNEtDYuVBdKF7" },
+            { name: "5. Mariańska Górka (365 m)", link: "https://mapy.com/s/deverurode" },
+            { name: "6. Fort Owcza Góra", link: "https://maps.app.goo.gl/9oxiEWUPEHwjiVPDA" },
+            { name: "7. Kapelusz", link: "https://mapy.com/s/fopezalalo" }
+        ];
+
+        // RENDEROWANIE ODZNAK
+        const badgesContainer = document.querySelector('.grid-badges');
+        badges.forEach(b => {
+            badgesContainer.innerHTML += `
+                <div class="badge-card">
+                    <h3>${b.name}</h3>
+                    <div class="btn-group">
+                        <a href="${b.map}" target="_blank" class="btn btn-outline">Mapa</a>
+                        <a href="${b.page}" target="_blank" class="btn btn-primary">Strona</a>
+                    </div>
+                </div>
+            `;
+        });
+
+        // RENDEROWANIE TRAS
+        const routesContainer = document.getElementById('routes-container');
+        function displayRoutes(filteredRoutes) {
+            routesContainer.innerHTML = '';
+            if(filteredRoutes.length === 0) {
+                routesContainer.innerHTML = '<p style="color: var(--text-muted); padding: 1rem;">Nie znaleziono pasujących tras.</p>';
+                return;
+            }
+            filteredRoutes.forEach(r => {
+                routesContainer.innerHTML += `
+                    <div class="route-card">
+                        <div class="route-info">
+                            <strong>${r.name}</strong>
+                            <div class="route-meta">
+                                <span>⏱ ${r.time}</span>
+                                <span>📏 ${r.dist}</span>
+                            </div>
+                        </div>
+                        <a href="${r.link}" target="_blank" class="btn btn-accent">Zobacz trasę</a>
+                    </div>
+                `;
+            });
+        }
+        displayRoutes(routes);
+
+        // WYSZUKIWARKA TRAS
+        document.getElementById('search-routes').addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            const filtered = routes.filter(r => r.name.toLowerCase().includes(term));
+            displayRoutes(filtered);
+        });
+
+        // RENDEROWANIE PLANU NA JUTRO
+        const timelineContainer = document.querySelector('.timeline');
+        tomorrowPlan.forEach(p => {
+            timelineContainer.innerHTML += `
+                <li>
+                    <span>${p.name}</span>
+                    <a href="${p.link}" target="_blank" class="btn btn-outline timeline-btn">Mapa punktu</a>
+                </li>
+            `;
+        });
+    </script>
+</body>
+</html>
