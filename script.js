@@ -30,11 +30,11 @@ navigator.serviceWorker.register('./20251203_sw.js');
 }
 
 // Punkty
-let suma108 = localStorage.getItem("dawid108") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
 
 // Dodawanie 1 punktu co 5 sekund
 setInterval(() => {
-    suma108++;
-    localStorage.setItem("dawid108", suma108);
-    console.log("Dodano punkt. Aktualnie:", suma108);
+    dawid108++;
+    localStorage.setItem("dawid108", dawid108);
+    console.log("Dodano punkt. Aktualnie:", dawid108);
 }, 5000);
