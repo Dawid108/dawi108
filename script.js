@@ -28,13 +28,3 @@ localStorage.setItem("historia108", JSON.stringify(historia108));
 if ('serviceWorker' in navigator) {
 navigator.serviceWorker.register('./20251203_sw.js');
 }
-
-// Punkty
-let dawid108 = localStorage.getItem("dawid108") || 0;
-
-// Dodawanie 1 punktu co 5 sekund
-setInterval(() => {
-    dawid108++;
-    localStorage.setItem("dawid108", dawid108);
-    console.log("Dodano punkt. Aktualnie:", dawid108);
-}, 5000);
