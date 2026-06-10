@@ -30,7 +30,7 @@ navigator.serviceWorker.register('./20251203_sw.js');
 }
 
 // Punkty
-let dawid108 = parseInt(localStorage.getItem("dawid108")) || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
 
 // Dodawanie 1 punktu co 10 sekund
 setInterval(() => {
