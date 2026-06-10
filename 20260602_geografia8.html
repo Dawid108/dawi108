@@ -172,6 +172,7 @@ function answer(correct, btn){
         // Zwiększamy ogólną pulę punktów Dawida
         dawid108 = parseInt(dawid108) + 5;
         localStorage.setItem("dawid108", dawid108);
+        console.log("Dodano punkt. Aktualnie:", dawid108);
         updateStats();
         setTimeout(()=>nextQuestion(), 1500);
     }else{
