@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lubawka</title>
+    <script src="script.js"></script>
+    <link rel="icon" href="dawi108.png">
+    <style>
+        :root {
+            --primary-color: #2c5e43;
+            --secondary-color: #4a7c59;
+            --accent-color: #d68c45;
+            --bg-color: #f4f7f5;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --text-muted: #666666;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logo {
+            height: 50px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .site-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .hero-btn-container {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .btn-main-route {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.2s, background-color 0.3s;
+        }
+
+        .btn-main-route:hover {
+            background-color: #c57b34;
+            transform: translateY(-2px);
+        }
+
+        section {
+            margin-bottom: 3rem;
+            scroll-margin-top: 100px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 100%));
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--secondary-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            margin-bottom: 0.5rem;
+            color: #222;
+            font-size: 1.2rem;
+        }
+
+        .card .details {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .card-links {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: auto;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            text-align: center;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .btn-info {
+            background-color: #e2e8f0;
+            color: #4a5568;
+        }
+
+        .btn-info:hover {
+            background-color: #cbd5e1;
+        }
+
+        .btn-map {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-map:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .badge-count {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: normal;
+            margin-left: 0.5rem;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        footer {
+            background-color: #222;
+            color: #aaa;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-container">
+            <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1782740964/lubawka_xgsuwl.png" alt="Lubawka Logo" class="logo">
+            <h1 class="site-title">Lubawka</h1>
+        </div>
+        <nav>
+            <a href="#odznaki">Książeczki i Odznaki</a>
+            <a href="#trasy">Trasy</a>
+            <a href="#atrakcje">Atrakcje</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        
+        <div class="hero-btn-container">
+            <a href="https://maps.app.goo.gl/hWyDPqDY6FNMhNw3A" target="_blank" class="btn-main-route">
+                🚗 Trasa Autem na Poniedziałek (Mapa)
+            </a>
+        </div>
+
+        <section id="odznaki">
+            <h2>Książeczki i Odznaki <span class="badge-count" id="count-odznaki">0</span></h2>
+            <div class="grid" id="grid-odznaki"></div>
+        </section>
+
+        <section id="trasy">
+            <h2>Trasy Piesze <span class="badge-count" id="count-trasy">0</span></h2>
+            <div class="grid" id="grid-trasy"></div>
+        </section>
+
+        <section id="atrakcje">
+            <h2>Atrakcje <span class="badge-count" id="count-atrakcje">0</span></h2>
+            <div class="grid" id="grid-atrakcje"></div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Lubawka. Wszystkie prawa zastrzeżone. Interaktywny przewodnik turystyczny.</p>
+    </footer>
+
+    <script>
+        // Dane pobrane z treści zapytania
+        const odznakiData = [
+            { id: 1, title: "Korona Gór Kruczych", infoUrl: "https://dawid108.github.io/ksiazeczki/korona-gor-kruczych.html", mapUrl: "https://maps.app.goo.gl/K3nRMbb9ueeexbZJA" },
+            { id: 2, title: "Miłośnik Rudaw Janowickich", infoUrl: "https://dawid108.github.io/ksiazeczki/milosnik-rudaw-janowickich.html", mapUrl: "https://maps.app.goo.gl/5ifJkRZxjojx4HUb6" },
+            { id: 3, title: "Korona Rudaw Janowickich", infoUrl: "https://dawid108.github.io/ksiazeczki/korona-rudaw-janowickich.html", mapUrl: "https://maps.app.goo.gl/xcP4eNi5oZ7HFEda9" },
+            { id: 4, title: "Korona Sudetów Polskich", infoUrl: "https://dawid108.github.io/ksiazeczki/korona-sudetow-polskich.html", mapUrl: "https://maps.app.goo.gl/4uUi9DugQ54y7Z7o8" },
+            { id: 5, title: "Korona Widoków Polskich Góry", infoUrl: "https://dawid108.github.io/ksiazeczki/korona-widokow-polskich-gory.html", mapUrl: "https://maps.app.goo.gl/BDUqoNi6njp4TYmj6" },
+            { id: 6, title: "Korona Gór Wałbrzyskich", infoUrl: "https://dawid108.github.io/ksiazeczki/korona-gor-walbrzyskich.html", mapUrl: "https://maps.app.goo.gl/jZuU9ybWVbW498KaA" },
+            { id: 7, title: "Punkty Widokowe Ziemi Wałbrzyskiej", infoUrl: "https://dawid108.github.io/ksiazeczki/punkty-widokowe-ziemi-walbrzyskiej.html", mapUrl: "https://maps.app.goo.gl/U9wtUDtKk3FyzSRNA" }
+        ];
+
+        const trasyData = [
+            { id: 1, title: "Południowe Góry Krucze (7 szczytów)", distance: "25,9 km", time: "3:33 g", mapUrl: "https://mapy.com/s/dofecejotu" },
+            { id: 2, title: "Północne Góry Krucze (7 szczytów)", distance: "19,3 km", time: "2:34 g", mapUrl: "https://mapy.com/s/hunagagega" },
+            { id: 3, title: "Wilkowyja i Jaworowa", distance: "4,3 km", time: "1:10 g", mapUrl: "https://mapy.com/s/gasohujona" },
+            { id: 4, title: "Pokrzywna i Bucza Góra", distance: "4,8 km", time: "1:18 g", mapUrl: "https://mapy.com/s/hanozufeve" },
+            { id: 5, title: "Świnia Góra (750 m)", distance: "4,9 km", time: "1:15 g", mapUrl: "https://mapy.com/s/lamojuzove" },
+            { id: 6, title: "Zadzierna (724 m)", distance: "2,1 km", time: "42 min", mapUrl: "https://mapy.com/s/jedamufafu" },
+            { id: 7, title: "Krąglak (692 m)", distance: "4,2 km", time: "1:22 g", mapUrl: "https://mapy.com/s/camatumegu" },
+            { id: 8, title: "Przełecz Pojednania", distance: "1,4 km", time: "32 min", mapUrl: "https://mapy.com/s/dufedesapo" }
+        ];
+
+        const atrakcjeData = [
+            { id: 1, title: "Kościół Niepokalanego Poczęcia NMP w Raszowie", mapUrl: "https://maps.app.goo.gl/oDsE5cbqvYipxZDX8" },
+            { id: 2, title: "Zalew Bukówka w Miszkowicach", mapUrl: "https://maps.app.goo.gl/bHfeQZiHtUTCjY577" },
+            { id: 3, title: "Spękane Skały", mapUrl: "https://maps.app.goo.gl/VQ6nUXJcZ2eMCxJn8" },
+            { id: 4, title: "Projekt Arado", mapUrl: "https://maps.app.goo.gl/4pGzJbk3KpeRtoiaA" },
+            { id: 5, title: "Muzeum Tkactwa", mapUrl: "https://maps.app.goo.gl/hiRNggWosP33W1Sa9" },
+            { id: 6, title: "Ruiny Zamku Grodztwo", mapUrl: "https://maps.app.goo.gl/YTrLb1Ae2sWWU8eK8" },
+            { id: 7, title: "Opactwo Pocysterskie w Krzeszowie", mapUrl: "https://maps.app.goo.gl/57NtvwvTQX5QqdAP6" },
+            { id: 8, title: "Mauzoleum Piastów Śląskich w Krzeszowie", mapUrl: "https://maps.app.goo.gl/gXzmbFhRWiNAngcs6" },
+            { id: 9, title: "Czarcia Maczuga", mapUrl: "https://maps.app.goo.gl/9B7Hy8VLGjGr5FdJ7" },
+            { id: 10, title: "Głazy Krasnoludków", mapUrl: "https://maps.app.goo.gl/aMXA1HsCs7ZwPa7g8" }
+        ];
+
+        // Funkcja renderująca elementy na stronie
+        function init() {
+            // Liczniki
+            document.getElementById('count-odznaki').innerText = odznakiData.length;
+            document.getElementById('count-trasy').innerText = trasyData.length;
+            document.getElementById('count-atrakcje').innerText = atrakcjeData.length;
+
+            // Render Odznaki
+            const gridOdznaki = document.getElementById('grid-odznaki');
+            odznakiData.forEach(item => {
+                gridOdznaki.innerHTML += `
+                    <div class="card">
+                        <h3>${item.id}. ${item.title}</h3>
+                        <div class="details">Książeczka i odznaka turystyczna</div>
+                        <div class="card-links">
+                            <a href="${item.infoUrl}" target="_blank" class="btn btn-info">Szczegóły</a>
+                            <a href="${item.mapUrl}" target="_blank" class="btn btn-map">Mapa</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render Trasy
+            const gridTrasy = document.getElementById('grid-trasy');
+            trasyData.forEach(item => {
+                gridTrasy.innerHTML += `
+                    <div class="card">
+                        <h3>${item.id}. ${item.title}</h3>
+                        <div class="details">
+                            <strong>Dystans:</strong> ${item.distance} <br>
+                            <strong>Czas:</strong> ${item.time}
+                        </div>
+                        <div class="card-links">
+                            <a href="${item.mapUrl}" target="_blank" class="btn btn-map">Zobacz trasę</a>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render Atrakcje
+            const gridAtrakcje = document.getElementById('grid-atrakcje');
+            atrakcjeData.forEach(item => {
+                gridAtrakcje.innerHTML += `
+                    <div class="card">
+                        <h3>${item.id}. ${item.title}</h3>
+                        <div class="details">Warto zobaczyć w okolicy</div>
+                        <div class="card-links">
+                            <a href="${item.mapUrl}" target="_blank" class="btn btn-map">Lokalizacja (Mapa)</a>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Uruchomienie generowania po załadowaniu drzewa DOM
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
