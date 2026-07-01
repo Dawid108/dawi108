@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan Wycieczki: Białystok i Okolice</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --secondary: #0d9488;
+            --accent: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding-bottom: 40px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            background: #e2e8f0;
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 10px;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--primary);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .route-summary {
+            background: #eff6ff;
+            border-left: 5px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+        }
+
+        .route-summary strong {
+            color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            border: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #cbd5e1;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 15px;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #172554;
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #0f766e;
+        }
+
+        .map-container {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .map-container h3 {
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .iframe-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 15px auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .notes-section {
+            background: #fffbeb;
+            border-left: 5px solid var(--accent);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .notes-section h3 {
+            color: #b45309;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+
+        .notes-section ul {
+            list-style-type: none;
+        }
+
+        .notes-section li {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .notes-section li::before {
+            content: "•";
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.2rem;
+            position: absolute;
+            left: 0;
+            top: -2px;
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .tabs { border-radius: 8px; }
+            .tab-btn { padding: 10px 5px; font-size: 0.9rem; }
+            .card img { height: 180px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Przewodnik dla Wujka</h1>
+        <p>Wycieczka: Krotoszyn → Białystok</p>
+    </header>
+
+    <div class="container">
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openDay(event, 'piatek')">Piątek</button>
+            <button class="tab-btn" onclick="openDay(event, 'sobota')">Sobota</button>
+            <button class="tab-btn" onclick="openDay(event, 'niedziela')">Niedziela</button>
+            <button class="tab-btn" onclick="openDay(event, 'poniedzialek')">Poniedziałek</button>
+            <button class="tab-btn" onclick="openDay(event, 'uwagi')">Dodatkowe</button>
+        </div>
+
+        <div id="piatek" class="tab-content active">
+            <div class="route-summary">
+                <p>🚗 <strong>Trasa:</strong> Krotoszyn do Białystok</p>
+                <p>📏 <strong>Długość trasy:</strong> 522 km | ⏱️ <strong>Czas:</strong> 6 h 7 min</p>
+                <a href="https://maps.app.goo.gl/XFUZi5Wighfb4xRe6" target="_blank" class="btn">Otwórz nawigację Google Maps</a>
+            </div>
+            
+            <h2>Atrakcje po drodze:</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">1. Zamek Królewski w Łęczycy</div>
+                        <a href="https://maps.app.goo.gl/PvCBSAS71TmbTbJt7" target="_blank" class="btn btn-secondary">Zobacz na mapie</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">2. Zamek w Tykocinie</div>
+                        <a href="https://maps.app.goo.gl/tS5EFh9J7dTjV7Rf8" target="_blank" class="btn btn-secondary">Zobacz na mapie</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="sobota" class="tab-content">
+            <div class="route-summary">
+                <p>🚶‍♂️ <strong>Spacer po Białymstoku:</strong> Piesza trasa pełna zabytków.</p>
+                <p>📏 <strong>Długość trasy:</strong> 3,5 km</p>
+                <a href="https://maps.app.goo.gl/f4A7TLtffxXr8AMW9" target="_blank" class="btn">Otwórz mapę spaceru w Google Maps</a>
+            </div>
+
+            <h2>Punkty na trasie spaceru:</h2>
+            <div class="grid">
+                <div class="card">
+                    <img src="https://d34-a.sdn.cz/d_34/c_img_ob_B/kBj94XhVwDuD8OBmOD4fJqS/430d.jpeg?fl=res,2200,2200,1" alt="Parasolki">
+                    <div class="card-body"><div class="card-title">1. Parasolki</div></div>
+                </div>
+                <div class="card">
+                    <img src="https://d34-a.sdn.cz/d_34/c_img_ob_B/nPTQKDwGerDx2swCKDD4fIen/cb47.jpeg?fl=res,2200,2200,1" alt="Obietnica">
+                    <div class="card-body"><div class="card-title">2. Obietnica</div></div>
+                </div>
+                <div class="card">
+                    <img src="https://d34-a.sdn.cz/d_34/c_img_ob_B/nPTQKDwGerCpam3CKAD4er8n/6fa3.jpeg?fl=res,2200,2200,1" alt="Napis #Białystok">
+                    <div class="card-body"><div class="card-title">3. Napis #Białystok</div></div>
+                </div>
+                <div class="card">
+                    <img src="https://d34-a.sdn.cz/d_34/c_img_ob_B/nPTQKDwGerDZzxhCJGD4exsq/a011.jpeg?fl=res,2200,2200,1" alt="Ratusz">
+                    <div class="card-body"><div class="card-title">4. Ratusz w Białymstoku</div></div>
+                </div>
+                <div class="card">
+                    <img src="https://d34-a.sdn.cz/d_34/c_img_ob_B/nPTQKDwGerCcp09CLVD4e2kZ/c46e.jpeg?fl=res,2200,2200,1" alt="Sobór">
+                    <div class="card-body"><div class="card-title">5. Sobór św. Mikołaja</div></div>
+                </div>
+                <div class="card">
+                    <img src="https://d34-a.sdn.cz/d_34/c_img_ob_B/nPTQKDwGerRrt3CKqD4fRrX/aff5.jpeg?fl=res,2200,2200,1" alt="Opera">
+                    <div class="card-body"><div class="card-title">6. Opera i Filharmonia Podlaska</div></div>
+                </div>
+                <div class="card">
+                    <img src="https://d34-a.sdn.cz/d_34/c_img_ob_B/nPTQKDwGerDgEH8CMOD4fMKS/6642.jpeg?fl=res,2200,2200,1" alt="Mural">
+                    <div class="card-body"><div class="card-title">7. Mural Wyślij pocztówkę dla Babci</div></div>
+                </div>
+                <div class="card">
+                    <img src="https://d34-a.sdn.cz/d_34/c_img_ob_B/kBj94XhVwCk8nVBm1D4fAWp/3548.jpeg?fl=res,2200,2200,1" alt="Pałac">
+                    <div class="card-body"><div class="card-title">8. Pałac Branickich</div></div>
+                </div>
+            </div>
+
+            <div class="map-container">
+                <h3>Interaktywny podgląd trasy</h3>
+                <div class="iframe-wrapper">
+                    <iframe style="border:none" src="https://mapy.com/s/hefucuzuja" width="400" height="280" frameborder="0"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div id="niedziela" class="tab-content">
+            <div class="route-summary">
+                <p>🚗 <strong>Trasa:</strong> Z Białegostoku do Supraśla</p>
+                <a href="https://maps.app.goo.gl/7f1K5EmRJ4KRUnZG9" target="_blank" class="btn">Otwórz trasę w Google Maps</a>
+            </div>
+
+            <h2>Atrakcje:</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">1. Cerkiew Hagia Sofia w Białymstoku</div>
+                        <a href="https://maps.app.goo.gl/8s71HZtyQckZhy836" target="_blank" class="btn btn-secondary">Zobacz na mapie</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">2. Prawosławny Monaster w Supraślu</div>
+                        <a href="https://maps.app.goo.gl/K6Po4tZzJtdQfH1M7" target="_blank" class="btn btn-secondary">Zobacz na mapie</a>
+                    </div>
+                </div>
+            </div>
+            
+
+            <h2 style="margin: 25px 0 15px 0;">Inne atrakcje w Białymstoku:</h2>
+            <div class="grid">
+                <div class="card"><div class="card-body"><div class="card-title">Stadion Jagielloni Chorten Arena</div><a href="https://maps.app.goo.gl/DcdUapY6jP3yUYTk6" target="_blank" class="btn btn-secondary">Mapa</a></div></div>
+                <div class="card"><div class="card-body"><div class="card-title">Mural "Dziewczyna z konewką"</div><a href="https://maps.app.goo.gl/6VDoVd4cX8eMX7Zn9" target="_blank" class="btn btn-secondary">Mapa</a></div></div>
+                <div class="card"><div class="card-body"><div class="card-title">Akcent ZOO</div><a href="https://maps.app.goo.gl/1VVRpFoHdKm6Mu5X9" target="_blank" class="btn btn-secondary">Mapa</a></div></div>
+                <div class="card"><div class="card-body"><div class="card-title">Park Planty</div><a href="https://maps.app.goo.gl/6YWEB6RW4nofTnSt7" target="_blank" class="btn btn-secondary">Mapa</a></div></div>
+                <div class="card"><div class="card-body"><div class="card-title">Supraski Szlak Bioróżnorodności</div><a href="https://maps.app.goo.gl/bprsd69fbnzP2JPu8" target="_blank" class="btn btn-secondary">Mapa</a></div></div>
+            </div>
+        </div>
+
+        <div id="poniedzialek" class="tab-content">
+            <div class="route-summary">
+                <p>🚗 <strong>Trasa:</strong> Białystok do Krotoszyna</p>
+                <p>📏 <strong>Długość trasy:</strong> 540 km | ⏱️ <strong>Czas:</strong> 6 h 34 min</p>
+                <a href="https://maps.app.goo.gl/Xpdu6FUTqHAK6Qpb9" target="_blank" class="btn">Otwórz nawigację Google Maps</a>
+            </div>
+
+            <h2>Atrakcje po drodze:</h2>
+            <div class="grid">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">1. Wieża widokowa 44m (najwyższa na Podlasiu)</div>
+                        <a href="https://maps.app.goo.gl/wKugUERbHQ77J7aE9" target="_blank" class="btn btn-secondary">Zobacz na mapie</a>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-title">2. Trójkątny Rynek w Łowiczu</div>
+                        <a href="https://maps.app.goo.gl/vFR8623gLfHqjWy57" target="_blank" class="btn btn-secondary">Zobacz na mapie</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="uwagi" class="tab-content">
+            <div class="notes-section">
+                <h3>💡 Sugestia</h3>
+                <p>Z Soboty <strong>Operę</strong> oraz <strong>Mural</strong> można przenieść na niedzielę.</p>
+            </div>
+
+            <h2 style="margin: 35px 0 15px 0;">W trasie (Opcjonalnie):</h2>
+            <div class="grid">
+                <div class="card"><div class="card-body"><div class="card-title">Zamek w Uniejowie</div><a href="https://maps.app.goo.gl/L5Yc3PfXmSBPzisk8" target="_blank" class="btn btn-secondary">Mapa</a></div></div>
+                <div class="card"><div class="card-body"><div class="card-title">Termy Uniejów</div><a href="https://maps.app.goo.gl/Uuh1cWyFk882ZCQR9" target="_blank" class="btn btn-secondary">Mapa</a></div></div>
+                <div class="card"><div class="card-body"><div class="card-title">Zamek w Oporowie</div><a href="https://maps.app.goo.gl/pzLnqpeKjtLPSzt7A" target="_blank" class="btn btn-secondary">Mapa</a></div></div>
+                <div class="card"><div class="card-body"><div class="card-title">Warszawa</div><p style="font-size:0.9rem; color:var(--text-light); margin-top:5px;">Możliwość zwiedzania po drodze.</p></div></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function openDay(evt, dayId) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(dayId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    </script>
+</body>
+</html>
