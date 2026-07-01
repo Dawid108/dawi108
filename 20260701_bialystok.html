@@ -55,16 +55,17 @@
 
         .tabs {
             display: flex;
-            justify-content: space-between;
+            flex-wrap: wrap; /* Pozwala na przenoszenie przycisków do nowego rzędu */
             background: #e2e8f0;
             padding: 5px;
             border-radius: 12px;
             margin-bottom: 25px;
-            overflow-x: auto;
+            gap: 5px; /* Dodaje estetyczny odstęp między przyciskami */
         }
 
         .tab-btn {
-            flex: 1;
+            /* Dla pierwszych trzech przycisków (Piątek, Sobota, Niedziela) */
+            flex: 1 1 calc(33.33% - 5px); 
             padding: 12px 10px;
             border: none;
             background: none;
@@ -76,7 +77,12 @@
             transition: all 0.3s ease;
             white-space: nowrap;
             text-align: center;
-            min-width: 80px;
+        }
+
+        /* Wymuszenie, aby Poniedziałek i Dodatkowe zajmowały po połowie dolnego rzędu */
+        .tab-btn:nth-child(4),
+        .tab-btn:nth-child(5) {
+            flex: 1 1 calc(50% - 5px);
         }
 
         .tab-btn.active {
@@ -131,7 +137,6 @@
 
         .card img {
             width: 100%;
-            height: 200px;
             object-fit: cover;
             background-color: #cbd5e1;
         }
