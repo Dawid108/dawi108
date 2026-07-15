@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cypr</title>
+    <style>
+        :root {
+            --primary: #0066cc;
+            --primary-dark: #004d99;
+            --accent: #e6b800;
+            --bg: #f4f7f9;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --text-muted: #607d8b;
+            --border: #e0e6ed;
+            --gold: #d4af37;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--accent);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation / Quick Links */
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .nav-links a {
+            background-color: var(--card-bg);
+            color: var(--primary);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .nav-links a:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Sections styling */
+        section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+        }
+
+        section h2 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--accent);
+            padding-bottom: 8px;
+            display: inline-block;
+        }
+
+        /* 1. Informacje podstawowe */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        .info-card {
+            background-color: #fcfdfe;
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .info-card h3 {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .info-card p {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        /* 2. Ciekawostki */
+        .fun-facts {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        @media(min-width: 768px) {
+            .fun-facts {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .fact-item {
+            background-color: #fdfbf7;
+            border: 1px dashed var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .fact-number {
+            background-color: var(--accent);
+            color: #2c3e50;
+            font-weight: bold;
+            border-radius: 50%;
+            min-width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+        }
+
+        .fact-text {
+            font-size: 0.95rem;
+            color: var(--text);
+        }
+
+        /* 3. Plan wycieczki */
+        .itinerary {
+            position: relative;
+            padding-left: 20px;
+            border-left: 3px solid var(--primary-dark);
+        }
+
+        .day-block {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .day-block::before {
+            content: '';
+            position: absolute;
+            left: -27px;
+            top: 5px;
+            background-color: var(--accent);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .day-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .day-route {
+            font-style: italic;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .day-desc {
+            font-size: 0.95rem;
+            color: var(--text);
+            text-align: justify;
+        }
+
+        /* 4. Sportowcy */
+        .athletes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .athlete-card {
+            background: linear-gradient(145deg, #ffffff, #f9fbfd);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .athlete-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .athlete-sport {
+            font-size: 0.9rem;
+            color: var(--accent);
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .athlete-achievements {
+            font-size: 0.9rem;
+            color: var(--text);
+        }
+
+        /* 5. Język */
+        .lang-intro {
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .lang-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 0.95rem;
+        }
+
+        .lang-table th, .lang-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .lang-table th {
+            background-color: #f1f5f9;
+            color: var(--primary-dark);
+            font-weight: bold;
+        }
+
+        .lang-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        /* 6. Link / Footer */
+        .footer-link-box {
+            text-align: center;
+            background-color: #e6f0fa;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .footer-link-box p {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .btn-link {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,102,204,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-link:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,102,204,0.4);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Cypr — Twój Przewodnik</h1>
+        <p>Najważniejsze informacje, trasa wycieczki, ciekawostki i minirozmówki zawsze pod ręką</p>
+    </header>
+
+    <div class="container">
+
+        <!-- Szybka nawigacja -->
+        <div class="nav-links">
+            <a href="#podstawowe">Informacje Podstawowe</a>
+            <a href="#ciekawostki">20 Ciekawostek</a>
+            <a href="#itaka">Plan Wycieczki</a>
+            <a href="#sportowcy">Znani Sportowcy</a>
+            <a href="#jezyk">Język Grecki</a>
+            <a href="#dawid">Odwiedź Stronę Dawida</a>
+        </div>
+
+        <!-- 1. Informacje podstawowe -->
+        <section id="podstawowe">
+            <h2>1. Informacje Podstawowe</h2>
+            <p>Cypr (Republika Cypryjska) to malownicze państwo wyspiarskie położone we wschodniej części Morza Śródziemnego. Kraj ten łączy wpływy greckie, tureckie oraz brytyjskie, tworząc fascynujący tygiel kulturowy.</p>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>Stolica</h3>
+                    <p>Nikozja</p>
+                </div>
+                <div class="info-card">
+                    <h3>Waluta</h3>
+                    <p>Euro (€)</p>
+                </div>
+                <div class="info-card">
+                    <h3>Języki urzędowe</h3>
+                    <p>Grecki, Turecki</p>
+                </div>
+                <div class="info-card">
+                    <h3>Ruch drogowy</h3>
+                    <p>Lewostronny</p>
+                </div>
+                <div class="info-card">
+                    <h3>Klimat</h3>
+                    <p>Subtropikalny śródziemnomorski</p>
+                </div>
+                <div class="info-card">
+                    <h3>Główna religia</h3>
+                    <p>Prawosławie / Islam</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Ciekawostki (20) -->
+        <section id="ciekawostki">
+            <h2>2. 20 Ciekawostek o Cyprze</h2>
+            <div class="fun-facts">
+                <div class="fact-item">
+                    <div class="fact-number">1</div>
+                    <div class="fact-text"><strong>Wyspa Afrodyty:</strong> Według mitologii greckiej to właśnie u brzegów Cypru (przy skale Petra tou Romiou) z piany morskiej wyłoniła się bogini miłości, Afrodyta.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">2</div>
+                    <div class="fact-text"><strong>Podzielona stolica:</strong> Nikozja jest jedyną stolicą na świecie, która jest podzielona na pół tzw. Zieloną Linią kontrolowaną przez ONZ. Dzieli ona miasto na część grecką i turecką.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">3</div>
+                    <div class="fact-text"><strong>Ruch lewostronny:</strong> Na Cyprze jeździ się po lewej stronie drogi. To spuścizna po czasach, gdy wyspa była brytyjską kolonią.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">4</div>
+                    <div class="fact-text"><strong>Kraj kotów:</strong> Na Cyprze żyje więcej kotów niż ludzi! Zostały one sprowadzone na wyspę w IV wieku przez św. Helenę, by walczyć z plagą węży.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">5</div>
+                    <div class="fact-text"><strong>Najstarsze wino świata:</strong> Cypryjskie słodkie wino "Commandaria" jest uznawane za najstarsze produkowane do dziś markowe wino na świecie (receptura ma ponad 5000 lat).</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">6</div>
+                    <div class="fact-text"><strong>Ojczyzna sera Halloumi:</strong> Słynny, twardy ser do grillowania Halloumi pochodzi właśnie z Cypru i jest chroniony unijnym certyfikatem.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">7</div>
+                    <div class="fact-text"><strong>Ponad 300 dni słońca:</strong> Cypr jest jednym z najbardziej nasłonecznionych miejsc w Europie, oferując słońce przez średnio 320-340 dni w roku.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">8</div>
+                    <div class="fact-text"><strong>Dwa państwa na jednej wyspie:</strong> Wyspa jest faktycznie podzielona na Republikę Cypryjską oraz nieuznawaną na arenie międzynarodowej (oprócz Turcji) Turecką Republikę Cypru Północnego.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">9</div>
+                    <div class="fact-text"><strong>Brytyjskie bazy wojskowe:</strong> Wielka Brytania wciąż posiada na Cyprze dwie suwerenne bazy wojskowe: Akrotiri i Dhekelia, które formalnie nie należą do Cypru.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">10</div>
+                    <div class="fact-text"><strong>Najstarsza woda perfumowana:</strong> Archeolodzy odkryli na Cyprze pozostałości najstarszych perfum świata, datowanych na ponad 4000 lat.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">11</div>
+                    <div class="fact-text"><strong>Zimowe flamingi:</strong> Słone Jezioro w Larnace wysycha latem, ale zimą napełnia się wodą i staje się domem dla tysięcy różowych flamingów.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">12</div>
+                    <div class="fact-text"><strong>Kolebka neolitu:</strong> Stanowisko Choirokoitia (Chirokitia) na Cyprze to jedna z najlepiej zachowanych prehistorycznych osad w regionie śródziemnomorskim (lista UNESCO).</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">13</div>
+                    <div class="fact-text"><strong>Zatopiony prom Zenobia:</strong> U wybrzeży Larnaki spoczywa wrak szwedzkiego promu Zenobia, uważany za jedno z 10 najlepszych miejsc do nurkowania wrakowego na świecie.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">14</div>
+                    <div class="fact-text"><strong>Najczystsza woda w UE:</strong> Cypr regularnie zajmuje czołowe miejsca w rankingach czystości wód kąpieliskowych w Unii Europejskiej.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">15</div>
+                    <div class="fact-text"><strong>Drzewo życzeń:</strong> Przy kościele Agia Solomoni w Pafos rośnie stare drzewo, na którym ludzie zawiązują chusteczki i wstążki z nadzieją na uzdrowienie lub spełnienie życzeń.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">16</div>
+                    <div class="fact-text"><strong>Nazwa wyspy:</strong> Słowo "Cypr" najprawdopodobniej pochodzi od łacińskiego słowa "cuprum" (miedź), ze względu na bogate złoża tego metalu eksploatowane w starożytności.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">17</div>
+                    <div class="fact-text"><strong>Zamek Disneya:</strong> Uważa się, że średniowieczny zamek św. Hilariona w północnej części wyspy posłużył Waltowi Disneyowi jako inspiracja do rysowania zamku w bajce o Królewnie Śnieżce.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">18</div>
+                    <div class="fact-text"><strong>Trzęsienia ziemi:</strong> Cypr leży w strefie aktywnej sejsmicznie, choć silne i niszczycielskie trzęsienia ziemi zdarzają się tam niezwykle rzadko.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">19</div>
+                    <div class="fact-text"><strong>Brak rzek stałych:</strong> Większość rzek na Cyprze to rzeki okresowe. Płyną one tylko zimą i wiosną po obfitych opadach deszczu lub stopieniu śniegu w górach Troodos.</div>
+                </div>
+                <div class="fact-item">
+                    <div class="fact-number">20</div>
+                    <div class="fact-text"><strong>Karnawał w Limassol:</strong> To najstarszy i najbardziej huczny festiwal na wyspie, którego tradycje sięgają czasów pogańskich rytuałów na cześć boga wina Dionizosa.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Plan wycieczki (Itaka) -->
+        <section id="itaka">
+            <h2>3. Program Wycieczki: "Spacer z Afrodytą" (Itaka)</h2>
+            <div class="itinerary">
+                
+                <div class="day-block">
+                    <div class="day-title">Dzień 1: Przylot na Cypr</div>
+                    <div class="day-route">Trasa: Lotnisko – Larnaka</div>
+                    <div class="day-desc">Zbiórka uczestników na lotnisku. Przelot do Larnaki. Transfer do hotelu, zakwaterowanie. Czas wolny (w zależności od godziny przylotu). Kolacja, nocleg.</div>
+                </div>
+
+                <div class="day-block">
+                    <div class="day-title">Dzień 2: Śladami starożytności i legendy o Afrodycie</div>
+                    <div class="day-route">Trasa: Geroskipou – Pafos – Petra tou Romiou (ok. 150 km)</div>
+                    <div class="day-desc">Śniadanie. Przejazd do GEROSKIPOU. Przejście pod kościół Agia Paraskevi z przełomu IX i X w. (ważny kościół bizantyjski). Panoramiczny przejazd obok „drzewa życzeń”. Przejście pod filar św. Pawła. Przejazd do PAFOS (lista UNESCO). Wizyta w Parku Archeologicznym Kato Pafos, zwiedzanie Domu Dionizosa ze słynnymi mozaikami rzymskimi. Czas wolny (możliwość zobaczenia Saranda Kolones oraz kościoła Agia Kyriaki). Przejazd do PETRA TOU ROMIOU – Skały Afrodyty, miejsca narodzin bogini miłości. Powrót do hotelu, kolacja, nocleg.</div>
+                </div>
+
+                <div class="day-block">
+                    <div class="day-title">Dzień 3: Zamki, teatry i cypryjskie wino</div>
+                    <div class="day-route">Trasa: Limassol – Kurion – Omodos (ok. 110 km)</div>
+                    <div class="day-desc">Śniadanie. Przejazd do LIMASSOL (nadmorski kurort): spacer po Starym Porcie, zamek na ruinach bizantyjskiej twierdzy. Przejazd do ruin starożytnego miasta KURION położonego na krawędzi nadmorskiego urwiska (teatr grecko-rzymski, mozaiki). Przejazd do malowniczej wioski OMODOS słynącej z wyrobu koronek i wina. Wizyta w lokalnej winiarni, degustacja oraz czas wolny. Powrót do hotelu, kolacja, nocleg.</div>
+                </div>
+
+                <div class="day-block">
+                    <div class="day-title">Dzień 4: Serce gór Troodos</div>
+                    <div class="day-route">Trasa: Klasztor Kykkos – Góra Olimp – Lania (ok. 160 km)</div>
+                    <div class="day-desc">Śniadanie. Przejazd do klasztoru KYKKOS w górach Troodos (freski, najcenniejsza ikona Matki Bożej św. Łukasza). Przejazd do punktu widokowego pod szczytem najwyższej na wyspie GÓRY OLIMP (1952 m n.p.m.). Przejazd do klimatycznej wioski LANIA. Degustacja tradycyjnych cypryjskich trunków: wina Commandaria i wódki Ziwania. Czas wolny, powrót do hotelu, kolacja, nocleg.</div>
+                </div>
+
+                <div class="day-block">
+                    <div class="day-title">Dzień 5: Neolit, flamingi i rajska plaża</div>
+                    <div class="day-route">Trasa: Chirokitia – Słone Jezioro – Larnaka – Plaża Landa (ok. 240 km)</div>
+                    <div class="day-desc">Śniadanie. Przejazd do prehistorycznego stanowiska archeologicznego CHIROKITIA (UNESCO). Zwiedzanie malowniczego meczetu Hala Sultan Tekke przy Słonym Jeziorze (zimowa oaza flamingów). Przejazd do LARNAKI: zwiedzanie cerkwi Agios Lazaros (grób i relikwie św. Łazarza). Czas wolny przy nadmorskiej promenadzie. Przejazd na piękną, piaszczystą PLAŻĘ LANDA (czas wolny) oraz przystanek przy skalnym „moście miłości”. Powrót do hotelu, kolacja, nocleg.</div>
+                </div>
+
+                <div class="day-block">
+                    <div class="day-title">Dzień 6: Podzielona Stolica</div>
+                    <div class="day-route">Trasa: Nikozja (ok. 190 km)</div>
+                    <div class="day-desc">Śniadanie. Przejazd do NIKOZJI (jedyna podzielona stolica świata). Panoramiczny przejazd wzdłuż murów weneckich i Bramy Famagustiańskiej. Pałac Arcybiskupi, plac Niepodległości. Zwiedzanie Muzeum Cypru (najważniejsze muzeum archeologiczne). Wizyta na placu Faneromeni. Przejście na turecką część miasta: meczet Selima (dawna gotycka katedra św. Zofii), przerwa na kawę po cypryjsku i tradycyjny burek w osmańskim karawanseraju Büyük Han. Powrót do hotelu, kolacja, nocleg.</div>
+                </div>
+
+                <div class="day-block">
+                    <div class="day-title">Dzień 7: Tradycja, rękodzieło i kulinaria (Fakultatywnie)</div>
+                    <div class="day-route">Trasa: Lefkara - Choirokoitia (ok. 100 km)</div>
+                    <div class="day-desc">Śniadanie. Czas wolny lub wycieczka fakultatywna: Przejazd do LEFKARY, słynącej z koronek i wyrobów ze srebra. Przejazd do CHOIROKOITIA na wizytę w muzeum wyplatania koszy i tradycyjnej produkcji sera halloumi wraz z degustacją. Wizyta w kobiecym klasztorze Agios Georgios Alamanos z XII w. Powrót do hotelu, kolacja, nocleg.</div>
+                </div>
+
+                <div class="day-block">
+                    <div class="day-title">Dzień 8: Powrót do Polski</div>
+                    <div class="day-route">Trasa: Hotel – Lotnisko</div>
+                    <div class="day-desc">Śniadanie. Wykwaterowanie. Czas wolny w zależności od godzin lotu, transfer na lotnisko w Larnace i przelot powrotny do Polski.</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 4. Znani sportowcy -->
+        <section id="sportowcy">
+            <h2>4. Znani Sportowcy z Cypru</h2>
+            <p style="margin-bottom: 20px;">Mimo stosunkowo małej liczby ludności, Cypr może pochwalić się kilkoma wybitnymi nazwiskami na arenie międzynarodowej:</p>
+            <div class="athletes-grid">
+                <div class="athlete-card">
+                    <div class="athlete-name">Marcos Baghdatis</div>
+                    <div class="athlete-sport">Tenis ziemny</div>
+                    <div class="athlete-achievements">Najbardziej utytułowany cypryjski tenisista. Finalista wielkoszlemowego Australian Open (2006) oraz półfinalista Wimbledonu. W szczytowym momencie kariery zajmował 8. miejsce w rankingu ATP.</div>
+                </div>
+                <div class="athlete-card">
+                    <div class="athlete-name">Pavlos Kontides</div>
+                    <div class="athlete-sport">Żeglarstwo (Klasa Laser)</div>
+                    <div class="athlete-achievements">Narodowy bohater Cypru. Zdobywca pierwszego w historii kraju medalu olimpijskiego (srebro na Igrzyskach Olimpijskich w Londynie w 2012 roku). Dwukrotny mistrz świata (2017, 2018).</div>
+                </div>
+                <div class="athlete-card">
+                    <div class="athlete-name">Milan Trajkovic</div>
+                    <div class="athlete-sport">Lekkoatletyka (Biegi przez płotki)</div>
+                    <div class="athlete-achievements">Reprezentant Cypru pochodzenia serbskiego. Halowy Mistrz Europy z Glasgow (2019) w biegu na 60 m przez płotki oraz finalista Igrzysk Olimpijskich w Rio de Janeiro (2016).</div>
+                </div>
+                <div class="athlete-card">
+                    <div class="athlete-name">Karolina Pelendritou</div>
+                    <div class="athlete-sport">Pływanie Paraolimpijskie</div>
+                    <div class="athlete-achievements">Nazywana "Afrodytą basenu". Wielokrotna złota medalistka Igrzysk Paraolimpijskich (Ateny 2004, Pekin 2008, Tokio 2020), rywalizująca w kategoriach dla osób niedowidzących.</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Język grecki (Rozmówki) -->
+        <section id="jezyk">
+            <h2>5. Podstawy Języka Greckiego</h2>
+            <div class="lang-intro">
+                Większość mieszkańców Cypru świetnie mówi po angielsku, ale opanowanie kilku podstawowych zwrotów po grecku (w wariancie cypryjskim) zawsze wywołuje szczery uśmiech na twarzach lokalnych mieszkańców! Oto Twoje podręczne rozmówki:
+            </div>
+            <table class="lang-table">
+                <thead>
+                    <tr>
+                        <th>Polski zwrot</th>
+                        <th>Zapis grecki</th>
+                        <th>Wymowa / Fonetyka</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Dzień dobry (rano)</td>
+                        <td>Καλημέρα</td>
+                        <td>Kalimera</td>
+                    </tr>
+                    <tr>
+                        <td>Dobry wieczór</td>
+                        <td>Καλησπέρα</td>
+                        <td>Kalispera</td>
+                    </tr>
+                    <tr>
+                        <td>Cześć / Do widzenia</td>
+                        <td>Γεια σου</td>
+                        <td>Ya soo</td>
+                    </tr>
+                    <tr>
+                        <td>Dziękuję</td>
+                        <td>Ευχαριστώ</td>
+                        <td>Efharisto</td>
+                    </tr>
+                    <tr>
+                        <td>Proszę</td>
+                        <td>Παρακαλώ</td>
+                        <td>Parakalo</td>
+                    </tr>
+                    <tr>
+                        <td>Tak</td>
+                        <td>Ναι</td>
+                        <td>Ne (uwaga: brzmi jak polskie "nie"!)</td>
+                    </tr>
+                    <tr>
+                        <td>Nie</td>
+                        <td>Όχι</td>
+                        <td>Ohi</td>
+                    </tr>
+                    <tr>
+                        <td>Przepraszam</td>
+                        <td>Συγγνώμη</td>
+                        <td>Signomi</td>
+                    </tr>
+                    <tr>
+                        <td>Ile to kosztuje?</td>
+                        <td>Πόσο κάνει;</td>
+                        <td>Poso kani?</td>
+                    </tr>
+                    <tr>
+                        <td>Gdzie jest...?</td>
+                        <td>Πού είναι...;</td>
+                        <td>Poo ine...?</td>
+                    </tr>
+                    <tr>
+                        <td>Na zdrowie! (toast)</td>
+                        <td>Στην υγειά μας! / Στην υγειά σου!</td>
+                        <td>Stin iya mas! / Stin iya soo!</td>
+                    </tr>
+                    <tr>
+                        <td>Dzień dobry / Cześć (Cypryjski dialekt)</td>
+                        <td>Γεια χαράν</td>
+                        <td>Ya haran</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 6. Odnośnik -->
+        <section id="dawid" class="footer-link-box">
+            <p>Ta strona została stworzona specjalnie na Twoją wycieczkę!</p>
+            <p>Możesz w każdej chwili wrócić do głównego portalu podróżniczego:</p>
+            <a href="https://dawid108.gothub.io/dawi2026/index.html" target="_blank" class="btn-link">Przejdź do strony Dawida 🚀</a>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Przewodnik Cypryjski. Wszystkie dane są zapisane lokalnie w tym pliku HTML i działają bez dostępu do Internetu.</p>
+    </footer>
+
+  <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./20260716_sw.js')
+        .then((reg) => console.log('Service Worker zarejestrowany!', reg))
+        .catch((err) => console.log('Błąd rejestracji Service Workera:', err));
+    });
+  }
+</script>
+</body>
+</html>
