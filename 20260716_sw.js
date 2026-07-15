@@ -1,7 +1,7 @@
 const CACHE_NAME = 'cypr-guide-v1';
 const ASSETS = [
   './',
-  './index.html', // upewnij się, że nazwa pliku się zgadza
+  './20260716_cypr.html', // upewnij się, że nazwa pliku się zgadza
 ];
 
 // Instalacja Service Workera i zapisanie plików w cache
