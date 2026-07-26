@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Podsumowanie Wycieczek Górskich I Połowa 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d1117;
+            --card-bg: #161b22;
+            --card-border: #30363d;
+            --accent-orange: #f97316;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --text-main: #f0f6fc;
+            --text-muted: #8b949e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.15), rgba(16, 185, 129, 0.15));
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg, #f97316, #10b981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--accent-orange);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent-orange);
+            margin-bottom: 5px;
+        }
+
+        .stat-value.green {
+            color: var(--accent-green);
+        }
+
+        .stat-value.blue {
+            color: var(--accent-blue);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Sections Grid */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .section-box {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--card-border);
+            padding-bottom: 10px;
+        }
+
+        /* Top Peaks & Badges Lists */
+        .badge-list, .peaks-list {
+            list-style: none;
+        }
+
+        .badge-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .badge-item:last-child {
+            border-bottom: none;
+        }
+
+        .badge-status {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: var(--accent-green);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .peak-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .peak-rank {
+            width: 32px;
+            height: 32px;
+            background-color: var(--accent-orange);
+            color: #fff;
+            font-weight: 700;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .peak-info {
+            flex-grow: 1;
+        }
+
+        .peak-name {
+            font-weight: 600;
+        }
+
+        .peak-alt {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Top Runs */
+        .runs-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .run-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .run-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .run-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .run-stats-inline {
+            display: flex;
+            gap: 15px;
+            font-size: 0.95rem;
+            color: var(--accent-orange);
+            font-weight: 600;
+        }
+
+        .strava-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #fc4c02;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .strava-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Tables for Expeditions */
+        .search-box {
+            margin-bottom: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 10px 15px;
+            background-color: var(--bg-color);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            position: sticky;
+            top: 0;
+            background-color: #21262d;
+            padding: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .link-cell a {
+            color: var(--accent-orange);
+            text-decoration: none;
+        }
+
+        .link-cell a:hover {
+            text-decoration: underline;
+        }
+
+        /* Embed Container */
+        .embeds-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.6rem;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>Podsumowanie Wycieczek Górskich</h1>
+            <p>Pierwsza połowa roku 2026</p>
+        </header>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value">252 km</div>
+                <div class="stat-label">Dystans w biegu</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">9 534 m</div>
+                <div class="stat-label">Przewyższenia w biegu</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value green">146</div>
+                <div class="stat-label">Zdobyte szczyty</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value blue">336 km</div>
+                <div class="stat-label">Ogólny dystans</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value blue">12 799 m</div>
+                <div class="stat-label">Suma przewyższeń</div>
+            </div>
+        </div>
+
+        <!-- Top Peaks & Badges -->
+        <div class="grid-2">
+            <!-- Badges -->
+            <div class="section-box">
+                <h2 class="section-title">🏆 Ukończone odznaki turystyczne</h2>
+                <ul class="badge-list">
+                    <li class="badge-item"><span>Korona Gór Bardzkich</span><span class="badge-status">10/10</span></li>
+                    <li class="badge-item"><span>Korona Gór Kaczawskich</span><span class="badge-status">10/10</span></li>
+                    <li class="badge-item"><span>Korona Gór Kruczych</span><span class="badge-status">15/15</span></li>
+                    <li class="badge-item"><span>Korona Gór Orlickich</span><span class="badge-status">5/5</span></li>
+                    <li class="badge-item"><span>Korona Gór Sowich</span><span class="badge-status">15/15</span></li>
+                    <li class="badge-item"><span>Korona Górek Wrocławia</span><span class="badge-status">11/11</span></li>
+                    <li class="badge-item"><span>Korona Kaczawska</span><span class="badge-status">30/30</span></li>
+                    <li class="badge-item"><span>Korona Rudaw Janowickich</span><span class="badge-status">10/10</span></li>
+                    <li class="badge-item"><span>Miłośnik Rudaw Janowickich</span><span class="badge-status">35/35</span></li>
+                    <li class="badge-item"><span>Szlak Zamków Piastowskich</span><span class="badge-status">17/17</span></li>
+                </ul>
+            </div>
+
+            <!-- Top 3 Peaks -->
+            <div class="section-box">
+                <h2 class="section-title">⛰️ Top 3 najwyższe zdobyte szczyty</h2>
+                <ul class="peaks-list">
+                    <li class="peak-item">
+                        <div class="peak-rank">1</div>
+                        <div class="peak-info">
+                            <div class="peak-name">Wielka Sowa</div>
+                            <div class="peak-alt">Góry Sowie</div>
+                        </div>
+                        <div class="stat-value" style="font-size: 1.2rem;">1015 m n.p.m.</div>
+                    </li>
+                    <li class="peak-item">
+                        <div class="peak-rank" style="background-color: #94a3b8;">2</div>
+                        <div class="peak-info">
+                            <div class="peak-name">Mała Sowa</div>
+                            <div class="peak-alt">Góry Sowie</div>
+                        </div>
+                        <div class="stat-value" style="font-size: 1.2rem; color: #94a3b8;">972 m n.p.m.</div>
+                    </li>
+                    <li class="peak-item">
+                        <div class="peak-rank" style="background-color: #b45309;">3</div>
+                        <div class="peak-info">
+                            <div class="peak-name">Kalenica</div>
+                            <div class="peak-alt">Góry Sowie</div>
+                        </div>
+                        <div class="stat-value" style="font-size: 1.2rem; color: #b45309;">964 m n.p.m.</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Top 3 Runs Section -->
+        <div class="section-box" style="margin-bottom: 40px;">
+            <h2 class="section-title">🏃 Top 3 najdłuższe wyprawy biegowe</h2>
+            <div class="runs-list">
+                <div class="run-card">
+                    <div class="run-header">
+                        <div class="run-title">1. Bielawa - Kalenica - Wielka Sowa - Kamionki</div>
+                        <div class="run-stats-inline">
+                            <span>📏 36,1 km</span>
+                            <span>↗️ 1112 m</span>
+                            <span>⏱️ 4:15 h</span>
+                        </div>
+                    </div>
+                    <a href="https://www.strava.com/activities/17638023761" target="_blank" class="strava-link">Zobacz na Strava &rarr;</a>
+                </div>
+
+                <div class="run-card">
+                    <div class="run-header">
+                        <div class="run-title">2. Bogoria - Kralovecky Spicak - Szeroka - Lubawka</div>
+                        <div class="run-stats-inline">
+                            <span>📏 24,6 km</span>
+                            <span>↗️ 855 m</span>
+                            <span>⏱️ 2:25 h</span>
+                        </div>
+                    </div>
+                    <a href="https://www.strava.com/activities/19243538314" target="_blank" class="strava-link">Zobacz na Strava &rarr;</a>
+                </div>
+
+                <div class="run-card">
+                    <div class="run-header">
+                        <div class="run-title">3. Kamienna Góra - Kierz - Święta Góra - Lubawka</div>
+                        <div class="run-stats-inline">
+                            <span>📏 23,5 km</span>
+                            <span>↗️ 881 m</span>
+                            <span>⏱️ 2:36 h</span>
+                        </div>
+                    </div>
+                    <a href="https://www.strava.com/activities/19215962762" target="_blank" class="strava-link">Zobacz na Strava &rarr;</a>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 15px; font-size: 1.1rem; color: var(--text-muted);">Embed tras Strava:</h3>
+            <div class="embeds-grid">
+                <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="17638023761" data-style="standard" data-from-embed="false"></div>
+                <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="19243538314" data-style="standard" data-from-embed="false" data-token="m-bYjSf3BouB_IvFd6JdGwA-aGIdssfXvCeh_iQQqos"></div>
+                <div class="strava-embed-placeholder" data-embed-type="activity" data-embed-id="19215962762" data-style="standard" data-from-embed="false"></div>
+            </div>
+            <script src="https://strava-embeds.com/embed.js"></script>
+        </div>
+
+        <!-- Tables Section -->
+        <div class="grid-2">
+            <!-- Running Expeditions -->
+            <div class="section-box">
+                <h2 class="section-title">🏃 Wyprawy biegowe</h2>
+                <div class="search-box">
+                    <input type="text" id="search-running" class="search-input" placeholder="Szukaj wyprawy biegowej..." onkeyup="filterTable('search-running', 'table-running')">
+                </div>
+                <div class="table-container">
+                    <table id="table-running">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Nazwa / Szczyt</th>
+                                <th>Czas</th>
+                                <th>Dystans</th>
+                                <th>Suma up</th>
+                                <th>Strava</th>
+                            </tr>
+                        </thead>
+                        <tbody id="running-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Hiking Expeditions -->
+            <div class="section-box">
+                <h2 class="section-title">🥾 Wyprawy górskie</h2>
+                <div class="search-box">
+                    <input type="text" id="search-hiking" class="search-input" placeholder="Szukaj wyprawy górskiej..." onkeyup="filterTable('search-hiking', 'table-hiking')">
+                </div>
+                <div class="table-container">
+                    <table id="table-hiking">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Nazwa / Szczyt</th>
+                                <th>Czas</th>
+                                <th>Dystans</th>
+                                <th>Suma up</th>
+                            </tr>
+                        </thead>
+                        <tbody id="hiking-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const runningData = [
+            ["16.02.2026", "Wilkołak (360 m)", "00:17", "2,3 km", "101 m", "https://www.strava.com/activities/17415927087"],
+            ["16.02.2026", "Wiszące Tory Złotoryja", "00:03", "0,6 km", "5 m", "https://www.strava.com/activities/17415957543"],
+            ["16.02.2026", "Świątek (330 m)", "00:12", "2,3 km", "60 m", "https://www.strava.com/activities/17415957995"],
+            ["18.02.2026", "Lwóweckie Skały (258 m)", "00:07", "0,8 km", "62 m", "https://www.strava.com/activities/17439696081"],
+            ["6.03.2026", "Szczytna (466 m)", "00:14", "2,2 km", "163 m", "https://www.strava.com/activities/17626699523"],
+            ["7.03.2026", "Kalenica (964 m)", "01:40", "13,7 km", "863 m", "https://www.strava.com/activities/17638010212"],
+            ["7.03.2026", "Wielka Sowa (1015 m)", "02:35", "22,4 km", "649 m", "https://www.strava.com/activities/17638023761"],
+            ["8.03.2026", "Łysa Góra (495 m)", "01:31", "13,6 km", "463 m", "https://www.strava.com/activities/17649178034"],
+            ["2.04.2026", "Górzec (442 m)", "00:18", "3,1 km", "191 m", "https://www.strava.com/activities/17949964231"],
+            ["5.04.2026", "Rudnik (853 m)", "00:15", "3,1 km", "128 m", "https://www.strava.com/activities/17988703330"],
+            ["6.04.2026", "Złomy (436 m)", "01:11", "11,3 km", "332 m", "https://www.strava.com/activities/18003279810"],
+            ["7.04.2026", "Dłużek (592 m)", "00:36", "5,9 km", "265 m", "https://www.strava.com/activities/18013071281"],
+            ["7.04.2026", "Lubrza (666 m)", "00:24", "3,9 km", "212 m", "https://www.strava.com/activities/18013075269"],
+            ["11.04.2026", "Opacz (741 m)", "00:06", "1,6 km", "1 m", "https://www.strava.com/activities/18066568734"],
+            ["11.04.2026", "Gołota (707 m)", "00:15", "2,1 km", "169 m", "https://www.strava.com/activities/18066575771"],
+            ["11.04.2026", "Igliczna (845 m)", "00:33", "4,4 km", "306 m", "https://www.strava.com/activities/18066576584"],
+            ["11.04.2026", "Krzyżowa (500 m)", "00:24", "3,9 km", "134 m", "https://www.strava.com/activities/18069107518"],
+            ["11.04.2026", "Sędzisz (489 m)", "00:10", "1,7 km", "47 m", "https://www.strava.com/activities/18069106843"],
+            ["12.04.2026", "Wilczak (633 m)", "00:06", "0,8 km", "89 m", "https://www.strava.com/activities/18080889810"],
+            ["12.04.2026", "Brzeźnica (493 m)", "00:16", "2,9 km", "126 m", "https://www.strava.com/activities/18080890244"],
+            ["30.04.2026", "Skiba (433 m)", "00:21", "3,7 km", "69 m", "https://www.strava.com/activities/18317401295"],
+            ["30.04.2026", "Sucha (776 m)", "00:29", "3,6 km", "196 m", "https://www.strava.com/activities/18319632155"],
+            ["1.05.2026", "Ostoja (753 m)", "00:52", "8,5 km", "382 m", "https://www.strava.com/activities/18335060736"],
+            ["2.05.2026", "Jałowiec (751 m)", "00:59", "8,5 km", "456 m", "https://www.strava.com/activities/18346018023"],
+            ["3.05.2026", "Jedlińska Kopa (744 m)", "01:33", "14,5 km", "393 m", "https://www.strava.com/activities/18357669761"],
+            ["4.06.2026", "Zamkowa Kopa (784 m)", "00:40", "8,4 km", "228 m", "https://www.strava.com/activities/18787013183"],
+            ["4.06.2026", "Torfowisko pod Zieleńcem", "00:15", "2,5 km", "50 m", "https://www.strava.com/activities/18787011937"],
+            ["6.06.2026", "Łomnicka Równia (898 m)", "00:27", "16,1 km", "268 m", "https://www.strava.com/activities/18808026397"],
+            ["7.06.2026", "Świerk Antoni Bardo", "00:20", "4,4 km", "99 m", "https://www.strava.com/activities/18822193016"],
+            ["23.06.2026", "Góry Sokole", "00:31", "5,8 km", "239 m", "https://www.strava.com/activities/19039829792"],
+            ["24.06.2026", "Krzyżna Góra", "00:06", "0,8 km", "104 m", "https://www.strava.com/activities/19053117007"],
+            ["24.06.2026", "Ścianka pod Husyckie", "00:16", "2,1 km", "111 m", "https://www.strava.com/activities/19072129921"],
+            ["24.06.2026", "Sokolik", "00:07", "1,4 km", "23 m", "https://www.strava.com/activities/19072130085"],
+            ["6.07.2026", "Świnia Góra (750 m)", "00:31", "5,5 km", "183 m", "https://www.strava.com/activities/19201437352"],
+            ["6.07.2026", "Przełęcz Rędzinki", "00:02", "0,6 km", "20 m", "https://www.strava.com/activities/19201444245"],
+            ["6.07.2026", "Wilkowyja (776 m)", "00:27", "4,8 km", "149 m", "https://www.strava.com/activities/19201444540"],
+            ["7.07.2026", "Korona Gór Kruczych 8/15", "02:36", "23,5 km", "881 m", "https://www.strava.com/activities/19215962762"],
+            ["9.07.2026", "Korona Gór Kruczych 15/15", "02:25", "24,6 km", "855 m", "https://www.strava.com/activities/19243538314"],
+            ["10.07.2026", "Bucza Góra (671 m)", "00:31", "5,1 km", "177 m", "https://www.strava.com/activities/19257555183"],
+            ["10.07.2026", "Krąglak (692 m)", "00:27", "4,2 km", "285 m", "https://www.strava.com/activities/19257540332"]
+        ];
+
+        const hikingData = [
+            ["8.03.2026", "Wzgórze Pojednania (386 m)", "00:18", "1,4 km", "51 m"],
+            ["8.03.2026", "Polna Góra (255 m)", "00:32", "2 km", "79 m"],
+            ["2.04.2026", "Rosocha (464 m)", "00:13", "0,8 km", "9 m"],
+            ["2.04.2026", "Duży Młynik (303 m)", "00:25", "1,8 km", "85 m"],
+            ["2.04.2026", "Średnia Góra (427 m)", "00:29", "2,3 km", "80 m"],
+            ["3.04.2026", "Mrowiec (507 m)", "00:48", "2,9 km", "116 m"],
+            ["3.04.2026", "Dłużyna (465 m)", "00:25", "1,9 km", "43 m"],
+            ["4.04.2026", "Okole (725 m)", "01:24", "6,3 km", "200 m"],
+            ["4.04.2026", "Wzgórze Zamkowe (407 m)", "00:52", "3,5 km", "67 m"],
+            ["6.04.2026", "Koziniec (462 m)", "00:34", "2,4 km", "113 m"],
+            ["6.04.2026", "Witosza (483 m)", "00:29", "1,4 km", "89 m"],
+            ["6.04.2026", "Sołtysia (440 m)", "00:10", "0,8 km", "60 m"],
+            ["7.04.2026", "Miłek (596 m)", "00:42", "4,7 km", "247 m"],
+            ["10.04.2026", "Góra Parkowa (388 m)", "00:03", "0,3 km", "8 m"],
+            ["11.04.2026", "Jedlnik (746 m)", "00:07", "0,5 km", "5 m"],
+            ["11.04.2026", "Dębowiec (666 m)", "00:03", "0,2 km", "2 m"],
+            ["11.04.2026", "Bochniak (712 m)", "00:38", "2,7 km", "68 m"],
+            ["11.04.2026", "Sikornik (550 m)", "00:08", "0,6 km", "5 m"],
+            ["11.04.2026", "Opacz (741 m)", "00:22", "2 km", "168 m"],
+            ["12.04.2026", "Obszerna (573 m)", "00:36", "3,3 km", "126 m"],
+            ["12.04.2026", "Grochowiec (432 m)", "00:21", "1,8 km", "63 m"],
+            ["1.05.2026", "Jastrzębią Percią Wokół Nieczynnego Kamieniołomu Kamyki w Głuszycy", "00:25", "2,8 km", "103 m"],
+            ["4.06.2026", "Mariańska Górka (365 m)", "00:16", "0,9 km", "38 m"],
+            ["4.06.2026", "Kapelusz (447 m)", "00:40", "2,7 km", "123 m"],
+            ["4.06.2026", "Sołtysia Kopa (896 m)", "00:04", "0,3 km", "12 m"],
+            ["5.06.2026", "Pasterskie Skały (591 m)", "00:16", "0,9 km", "17 m"],
+            ["5.06.2026", "Skowronia Góra (839 m)", "00:14", "0,9 km", "15 m"],
+            ["6.06.2026", "Kamienna Góra (704 m)", "00:22", "1,2 km", "127 m"],
+            ["7.06.2026", "Różańcowa Góra (380 m)", "00:11", "0,9 km", "43 m"],
+            ["23.06.2026", "Krzyżna Góra (654 m)", "02:36", "10,5 km", "258 m"],
+            ["24.06.2026", "Lwia Góra (718 m)", "04:01", "13,6 km", "488 m"],
+            ["24.06.2026", "Trzy Korony (525 m)", "00:07", "0,5 km", "7 m"],
+            ["8.07.2026", "Zadzierna (724 m)", "01:08", "3,4 km", "217 m"],
+            ["9.07.2026", "Bogoria (645 m)", "00:26", "1,7 km", "133 m"]
+        ];
+
+        function populateTable(tbodyId, data, isRunning) {
+            const tbody = document.getElementById(tbodyId);
+            tbody.innerHTML = "";
+            data.forEach(row => {
+                const tr = document.createElement("tr");
+                let rowContent = `
+                    <td>${row[0]}</td>
+                    <td><strong>${row[1]}</strong></td>
+                    <td>${row[2]}</td>
+                    <td>${row[3]}</td>
+                    <td>${row[4]}</td>
+                `;
+                if (isRunning) {
+                    rowContent += `<td class="link-cell"><a href="${row[5]}" target="_blank">Link</a></td>`;
+                }
+                tr.innerHTML = rowContent;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterTable(inputId, tableId) {
+            const input = document.getElementById(inputId);
+            const filter = input.value.toLowerCase();
+            const table = document.getElementById(tableId);
+            const trs = table.getElementsByTagName("tr");
+
+            for (let i = 1; i < trs.length; i++) {
+                const text = trs[i].textContent || trs[i].innerText;
+                if (text.toLowerCase().indexOf(filter) > -1) {
+                    trs[i].style.display = "";
+                } else {
+                    trs[i].style.display = "none";
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            populateTable("running-tbody", runningData, true);
+            populateTable("hiking-tbody", hikingData, false);
+        });
+    </script>
+</body>
+</html>
