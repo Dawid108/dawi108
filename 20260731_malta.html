@@ -670,6 +670,14 @@
                 }
             });
         });
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./20260716_sw.js')
+        .then((reg) => console.log('Service Worker zarejestrowany!', reg))
+        .catch((err) => console.log('Błąd rejestracji Service Workera:', err));
+    });
+  }
     </script>
 </body>
 </html>
