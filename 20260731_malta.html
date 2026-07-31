@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Śródziemnomorska Księżniczka - Wycieczka na Maltę</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #005f73;
+            --primary-dark: #0a9396;
+            --secondary: #ee9b00;
+            --accent: #ca6702;
+            --bg-light: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #2b2d42;
+            --text-muted: #6c757d;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding-bottom: 60px;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(0,95,115,0.92), rgba(10,147,150,0.85)), 
+                        url('https://images.unsplash.com/photo-1516483638261-f4dbaf036963?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+            color: white;
+            padding: 80px 20px 60px;
+            text-align: center;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto 25px;
+            opacity: 0.95;
+        }
+
+        .header-links {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background-color: var(--secondary);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(238, 155, 0, 0.4);
+            border: none;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(202, 103, 2, 0.5);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.3);
+        }
+
+        nav {
+            position: sticky;
+            top: 15px;
+            z-index: 1000;
+            max-width: 1100px;
+            margin: -25px auto 30px;
+            padding: 0 15px;
+        }
+
+        .nav-inner {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 40px;
+            padding: 8px;
+            display: flex;
+            justify-content: space-between;
+            overflow-x: auto;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            scrollbar-width: none;
+        }
+
+        .nav-inner::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-link {
+            padding: 10px 20px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            margin-bottom: 50px;
+            scroll-margin-top: 100px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background-color: var(--secondary);
+            border-radius: 2px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .fact-card {
+            border-left: 5px solid var(--secondary);
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .fact-card h4 {
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .day-card {
+            border-left: 6px solid var(--primary);
+            position: relative;
+        }
+
+        .day-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .day-title {
+            font-size: 1.3rem;
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+        .day-route {
+            background: #e0f2f1;
+            color: #004d40;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .hotel-box {
+            background: linear-gradient(135deg, #e0f2f1, #b2dfdb);
+            border-radius: var(--radius);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .hotel-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .phrases-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .phrases-table th, .phrases-table td {
+            padding: 14px 20px;
+            text-align: left;
+        }
+
+        .phrases-table th {
+            background-color: var(--primary);
+            color: white;
+            font-weight: 600;
+        }
+
+        .phrases-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .sport-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            background-color: var(--primary);
+            color: white;
+            margin-top: 50px;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+            .section-title {
+                font-size: 1.6rem;
+            }
+            .card {
+                padding: 18px;
+            }
+            .phrases-table th, .phrases-table td {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Śródziemnomorska Księżniczka</h1>
+        <p>Odkryj magię Malty, Gozo i Comino podczas wyjątkowej 8-dniowej wycieczki.</p>
+        <div class="header-links">
+            <a href="https://dawid108.github.io/dawi2026/index.html" target="_blank" class="btn">🎮 Zagraj w Gry</a>
+            <a href="#hotel" class="btn btn-outline">🏨 Zobacz Hotel</a>
+        </div>
+    </header>
+
+    <nav>
+        <div class="nav-inner">
+            <a href="#ciekawostki-dnia" class="nav-link active">Fakty Dnia</a>
+            <a href="#plan" class="nav-link">Plan Wycieczki</a>
+            <a href="#info" class="nav-link">Informacje</a>
+            <a href="#wszystkie-ciekawostki" class="nav-link">Ciekawostki</a>
+            <a href="#sport" class="nav-link">Sport</a>
+            <a href="#jezyk" class="nav-link">Język</a>
+            <a href="#hotel" class="nav-link">Hotel</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <!-- 1. SIEDEM CIEKAWOSTEK DNIA -->
+        <section id="ciekawostki-dnia">
+            <h2 class="section-title">✨ Siedem Ciekawostki Dnia</h2>
+            <div class="info-grid">
+                <div class="fact-card">
+                    <h4>Dzień 1: Przelot i Powitanie</h4>
+                    <p>Malta posiada jedno z najmniejszych lotnisk międzynarodowych w Europie, które dawniej było bazą brytyjskiego RAF-u.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Dzień 2: Ciche Miasto i Cud w Moście</h4>
+                    <p>W Mdinie kręcono sceny do pierwszego sezonu "Gry o Tron" (stolica Królewskiej Przystani), a bombę w Moście nazwano "Cudem z Mosty", gdyż nie wybuchła w pełnym kościele.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Dzień 3: Legenda Gozo i Ggantija</h4>
+                    <p>Świątynie Ġgantija na Gozo są starsze niż egipskie piramidy i Stonehenge – mają ponad 5500 lat!</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Dzień 4: Tradycyjne Łodzie Luzzu</h4>
+                    <p>Kolorowe łodzie Luzzu w Marsaxlokk mają namalowane Oczy Ozyrysa na dziobie, które wedle fenickiej tradycji chronią rybaków przed złymi mocami.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Dzień 5: Arcydzieło w Katedrze</h4>
+                    <p>"Ścięcie św. Jana Chrzciciela" w Katedrze w Valletcie to jedyny obraz, który Caravaggio kiedykolwiek podpisał swoim nazwiskiem.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Dzień 6: Królewski Przepis</h4>
+                    <p>Głównym daniem Nocy Maltańskiej jest potrawka z królika (Fenkata) w winie i czosnku – tradycja sięgająca czasów rycerzy Zakonu Maltańskiego.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>Dzień 7: Złota Godzina i Miasto Ciszy</h4>
+                    <p>W Mdinie po zmroku obowiązuje ścisły zakaz używania klaksonów i głośnego zachowania – nazwa "Miasto Ciszy" jest traktowana dosłownie.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. PLAN WYCIECZKI -->
+        <section id="plan">
+            <h2 class="section-title">🗺️ Plan Wycieczki</h2>
+            
+            <div class="card day-card">
+                <div class="day-header">
+                    <span class="day-title">Dzień 1: Przylot</span>
+                </div>
+                <p>Zbiórka na lotnisku. Przelot na Maltę. Transfer do hotelu, zakwaterowanie, nocleg.</p>
+            </div>
+
+            <div class="card day-card">
+                <div class="day-header">
+                    <span class="day-title">Dzień 2: Mdina – Mosta</span>
+                    <span class="day-route">Trasa: ok. 30 km</span>
+                </div>
+                <p>Śniadanie. Przejazd do <strong>MDINY</strong>, dawnej stolicy wyspy. Położone centralnie, niewielkie i ciche miasteczko ma bogatą i piękną historię. Wąskie, kręte uliczki pamiętają jeszcze czasy arabskie. Spacer labiryntem średniowiecznych uliczek jest atrakcją samą w sobie. Nie ma tu ruchu samochodowego, czas płynie leniwie rytmem niemal identycznym jak setki lat temu. W drodze powrotnej przystanek w miejscowości <strong>MOSTA</strong>, gdzie znajduje się neoklasycystyczna Rotunda pod wezwaniem Wniebowzięcia Najświętszej Maryi Panny. Zwiedzanie kościoła. Wewnątrz świątyni znajduje się replika niemieckiej bomby zrzuconej 9 kwietnia 1942 r. Powrót do hotelu, czas wolny. Nocleg.</p>
+            </div>
+
+            <div class="card day-card">
+                <div class="day-header">
+                    <span class="day-title">Dzień 3: Wyspa Gozo</span>
+                    <span class="day-route">Trasa: ok. 95 km</span>
+                </div>
+                <p>Śniadanie. Czas wolny na samodzielne zwiedzanie lub całodzienna wycieczka fakultatywna (za dodatkową opłatą na miejscu) na wyspę <strong>GOZO</strong>. Przeprawa promowa na Gozo to jedynie około 30 minut. Mniejsza siostra Malty zachwyca bajecznymi krajobrazami, nic więc dziwnego, że to właśnie tu Odyseusz spędził siedem lat zwabiony przez nimfę Kalipso. Panoramiczne zwiedzanie wyspy to idealna okazja do podziwiania spokojnych wsi, pięknych krajobrazów. Zwiedzanie wpisanego na listę UNESCO zespołu starożytnych świątyń Ġgantija. Następnie stolica wyspy Ir-Rabat z dominującą zabudową Cytadeli, z której rozpościera się malownicza panorama na miasteczko i wyspę. Obiad. Przejazd do punktu widokowego nad zatoką Xlendi. Przejazd do punktu widokowego w okolicy Dwejra, gdzie podziwiać można różnorodne formacje skalne wyrzeźbione przez morze w wapieniu na przestrzeni tysięcy lat. Powrót do hotelu, nocleg.</p>
+            </div>
+
+            <div class="card day-card">
+                <div class="day-header">
+                    <span class="day-title">Dzień 4: Wied-iz-Zurrieq – Marsaxlokk</span>
+                    <span class="day-route">Trasa: ok. 40 km</span>
+                </div>
+                <p>Śniadanie. Czas wolny lub udział w wycieczce fakultatywnej (za dodatkową opłatą na miejscu). Przejazd na południe Malty. Wizyta w wiosce <strong>WIED-IZ-ZURRIEQ</strong> słynącej z niezapomnianych widoków na pobliską wyspę Filfla. Przejazd do malowniczej miejscowości <strong>MARSAXLOKK</strong>, gdzie na nabrzeżu można zobaczyć tradycyjne trójkolorowe maltańskie łodzie „luzzu”. Powrót do hotelu, nocleg.</p>
+            </div>
+
+            <div class="card day-card">
+                <div class="day-header">
+                    <span class="day-title">Dzień 5: Valletta – Cospicua – Vittoriosa – Senglea</span>
+                    <span class="day-route">Trasa: ok. 30 km</span>
+                </div>
+                <p>Śniadanie. Przejazd do stolicy wyspy – <strong>VALLETTY</strong>. Miasto do dziś zachowało unikalny charakter. Dominuje tu architektura i zabudowa z okresu, kiedy wyspa należała do zakonu kawalerów maltańskich. Zespół miejski w całości wpisany jest na listę UNESCO. Spacer po mieście: Pałac Wielkich Mistrzów oraz skwer św. Jerzego. Port, z którego roztacza się zapierająca dech panorama miasta, następnie Ogrody Baracca. Zwiedzanie katedry św. Jana, gdzie podziwiać można dzieło Caravaggia „Ścięcie św. Jana Chrzciciela”. Czas wolny. Przejazd do trzech portowych miast, gdzie pierwotnie kawalerowie miecza osiedlili się po przybyciu na wyspę. Zwiedzanie ufortyfikowanego portu <strong>COSPICUA</strong>, następnie spacer wąskim labiryntem uliczek w <strong>VITTORIOSA</strong>, aby na koniec dnia dotrzeć do <strong>SENGLEA</strong> słynnego z odparcia inwazji tureckiej. Czas wolny na podziwianie imponującej panoramy wyspy. Powrót do hotelu, nocleg.</p>
+            </div>
+
+            <div class="card day-card">
+                <div class="day-header">
+                    <span class="day-title">Dzień 6: Rejs – Sliema – Noc Maltańska</span>
+                </div>
+                <p>Śniadanie. Przejazd do mariny w miasteczku Sliema. Rejs (1,5 godz.) łodzią wycieczkową dookoła głównych portów Malty. Wizyta w urokliwych zatoczkach oraz licznych marinach, gdzie cumują nowoczesne jachty. Doskonała okazja do uwiecznienia na fotografiach pięknych widoków na Vallettę i Trzy Miasta od strony morza. Czas wolny na lunch i zakupy w centrum <strong>SLIEMY</strong>, ze słynną promenadą pełną niezliczonych sklepów, kawiarni, restauracji i barów. Powrót do hotelu. Czas wolny lub wieczorem fakultatywnie: wyjście do tawerny na noc maltańską. Wieczór rozpoczyna się od dźwięków mandoliny i tradycyjnego śpiewu. Kolacja z daniami kuchni maltańskiej (m.in. ricotta ravioli, królik smażony w winie i czosnku, Bragjoli). Powrót do hotelu, nocleg.</p>
+            </div>
+
+            <div class="card day-card">
+                <div class="day-header">
+                    <span class="day-title">Dzień 7: Valletta – Mdina (Wieczorami)</span>
+                    <span class="day-route">Trasa: ok. 35 km</span>
+                </div>
+                <p>Śniadanie. Czas wolny. Wieczorem (fakultatywnie): nocne zwiedzanie Valletty podczas Złotej Godziny. Spacer po najpiękniejszych ulicach miasta, następnie wizyta w Mdinie – Mieście Ciszy. Grube mury chronią miasto przed hałasem, tworząc niezapomniany klimat. Czas wolny, powrót do hotelu, nocleg.</p>
+            </div>
+
+            <div class="card day-card">
+                <div class="day-header">
+                    <span class="day-title">Dzień 8: Powrót do Polski</span>
+                </div>
+                <p>Śniadanie. Wykwaterowanie z hotelu. Transfer na lotnisko. Wylot do Polski.</p>
+            </div>
+        </section>
+
+        <!-- 3. INFORMACJE OGÓLNE O MALCIE -->
+        <section id="info">
+            <h2 class="section-title">🇲🇹 Informacje Ogólne o Malcie</h2>
+            <div class="card">
+                <p><strong>Stolica:</strong> Valletta (najbardziej wysunięta na południe stolica Europy)</p>
+                <p><strong>Język urzędowy:</strong> maltański oraz angielski</p>
+                <p><strong>Waluta:</strong> Euro (EUR)</p>
+                <p><strong>Ruch drogowy:</strong> Lewostronny (spadek po panowaniu brytyjskim)</p>
+                <p><strong>Klimat:</strong> Śródziemnomorski – wyśmienita pogoda, ponad 300 słonecznych dni w roku</p>
+                <p style="margin-top: 10px;">Malta to wyspiarskie państwo położone w sercu Morza Śródziemnego, składające się z wysp Malta, Gozo, Comino i kilku mniejszych niezamieszkanych wysepek. Słynie z krystalicznie czystej wody, unikalnej architektonicznie zabudowy z żółtego wapienia oraz niezwykle bogatej historii obejmującej ślady Fenican, Rzymian, Arabów, Zakonu Maltańskiego i Brytyjczyków.</p>
+            </div>
+        </section>
+
+        <!-- 4. WSZYSTKIE CIEKAWOSTKI -->
+        <section id="wszystkie-ciekawostki">
+            <h2 class="section-title">💡 Wszystkie Ciekawostki o Malcie (10 + 7)</h2>
+            <div class="info-grid">
+                <!-- 10 Ogólnych Ciekawostek -->
+                <div class="fact-card">
+                    <h4>1. Najmniejsza Stolica EU</h4>
+                    <p>Valletta ma powierzchnię zaledwie 0,8 km², co czyni ją najmniejszą stolicą w Unii Europejskiej pod względem obszaru.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>2. Brak Rzek i Jezior</h4>
+                    <p>Na Malcie nie ma ani jednej stałej rzeki ani naturalnego jeziora. Cała słodka woda pochodzi z odsolonej wody morskiej i wód podziemnych.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>3. 365 Kościołów</h4>
+                    <p>Mówi się, że na Malcie znajduje się kościół na każdy dzień roku – łącznie jest ich dokładnie 359 na tak małym obszarze.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>4. Wioska Popeye’a</h4>
+                    <p>Miasteczko Popeye Village w Anchor Bay zostało wybudowane od zera w 1979 r. na potrzeby filmu z Robinem Williamsem i stoi do dziś.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>5. Hollywood Południa</h4>
+                    <p>Na Malcie kręcono kultowe produkcje, m.in. "Gladiator", "Troja", "Gra o Tron", "Hrabia Monte Cristo" i "World War Z".</p>
+                </div>
+                <div class="fact-card">
+                    <h4>6. Czerwone Skrzynki Pocztowe</h4>
+                    <p>Ze względu na ponad 160-letnią podległość brytyjską, na ulicach wciąż spotkasz brytyjskie budki telefoniczne i skrzynki pocztowe.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>7. Najstarsza Budowla Świata</h4>
+                    <p>Maltańskie świątynie megalityczne są uznawane za jedne z najstarszych wolnostojących budowli wyznaniowych na świecie.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>8. Unikalny Język</h4>
+                    <p>Język maltański jest jedynym językiem semickim zapisanym alfabetem łacińskim i jedynym językiem semickim z oficjalnym statusem w UE.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>9. Czerwona Woda na Comino</h4>
+                    <p>Błękitna Laguna (Blue Lagoon) między Maltą a Comino przyciąga turystów turkusową wodą o niesamowitej przezroczystości.</p>
+                </div>
+                <div class="fact-card">
+                    <h4>10. Dwa Zegary na Kościołach</h4>
+                    <p>Większość tradycyjnych kościołów na Malcie ma dwa zegary – jeden wskazuje dobrą godzinę, a drugi fałszywą, aby oszukać diabła.</p>
+                </div>
+
+                <!-- 7 Dochodzących z Planu Wycieczki -->
+                <div class="fact-card" style="border-left-color: var(--primary);">
+                    <h4>Dzień 1 (Wycieczka): Lotnisko</h4>
+                    <p>Malta posiada jedno z najmniejszych lotnisk międzynarodowych w Europie, które dawniej było bazą brytyjskiego RAF-u.</p>
+                </div>
+                <div class="fact-card" style="border-left-color: var(--primary);">
+                    <h4>Dzień 2 (Wycieczka): Cud w Moście</h4>
+                    <p>Bomba zrzucona na Rotundę w Moście przebiła kopułę podczas mszy dla 300 osób i nie wybuchła – uznano to za cud.</p>
+                </div>
+                <div class="fact-card" style="border-left-color: var(--primary);">
+                    <h4>Dzień 3 (Wycieczka): Mitologia Gozo</h4>
+                    <p>Według mitów Homera, wyspa Gozo to mityczna Ogygia, na której nimfa Kalipso więziła Odyseusza przez 7 lat.</p>
+                </div>
+                <div class="fact-card" style="border-left-color: var(--primary);">
+                    <h4>Dzień 4 (Wycieczka): Oczy Luzzu</h4>
+                    <p>Malowanie oczu Ozyrysa na łodziach Luzzu pochodzi jeszcze z czasów starożytnych Żeglarzy Fenicjan.</p>
+                </div>
+                <div class="fact-card" style="border-left-color: var(--primary);">
+                    <h4>Dzień 5 (Wycieczka): Podpis Caravaggia</h4>
+                    <p>Dzieło Caravaggia w Katedrze św. Jana to największy obraz stworzony przez tego mistrza i jedyny przez niego podpisany.</p>
+                </div>
+                <div class="fact-card" style="border-left-color: var(--primary);">
+                    <h4>Dzień 6 (Wycieczka): Kuchnia Maltańska</h4>
+                    <p>Tradycyjne danie Fenkata (królik) przygotowywane jest według receptury przekazywanej z pokolenia na pokolenie od wieków.</p>
+                </div>
+                <div class="fact-card" style="border-left-color: var(--primary);">
+                    <h4>Dzień 7 (Wycieczka): Ciche Miasto</h4>
+                    <p>Mury Mdiny były zaprojektowane w taki sposób, aby tłumić odgłosy i chronić mieszkańców przed ewentualnym obstrzałem.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. SPORT NA MALCIE -->
+        <section id="sport">
+            <h2 class="section-title">⚽ Sport na Malcie</h2>
+            <div class="sport-section">
+                <div class="card">
+                    <h3>Największe Sukcesy</h3>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li><strong>Strzelectwo (Double Trap):</strong> William Chetcuti zdobył złoty medal w Pucharze Świata w Strzelectwie oraz wielokrotne mistrzostwa Europy juniorów.</li>
+                        <li><strong>Bocce / Snooker:</strong> Malta posiada mistrzów świata w Snookerze (Tony Drago) oraz liczne sukcesy w tradycyjnej grze w bulę (Għobba / Bocci).</li>
+                        <li><strong>Piłka Wodna (Waterpolo):</strong> Jeden z najpopularniejszych sportów na wyspie z bardzo silną ligą krajową i sukcesami w rozgrywkach śródziemnomorskich.</li>
+                    </ul>
+                </div>
+                <div class="card">
+                    <h3>Znani Sportowcy</h3>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li><strong>Tony Drago:</strong> Legendarny zawodnik snookera, znany z przydomku "Tornado" ze względu na ekstremalnie szybki styl gry.</li>
+                        <li><strong>William Chetcuti:</strong> Najsłynniejszy reprezentant olimpijski Malty w strzelectwie sportowym.</li>
+                        <li><strong>Michael Mifsud:</strong> Wybitny piłkarz, rekordzista pod względem liczby występów i strzelonych bramek dla reprezentacji Malty w piłce nożnej.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. PODSTAWOWE ZWROTY PO MALTAŃSKU -->
+        <section id="jezyk">
+            <h2 class="section-title">🗣️ Podstawowe Zwroty po Maltańsku</h2>
+            <table class="phrases-table">
+                <thead>
+                    <tr>
+                        <th>Polski</th>
+                        <th>Maltański</th>
+                        <th>Wymowa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Cześć / Dzień dobry</td>
+                        <td>Cław / Bonġu</td>
+                        <td>bon-dżu</td>
+                    </tr>
+                    <tr>
+                        <td>Dobry wieczór</td>
+                        <td>Bonswa</td>
+                        <td>bon-swa</td>
+                    </tr>
+                    <tr>
+                        <td>Do widzenia</td>
+                        <td>Saħħa</td>
+                        <td>sah-ha</td>
+                    </tr>
+                    <tr>
+                        <td>Proszę</td>
+                        <td>Jekk jogħġbok</td>
+                        <td>jek jodż-bok</td>
+                    </tr>
+                    <tr>
+                        <td>Dziękuję</td>
+                        <td>Grazzi</td>
+                        <td>gra-ci</td>
+                    </tr>
+                    <tr>
+                        <td>Tak / Nie</td>
+                        <td>Iva / Le</td>
+                        <td>i-wa / le</td>
+                    </tr>
+                    <tr>
+                        <td>Przepraszam</td>
+                        <td>Skuzi</td>
+                        <td>sku-zi</td>
+                    </tr>
+                    <tr>
+                        <td>Ile to kosztuje?</td>
+                        <td>Kemm galli?</td>
+                        <td>kem gal-li</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- 7. I 8. LINKI DO GIER I HOTELU -->
+        <section id="hotel">
+            <h2 class="section-title">🏨 Hotel i Rozrywka</h2>
+            <div class="hotel-box">
+                <div>
+                    <h3>Plaza Regency Hotels</h3>
+                    <p style="margin-top: 5px; color: var(--text-main);">Komfortowy obiekt położony na wybrzeżu w miejscowości Sliema z zachwycającym widokiem na zatokę St. Julian's Bay.</p>
+                </div>
+                <div class="hotel-buttons">
+                    <a href="https://www.booking.com/Share-so6vWzH" target="_blank" class="btn">
+                        🏨 Booking.com - Oferta Hotelu
+                    </a>
+                    <a href="https://maps.app.goo.gl/iQ4HnX9PcQnxkxd79" target="_blank" class="btn btn-outline" style="border-color: var(--primary); color: var(--primary);">
+                        📍 Lokalizacja na Google Maps
+                    </a>
+                    <a href="https://dawid108.github.io/dawi2026/index.html" target="_blank" class="btn" style="background-color: #d90429;">
+                        🎮 Graj w Gry Online
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; Śródziemnomorska Księżniczka - Wycieczka na Maltę.</p>
+    </footer>
+
+    <script>
+        // Smooth Scrolling dla nawigacji
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Podświetlanie nawigacji podczas przewijania
+        window.addEventListener('scroll', () => {
+            let current = '';
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (pageYOffset >= sectionTop - 120) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
