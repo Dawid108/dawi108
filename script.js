@@ -20,5 +20,5 @@ if (
     console.log("Nowy numer:", id108);
 } else {
     console.log("Numer:", id108);
-    alert("Numer:", id108);
+    alert("Numer: " + id108);
 }
