@@ -1,14 +1,19 @@
 {
-  "name": "Testy",
-  "short_name": "Testy",
-  "start_url": "https://dawid108.github.io/dawi108/20250830_testy.html",
+  "name": "Szkoła",
+  "short_name": "Szkoła",
+  "start_url": "https://dawid108.github.io/dawi108/index.html",
   "display": "standalone",
-  "background_color": "#00aef0",
-  "theme_color": "#000000",
+  "background_color": "#6FA89B",
+  "theme_color": "#23334B",
   "icons": [
     {
-      "src": "dawi108.png",
+      "src": "szkola-512.png",
       "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "szkola-192.png",
+      "sizes": "192x192",
       "type": "image/png"
     }
   ]
