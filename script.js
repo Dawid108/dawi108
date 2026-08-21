@@ -2,7 +2,6 @@ if ('serviceWorker' in navigator) {
 navigator.serviceWorker.register('./20251203_sw.js');
 }
 
-
 let id108 = localStorage.getItem("id108");
 
 if (
@@ -20,5 +19,4 @@ if (
     console.log("Nowy numer:", id108);
 } else {
     console.log("Numer:", id108);
-    alert("Numer: " + id108);
 }
