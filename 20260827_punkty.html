@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wszystkie Punkty</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="style.css">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Szkoła">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="dawi108.png">
+
+    <script src="script.js"></script>
+</head>
+<body>
+<div class="container">
+    <h1>Punkty Przedmiotowe</h1>
+    <div id="lista-punktow"></div>
+</div>
+
+<script>
+const przedmioty = [
+  { klucz: "dawid108", nazwa: "Punkty" },
+  { klucz: "szkola", nazwa: "Szkoła" },
+  { klucz: "biologia", nazwa: "Biologia" },
+  { klucz: "chemia", nazwa: "Chemia" },
+  { klucz: "fizyka", nazwa: "Fizyka" },
+  { klucz: "geografia", nazwa: "Geografia" },
+  { klucz: "historia", nazwa: "Historia" },
+  { klucz: "angielski", nazwa: "Język angielski" },
+  { klucz: "niemiecki", nazwa: "Język niemiecki" },
+  { klucz: "polski", nazwa: "Język polski" },
+  { klucz: "matematyka", nazwa: "Matematyka" }
+];
+
+const kontener = document.getElementById("lista-punktow");
+
+przedmioty.forEach(item => {
+  const wartosc = parseInt(localStorage.getItem(item.klucz), 10) || 0;
+  
+  // Tworzenie elementu dla każdego przedmiotu
+  const naglowek = document.createElement("h2");
+  naglowek.textContent = item.nazwa + ": " + wartosc;
+  
+  kontener.appendChild(naglowek);
+});
+        
+function numerateTables() {
+    document.querySelectorAll("table:not(.nienumerowana)").forEach(table => {
+        let rows = table.querySelectorAll("tr:not(:first-child)");
+        rows.forEach((row, index) => {
+            let firstCell = row.querySelector("td:first-child");
+            if (firstCell) {
+                firstCell.textContent = index + 1;
+            }
+        });
+    });
+}
+
+window.onload = function() {
+    numerateTables();
+};
+        
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('20251203_sw.js');
+}
+    </script>
+</body>
+</html>
