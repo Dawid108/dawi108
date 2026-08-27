@@ -12,44 +12,31 @@
 <body>
     <div class="container">
     <h1 id="punkty"></h1>
-      <div class="buttons">
+       <div class="buttons">
             <a href="index.html" class="app-icon">
                 <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1756998192/szkolaklasa3_skhhhs.png" alt="Szkoła 4">
                 <span>Szkoła 4</span>
-            </a>
-            <a href="20250901_szkola.html" class="app-icon">
-                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1756998192/szkolaklasa3_skhhhs.png" alt="Szkoła 3">
-                <span>Szkoła 3</span>
-            </a>
-<!--             <a href="20250923_flagi2.html" class="app-icon">
-                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1758639345/trudneflagi_zu1poc.png" alt="Trudne Flagi">
-                <span>Trudne Flagi</span>
             </a>
             <a href="20250619_tempo-biegu.html" class="app-icon">
                 <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1750251231/tempobiegu_vb1sow.jpg" alt="Tempo Biegu">
                 <span>Tempo</span>
             </a>
-            <a href="20250617_kolo-fortuny.html" class="app-icon">
-                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1750326763/kolofortuny2_dmzd1w.png" alt="Koło Fortuny">
-                <span>Koło Fortuny</span>
-            </a>
-            <a href="20250617_kostka.html" class="app-icon">
-                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1750327371/kostkadogry_xgh4is.png" alt="Kostka">
-                <span>Kostka</span>
-            </a>-->
         </div>
         <h2>Szkoła</h2>
         <div class="table-wrapper">
             <table border="1">
 <tr><th>Lp.</th><th>Nazwa</th></tr>
-<tr><td></td><td><a href="index.html">Strona</a></td></tr>
+<tr><td></td><td><a href="index.html">Szkoła</a></td></tr>
+<tr><td></td><td><a href="20260827_generator-testow.html">Generator Testów</a></td></tr>
+<tr><td></td><td><a href="20260827_punkty.html">Punkty</a></td></tr>
             </table>
         </div>
         <h2>Aplikacje</h2>
         <div class="table-wrapper">
             <table border="1">
 <tr><th>Lp.</th><th>Nazwa</th></tr>
-<tr><td></td><td><a href="cennik-jazdy.html">Cennik Jazdy</a></td></tr>
+<tr><td></td><td><a href="20250619_tempo-biegu.html">Tempo Biegu</a></td></tr>
+<tr><td></td><td><a href="20260416_cennik-jazdy.html">Cennik Jazdy</a></td></tr>
             </table>
         </div>
         <h2>Moja Ekstraklasa</h2>
@@ -73,6 +60,22 @@
         let dawid108 = localStorage.getItem("dawid108") || 0;
         let punkty = document.getElementById("punkty");
         punkty.innerHTML = "Punkty: " + dawid108;
+        
+        function numerateTables() {
+            document.querySelectorAll("table:not(.nienumerowana)").forEach(table => {
+                let rows = table.querySelectorAll("tr:not(:first-child)");
+                rows.forEach((row, index) => {
+                    let firstCell = row.querySelector("td:first-child");
+                    if (firstCell) {
+                        firstCell.textContent = index + 1;
+                    }
+                });
+            });
+        }
+
+        window.onload = function() {
+            numerateTables();
+        };
     </script>
 </body>
 </html>
