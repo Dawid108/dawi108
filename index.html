@@ -3,466 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="style.css">
 
-    <title>Dawid</title>
-    <meta name="description" content="Dawid">
-    <meta name="author" content="Dawid Gustowski">
-
-    <link rel="icon" href="./icon-512.png">
-    <link rel="apple-touch-icon" href="./icon-192.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Dawid">
+    <meta name="apple-mobile-web-app-title" content="Szkoła">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="dawi108.png">
 
-    <link rel="manifest" href="./manifest.json">
-    <meta name="theme-color" content="#E6F7F4">
-
-    <link rel="stylesheet" href="./style.css">
+    <script src="script.js"></script>
 </head>
 <body>
-<div class="container">
-    <h1 id="punkty"></h1>
-    <div class="buttons"></div>
-</div>
-<script>
+    <div class="container">
+        <h1>Szkoła 4 Klasa</h1>
+        <h1 id="punkty"></h1>
+        <h2>Testy</h2>
+        <div class="table-wrapper">
+            <table border="1">
+<tr><th>Lp.</th><th>Nazwa</th><th>Data</th></tr>
+<tr><td></td><td><a href="20260827_chemia.html">Chemia - Nazwy i Symbole Pierwiastków Chemicznych</a></td><td>27.08.2026</td></tr>
+            </table>
+        </div>
+        <h2>Inne</h2>
+        <div class="table-wrapper">
+            <table border="1">
+<tr><th>Lp.</th><th>Nazwa</th></tr>
+<tr><td></td><td><a href="20250901_szkola.html">Szkoła 3 Klasa</a></td></tr>
+<tr><td></td><td><a href="20250625_szkola.html">Szkoła 2 Klasa</a></td></tr>
+<tr><td></td><td><a href="https://dawid108.github.io/dawi2026/index.html">Gry</a></td></tr>
+            </table>
+        </div>
+    </div>
+    <script>
 let dawid108 = localStorage.getItem("dawid108") || 0;
 let punkty = document.getElementById("punkty");
 punkty.innerHTML = "Punkty: " + dawid108;
-let historia108 = JSON.parse(localStorage.getItem("historia108")) || [];
-
-let container = document.querySelector(".buttons");
-
-// funkcja: zamiana nazwy pliku na ładny tytuł
-function getNameFromUrl(url) {
-    let name = url.split("/").pop().replace(".html", "");
-
-    // index.html → Strona
-    if (name === "index") return "Strona";
-
-    // usuń datę (20260306_)
-    if (/^\d{8}_/.test(name)) {
-        name = name.substring(9);
-    }
-
-    // zamień myślniki na spacje
-    name = name.replace(/-/g, " ");
-
-    // rozdziel liczby (historia7 → historia 7)
-    name = name.replace(/([a-zA-Ząćęłńóśżź])(\d+)/g, "$1 $2");
-
-    // 🔥 TWOJA LISTA WYJĄTKÓW (MOŻESZ DOPISYWAĆ)
-    const customWords = {
-        "zabka": "Żabka",
-        "milosnik": "Miłośnik",
-        "baltycka": "Bałtycka", 
-        "gor": "Gór",
-        "wieze": "Wieże", 
-        "ksiazeczki": "Książeczki",
-        "slask": "Śląsk",
-        "klodzkiej": "Kłodzkiej",
-        "beskidow": "Beskidów",
-        "dlugopole": "Długopole",
-        "male": "Małe",
-        "zdroj": "Zdrój",
-        "wroclawia": "Wrocławia",
-        "slezy": "Ślęży",
-        "snieznika": "Śnieżnika",
-        "wzgorza": "Wzgórza",
-        "pogorzy": "Pogórzy",
-        "zamkow": "Zamków",
-        "miedzygorza": "Międzygórza",
-        "sudetow": "Sudetów",
-        "zlotych": "Złotych",
-        "swietokrzyskich": "Świętokrzyskich",
-        "swietokrzyska": "Świętokrzyska",
-        "piatka": "Piątka",
-        "wyzyny": "Wyżyny", 
-        "wedkarstwo": "Wędkarstwo",
-        "banki": "Bańki",
-        "jablko": "Jabłko",
-        "walbrzyskiej": "Wałbrzyskiej",
-        "walbrzyskich": "Wałbrzyskich",
-        "latarn": "Latarń",
-        "widokow": "Widoków",
-        "rychlebow": "Rychlebów",
-        "gorek": "Górek",
-        "bieszczadow": "Bieszczadów",
-        "kzkg": "KZKG",
-        "slaska": "Śląska",
-        "bylem": "Byłem",
-        "wyjasnienie": "Wyjaśnienie",
-        "gluszyca": "Głuszyca",
-        "kolko": "Kółko",
-        "krzyzyk": "Krzyżyk",
-        "stolowych": "Stołowych",
-        "srednia": "Średnia",
-        "szkola": "Szkoła",
-        "gora": "Góra",
-        "kolo": "Koło"
-    };
-
-    // podziel na słowa
-    let words = name.split(" ");
-
-    words = words.map(word => {
-        let lower = word.toLowerCase();
-
-        // jeśli jest w wyjątkach → użyj gotowego
-        if (customWords[lower]) {
-            return customWords[lower];
-        }
-
-        // normalnie: DUŻA pierwsza litera
-        return lower.charAt(0).toUpperCase() + lower.slice(1);
+        
+function numerateTables() {
+    document.querySelectorAll("table:not(.nienumerowana)").forEach(table => {
+        let rows = table.querySelectorAll("tr:not(:first-child)");
+        rows.forEach((row, index) => {
+            let firstCell = row.querySelector("td:first-child");
+            if (firstCell) {
+                firstCell.textContent = index + 1;
+            }
+        });
     });
-
-    return words.join(" ");
 }
 
-// funkcja: dobór ikony
-function getIcon(name) {
-    name = name.toLowerCase();
-    
-    if (name.includes("rower"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777473090/rower_ozruni.png";
-    
-    if (name.includes("gluszyca"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777384263/gluszyca_viqiqz.png";
-    
-    if (name.includes("parkrun"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777314644/parkrun_sy5sie.png";
-    
-    if (name.includes("praktyki"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777313846/praktyki_v8qfoy.png";
-    
-    if (name.includes("dlugopole"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777313466/dlugopole_tzcm0n.png";
-    
-    if (name.includes("jelenia"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1777313248/jeleniagora_we0gnk.png";
-    
-    if (name.includes("slaska"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776779009/kgds23_xicuqq.png";
-    
-    if (name.includes("wroclawia"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776778591/kgw_schary.png";
-    
-    if (name.includes("zlotych"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776515612/gory-zlote_g04s1f.png";
-    
-    if (name.includes("bialskich"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776515487/gory-bialskie_tjouk9.png";
-    
-    if (name.includes("stolowych"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776515202/gory-stolowe_f5ezmc.png";
-    
-    if (name.includes("izer"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776514997/gory-izerskie_vwqtqy.png";
-    
-    if (name.includes("orlickich"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776514394/gory-orlickie_ch7nhi.png";
-    
-    if (name.includes("opawski"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776514115/gory-opawskie_ymtnam.png";
-    
-    if (name.includes("swietokrzys"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776513898/gory-swietokrzyskie_ox3kw0.png";
-    
-    if (name.includes("sowi"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776513437/gory-sowie_ldzcp0.png";
-    
-    if (name.includes("kruczych"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776513064/gory-krucze_xcoqic.png";
-    
-    if (name.includes("kamiennych"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776512796/gory-kamienne_eozpcb.png";
-    
-    if (name.includes("walbrzy"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776512278/gory-walbrzyskie_fprs7b.png";
-    
-    if (name.includes("rudaw"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776511743/rudawy-janowickie_a7huek.png";
-    
-    if (name.includes("kaczawsk"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776511477/gory-kaczawskie_mh0q58.png";
-    
-    if (name.includes("snieznika"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776511275/masyw-snieznika2_g7lzre.png";
-    
-    if (name.includes("slezy"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776511014/masyw-slezy_tzvrhv.png";
-    
-    if (name.includes("bystrzyckich"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776510774/gory-bystrzyckie_iflomc.png";
-
-    if (name.includes("diadem"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776510293/diadem_xxj29t.png";
-
-    if (name.includes("tatr"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775668420/tatry_nppadp.png";
-    
-    if (name.includes("karko"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775658841/karkonosze_uzwthy.png";
-    
-    if (name.includes("bieszcz"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775658261/bieszczady_ecoilo.png";
-    
-    if (name.includes("jazdy"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776508163/cennik-jazdy_yvujsh.png";
-
-    if (name.includes("wiez"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775669054/wieze_kj49rl.png";
-
-    if (name.includes("zam"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775669210/zamek_sjlkji.png";
-
-    if (name.includes("wido"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775669566/widok_xn1arb.png";
-
-    if (name.includes("schron"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775667738/schronisko_xdxqif.png";
-
-    if (name.includes("balt"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775658013/baltyk_kwtt1o.png";
-
-    if (name.includes("warmia"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775668760/warmia_f8ulkk.png";
-
-    if (name.includes("milosnik"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775667340/milosnikgor_nofdhj.png";
-
-    if (name.includes("koron"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249458/ksiazeczka1_ezd0el.jpg";
-
-    if (name.includes("szczyt"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1755091286/mapyszczyty_ox3n7n.png";
-    
-    if (name.includes("beskid"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250778/szczyty2_dbnfv9.png";
-    
-    if (name.includes("gor"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250778/szczyty2_dbnfv9.png";
-
-    if (name.includes("odznak"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750969664/mojeodznakiii_j2okju.png";
-
-    if (name.includes("tempo"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750251231/tempobiegu_vb1sow.jpg";
-
-    if (name.includes("bieg"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750252653/biegi_ioqich.jpg";
-
-    if (name.includes("segment"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1761589755/segmenty_yhhrdw.png";
-
-    if (name.includes("szach"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750252388/szachy2_zwtvhi.png";
-
-    if (name.includes("kraj"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249073/kraje2_fxv6bs.png";
-
-    if (name.includes("stadion"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250373/stadion_oyn8mm.jpg";
-
-    if (name.includes("puchar"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750247562/puchar_epccrv.png";
-
-    if (name.includes("medal"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750248036/medal_dhegc0.png";
-
-    if (name.includes("dyplom"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750248438/dyplom_ffqksb.png";
-
-    if (name.includes("numer"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250061/numer_ca7cfz.jpg";
-
-    if (name.includes("rekord"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750958780/mojerekordy_dftz90.png";
-
-    if (name.includes("map"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1755100514/mapylogo_lsvhmi.png";
-
-    if (name.includes("magnes"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249837/megnesy_fhhqhb.jpg";
-
-    if (name.includes("zabka"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766339973/zabka_kse8oi.png";
-
-    if (name.includes("kosmos"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766408367/kosmos_xgkfai.png";
-
-    if (name.includes("halloween"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766320514/halloween_dcjjsf.png";
-
-    if (name.includes("zombi"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768403831/zombi_caxzwt.png";
-
-    if (name.includes("jabl"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750450328/logozbieraniajablek_kndluj.png";
-
-    if (name.includes("samolot"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766396487/samolot_laxp46.png";
-
-    if (name.includes("banki"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768320738/banki_liepk0.png";
-
-    if (name.includes("blo"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766254392/bloczki_rf1skv.png";
-
-    if (name.includes("deszcz"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768490181/deszcz_sykbog.png";
-
-    if (name.includes("dino"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766414369/dinozaur_jj7ky9.png";
-
-    if (name.includes("flag"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754993042/emotkiflagi_n4wrxw.png";
-
-    if (name.includes("gold"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754815264/goldrun_fayrn5.png";
-
-    if (name.includes("gwiazdor"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766836369/gwiazdor2_d9n2ce.png";
-
-    if (name.includes("karn"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766254518/karne_awosir.png";
-
-    if (name.includes("kre"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766517571/krecik_wcv4q5.png";
-
-    if (name.includes("ptak"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768560623/ptak_gnm2j6.png";
-
-    if (name.includes("surf"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768652631/surfing_azx2qe.png";
-
-    if (name.includes("tenis"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766320333/tenis_adypws.png";
-
-    if (name.includes("ufo"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754815441/ufo_utvgyg.png";
-
-    if (name.includes("snake"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1766254272/waz_buwjhx.png";
-
-    if (name.includes("wedka"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754934579/wedkarstwo_yyyxnx.png";
-
-    if (name.includes("wspinacz"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1768488886/wspinaczka_menjr1.png";
-
-    if (name.includes("gry"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750251558/gry_nxmlim.jpg";
-
-    if (name.includes("szkola"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1756998192/szkolaklasa3_skhhhs.png";
-    
-    if (name.includes("fizyka"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776509483/fizyka_iq6mg4.png";
-
-    if (name.includes("historia"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1761995854/historia_prlmra.png";
-
-    if (name.includes("biologia"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775656531/biologia3_rdlexd.png";
-
-    if (name.includes("geografia"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775656531/geografia_q5ckff.png";
-
-    if (name.includes("chemia"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1761916824/chemiaweglo_icicsv.png";
-
-    if (name.includes("angielski"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1752604207/jezykangielskinauka_zkuudx.png";
-
-    if (name.includes("niemiecki"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775656530/niemiecki_vydruv.png";
-    
-    if (name.includes("polski"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1776509795/jezyk-polski2_ef7lyn.png";
-
-    if (name.includes("pilka"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750250889/pilka2_rofvtq.png";
-
-    if (name.includes("sokol"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1752603290/sokol2_lzrw8f.png";
-
-    if (name.includes("dziennik"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1755772507/dziennik_xpixpf.png";
-
-    if (name.includes("zdj"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1754816644/psoty_bqgdbh.png";
-
-    if (name.includes("emot"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1755866451/emotki_lb8pvb.png";
-
-    if (name.includes("kart"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750880191/kartylogo_xlku4l.png";
-
-    if (name.includes("madera"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1753961061/mapamadera_vlmqoc.png";
-
-    if (name.includes("norwe"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1752341895/dofiordownorwegii_gnos2l.png";
-
-    if (name.includes("kolo"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750326763/kolofortuny2_dmzd1w.png";
-
-    if (name.includes("kost"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750327371/kostkadogry_xgh4is.png";
-
-    if (name.includes("kolko"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750324262/kolkoikrzyz2_nmidv4.png";
-
-    if (name.includes("prawko"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1763498037/prawko_ndidvf.png";
-
-    if (name.includes("inne"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750881328/inne_cqv03n.png";
-
-    if (name.includes("jul"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1775657590/20250813_julka_fdlrk4.png";
-    
-    if (name.includes("ksiazeczki"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750249467/ksiazeczka2_oexveq.png";
-
-    if (name.includes("aplik"))
-        return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750251811/aplikacje2_uuvpgl.png";
-
-    if (name.includes("index"))
-        return "dawi108.png";
-
-    if (name.includes("dawid"))
-        return "dawi108.png";
-
-    // domyślna
-    return "https://res.cloudinary.com/diljpkw9f/image/upload/v1750251558/gry_nxmlim.jpg";
+window.onload = function() {
+    numerateTables();
+};
+        
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('20251203_sw.js');
 }
-
-// od najnowszych
-historia108 = historia108.reverse();
-
-// tworzenie kafelków
-historia108.forEach(item => {
-    let name = getNameFromUrl(item.url);
-    let icon = getIcon(item.url);
-
-    let a = document.createElement("a");
-    a.href = item.url;
-    a.className = "app-icon";
-
-    let img = document.createElement("img");
-    img.src = icon;
-    img.alt = name;
-
-    let span = document.createElement("span");
-    span.textContent = name;
-
-    a.appendChild(img);
-    a.appendChild(span);
-
-    container.appendChild(a);
-});
-</script>
+    </script>
 </body>
 </html>
