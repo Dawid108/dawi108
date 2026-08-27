@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemia</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <div id="game">
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+        <div class="category" id="category"></div>
+        <div class="question" id="question"></div>
+        <div id="answers"></div>
+        <div id="counter"></div>
+    </div>
+
+    <div id="endScreen" class="hidden">
+        <h2 id="endTitle"></h2>
+        <p>Twój wynik: <span id="finalScore"></span></p>
+        <p>Twój rekord: <span id="record"></span></p>
+        <p>Suma punktów: <span id="dawid108"></span></p>
+        <button onclick="newGame()">Nowa Gra</button>
+    </div>
+
+<script>
+// PYTANIA
+let questions = [
+{cat:"Chemia", q:"Co oznacza symbol H?", a:"Wodór", b:"Hel", c:"Węgiel", d:"Azot"},
+{cat:"Chemia", q:"Jaki jest symbol wodoru?", a:"H", b:"He", c:"O", d:"N"},
+
+{cat:"Chemia", q:"Co oznacza symbol Li?", a:"Lit", b:"Licz", c:"Glin", d:"Hel"},
+{cat:"Chemia", q:"Jaki jest symbol litu?", a:"Li", b:"Al", c:"Be", d:"Na"},
+
+{cat:"Chemia", q:"Co oznacza symbol Na?", a:"Sód", b:"Potas", c:"Cynk", d:"Bor"},
+{cat:"Chemia", q:"Jaki jest symbol sodu?", a:"Na", b:"Ne", c:"Ni", d:"N"},
+
+{cat:"Chemia", q:"Co oznacza symbol K?", a:"Potas", b:"Kobalt", c:"Krzem", d:"Wapń"},
+{cat:"Chemia", q:"Jaki jest symbol potasu?", a:"K", b:"P", c:"Ca", d:"Co"},
+
+{cat:"Chemia", q:"Co oznacza symbol Be?", a:"Beryl", b:"Bor", c:"Brom", d:"Ber"},
+{cat:"Chemia", q:"Jaki jest symbol berylu?", a:"Be", b:"B", c:"Br", d:"Ba"},
+
+{cat:"Chemia", q:"Co oznacza symbol Mg?", a:"Magnez", b:"Mangan", c:"Miedź", d:"Rtęć"},
+{cat:"Chemia", q:"Jaki jest symbol magnezu?", a:"Mg", b:"Mn", c:"Ma", d:"Me"},
+
+{cat:"Chemia", q:"Co oznacza symbol Ca?", a:"Wapń", b:"Węgiel", c:"Wapno", d:"Cyna"},
+{cat:"Chemia", q:"Jaki jest symbol wapnia?", a:"Ca", b:"C", c:"W", d:"Cn"},
+
+{cat:"Chemia", q:"Co oznacza symbol Cr?", a:"Chrom", b:"Chlor", c:"Cynk", d:"Krzem"},
+{cat:"Chemia", q:"Jaki jest symbol chromu?", a:"Cr", b:"Cl", c:"Co", d:"C"},
+
+{cat:"Chemia", q:"Co oznacza symbol Mn?", a:"Mangan", b:"Magnez", c:"Miedź", d:"Manganit"},
+{cat:"Chemia", q:"Jaki jest symbol manganu?", a:"Mn", b:"Mg", c:"Ma", d:"M"},
+
+{cat:"Chemia", q:"Co oznacza symbol Fe?", a:"Żelazo", b:"Fluor", c:"Fosfor", d:"Ferm"},
+{cat:"Chemia", q:"Jaki jest symbol żelaza?", a:"Fe", b:"F", c:"Że", d:"Zn"},
+
+{cat:"Chemia", q:"Co oznacza symbol Co?", a:"Kobalt", b:"Kopert", c:"Chrom", d:"Krzem"},
+{cat:"Chemia", q:"Jaki jest symbol kobaltu?", a:"Co", b:"K", c:"C", d:"Ko"},
+
+{cat:"Chemia", q:"Co oznacza symbol Ni?", a:"Nikiel", b:"Neon", c:"Azot", d:"Cynk"},
+{cat:"Chemia", q:"Jaki jest symbol niklu?", a:"Ni", b:"Ne", c:"N", d:"Na"},
+
+{cat:"Chemia", q:"Co oznacza symbol Pt?", a:"Platyna", b:"Potas", c:"Pluton", d:"Polon"},
+{cat:"Chemia", q:"Jaki jest symbol platyny?", a:"Pt", b:"Pa", c:"Pl", d:"P"},
+
+{cat:"Chemia", q:"Co oznacza symbol Cu?", a:"Miedź", b:"Cyna", c:"Cynk", d:"Kobalt"},
+{cat:"Chemia", q:"Jaki jest symbol miedzi?", a:"Cu", b:"Ca", c:"Co", d:"Mg"},
+
+{cat:"Chemia", q:"Co oznacza symbol Ag?", a:"Srebro", b:"Argon", c:"Złoto", d:"Aluminium"},
+{cat:"Chemia", q:"Jaki jest symbol srebra?", a:"Ag", b:"Au", c:"Ar", d:"Al"},
+
+{cat:"Chemia", q:"Co oznacza symbol Au?", a:"Złoto", b:"Srebro", c:"Cynk", d:"Żelazo"},
+{cat:"Chemia", q:"Jaki jest symbol złota?", a:"Au", b:"Ag", c:"Al", d:"Zn"},
+
+{cat:"Chemia", q:"Co oznacza symbol Zn?", a:"Cynk", b:"Cyna", c:"Neon", d:"Azot"},
+{cat:"Chemia", q:"Jaki jest symbol cynku?", a:"Zn", b:"Sn", c:"Cn", d:"Ni"},
+
+{cat:"Chemia", q:"Co oznacza symbol Hg?", a:"Rtęć", b:"Hel", c:"Wodór", d:"Srebro"},
+{cat:"Chemia", q:"Jaki jest symbol rtęci?", a:"Hg", b:"He", c:"H", d:"Ag"},
+
+{cat:"Chemia", q:"Co oznacza symbol B?", a:"Bor", b:"Brom", c:"Beryl", d:"Bar"},
+{cat:"Chemia", q:"Jaki jest symbol boru?", a:"B", b:"Br", c:"Be", d:"Bo"},
+
+{cat:"Chemia", q:"Co oznacza symbol Al?", a:"Glin", b:"Aluminium", c:"Argon", d:"Lit"},
+{cat:"Chemia", q:"Jaki jest symbol glinu?", a:"Al", b:"Ag", c:"Ar", d:"Li"},
+
+{cat:"Chemia", q:"Co oznacza symbol C?", a:"Węgiel", b:"Wapń", c:"Cyna", d:"Chlor"},
+{cat:"Chemia", q:"Jaki jest symbol węgla?", a:"C", b:"Ca", c:"Cl", d:"Co"},
+
+{cat:"Chemia", q:"Co oznacza symbol Si?", a:"Krzem", b:"Siarka", c:"Srebro", d:"Cyna"},
+{cat:"Chemia", q:"Jaki jest symbol krzemu?", a:"Si", b:"S", c:"Cr", d:"Sn"},
+
+{cat:"Chemia", q:"Co oznacza symbol Sn?", a:"Cyna", b:"Cynk", c:"Sód", d:"Srebro"},
+{cat:"Chemia", q:"Jaki jest symbol cyny?", a:"Sn", b:"Zn", c:"Cn", d:"Cu"},
+
+{cat:"Chemia", q:"Co oznacza symbol Pb?", a:"Ołów", b:"Polon", c:"Platyna", d:"Potas"},
+{cat:"Chemia", q:"Jaki jest symbol ołowiu?", a:"Pb", b:"O", c:"Pt", d:"Po"},
+
+{cat:"Chemia", q:"Co oznacza symbol N?", a:"Azot", b:"Neon", c:"Nikiel", d:"Sód"},
+{cat:"Chemia", q:"Jaki jest symbol azotu?", a:"N", b:"Ne", c:"Ni", d:"Na"},
+
+{cat:"Chemia", q:"Co oznacza symbol P?", a:"Fosfor", b:"Potas", c:"Platyna", d:"Polon"},
+{cat:"Chemia", q:"Jaki jest symbol fosforu?", a:"P", b:"Pt", c:"K", d:"F"},
+
+{cat:"Chemia", q:"Co oznacza symbol O?", a:"Tlen", b:"Ołów", c:"Osm", d:"Azot"},
+{cat:"Chemia", q:"Jaki jest symbol tlenu?", a:"O", b:"Os", c:"T", d:"Tl"},
+
+{cat:"Chemia", q:"Co oznacza symbol S?", a:"Siarka", b:"Srebro", c:"Sód", d:"Krzem"},
+{cat:"Chemia", q:"Jaki jest symbol siarki?", a:"S", b:"Si", c:"Sr", d:"Sn"},
+
+{cat:"Chemia", q:"Co oznacza symbol F?", a:"Fluor", b:"Fosfor", c:"Ferm", d:"Żelazo"},
+{cat:"Chemia", q:"Jaki jest symbol fluoru?", a:"F", b:"Fe", c:"Fl", d:"Fr"},
+
+{cat:"Chemia", q:"Co oznacza symbol Cl?", a:"Chlor", b:"Chrom", c:"Cynk", d:"Cyna"},
+{cat:"Chemia", q:"Jaki jest symbol chloru?", a:"Cl", b:"Cr", c:"C", d:"Ch"},
+
+{cat:"Chemia", q:"Co oznacza symbol Br?", a:"Brom", b:"Bor", c:"Beryl", d:"Bar"},
+{cat:"Chemia", q:"Jaki jest symbol bromu?", a:"Br", b:"B", c:"Be", d:"Ba"},
+
+{cat:"Chemia", q:"Co oznacza symbol I?", a:"Jod", b:"Iryd", c:"Ind", d:"Żelazo"},
+{cat:"Chemia", q:"Jaki jest symbol jodu?", a:"I", b:"Ir", c:"In", d:"Jd"},
+
+{cat:"Chemia", q:"Co oznacza symbol He?", a:"Hel", b:"Wodór", c:"Neon", d:"Rtęć"},
+{cat:"Chemia", q:"Jaki jest symbol helu?", a:"He", b:"H", c:"Ne", d:"Hg"},
+
+{cat:"Chemia", q:"Co oznacza symbol Ne?", a:"Neon", b:"Nikiel", c:"Neodym", d:"Azot"},
+{cat:"Chemia", q:"Jaki jest symbol neonu?", a:"Ne", b:"Ni", c:"N", d:"Na"},
+
+{cat:"Chemia", q:"Co oznacza symbol Ar?", a:"Argon", b:"Aluminium", c:"Srebro", d:"Arsen"},
+{cat:"Chemia", q:"Jaki jest symbol argonu?", a:"Ar", b:"Al", c:"Ag", d:"Au"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+let record = localStorage.getItem("szkola") || 0;
+let dawid108 = localStorage.getItem("dawid108") || 0;
+let chemia = localStorage.getItem("chemia") || 0; // Wpisz punkty dla chemiau
+
+function newGame(){
+    life = 9; score = 0; used = [];
+    document.getElementById("endScreen").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    updateStats();
+    nextQuestion();
+}
+
+function updateStats(){
+    document.getElementById("life").innerText = life;
+    document.getElementById("score").innerText = score;
+}
+
+function nextQuestion(){
+    if(used.length === maxQ){ return win(); }
+
+    let id;
+    do{ id = Math.floor(Math.random()*maxQ); }
+    while(used.includes(id));
+
+    used.push(id);
+    current = questions[id];
+
+    document.getElementById("category").innerText = current.cat;
+    document.getElementById("question").innerText = current.q;
+
+    document.getElementById("counter").innerText = "Pytanie " + used.length + " / " + maxQ;
+
+    // Mieszanie odpowiedzi
+    let arr = [
+        {txt: current.a, correct: true},
+        {txt: current.b, correct: false},
+        {txt: current.c, correct: false},
+        {txt: current.d, correct: false}
+    ];
+    arr.sort(()=>Math.random()-0.5);
+
+    let ansDiv = document.getElementById("answers");
+    ansDiv.innerHTML = "";
+
+    arr.forEach(a=>{
+        let btn = document.createElement("div");
+        btn.classList.add("btn");
+        btn.innerText = a.txt;
+        btn.onclick = ()=>answer(a.correct, btn);
+        ansDiv.appendChild(btn);
+    });
+}
+
+function answer(correct, btn){
+    let buttons = document.querySelectorAll(".btn");
+    buttons.forEach(b=>b.style.pointerEvents="none");
+
+    if(correct){
+        btn.classList.add("correct");
+        score++;
+        dawid108 = parseInt(dawid108) + 9;
+        localStorage.setItem("dawid108", dawid108);
+        chemia = parseInt(chemia) + 9; // Punkty dla chemiau
+        localStorage.setItem("chemia", chemia); // Punkty dla chemiau
+        updateStats();
+        setTimeout(()=>nextQuestion(), 1500);
+    }else{
+        btn.classList.add("wrong");
+        // pokaż poprawną
+        buttons.forEach(b=>{
+            if(b.innerText === current.a) b.classList.add("correct");
+        });
+        life--;
+        updateStats();
+        if(life <= 0){ setTimeout(()=>gameOver(), 6000); }
+        else{ setTimeout(()=>nextQuestion(), 5000); }
+    }
+}
+
+function win(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Wygrałeś!";
+    endScreen();
+}
+
+function gameOver(){
+    document.getElementById("game").classList.add("hidden");
+    document.getElementById("endScreen").classList.remove("hidden");
+    document.getElementById("endTitle").innerText = "Koniec gry";
+    endScreen();
+}
+
+function endScreen(){
+    document.getElementById("finalScore").innerText = score;
+
+    if(score > record){
+        record = score;
+        localStorage.setItem("szkola", record);
+    }
+
+    document.getElementById("record").innerText = record;
+    document.getElementById("dawid108").innerText = dawid108;
+    document.getElementById("chemia").innerText = chemia; // Punkty dla chemiau
+}
+
+newGame();
+</script>
+</body>
+</html>
