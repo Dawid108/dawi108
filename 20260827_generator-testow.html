@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+```
+<title>Generator testów</title>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        padding: 15px;
+        font-family: Arial, sans-serif;
+        background: #f2f2f2;
+        color: #222;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 900px;
+        margin: auto;
+    }
+
+    h1 {
+        text-align: center;
+        margin: 5px 0 20px;
+        font-size: 28px;
+    }
+
+    .form-box {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        margin-bottom: 20px;
+    }
+
+    label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 7px;
+        margin-top: 15px;
+    }
+
+    label:first-child {
+        margin-top: 0;
+    }
+
+    select,
+    textarea {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #bbb;
+        border-radius: 8px;
+        background: white;
+    }
+
+    textarea {
+        min-height: 180px;
+        resize: vertical;
+        font-family: Arial, sans-serif;
+    }
+
+    #contentLabel,
+    #content {
+        display: none;
+    }
+
+    button {
+        width: 100%;
+        border: none;
+        border-radius: 8px;
+        padding: 13px;
+        margin-top: 15px;
+        font-size: 17px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    #generateBtn {
+        background: #222;
+        color: white;
+    }
+
+    #generateBtn:active,
+    .copyBtn:active {
+        transform: scale(0.98);
+    }
+
+    .result {
+        display: none;
+    }
+
+    .box {
+        background: white;
+        padding: 18px;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+        margin-bottom: 20px;
+    }
+
+    .box h2 {
+        margin-top: 0;
+        font-size: 21px;
+    }
+
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        background: #f5f5f5;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 12px;
+        font-family: Consolas, monospace;
+        font-size: 14px;
+        line-height: 1.5;
+        overflow-x: auto;
+    }
+
+    .copyBtn {
+        background: #333;
+        color: white;
+    }
+
+    .copied {
+        background: #188038 !important;
+    }
+
+    .info {
+        font-size: 14px;
+        color: #666;
+        margin-top: 8px;
+    }
+
+    @media (min-width: 700px) {
+        body {
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+        }
+
+        textarea {
+            min-height: 250px;
+        }
+    }
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<h1>Generator testów</h1>
+
+<div class="form-box">
+
+    <label for="subject">Przedmiot</label>
+
+    <select id="subject">
+        <option value="">-- Wybierz przedmiot --</option>
+        <option value="Biologia">Biologia</option>
+        <option value="Chemia">Chemia</option>
+        <option value="Fizyka">Fizyka</option>
+        <option value="Geografia">Geografia</option>
+        <option value="Historia">Historia</option>
+        <option value="Angielski">Angielski</option>
+        <option value="Niemiecki">Niemiecki</option>
+        <option value="Polski">Polski</option>
+        <option value="Matematyka">Matematyka</option>
+        <option value="Programowanie">Programowanie</option>
+    </select>
+
+
+    <label for="form">Forma</label>
+
+    <select id="form">
+        <option value="">-- Wybierz formę --</option>
+        <option value="cwiczenia">Ćwiczenia</option>
+        <option value="pytania">Pytania</option>
+        <option value="notatka">Notatka</option>
+        <option value="zdjecie">Zdjęcie</option>
+    </select>
+
+
+    <label id="contentLabel" for="content">
+        Treść
+    </label>
+
+    <textarea
+        id="content"
+        placeholder="Wklej tutaj pytania, notatkę lub inne informacje..."
+    ></textarea>
+
+    <div class="info" id="info"></div>
+
+    <button id="generateBtn" onclick="generate()">
+        Generuj
+    </button>
+
+</div>
+
+
+<div class="result" id="result">
+
+    <div class="box">
+
+        <h2>Prompt</h2>
+
+        <pre id="prompt"></pre>
+
+        <button class="copyBtn" id="copyPrompt" onclick="copyText('prompt', 'copyPrompt')">
+            Skopiuj Prompt
+        </button>
+
+    </div>
+
+
+    <div class="box">
+
+        <h2>Kod</h2>
+
+        <pre id="code"></pre>
+
+        <button class="copyBtn" id="copyCode" onclick="copyText('code', 'copyCode')">
+            Skopiuj Kod
+        </button>
+
+    </div>
+
+</div>
+```
+
+</div>
+
+<script>
+
+const subjectSelect = document.getElementById("subject");
+const formSelect = document.getElementById("form");
+const content = document.getElementById("content");
+const contentLabel = document.getElementById("contentLabel");
+const info = document.getElementById("info");
+
+
+// Pokazywanie pola treści
+formSelect.addEventListener("change", function() {
+
+    const form = this.value;
+
+    if (form === "") {
+
+        content.style.display = "none";
+        contentLabel.style.display = "none";
+        info.innerText = "";
+
+    } else {
+
+        content.style.display = "block";
+        contentLabel.style.display = "block";
+
+        if (form === "cwiczenia") {
+            contentLabel.innerText = "Informacje / zadania z ćwiczeń";
+            content.placeholder =
+                "Wklej tutaj zadania lub treść ćwiczeń...";
+            info.innerText =
+                "Na podstawie podanej treści zostanie przygotowany test.";
+        }
+
+        if (form === "pytania") {
+            contentLabel.innerText = "Pytania i odpowiedzi";
+            content.placeholder =
+                "Wklej tutaj pytania wraz z odpowiedziami w nawiasach...";
+            info.innerText =
+                "Pytania i odpowiedzi w nawiasach mają pozostać identyczne.";
+        }
+
+        if (form === "notatka") {
+            contentLabel.innerText = "Notatka";
+            content.placeholder =
+                "Wklej tutaj całą notatkę...";
+            info.innerText =
+                "Test ma zawierać wszystkie informacje znajdujące się w notatce.";
+        }
+
+        if (form === "zdjecie") {
+            contentLabel.innerText = "Informacje ze zdjęcia";
+            content.placeholder =
+                "Wpisz tutaj informacje znajdujące się na zdjęciu lub wklej odczytaną treść...";
+            info.innerText =
+                "Test ma zawierać wszystkie informacje znajdujące się na zdjęciu.";
+        }
+    }
+});
+
+
+// Generowanie
+function generate() {
+
+    const subject = subjectSelect.value;
+    const form = formSelect.value;
+    const text = content.value.trim();
+
+    if (!subject) {
+        alert("Wybierz przedmiot.");
+        return;
+    }
+
+    if (!form) {
+        alert("Wybierz formę.");
+        return;
+    }
+
+    if (!text) {
+        alert("Wpisz lub wklej treść.");
+        return;
+    }
+
+
+    // Mała litera do kodu
+    const subjectLower = subject.toLowerCase();
+
+
+    let prompt = "";
+
+
+    // =========================
+    // ĆWICZENIA
+    // =========================
+
+    if (form === "cwiczenia") {
+
+        prompt =
+`W następującej tablicy zrób test dla zadań z ćwiczeń z przedmiotu ${subject} ze zdjęcia gdzie zawsze będzie "a" poprawne. 
+Dla każdego przykładu lub do uzupełnienia słowa na być jedno pytanie. 
+
+{cat:"Kategoria", q:"Pytanie?", a:"Poprawna odpowiedź", b:"Zła odpowiedź", c:"Zła odpowiedź", d:"Zła odpowiedź"},
+
+W "cat" zapisz "${subject}".
+W "q" będzie pytanie.
+W "a" będzie poprawna odpowiedź.
+W "b", "c", "d" będą złe odpowiedzi których długość będzie podobna do poprawnej.
+
+Poniżej masz zadania z ćwiczeń:
+${text}`;
+
+
+    // =========================
+    // PYTANIA
+    // =========================
+
+    } else if (form === "pytania") {
+
+        prompt =
+`W następującej tablicy JavaScript zrób test dla moich pytań gdzie zawsze będzie "a" poprawne.
+
+{cat:"Kategoria", q:"Pytanie?", a:"Poprawna odpowiedź", b:"Zła odpowiedź", c:"Zła odpowiedź", d:"Zła odpowiedź"},
+
+W "cat" zapisz "${subject}".
+W "q" będzie pytanie.
+W "a" będzie poprawna odpowiedź.
+W "b", "c", "d" będą złe odpowiedzi których długość będzie podobna do poprawnej.
+
+Poniżej masz pytania i odpowiedzi w nawiasach które mają być identyczne na teście. 
+Ma być tyle samo pytań co podpunktów (Niektóre pytania możesz podzielić na dwa gdzie będzie taka potrzeba):
+
+${text}`;
+
+
+    // =========================
+    // NOTATKA
+    // =========================
+
+    } else if (form === "notatka") {
+
+        prompt =
+`W następującej tablicy JavaScript zrób test dla mojej notatki gdzie zawsze będzie "a" poprawne.
+
+{cat:"Kategoria", q:"Pytanie?", a:"Poprawna odpowiedź", b:"Zła odpowiedź", c:"Zła odpowiedź", d:"Zła odpowiedź"},
+
+W "cat" zapisz "${subject}".
+W "q" będzie pytanie.
+W "a" będzie poprawna odpowiedź.
+W "b", "c", "d" będą złe odpowiedzi których długość będzie podobna do poprawnej.
+
+Poniżej masz notatkę i dla niej masz zrobić test, w teście ma się znaleźć wszystko co w notatce:
+
+${text}`;
+
+
+    // =========================
+    // ZDJĘCIE
+    // =========================
+
+    } else if (form === "zdjecie") {
+
+        prompt =
+`W następującej tablicy JavaScript zrób test z informacji ze zdjęcia (w teście ma się znaleźć wszystko co na zdjęciu), gdzie zawsze będzie "a" poprawne.
+
+{cat:"Kategoria", q:"Pytanie?", a:"Poprawna odpowiedź", b:"Zła odpowiedź", c:"Zła odpowiedź", d:"Zła odpowiedź"},
+
+W "cat" zapisz "${subject}".
+W "q" będzie pytanie.
+W "a" będzie poprawna odpowiedź.
+W "b", "c", "d" będą złe odpowiedzi których długość będzie podobna do poprawnej.
+
+Poniżej masz informacje ze zdjęcia:
+
+${text}`;
+
+    }
+
+
+    // =========================
+    // KOD TESTU
+    // =========================
+
+    const code =
+`<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"><\/script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let ${subjectLower} =
+    localStorage.getItem("${subjectLower}") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        ${subjectLower} =
+            parseInt(${subjectLower}) + 9;
+
+        localStorage.setItem(
+            "${subjectLower}",
+            ${subjectLower}
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+<\/script>
+
+</body>
+</html>`;
+
+
+    // Wyświetlenie wyników
+
+    document.getElementById("prompt").innerText = prompt;
+    document.getElementById("code").innerText = code;
+
+    document.getElementById("result").style.display = "block";
+
+    // Przewiń do wyników
+
+    document.getElementById("result").scrollIntoView({
+        behavior: "smooth"
+    });
+}
+
+
+// KOPIOWANIE
+function copyText(elementId, buttonId){
+
+    const text =
+        document.getElementById(elementId).innerText;
+
+    navigator.clipboard.writeText(text)
+        .then(() => {
+
+            const button =
+                document.getElementById(buttonId);
+
+            const oldText =
+                button.innerText;
+
+            button.innerText = "Skopiowano ✓";
+            button.classList.add("copied");
+
+            setTimeout(() => {
+
+                button.innerText = oldText;
+                button.classList.remove("copied");
+
+            }, 1500);
+
+        })
+        .catch(() => {
+
+            alert("Nie udało się skopiować tekstu.");
+
+        });
+}
+
+</script>
+
+</body>
+</html>
