@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ranking Moich Klubów</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-color: #1a1a1a;
+      --border-color: #e0e0e0;
+      --header-bg: #2c3e50;
+      --header-text: #ffffff;
+      --zebra-bg: #f8f9fa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 12px;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 12px 0 16px 0;
+      font-size: 1.3rem;
+    }
+
+    .table-container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      max-height: 85vh;
+      overflow-y: auto;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    td.lp {
+      width: 40px;
+      text-align: center;
+      color: #666;
+      font-size: 0.8rem;
+    }
+
+    td.team {
+      font-weight: 600;
+      text-align: left;
+    }
+
+    td.country {
+      color: #555;
+      text-align: left;
+    }
+
+    td.points {
+      text-align: right;
+      font-weight: bold;
+      width: 60px;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: var(--zebra-bg);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ranking Moich Klubów</h1>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: center;">Lp.</th>
+          <th style="text-align: left;">Drużyna</th>
+          <th style="text-align: left;">Kraj</th>
+          <th style="text-align: right;">Punkty</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="lp">1</td><td class="team">Lech Poznań</td><td class="country">Polska</td><td class="points">4000</td></tr>
+        <tr><td class="lp">2</td><td class="team">AC Milan</td><td class="country">Włochy</td><td class="points">3700</td></tr>
+        <tr><td class="lp">3</td><td class="team">Barcelona</td><td class="country">Hiszpania</td><td class="points">3600</td></tr>
+        <tr><td class="lp">4</td><td class="team">Błyskawica</td><td class="country">Polska</td><td class="points">3300</td></tr>
+        <tr><td class="lp">5</td><td class="team">Inter</td><td class="country">Włochy</td><td class="points">3300</td></tr>
+        <tr><td class="lp">6</td><td class="team">Chelsea</td><td class="country">Anglia</td><td class="points">3200</td></tr>
+        <tr><td class="lp">7</td><td class="team">Arsenal</td><td class="country">Anglia</td><td class="points">3200</td></tr>
+        <tr><td class="lp">8</td><td class="team">Śląsk Wrocław</td><td class="country">Polska</td><td class="points">3200</td></tr>
+        <tr><td class="lp">9</td><td class="team">Piast Gliwice</td><td class="country">Polska</td><td class="points">3200</td></tr>
+        <tr><td class="lp">10</td><td class="team">Juventus</td><td class="country">Włochy</td><td class="points">3200</td></tr>
+        <tr><td class="lp">11</td><td class="team">Legia Warszawa</td><td class="country">Polska</td><td class="points">3100</td></tr>
+        <tr><td class="lp">12</td><td class="team">Crvena zvezda</td><td class="country">Serbia</td><td class="points">3100</td></tr>
+        <tr><td class="lp">13</td><td class="team">Tottenham</td><td class="country">Anglia</td><td class="points">3000</td></tr>
+        <tr><td class="lp">14</td><td class="team">Jagiellonia Białystok</td><td class="country">Polska</td><td class="points">3000</td></tr>
+        <tr><td class="lp">15</td><td class="team">Górnik Zabrze</td><td class="country">Polska</td><td class="points">3000</td></tr>
+        <tr><td class="lp">16</td><td class="team">Atalanta</td><td class="country">Włochy</td><td class="points">3000</td></tr>
+        <tr><td class="lp">17</td><td class="team">Como</td><td class="country">Włochy</td><td class="points">3000</td></tr>
+        <tr><td class="lp">18</td><td class="team">Crystal Palace</td><td class="country">Anglia</td><td class="points">2800</td></tr>
+        <tr><td class="lp">19</td><td class="team">Sturm Graz</td><td class="country">Austria</td><td class="points">2800</td></tr>
+        <tr><td class="lp">20</td><td class="team">Dinamo Zagrzeb</td><td class="country">Chorwacja</td><td class="points">2800</td></tr>
+        <tr><td class="lp">21</td><td class="team">Pafos</td><td class="country">Cypr</td><td class="points">2800</td></tr>
+        <tr><td class="lp">22</td><td class="team">Slavia Praga</td><td class="country">Czechy</td><td class="points">2800</td></tr>
+        <tr><td class="lp">23</td><td class="team">Sparta Praga</td><td class="country">Czechy</td><td class="points">2800</td></tr>
+        <tr><td class="lp">24</td><td class="team">Girona</td><td class="country">Hiszpania</td><td class="points">2800</td></tr>
+        <tr><td class="lp">25</td><td class="team">VfB Stuttgart</td><td class="country">Niemcy</td><td class="points">2800</td></tr>
+        <tr><td class="lp">26</td><td class="team">RB Lipsk</td><td class="country">Niemcy</td><td class="points">2800</td></tr>
+        <tr><td class="lp">27</td><td class="team">Raków Częstochowa</td><td class="country">Polska</td><td class="points">2800</td></tr>
+        <tr><td class="lp">28</td><td class="team">GKS Katowice</td><td class="country">Polska</td><td class="points">2800</td></tr>
+        <tr><td class="lp">29</td><td class="team">Slovan Bratysława</td><td class="country">Słowacja</td><td class="points">2800</td></tr>
+        <tr><td class="lp">30</td><td class="team">Young Boys</td><td class="country">Szwajcaria</td><td class="points">2800</td></tr>
+        <tr><td class="lp">31</td><td class="team">Szachtar</td><td class="country">Ukraina</td><td class="points">2800</td></tr>
+        <tr><td class="lp">32</td><td class="team">FC Viktoria Pilzno</td><td class="country">Czechy</td><td class="points">2700</td></tr>
+        <tr><td class="lp">33</td><td class="team">Lyon</td><td class="country">Francja</td><td class="points">2700</td></tr>
+        <tr><td class="lp">34</td><td class="team">SC Freiburg</td><td class="country">Niemcy</td><td class="points">2700</td></tr>
+        <tr><td class="lp">35</td><td class="team">Brann</td><td class="country">Norwegia</td><td class="points">2700</td></tr>
+        <tr><td class="lp">36</td><td class="team">Wisła Kraków</td><td class="country">Polska</td><td class="points">2700</td></tr>
+        <tr><td class="lp">37</td><td class="team">Austria Wiedeń</td><td class="country">Austria</td><td class="points">2600</td></tr>
+        <tr><td class="lp">38</td><td class="team">Rapid Wiedeń</td><td class="country">Austria</td><td class="points">2600</td></tr>
+        <tr><td class="lp">39</td><td class="team">Lechia Gdańsk</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">40</td><td class="team">Arka Gdynia</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">41</td><td class="team">Ruch Chorzów</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">42</td><td class="team">Miedź Legnica</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">43</td><td class="team">Polonia Warszawa</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">44</td><td class="team">ŁKS Łódź</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">45</td><td class="team">Warta Poznań</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">46</td><td class="team">Bruk-Bet T.</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">47</td><td class="team">Cracovia</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">48</td><td class="team">Zagłębie Lubin</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">49</td><td class="team">Pogoń Szczecin</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">50</td><td class="team">Korona Kielce</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">51</td><td class="team">Widzew Łódź</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">52</td><td class="team">Wisła Płock</td><td class="country">Polska</td><td class="points">2600</td></tr>
+        <tr><td class="lp">53</td><td class="team">Dynamo Kijów</td><td class="country">Ukraina</td><td class="points">2600</td></tr>
+        <tr><td class="lp">54</td><td class="team">Omonia</td><td class="country">Cypr</td><td class="points">2400</td></tr>
+        <tr><td class="lp">55</td><td class="team">Vaduz</td><td class="country">Liechtenstein</td><td class="points">2400</td></tr>
+        <tr><td class="lp">56</td><td class="team">Motor Lublin</td><td class="country">Polska</td><td class="points">2400</td></tr>
+        <tr><td class="lp">57</td><td class="team">Radomiak Radom</td><td class="country">Polska</td><td class="points">2400</td></tr>
+        <tr><td class="lp">58</td><td class="team">Wieczysta Kraków</td><td class="country">Polska</td><td class="points">2400</td></tr>
+        <tr><td class="lp">59</td><td class="team">Thun</td><td class="country">Szwajcaria</td><td class="points">2400</td></tr>
+        <tr><td class="lp">60</td><td class="team">Hajduk Split</td><td class="country">Chorwacja</td><td class="points">2200</td></tr>
+        <tr><td class="lp">61</td><td class="team">AEK Larnaka</td><td class="country">Cypr</td><td class="points">2200</td></tr>
+        <tr><td class="lp">62</td><td class="team">Apollon</td><td class="country">Cypr</td><td class="points">2200</td></tr>
+        <tr><td class="lp">63</td><td class="team">Al Ahly</td><td class="country">Egipt</td><td class="points">2200</td></tr>
+        <tr><td class="lp">64</td><td class="team">Vojvodina</td><td class="country">Serbia</td><td class="points">2200</td></tr>
+        <tr><td class="lp">65</td><td class="team">Partizan</td><td class="country">Serbia</td><td class="points">2200</td></tr>
+        <tr><td class="lp">66</td><td class="team">Spartak Trnawa</td><td class="country">Słowacja</td><td class="points">2200</td></tr>
+        <tr><td class="lp">67</td><td class="team">Lugano</td><td class="country">Szwajcaria</td><td class="points">2200</td></tr>
+        <tr><td class="lp">68</td><td class="team">St. Gallen</td><td class="country">Szwajcaria</td><td class="points">2200</td></tr>
+        <tr><td class="lp">69</td><td class="team">Ferencvaros</td><td class="country">Węgry</td><td class="points">2200</td></tr>
+        <tr><td class="lp">70</td><td class="team">GKS Bełchatów</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">71</td><td class="team">Groclin Grodzisk Wlkp.</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">72</td><td class="team">Odra Wodzisław</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">73</td><td class="team">Podbeskidzie B-B</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">74</td><td class="team">Stal Mielec</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">75</td><td class="team">Polonia Bytom</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">76</td><td class="team">Zawisza Bydgoszcz</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">77</td><td class="team">Górnik Łęczna</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">78</td><td class="team">Sandecja Nowy Sącz</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">79</td><td class="team">Zagłębie Sosnowiec</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">80</td><td class="team">Astra Krotoszyn</td><td class="country">Polska</td><td class="points">2100</td></tr>
+        <tr><td class="lp">81</td><td class="team">Brentford</td><td class="country">Anglia</td><td class="points">2000</td></tr>
+        <tr><td class="lp">82</td><td class="team">APOEL</td><td class="country">Cypr</td><td class="points">2000</td></tr>
+        <tr><td class="lp">83</td><td class="team">Aris</td><td class="country">Cypr</td><td class="points">2000</td></tr>
+        <tr><td class="lp">84</td><td class="team">Jablonec</td><td class="country">Czechy</td><td class="points">2000</td></tr>
+        <tr><td class="lp">85</td><td class="team">Strasbourg</td><td class="country">Francja</td><td class="points">2000</td></tr>
+        <tr><td class="lp">86</td><td class="team">FC Augsburg</td><td class="country">Niemcy</td><td class="points">2000</td></tr>
+        <tr><td class="lp">87</td><td class="team">TSG Hoffenheim</td><td class="country">Niemcy</td><td class="points">2000</td></tr>
+        <tr><td class="lp">88</td><td class="team">Molde</td><td class="country">Norwegia</td><td class="points">2000</td></tr>
+        <tr><td class="lp">89</td><td class="team">Maritimo</td><td class="country">Portugalia</td><td class="points">2000</td></tr>
+        <tr><td class="lp">90</td><td class="team">Nacional</td><td class="country">Portugalia</td><td class="points">2000</td></tr>
+        <tr><td class="lp">91</td><td class="team">Zilina</td><td class="country">Słowacja</td><td class="points">2000</td></tr>
+        <tr><td class="lp">92</td><td class="team">Basel</td><td class="country">Szwajcaria</td><td class="points">2000</td></tr>
+        <tr><td class="lp">93</td><td class="team">Zurich</td><td class="country">Szwajcaria</td><td class="points">2000</td></tr>
+        <tr><td class="lp">94</td><td class="team">Sion</td><td class="country">Szwajcaria</td><td class="points">2000</td></tr>
+        <tr><td class="lp">95</td><td class="team">Malmo FF</td><td class="country">Szwecja</td><td class="points">2000</td></tr>
+        <tr><td class="lp">96</td><td class="team">Torino</td><td class="country">Włochy</td><td class="points">2000</td></tr>
+        <tr><td class="lp">97</td><td class="team">Egnatia</td><td class="country">Albania</td><td class="points">1900</td></tr>
+        <tr><td class="lp">98</td><td class="team">Andorra</td><td class="country">Andora</td><td class="points">1900</td></tr>
+        <tr><td class="lp">99</td><td class="team">Inter Escaldes</td><td class="country">Andora</td><td class="points">1900</td></tr>
+        <tr><td class="lp">100</td><td class="team">Borac Banja Luka</td><td class="country">Bośnia i Hercegowina</td><td class="points">1900</td></tr>
+        <tr><td class="lp">101</td><td class="team">Sutjeska</td><td class="country">Czarnogóra</td><td class="points">1900</td></tr>
+        <tr><td class="lp">102</td><td class="team">Zamalek</td><td class="country">Egipt</td><td class="points">1900</td></tr>
+        <tr><td class="lp">103</td><td class="team">Żalgiris Kowno</td><td class="country">Litwa</td><td class="points">1900</td></tr>
+        <tr><td class="lp">104</td><td class="team">Vardar</td><td class="country">Macedonia Północna</td><td class="points">1900</td></tr>
+        <tr><td class="lp">105</td><td class="team">Floriana</td><td class="country">Malta</td><td class="points">1900</td></tr>
+        <tr><td class="lp">106</td><td class="team">Al Seeb</td><td class="country">Oman</td><td class="points">1900</td></tr>
+        <tr><td class="lp">107</td><td class="team">Mjallby</td><td class="country">Szwecja</td><td class="points">1900</td></tr>
+        <tr><td class="lp">108</td><td class="team">Club Africain</td><td class="country">Tunezja</td><td class="points">1900</td></tr>
+        <tr><td class="lp">109</td><td class="team">Gyor</td><td class="country">Węgry</td><td class="points">1900</td></tr>
+        <tr><td class="lp">110</td><td class="team">Celje</td><td class="country">Słowenia</td><td class="points">1900</td></tr>
+        <tr><td class="lp">111</td><td class="team">Fulham</td><td class="country">Anglia</td><td class="points">1800</td></tr>
+        <tr><td class="lp">112</td><td class="team">West Ham</td><td class="country">Anglia</td><td class="points">1800</td></tr>
+        <tr><td class="lp">113</td><td class="team">Millwall</td><td class="country">Anglia</td><td class="points">1800</td></tr>
+        <tr><td class="lp">114</td><td class="team">Charlton</td><td class="country">Anglia</td><td class="points">1800</td></tr>
+        <tr><td class="lp">115</td><td class="team">QPR</td><td class="country">Anglia</td><td class="points">1800</td></tr>
+        <tr><td class="lp">116</td><td class="team">Ipswich</td><td class="country">Anglia</td><td class="points">1800</td></tr>
+        <tr><td class="lp">117</td><td class="team">Banik Ostrawa</td><td class="country">Czechy</td><td class="points">1800</td></tr>
+        <tr><td class="lp">118</td><td class="team">Espanyol</td><td class="country">Hiszpania</td><td class="points">1800</td></tr>
+        <tr><td class="lp">119</td><td class="team">St. Pauli</td><td class="country">Niemcy</td><td class="points">1800</td></tr>
+        <tr><td class="lp">120</td><td class="team">Union Berlin</td><td class="country">Niemcy</td><td class="points">1800</td></tr>
+        <tr><td class="lp">121</td><td class="team">Puszcza Niepołomice</td><td class="country">Polska</td><td class="points">1800</td></tr>
+        <tr><td class="lp">122</td><td class="team">Odra Opole</td><td class="country">Polska</td><td class="points">1800</td></tr>
+        <tr><td class="lp">123</td><td class="team">Chrobry Głogów</td><td class="country">Polska</td><td class="points">1800</td></tr>
+        <tr><td class="lp">124</td><td class="team">Pogoń Siedlce</td><td class="country">Polska</td><td class="points">1800</td></tr>
+        <tr><td class="lp">125</td><td class="team">Stal Rzeszów</td><td class="country">Polska</td><td class="points">1800</td></tr>
+        <tr><td class="lp">126</td><td class="team">Unia Skierniewice</td><td class="country">Polska</td><td class="points">1800</td></tr>
+        <tr><td class="lp">127</td><td class="team">Pogoń Grodzisk Mazowiecki</td><td class="country">Polska</td><td class="points">1800</td></tr>
+        <tr><td class="lp">128</td><td class="team">Alanyaspor</td><td class="country">Turcja</td><td class="points">1800</td></tr>
+        <tr><td class="lp">129</td><td class="team">Antalyaspor</td><td class="country">Turcja</td><td class="points">1800</td></tr>
+        <tr><td class="lp">130</td><td class="team">AF Elbasani</td><td class="country">Albania</td><td class="points">1700</td></tr>
+        <tr><td class="lp">131</td><td class="team">Vllaznia</td><td class="country">Albania</td><td class="points">1700</td></tr>
+        <tr><td class="lp">132</td><td class="team">UE Santa Coloma</td><td class="country">Andora</td><td class="points">1700</td></tr>
+        <tr><td class="lp">133</td><td class="team">FC Rangers</td><td class="country">Andora</td><td class="points">1700</td></tr>
+        <tr><td class="lp">134</td><td class="team">Zrinjski</td><td class="country">Bośnia i Hercegowina</td><td class="points">1700</td></tr>
+        <tr><td class="lp">135</td><td class="team">Sarajevo</td><td class="country">Bośnia i Hercegowina</td><td class="points">1700</td></tr>
+        <tr><td class="lp">136</td><td class="team">Varazdin</td><td class="country">Chorwacja</td><td class="points">1700</td></tr>
+        <tr><td class="lp">137</td><td class="team">Mornar</td><td class="country">Czarnogóra</td><td class="points">1700</td></tr>
+        <tr><td class="lp">138</td><td class="team">Petrovac</td><td class="country">Czarnogóra</td><td class="points">1700</td></tr>
+        <tr><td class="lp">139</td><td class="team">Pyramids</td><td class="country">Egipt</td><td class="points">1700</td></tr>
+        <tr><td class="lp">140</td><td class="team">Eschen/Mauren</td><td class="country">Liechtenstein</td><td class="points">1700</td></tr>
+        <tr><td class="lp">141</td><td class="team">Hegelmann</td><td class="country">Litwa</td><td class="points">1700</td></tr>
+        <tr><td class="lp">142</td><td class="team">Shkendija</td><td class="country">Macedonia Północna</td><td class="points">1700</td></tr>
+        <tr><td class="lp">143</td><td class="team">Struga</td><td class="country">Macedonia Północna</td><td class="points">1700</td></tr>
+        <tr><td class="lp">144</td><td class="team">Marsaxlokk</td><td class="country">Malta</td><td class="points">1700</td></tr>
+        <tr><td class="lp">145</td><td class="team">Hamrun</td><td class="country">Malta</td><td class="points">1700</td></tr>
+        <tr><td class="lp">146</td><td class="team">Al-Shabab</td><td class="country">Oman</td><td class="points">1700</td></tr>
+        <tr><td class="lp">147</td><td class="team">Al Nasr</td><td class="country">Oman</td><td class="points">1700</td></tr>
+        <tr><td class="lp">148</td><td class="team">Dunajska Streda</td><td class="country">Słowacja</td><td class="points">1700</td></tr>
+        <tr><td class="lp">149</td><td class="team">GAIS</td><td class="country">Szwecja</td><td class="points">1700</td></tr>
+        <tr><td class="lp">150</td><td class="team">Esperance Tunis</td><td class="country">Tunezja</td><td class="points">1700</td></tr>
+        <tr><td class="lp">151</td><td class="team">CS Sfaxien</td><td class="country">Tunezja</td><td class="points">1700</td></tr>
+        <tr><td class="lp">152</td><td class="team">ŁNZ Czerkasy</td><td class="country">Ukraina</td><td class="points">1700</td></tr>
+        <tr><td class="lp">153</td><td class="team">Polissia Żytomierz</td><td class="country">Ukraina</td><td class="points">1700</td></tr>
+        <tr><td class="lp">154</td><td class="team">Paks</td><td class="country">Węgry</td><td class="points">1700</td></tr>
+        <tr><td class="lp">155</td><td class="team">Bravo</td><td class="country">Słowenia</td><td class="points">1700</td></tr>
+        <tr><td class="lp">156</td><td class="team">Luton</td><td class="country">Anglia</td><td class="points">1600</td></tr>
+        <tr><td class="lp">157</td><td class="team">1. FC Nurnberg</td><td class="country">Niemcy</td><td class="points">1600</td></tr>
+        <tr><td class="lp">158</td><td class="team">Hertha Berlin</td><td class="country">Niemcy</td><td class="points">1600</td></tr>
+        <tr><td class="lp">159</td><td class="team">Chojniczanka</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">160</td><td class="team">GKS Tychy</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">161</td><td class="team">Stal Stalowa Wola</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">162</td><td class="team">Olimpia Grudziądz</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">163</td><td class="team">Znicz Pruszków</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">164</td><td class="team">Resovia Rzeszów</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">165</td><td class="team">Lechia Zielona Góra</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">166</td><td class="team">Rekord Bielsko-Biała</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">167</td><td class="team">Świt Szczecin</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">168</td><td class="team">Hutnik Kraków</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">169</td><td class="team">Avia Świdnik</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">170</td><td class="team">Podhale Nowy Targ</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">171</td><td class="team">Sokół Kleczew</td><td class="country">Polska</td><td class="points">1600</td></tr>
+        <tr><td class="lp">172</td><td class="team">Dinamo City</td><td class="country">Albania</td><td class="points">1500</td></tr>
+        <tr><td class="lp">173</td><td class="team">FC Santa Coloma</td><td class="country">Andora</td><td class="points">1500</td></tr>
+        <tr><td class="lp">174</td><td class="team">Atletic Escaldes</td><td class="country">Andora</td><td class="points">1500</td></tr>
+        <tr><td class="lp">175</td><td class="team">Velez Mostar</td><td class="country">Bośnia i Hercegowina</td><td class="points">1500</td></tr>
+        <tr><td class="lp">176</td><td class="team">Decic</td><td class="country">Czarnogóra</td><td class="points">1500</td></tr>
+        <tr><td class="lp">177</td><td class="team">Sigma Ołomuniec</td><td class="country">Czechy</td><td class="points">1500</td></tr>
+        <tr><td class="lp">178</td><td class="team">Hradec Kralove</td><td class="country">Czechy</td><td class="points">1500</td></tr>
+        <tr><td class="lp">179</td><td class="team">Ceramica Cleopatra</td><td class="country">Egipt</td><td class="points">1500</td></tr>
+        <tr><td class="lp">180</td><td class="team">Sileks</td><td class="country">Macedonia Północna</td><td class="points">1500</td></tr>
+        <tr><td class="lp">181</td><td class="team">Valletta</td><td class="country">Malta</td><td class="points">1500</td></tr>
+        <tr><td class="lp">182</td><td class="team">Zeleznicar Pancevo</td><td class="country">Serbia</td><td class="points">1500</td></tr>
+        <tr><td class="lp">183</td><td class="team">Goteborg</td><td class="country">Szwecja</td><td class="points">1500</td></tr>
+        <tr><td class="lp">184</td><td class="team">Monastir</td><td class="country">Tunezja</td><td class="points">1500</td></tr>
+        <tr><td class="lp">185</td><td class="team">Maribor</td><td class="country">Słowenia</td><td class="points">1500</td></tr>
+        <tr><td class="lp">186</td><td class="team">Wigry Suwałki</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">187</td><td class="team">Błękitni Stargard</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">188</td><td class="team">Flota Świnoujście</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">189</td><td class="team">KKS Kalisz</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">190</td><td class="team">KSZO Ostrowiec</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">191</td><td class="team">Stilon Gorzów</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">192</td><td class="team">Olimpia Elbląg</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">193</td><td class="team">Świt Nowy Dwór</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">194</td><td class="team">MKS Kluczbork</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">195</td><td class="team">Siarka Tarnobrzeg</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">196</td><td class="team">Wda Świecie</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">197</td><td class="team">Hetman Zamość</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">198</td><td class="team">Pelikan Łowicz</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">199</td><td class="team">ROW Rybnik</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">200</td><td class="team">Olimpia Zambrów</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">201</td><td class="team">Polonia Środa Wlkp.</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">202</td><td class="team">Chełmianka Chełm</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">203</td><td class="team">Ślęza Wrocław</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">204</td><td class="team">Stal Brzeg</td><td class="country">Polska</td><td class="points">1400</td></tr>
+        <tr><td class="lp">205</td><td class="team">Zakynthos</td><td class="country">Grecja</td><td class="points">1000</td></tr>
+        <tr><td class="lp">206</td><td class="team">Bytovia Bytów</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">207</td><td class="team">Stomil Olsztyn</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">208</td><td class="team">Ruch Zdzieszowice</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">209</td><td class="team">GKS Jastrzębie</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">210</td><td class="team">Dolcan Ząbki</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">211</td><td class="team">Gryf Wejherowo</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">212</td><td class="team">Stal Sanok</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">213</td><td class="team">Okocimski Brzesko</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">214</td><td class="team">Rozwój Katowice</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">215</td><td class="team">Start Otwock</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">216</td><td class="team">Wisła Puławy</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">217</td><td class="team">Promień Opalenica</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">218</td><td class="team">Kmita Zabierzów</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">219</td><td class="team">Nielba Wągrowiec</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">220</td><td class="team">Limanovia</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">221</td><td class="team">Górnik Wałbrzych</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">222</td><td class="team">Ostrovia Ostrów Wlkp.</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">223</td><td class="team">Wisła Sandomierz</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">224</td><td class="team">Unia Janikowo</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">225</td><td class="team">Jeziorak Iława</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">226</td><td class="team">Victoria Koronowo</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">227</td><td class="team">Pogoń Oleśnica</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">228</td><td class="team">Dąb Dębno</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">229</td><td class="team">Polonia Słubice</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">230</td><td class="team">Piast Kobylin</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">231</td><td class="team">Piotrków Trybunalski</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">232</td><td class="team">Ruch Radzionków</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">233</td><td class="team">Luboński</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">234</td><td class="team">Ursus Warszawa</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">235</td><td class="team">Sokół Ostróda</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">236</td><td class="team">Legionowo</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">237</td><td class="team">Huragan Morąg</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">238</td><td class="team">Starogard Gdański</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">239</td><td class="team">Garbarnia Kraków</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">240</td><td class="team">Carina Gubin</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">241</td><td class="team">Biały Orzeł Koźmin Wlkp.</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">242</td><td class="team">Wisła Borek Wlkp.</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">243</td><td class="team">Jarota Jarocin</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">244</td><td class="team">Sokół Chwaliszew</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">245</td><td class="team">Raszkowianka Raszków</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">246</td><td class="team">Dobroczanka Pępowo</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">247</td><td class="team">Stal Pleszew</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">248</td><td class="team">Prosna Kalisz</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">249</td><td class="team">Calisia Kalisz</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">250</td><td class="team">Plon Gądkowice</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">251</td><td class="team">Pogoń Cieszków</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">252</td><td class="team">Grom Czeluścin</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">253</td><td class="team">CKS Zduny</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">254</td><td class="team">Sparta Miejsca Górka</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">255</td><td class="team">Awdaniec Pakosław</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">256</td><td class="team">Grom Golina</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">257</td><td class="team">Czarni Dobrzyca</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">258</td><td class="team">Pogoń Nowe Skalmierzyce</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">259</td><td class="team">Gladiatorzy Pieruszyce</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">260</td><td class="team">Victoria Skarszew</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">261</td><td class="team">Czarni Wierzbno</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">262</td><td class="team">GKS Żerków</td><td class="country">Polska</td><td class="points">1000</td></tr>
+        <tr><td class="lp">263</td><td class="team">Błękitni Chruszczyny</td><td class="country">Polska</td><td class="points">1000</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
