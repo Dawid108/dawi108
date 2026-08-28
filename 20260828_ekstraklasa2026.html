@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tabela Ekstraklasy 2025/2026</title>
+  <style>
+    :root {
+      --bg-color: #f4f6f8;
+      --card-bg: #ffffff;
+      --text-color: #1a1a1a;
+      --border-color: #e0e0e0;
+      --header-bg: #2c3e50;
+      --header-text: #ffffff;
+      --zebra-bg: #f8f9fa;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      padding: 12px;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 12px 0 16px 0;
+      font-size: 1.2rem;
+    }
+
+    .table-container {
+      width: 100%;
+      max-width: 600px;
+      margin: 0 auto;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+
+    th, td {
+      padding: 10px 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    th {
+      background-color: var(--header-bg);
+      color: var(--header-text);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    td.pos {
+      width: 35px;
+      text-align: center;
+      color: #666;
+      font-weight: bold;
+    }
+
+    td.team {
+      font-weight: 600;
+      text-align: left;
+      white-space: normal;
+      min-width: 130px;
+    }
+
+    td.num {
+      text-align: right;
+      width: 55px;
+    }
+
+    td.pts {
+      font-weight: bold;
+    }
+
+    tbody tr:nth-child(even) {
+      background-color: var(--zebra-bg);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tabela Ekstraklasy 2025/2026</h1>
+
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th style="text-align: center;">Msc</th>
+          <th style="text-align: left;">Drużyna</th>
+          <th style="text-align: right;">Pkt</th>
+          <th style="text-align: right;">Rank</th>
+          <th style="text-align: right;">Nowy R.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="pos">1.</td><td class="team">Arsenal</td><td class="num pts">130</td><td class="num">3000</td><td class="num">3200</td></tr>
+        <tr><td class="pos">2.</td><td class="team">Barcelona</td><td class="num pts">127</td><td class="num">3500</td><td class="num">3600</td></tr>
+        <tr><td class="pos">3.</td><td class="team">Inter</td><td class="num pts">109</td><td class="num">3300</td><td class="num">3300</td></tr>
+        <tr><td class="pos">4.</td><td class="team">Chelsea</td><td class="num pts">105</td><td class="num">3200</td><td class="num">3200</td></tr>
+        <tr><td class="pos">5.</td><td class="team">Lech Poznań</td><td class="num pts">95</td><td class="num">4200</td><td class="num">4000</td></tr>
+        <tr><td class="pos">6.</td><td class="team">AC Milan</td><td class="num pts">92</td><td class="num">3700</td><td class="num">3700</td></tr>
+        <tr><td class="pos">7.</td><td class="team">Juventus</td><td class="num pts">85</td><td class="num">3200</td><td class="num">3200</td></tr>
+        <tr><td class="pos">8.</td><td class="team">Jagiellonia Białystok</td><td class="num pts">85</td><td class="num">2600</td><td class="num">3000</td></tr>
+        <tr><td class="pos">9.</td><td class="team">Tottenham</td><td class="num pts">84</td><td class="num">2900</td><td class="num">3000</td></tr>
+        <tr><td class="pos">10.</td><td class="team">Górnik Zabrze</td><td class="num pts">81</td><td class="num">2600</td><td class="num">3000</td></tr>
+        <tr><td class="pos">11.</td><td class="team">Como</td><td class="num pts">79</td><td class="num">2800</td><td class="num">3000</td></tr>
+        <tr><td class="pos">12.</td><td class="team">Atalanta</td><td class="num pts">78</td><td class="num">2900</td><td class="num">3000</td></tr>
+        <tr><td class="pos">13.</td><td class="team">VfB Stuttgart</td><td class="num pts">69</td><td class="num">2800</td><td class="num">2800</td></tr>
+        <tr><td class="pos">14.</td><td class="team">Crystal Palace</td><td class="num pts">69</td><td class="num">2700</td><td class="num">2800</td></tr>
+        <tr><td class="pos">15.</td><td class="team">RB Lipsk</td><td class="num pts">66</td><td class="num">2600</td><td class="num">2800</td></tr>
+        <tr><td class="pos">16.</td><td class="team">GKS Katowice</td><td class="num pts">55</td><td class="num">2600</td><td class="num">2800</td></tr>
+        <tr><td class="pos">17.</td><td class="team">Raków Częstochowa</td><td class="num pts">47</td><td class="num">2600</td><td class="num">2800</td></tr>
+        <tr><td class="pos">18.</td><td class="team">Zagłębie Lubin</td><td class="num pts">38</td><td class="num">2600</td><td class="num">2600</td></tr>
+        <tr><td class="pos">19.</td><td class="team">Slavia Praga</td><td class="num pts">37</td><td class="num">2800</td><td class="num">2800</td></tr>
+        <tr><td class="pos">20.</td><td class="team">Pogoń Szczecin</td><td class="num pts">36</td><td class="num">2600</td><td class="num">2600</td></tr>
+        <tr><td class="pos">21.</td><td class="team">Cracovia</td><td class="num pts">27</td><td class="num">2600</td><td class="num">2600</td></tr>
+        <tr><td class="pos">22.</td><td class="team">Dinamo Zagrzeb</td><td class="num pts">24</td><td class="num">2700</td><td class="num">2600</td></tr>
+        <tr><td class="pos">23.</td><td class="team">Sparta Praga</td><td class="num pts">14</td><td class="num">2600</td><td class="num">2600</td></tr>
+        <tr><td class="pos">24.</td><td class="team">Young Boys</td><td class="num pts">11</td><td class="num">2600</td><td class="num">2600</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
