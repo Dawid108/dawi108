@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zwycięzcy Ekstraklasy</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: #f4f4f9;
+      color: #333;
+      padding: 16px;
+      line-height: 1.5;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 12px;
+      color: #1e293b;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      margin-top: 8px;
+    }
+
+    h2 {
+      font-size: 1.2rem;
+      margin-top: 28px;
+    }
+
+    /* Kontener zapewniający płynne przewijanie na telefonie */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e2e8f0;
+      margin-bottom: 16px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      white-space: nowrap;
+      font-size: 0.9rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background-color: #0f172a;
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .align-center {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Suma zwycięstw</h1>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="align-center">Lp.</th>
+          <th>Drużyna</th>
+          <th class="align-center">Z</th>
+          <th>Rok</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+          <th>6</th>
+          <th>7</th>
+          <th>8</th>
+          <th>9</th>
+          <th>10</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="align-center">1.</td>
+          <td>Lech Poznań</td>
+          <td class="align-center">10</td>
+          <td>2008</td>
+          <td>2009</td>
+          <td>2010</td>
+          <td>2013</td>
+          <td>2014</td>
+          <td>2015</td>
+          <td>2017</td>
+          <td>2018</td>
+          <td>2020</td>
+          <td>2022</td>
+        </tr>
+        <tr>
+          <td class="align-center">2.</td>
+          <td>Błyskawica</td>
+          <td class="align-center">3</td>
+          <td>2021</td>
+          <td>2023</td>
+          <td>2024</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="align-center">3.</td>
+          <td>Śląsk Wrocław</td>
+          <td class="align-center">2</td>
+          <td>2011</td>
+          <td>2012</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="align-center">4.</td>
+          <td>Piast Gliwice</td>
+          <td class="align-center">2</td>
+          <td>2016</td>
+          <td>2019</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="align-center">5.</td>
+          <td>Barcelona</td>
+          <td class="align-center">1</td>
+          <td>2025</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="align-center">6.</td>
+          <td>Arsenal</td>
+          <td class="align-center">1</td>
+          <td>2026</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Zwycięzcy z każdego roku</h2>
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Rok</th>
+          <th>Drużyna</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>2026</td><td>Arsenal</td></tr>
+        <tr><td>2025</td><td>Barcelona</td></tr>
+        <tr><td>2024</td><td>Błyskawica</td></tr>
+        <tr><td>2023</td><td>Błyskawica</td></tr>
+        <tr><td>2022</td><td>Lech Poznań</td></tr>
+        <tr><td>2021</td><td>Błyskawica</td></tr>
+        <tr><td>2020</td><td>Lech Poznań</td></tr>
+        <tr><td>2019</td><td>Piast Gliwice</td></tr>
+        <tr><td>2018</td><td>Lech Poznań</td></tr>
+        <tr><td>2017</td><td>Lech Poznań</td></tr>
+        <tr><td>2016</td><td>Piast Gliwice</td></tr>
+        <tr><td>2015</td><td>Lech Poznań</td></tr>
+        <tr><td>2014</td><td>Lech Poznań</td></tr>
+        <tr><td>2013</td><td>Lech Poznań</td></tr>
+        <tr><td>2012</td><td>Śląsk Wrocław</td></tr>
+        <tr><td>2011</td><td>Śląsk Wrocław</td></tr>
+        <tr><td>2010</td><td>Lech Poznań</td></tr>
+        <tr><td>2009</td><td>Lech Poznań</td></tr>
+        <tr><td>2008</td><td>Lech Poznań</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
