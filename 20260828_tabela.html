@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabela Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="style.css">
+
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Szkoła">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="dawi108.png">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Gry</h1>
+        <div class="buttons">
+            <a href="20260106_zabka.html" class="app-icon">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1766339973/zabka_kse8oi.png" alt="Żabka">
+                <span>Żabka</span>
+            </a>
+            <a href="20260106_kosmos.html" class="app-icon">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1766408367/kosmos_xgkfai.png" alt="Kosmos">
+                <span>Kosmos</span>
+            </a>
+            <a href="20260106_halloween.html" class="app-icon">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1766320514/halloween_dcjjsf.png" alt="Halloween">
+                <span>Halloween</span>
+            </a>
+            <a href="20260114_zombi.html" class="app-icon">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1768403831/zombi_caxzwt.png" alt="Zombi">
+                <span>Zombi</span>
+            </a>
+            <a href="20260106_jablko.html" class="app-icon">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1750450328/logozbieraniajablek_kndluj.png" alt="Jabłko">
+                <span>Jabłko</span>
+            </a>
+            <a href="20260106_samolot.html" class="app-icon">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1766396487/samolot_laxp46.png" alt="Samolot">
+                <span>Samolot</span>
+            </a>
+            <a href="20260106_ufo.html" class="app-icon">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1754815441/ufo_utvgyg.png" alt="Ufo">
+                <span>Ufo</span>
+            </a>
+            <a href="20260106_goldrun.html" class="app-icon">
+                <img src="https://res.cloudinary.com/diljpkw9f/image/upload/v1754815264/goldrun_fayrn5.png" alt="Gold Run">
+                <span>Gold Run</span>
+            </a>
+        </div>
+    </div>
+<script>
+(function () {
+    let id108 = localStorage.getItem("id108");
+
+    if (
+        !id108 ||
+        isNaN(id108)
+    ) {
+        id108 =
+        Math.floor(Math.random() * 9999) + 1;
+    
+        localStorage.setItem(
+            "id108",
+            id108
+        );
+    }
+
+    const isDesktop =
+        !window.matchMedia("(pointer: coarse)").matches &&
+        window.innerWidth > 900;
+
+    if (isDesktop) {
+        console.log("Brak tabeli na komputerach");
+        return;
+    }
+    let dawid108 = localStorage.getItem("dawid108");
+
+        // ZMIENNE DLA GIER
+    let biologia = localStorage.getItem("biologia") || 0;
+    let chemia = localStorage.getItem("chemia") || 0;
+    let fizyka = localStorage.getItem("fizyka") || 0;
+    let geografia = localStorage.getItem("geografia") || 0;
+    let historia = localStorage.getItem("historia") || 0;
+    let angielski = localStorage.getItem("angielski") || 0;
+    let niemiecki = localStorage.getItem("niemiecki") || 0;
+    let polski = localStorage.getItem("polski") || 0;
+    let matematyka = localStorage.getItem("matematyka") || 0;
+    let programowanie = localStorage.getItem("programowanie") || 0;
+
+    let url = "https://dawid108.infinityfree.me/szkola.html"
+        + "?dawid108=" + encodeURIComponent(dawid108)
+        + "&id108=" + encodeURIComponent(id108)
+        + "&biologia=" + encodeURIComponent(biologia)
+        + "&chemia=" + encodeURIComponent(chemia)
+        + "&fizyka=" + encodeURIComponent(fizyka)
+        + "&geografia=" + encodeURIComponent(geografia)
+        + "&historia=" + encodeURIComponent(historia)
+        + "&angielski=" + encodeURIComponent(angielski)
+        + "&niemiecki=" + encodeURIComponent(niemiecki)
+        + "&polski=" + encodeURIComponent(polski)
+        + "&matematyka=" + encodeURIComponent(matematyka)
+        + "&programowanie=" + encodeURIComponent(programowanie);
+
+    if (!sessionStorage.getItem("sentToInfinity")) {
+        sessionStorage.setItem("sentToInfinity", "1");
+        window.location.href = url;
+    }
+})();
+</script>
+
+</body>
+</html>
