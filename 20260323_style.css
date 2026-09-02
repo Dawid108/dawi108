@@ -26,3 +26,82 @@ box-shadow:0 0 20px #0006;
 #counter{margin-top:10px;color:#9bbcff;}
 .hidden{display:none;}
 #endScreen button{margin-top:15px;background:#6f85ff;padding:10px 20px;border:none;border-radius:10px;color:white;font-size:18px;cursor:pointer;}
+
+/* ==========================================
+   TEST WPISYWANIA SŁÓWEK
+   ========================================== */
+
+#answerInput{
+    width:100%;
+    box-sizing:border-box;
+    background:#1c2257;
+    color:white;
+    border:2px solid #27307a;
+    padding:14px;
+    border-radius:10px;
+    font-size:18px;
+    text-align:center;
+    outline:none;
+    margin-bottom:10px;
+}
+
+#answerInput:focus{
+    border-color:#7dd7ff;
+}
+
+#answerInput::placeholder{
+    color:#9bbcff;
+}
+
+
+#checkButton{
+    width:100%;
+    background:#6f85ff;
+    color:white;
+    border:none;
+    padding:13px;
+    border-radius:10px;
+    font-size:18px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+#checkButton:hover{
+    background:#8295ff;
+}
+
+#checkButton:disabled{
+    opacity:.5;
+    cursor:default;
+}
+
+
+#pronunciation{
+    color:#9bbcff;
+    font-size:15px;
+    margin-top:-10px;
+    margin-bottom:15px;
+}
+
+
+#result{
+    margin-top:15px;
+    min-height:45px;
+    font-size:17px;
+    line-height:1.5;
+}
+
+
+.resultCorrect{
+    color:#5cff8a;
+}
+
+
+.resultWrong{
+    color:#ff7777;
+}
+
+
+#answers{
+    width:100%;
+}
