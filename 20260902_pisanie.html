@@ -26,11 +26,6 @@
 
     <div class="question" id="question"></div>
 
-    <!-- UŁATWIENIE -->
-    <div id="pronunciation">
-        🔊 Odpowiedź została wymówiona
-    </div>
-
     <!-- WPISYWANIE ODPOWIEDZI -->
     <div id="answers">
 
@@ -86,11 +81,6 @@
 
 
 <script>
-
-// ============================================================
-// PYTANIA
-// TEJ TABLICY NIE ZMIENIAJ
-// ============================================================
 
 let questions = [
 {cat:"Angielski", q:"znajomy/znajoma", a:"acquaintance", b:"relative", c:"colleague", d:"partner"},
@@ -160,12 +150,7 @@ let questions = [
 {cat:"Angielski", q:"być z kimś blisko", a:"be close to sb", b:"be married with children", c:"get on with sb", d:"go out together"},
 {cat:"Angielski", q:"mieć żonę/męża i dzieci", a:"be married with children", b:"be close to sb", c:"go out together", d:"get on with sb"}
 ];
-
-
-// ============================================================
-// ZMIENNE GRY
-// ============================================================
-
+    
 let current = 0;
 let life = 9;
 let score = 0;
@@ -182,11 +167,6 @@ let angielski =
     localStorage.getItem("angielski") || 0;
 
 let canAnswer = true;
-
-
-// ============================================================
-// NOWA GRA
-// ============================================================
 
 function newGame(){
 
@@ -208,11 +188,6 @@ function newGame(){
     nextQuestion();
 }
 
-
-// ============================================================
-// AKTUALIZACJA STATYSTYK
-// ============================================================
-
 function updateStats(){
 
     document.getElementById("life").innerText = life;
@@ -220,11 +195,6 @@ function updateStats(){
     document.getElementById("score").innerText = score;
 
 }
-
-
-// ============================================================
-// WYMOWA SŁOWA
-// ============================================================
 
 function speakAnswer(){
 
@@ -248,10 +218,6 @@ function speakAnswer(){
     speechSynthesis.speak(utterance);
 }
 
-
-// ============================================================
-// NASTĘPNE PYTANIE
-// ============================================================
 
 function nextQuestion(){
 
@@ -323,13 +289,6 @@ function nextQuestion(){
         .className = "";
 
 
-    document
-        .getElementById("pronunciation")
-        .innerText =
-        "🔊 Posłuchaj odpowiedzi";
-
-
-    // Wypowiedzenie poprawnej odpowiedzi
 
     setTimeout(
         () => speakAnswer(),
@@ -337,11 +296,6 @@ function nextQuestion(){
     );
 
 }
-
-
-// ============================================================
-// SPRAWDZANIE ODPOWIEDZI
-// ============================================================
 
 function checkAnswer(){
 
@@ -370,7 +324,6 @@ function checkAnswer(){
         .disabled = true;
 
 
-    // Usuwamy wielkość liter
 
     let user =
         userAnswer.toLowerCase();
@@ -391,10 +344,6 @@ function checkAnswer(){
 
 }
 
-
-// ============================================================
-// POPRAWNA ODPOWIEDŹ
-// ============================================================
 
 function correctAnswerAction(){
 
@@ -441,10 +390,6 @@ function correctAnswerAction(){
 }
 
 
-// ============================================================
-// BŁĘDNA ODPOWIEDŹ
-// ============================================================
-
 function wrongAnswerAction(){
 
     document
@@ -466,8 +411,6 @@ function wrongAnswerAction(){
 
     updateStats();
 
-
-    // Ponowne wypowiedzenie poprawnej odpowiedzi
 
     setTimeout(
         () => speakAnswer(),
@@ -494,10 +437,6 @@ function wrongAnswerAction(){
 }
 
 
-// ============================================================
-// ENTER = SPRAWDŹ
-// ============================================================
-
 document
     .getElementById("answerInput")
     .addEventListener(
@@ -511,10 +450,6 @@ document
         }
     );
 
-
-// ============================================================
-// WYGRANA
-// ============================================================
 
 function win(){
 
@@ -536,9 +471,6 @@ function win(){
 }
 
 
-// ============================================================
-// KONIEC GRY
-// ============================================================
 
 function gameOver(){
 
@@ -559,10 +491,6 @@ function gameOver(){
 
 }
 
-
-// ============================================================
-// EKRAN KOŃCOWY
-// ============================================================
 
 function endScreen(){
 
@@ -594,10 +522,6 @@ function endScreen(){
 
 }
 
-
-// ============================================================
-// START
-// ============================================================
 
 newGame();
 
