@@ -418,18 +418,20 @@ function wrongAnswerAction(){
     );
 
 
+    document
+        .getElementById("answerInput")
+        .value = "";
+
+    document
+        .getElementById("answerInput")
+        .focus();
+
+
     if(life <= 0){
 
         setTimeout(
             () => gameOver(),
             6000
-        );
-
-    }else{
-
-        setTimeout(
-            () => nextQuestion(),
-            5000
         );
 
     }
