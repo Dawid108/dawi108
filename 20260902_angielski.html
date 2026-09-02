@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Słówka z działu 2 pierwsze 2 kolumny</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Angielski", q:"znajomy/znajoma", a:"acquaintance", b:"relative", c:"colleague", d:"partner"},
+{cat:"Angielski", q:"zrywać, rozstawać się", a:"break up", b:"split up with sb", c:"fall out", d:"make up"},
+{cat:"Angielski", q:"szwagier", a:"brother-in-law", b:"sister-in-law", c:"half brother", d:"twin brother"},
+{cat:"Angielski", q:"kolega/koleżanka z pracy", a:"colleague", b:"acquaintance", c:"partner", d:"relative"},
+{cat:"Angielski", q:"para", a:"couple", b:"partner", c:"siblings", d:"relative"},
+{cat:"Angielski", q:"daleki krewny/daleka krewna", a:"distant relative", b:"twin sister", c:"single parent", d:"family partner"},
+{cat:"Angielski", q:"zaręczony/zaręczona z kimś", a:"engaged to sb", b:"go out together", c:"get on with sb", d:"fall for sb"},
+{cat:"Angielski", q:"zakochać się w kimś", a:"fall for sb", b:"look up to sb", c:"get on with sb", d:"hang out"},
+{cat:"Angielski", q:"pokłócić się", a:"fall out", b:"break up", c:"make up", d:"split up"},
+{cat:"Angielski", q:"narzeczony/narzeczona", a:"fiancé/fiancée", b:"brother-in-law", c:"stepfather/stepmother", d:"partner"},
+{cat:"Angielski", q:"przyjaciele i wrogowie", a:"friends and foes", b:"friends and family", c:"brothers and sisters", d:"partners and relatives"},
+{cat:"Angielski", q:"dogadywać się z kimś", a:"get on with sb", b:"look up to sb", c:"go out together", d:"split up with sb"},
+{cat:"Angielski", q:"wychodzić wspólnie", a:"go out together", b:"hang out", c:"get on with sb", d:"fall for sb"},
+{cat:"Angielski", q:"przyrodni brat", a:"half brother", b:"twin brother", c:"brother-in-law", d:"half sister"},
+{cat:"Angielski", q:"przyrodnia siostra", a:"half sister", b:"twin sister", c:"sister-in-law", d:"half brother"},
+{cat:"Angielski", q:"spędzać razem czas", a:"hang out", b:"go out together", c:"get on with sb", d:"look up to sb"},
+{cat:"Angielski", q:"podziwiać kogoś", a:"look up to sb", b:"fall for sb", c:"get on with sb", d:"take after"},
+{cat:"Angielski", q:"pogodzić się (z kimś)", a:"make up", b:"break up", c:"fall out", d:"split up with sb"},
+{cat:"Angielski", q:"siostrzeniec/bratanek", a:"nephew", b:"niece", c:"relative", d:"partner"},
+{cat:"Angielski", q:"siostrzenica/bratanica", a:"niece", b:"nephew", c:"sister-in-law", d:"relative"},
+{cat:"Angielski", q:"partner/partnerka", a:"partner", b:"relative", c:"acquaintance", d:"colleague"},
+{cat:"Angielski", q:"rodzeństwo", a:"siblings", b:"relatives", c:"friends and foes", d:"brothers-in-law"},
+{cat:"Angielski", q:"rodzic samotnie wychowujący dziecko", a:"single parent", b:"distant relative", c:"stepfather/stepmother", d:"sister-in-law"},
+{cat:"Angielski", q:"szwagierka, bratowa", a:"sister-in-law", b:"brother-in-law", c:"half sister", d:"twin sister"},
+{cat:"Angielski", q:"rozstać się z kimś", a:"split up with sb", b:"break up", c:"fall out", d:"make up"},
+{cat:"Angielski", q:"ojczym/macocha", a:"stepfather/stepmother", b:"single parent", c:"brother-in-law", d:"sister-in-law"},
+{cat:"Angielski", q:"być podobnym do kogoś, odziedziczyć po kimś pewne cechy", a:"take after", b:"look up to sb", c:"fall for sb", d:"get on with sb"},
+{cat:"Angielski", q:"brat bliźniak", a:"twin brother", b:"half brother", c:"brother-in-law", d:"stepbrother"},
+{cat:"Angielski", q:"siostra bliźniaczka", a:"twin sister", b:"half sister", c:"sister-in-law", d:"stepsister"},
+{cat:"Angielski", q:"ślub", a:"wedding", b:"engagement", c:"marriage", d:"relative"},
+{cat:"Angielski", q:"krewny/krewna", a:"relative", b:"acquaintance", c:"colleague", d:"partner"},
+{cat:"Angielski", q:"kłótnia; argument", a:"argument", b:"relationship", c:"friendship", d:"misunderstanding"},
+{cat:"Angielski", q:"rozstanie, rozpad związku", a:"breakup", b:"relationship", c:"friendship", d:"romance"},
+{cat:"Angielski", q:"niszczący, paraliżujący", a:"crippling", b:"supportive", c:"heartbreaking", d:"manipulative"},
+{cat:"Angielski", q:"głęboka więź", a:"deep bond", b:"long-term", c:"close friendship", d:"strong romance"},
+{cat:"Angielski", q:"zdruzgotany, załamany", a:"devastated", b:"unaffected", c:"manipulative", d:"heartbreaking"},
+{cat:"Angielski", q:"z powodu nieporozumienia", a:"due to a misunderstanding", b:"with luck", c:"in a relationship", d:"because of an argument"},
+{cat:"Angielski", q:"zakończyć związek", a:"end a relationship", b:"patch up the differences", c:"lose touch with sb", d:"get on with sb"},
+{cat:"Angielski", q:"przyjaźń", a:"friendship", b:"relationship", c:"partnership", d:"acquaintance"},
+{cat:"Angielski", q:"żal", a:"grief", b:"argument", c:"romance", d:"breakup"},
+{cat:"Angielski", q:"zrzędliwy, gderliwy", a:"grumpy", b:"awkward", c:"supportive", d:"manipulative"},
+{cat:"Angielski", q:"rozdzierający serce", a:"heartbreaking", b:"crippling", c:"devastated", d:"unaffected"},
+{cat:"Angielski", q:"do tanga trzeba dwojga", a:"it takes two to tango", b:"time is a healer", c:"with luck", d:"ups and downs"},
+{cat:"Angielski", q:"długoterminowy", a:"long-term", b:"deep bond", c:"supportive", d:"unaffected"},
+{cat:"Angielski", q:"tracić kontakt (z kimś)", a:"lose touch", b:"break up", c:"fall out", d:"make up"},
+{cat:"Angielski", q:"manipulujący", a:"manipulative", b:"supportive", c:"heartbreaking", d:"attractive to sb"},
+{cat:"Angielski", q:"niewielki, nieznaczny", a:"minor", b:"awkward", c:"unaffected", d:"supportive"},
+{cat:"Angielski", q:"bolesny", a:"painful", b:"heartbreaking", c:"crippling", d:"devastated"},
+{cat:"Angielski", q:"załagodzić konflikt", a:"patch up the differences", b:"end a relationship", c:"lose touch", d:"spread rumours"},
+{cat:"Angielski", q:"platoniczny", a:"platonic", b:"romantic", c:"supportive", d:"long-term"},
+{cat:"Angielski", q:"związek, relacja", a:"relationship", b:"friendship", c:"partnership", d:"acquaintance"},
+{cat:"Angielski", q:"romans", a:"romance", b:"friendship", c:"relationship", d:"breakup"},
+{cat:"Angielski", q:"rozsiewać plotki", a:"spread rumours", b:"lose touch", c:"patch up the differences", d:"end a relationship"},
+{cat:"Angielski", q:"wspierający, pomocny", a:"supportive", b:"manipulative", c:"attractive to sb", d:"unaffected"},
+{cat:"Angielski", q:"czas leczy rany", a:"time is a healer", b:"it takes two to tango", c:"with luck", d:"ups and downs"},
+{cat:"Angielski", q:"toksyczny", a:"toxic", b:"painful", c:"crippling", d:"manipulative"},
+{cat:"Angielski", q:"niedotknięty czymś, niewzruszony", a:"unaffected", b:"devastated", c:"supportive", d:"heartbreaking"},
+{cat:"Angielski", q:"nie doceniać", a:"underestimate", b:"misunderstand", c:"overlook", d:"disapprove"},
+{cat:"Angielski", q:"wzloty i upadki", a:"ups and downs", b:"long-term", c:"it takes two to tango", d:"time is a healer"},
+{cat:"Angielski", q:"pogrążać się w czymś", a:"wallow in sth", b:"lose touch", c:"fall for sb", d:"get on with sb"},
+{cat:"Angielski", q:"przy odrobinie szczęścia", a:"with luck", b:"with support", c:"in the long-term", d:"due to a misunderstanding"},
+{cat:"Angielski", q:"niespokojne myśli", a:"anxious thoughts", b:"ups and downs", c:"painful memories", d:"deep emotions"},
+{cat:"Angielski", q:"pociągający, atrakcyjny dla kogoś", a:"attractive to sb", b:"supportive of sb", c:"close to sb", d:"manipulative towards sb"},
+{cat:"Angielski", q:"niezręczny", a:"awkward", b:"grumpy", c:"unaffected", d:"supportive"},
+{cat:"Angielski", q:"być z kimś blisko", a:"be close to sb", b:"be married with children", c:"get on with sb", d:"go out together"},
+{cat:"Angielski", q:"mieć żonę/męża i dzieci", a:"be married with children", b:"be close to sb", c:"go out together", d:"get on with sb"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 9;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
