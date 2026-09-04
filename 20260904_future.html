@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {
+    cat: "Angielski",
+    q: "W jakich sytuacjach stosujemy czas Future Simple?",
+    a: "Spontaniczne decyzje, przewidywanie przyszłości, niepewne plany, obietnice oraz prośby i sugestie",
+    b: "Pewne plany na przyszłość z dokładnym terminem, harmonogramy oraz rozkłady jazdy",
+    c: "Zamiary, konkretne i sprecyzowane plany oraz przewidywanie na podstawie obserwacji",
+    d: "Godziny otwarcia miejsc publicznych, plany lekcji oraz godziny emisji programów TV"
+  },
+  {
+    cat: "Angielski",
+    q: "Jaka jest budowa zdania twierdzącego w czasie Future Simple?",
+    a: "Podmiot + will + bezokolicznik + ...",
+    b: "Podmiot + be going to + bezokolicznik + ...",
+    c: "Podmiot + to be (am/is/are) + czasownik z -ing + ...",
+    d: "Podmiot + czasownik w formie podstawowej / z końcówką -s + ..."
+  },
+  {
+    cat: "Angielski",
+    q: "Co oznacza i w jakich sytuacjach stosujemy konstrukcję 'be going to'?",
+    a: "Oznacza 'zamierzać' i służy do opisywania konkretnych, sprecyzowanych planów oraz przewidywań na podstawie obserwacji",
+    b: "Oznacza 'być w trakcie' i służy do opisów spontanicznych decyzji oraz próśb i sugestii",
+    c: "Oznacza 'musieć' i służy do opisywania sztywnych rozkładów jazdy oraz planów lekcji",
+    d: "Oznacza 'zrobić coś w przeszłości' i służy do opisywania obietnic oraz niepewnych planów"
+  },
+  {
+    cat: "Angielski",
+    q: "Kiedy używamy czasu Present Continuous w kontekście przyszłości?",
+    a: "Gdy opisujemy pewne plany na przyszłość z dokładnym terminem",
+    b: "Gdy wyrażamy spontaniczne decyzje podejmowane w chwili mówienia",
+    c: "Gdy odnosimy się do oficjalnych rozkładów jazdy i harmonogramów",
+    d: "Gdy składamy obietnice, prośby lub formułujemy sugestie"
+  },
+  {
+    cat: "Angielski",
+    q: "Do czego służy czas Present Simple w kontekście wydarzeń przyszłych?",
+    a: "Do opisywania godzin otwarcia miejsc publicznych, rozkładów jazdy, planów lekcji, harmonogramów spotkań i programów TV",
+    b: "Do wyrażania niepewnych planów na przyszłość, składania obietnic oraz opisywania spontanicznych decyzji",
+    c: "Do opisywania konkretnych, sprecyzowanych planów osobistych oraz intencji związanych z zamierzeniami",
+    d: "Do wyrażania próśb, sugestii oraz przewidywań dotyczących przyszłości na podstawie bieżących obserwacji"
+  },
+  {
+    cat: "Angielski",
+    q: "Miejsca użyteczności publicznej wymienione w notatkach przy czasie Present Simple to:",
+    a: "Sklepy, restauracje, kina, teatry, biblioteki itp.",
+    b: "Szpitale, urzędy, parki, siłownie, baseny itp.",
+    c: "Dworce, lotniska, hotele, muzea, galerie itp.",
+    d: "Banki, poczty, apteki, uczelnie, stadiony itp."
+  },
+  {
+    cat: "Angielski",
+    q: "Środki transportu i usługi, których rozkłady/godziny opisuje Present Simple w notatkach, to:",
+    a: "Pociągi, autobusy, odloty i przyloty samolotów oraz godziny emisji programów telewizyjnych",
+    b: "Taksówki, promy, rejsy statków oraz godziny otwarcia wypożyczalni samochodów",
+    c: "Metro, tramwaje, kolejki linowe oraz godziny emisji audycji radiowych",
+    d: "Samochody dostawcze, hulajnogi, rowery miejskie oraz godziny spektakli teatralnych"
+  },
+  {
+    cat: "Angielski",
+    q: "Które przykładowe zdania z notatek poprawnie ilustrują użycie czasu Present Simple?",
+    a: "What time does the film start? / The shop opens at 10 a.m. / The match starts at 8 p.m.",
+    b: "What time will the film start? / The shop is opening at 10 a.m. / The match is going to start at 8 p.m.",
+    c: "What time is the film starting? / The shop will open at 10 a.m. / The match opened at 8 p.m.",
+    d: "What time did the film start? / The shop open at 10 a.m. / The match start at 8 p.m."
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 9;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
