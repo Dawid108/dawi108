@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Future Tenses Exercises", q:"The train _______ (to arrive) at 12:30.", a:"arrives", b:"will arrive", c:"is arriving", d:"going to arrive"},
+  {cat:"Future Tenses Exercises", q:"We _______ (to have) dinner at a seaside restaurant on Sunday.", a:"are having", b:"will have", c:"have", d:"had"},
+  {cat:"Future Tenses Exercises", q:"It _______ (to snow) in Brighton tomorrow evening.", a:"will snow", b:"snows", c:"is snowing", d:"snowed"},
+  {cat:"Future Tenses Exercises", q:"On Friday at 8 o'clock I _______ (to meet) my friend.", a:"am meeting", b:"will meet", c:"meet", d:"met"},
+  {cat:"Future Tenses Exercises", q:"Paul _______ (to fly) to London on Monday morning.", a:"is flying", b:"will fly", c:"flies", d:"flew"},
+  {cat:"Future Tenses Exercises", q:"Wait! I _______ (to drive) you to the station.", a:"will drive", b:"am driving", c:"drove", d:"drive"},
+  {cat:"Future Tenses Exercises", q:"The English lesson _______ (to start) at 8:45.", a:"starts", b:"will start", c:"is starting", d:"started"},
+  {cat:"Future Tenses Exercises", q:"Are you still writing your essay? If you _______ (to finish) by 4pm, we can go for a walk.", a:"finish", b:"will finish", c:"are finishing", d:"finished"},
+  {cat:"Future Tenses Exercises", q:"I _______ (to see) my mother in April.", a:"am seeing", b:"will see", c:"see", d:"saw"},
+  {cat:"Future Tenses Exercises", q:"Look at the clouds – it _______ (to rain) in a few minutes.", a:"is going to rain", b:"will rain", c:"rains", d:"rained"},
+  {cat:"Future Tenses Exercises", q:"When they _______ (to get) married in March, they _______ (to be) together for six years.", a:"get / will have been", b:"will get / are", c:"got / have been", d:"are getting / were"},
+  {cat:"Future Tenses Exercises", q:"You're carrying too much. I _______ (to open) the door for you.", a:"will open", b:"am opening", c:"opened", d:"open"},
+  {cat:"Future Tenses Exercises", q:"Do you think the teacher _______ (to mark) our homework by Monday morning?", a:"will have marked", b:"will mark", c:"marks", d:"is marking"},
+  {cat:"Future Tenses Exercises", q:"When I _______ (to see) you tomorrow, I _______ (to show) you my new book.", a:"see / will show", b:"will see / show", c:"saw / showed", d:"am seeing / show"},
+  {cat:"Future Tenses Exercises", q:"After you _______ (to take) a nap, you _______ (to feel) a lot better.", a:"take / will feel", b:"will take / feel", c:"took / felt", d:"are taking / feel"},
+  {cat:"Future Tenses Exercises", q:"I'm sorry but you need to stay in the office until you _______ (to finish) your work.", a:"finish", b:"will finish", c:"finished", d:"are finishing"},
+  {cat:"Future Tenses Exercises", q:"I _______ (to buy) the cigarettes from the corner shop when it _______ (to open).", a:"will buy / opens", b:"buy / will open", c:"bought / opened", d:"am buying / open"},
+  {cat:"Future Tenses Exercises", q:"I _______ (to let) you know the second the builders _______ (to finish) decorating.", a:"will let / finish", b:"let / will finish", c:"let / finished", d:"am letting / finish"},
+  {cat:"Future Tenses Exercises", q:"Before we _______ (to start) our lesson, we _______ (to have) a review.", a:"start / will have", b:"will start / have", c:"started / had", d:"are starting / have"},
+  {cat:"Future Tenses Exercises", q:"We _______ (to wait) in the shelter until the bus _______ (to come).", a:"will wait / comes", b:"wait / will come", c:"waited / came", d:"are waiting / come"},
+  {cat:"Future Tenses Exercises", q:"I'm very sorry Dr. Jones _______ (not be) back in the clinic until 2pm.", a:"won't be", b:"isn't", c:"wasn't", d:"doesn't be"},
+  {cat:"Future Tenses Exercises", q:"This summer, I _______ (to live) in Brighton for four years.", a:"will have been living", b:"will live", c:"am living", d:"lived"},
+  {cat:"Future Tenses Exercises", q:"I don't think you _______ (to have) any problems when you land in Boston.", a:"will have", b:"have", c:"are having", d:"had"},
+  {cat:"Future Tenses Exercises", q:"The baby should be due soon, next week she _______ (to be) pregnant for nine months.", a:"will have been", b:"will be", c:"is", d:"was"},
+  {cat:"Future Tenses Exercises", q:"By the time we get home, they _______ (to play) football for 30 minutes.", a:"will have been playing", b:"will play", c:"are playing", d:"played"},
+  {cat:"Future Tenses Exercises", q:"In three years I _______ (to live) in a different country.", a:"will be living", b:"live", c:"am living", d:"lived"},
+  {cat:"Future Tenses Exercises", q:"When you _______ (to get) off the train, I _______ (to wait) for you by the ticket machine.", a:"get / will be waiting", b:"will get / wait", c:"got / waited", d:"are getting / wait"},
+  {cat:"Future Tenses Exercises", q:"_______ (to take) your children with you to France?", a:"Will you take", b:"Do you take", c:"Did you take", d:"Are you take"},
+  {cat:"Future Tenses Exercises", q:"This time next week I _______ (ski) in Switzerland!", a:"will be skiing", b:"will ski", c:"am skiing", d:"skied"},
+  {cat:"Future Tenses Exercises", q:"Now I _______ (to check) my answers.", a:"will check", b:"checked", c:"check", d:"was checking"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 9;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
