@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Angielski", q:"When the weather is fine, we ________ a picnic in our garden. (probably have)", a:"will probably have", b:"are going to have", c:"will have probably", d:"is going to have"},
+  {cat:"Angielski", q:"________ to ask him for help? (you ask)", a:"Are you going", b:"Will you ask", c:"Do you ask", d:"Are you asking"},
+  {cat:"Angielski", q:"Susan ________ the bathroom next weekend. (paint)", a:"is going to paint", b:"will paint bathroom", c:"is painting to do", d:"paints the room"},
+  {cat:"Angielski", q:"I think he ________ her name. (find out)", a:"will find out", b:"is going to find", c:"finds out name", d:"is finding out"},
+  {cat:"Angielski", q:"I ________ a walk in the garden this evening. (take)", a:"am going to take", b:"will take a walk", c:"take a walk now", d:"am taking walk"},
+  {cat:"Angielski", q:"Let's hope that the wind ________ away the clouds. (blow)", a:"will blow", b:"is blowing", c:"blows away", d:"going blow"},
+  {cat:"Angielski", q:"Mary ________ a good mark because she has studied hard. (get)", a:"is going to get", b:"will get a mark", c:"gets good mark", d:"is getting mark"},
+  {cat:"Angielski", q:"Are you sure, you ________ in a tent in your holidays? (sleep)", a:"will sleep", b:"are sleeping", c:"going to sleep", d:"sleeps in tent"},
+  {cat:"Angielski", q:"Peter ________ his new bike in the park. (ride)", a:"is going to ride", b:"will ride a bike", c:"rides his bike", d:"is riding bike"},
+  {cat:"Angielski", q:"I hope Jane ________ me to her party. (invite)", a:"will invite", b:"is inviting", c:"invites me to", d:"going to invite"},
+  {cat:"Angielski", q:"I ________ dad's car tomorrow afternoon. (wash)", a:"am going to wash", b:"will wash dad's", c:"wash car tomorrow", d:"am washing car"},
+  {cat:"Angielski", q:"Mum thinks dad ________ home early tonight. (come)", a:"will come", b:"comes home", c:"is coming", d:"going come"},
+  {cat:"Angielski", q:"It ________ very cold in the mountains. Take a sweater with you. (probably be)", a:"will probably be", b:"is going to be", c:"probably will be", d:"is being cold"},
+  {cat:"Angielski", q:"We ________ our bikes in the park. Can you come with us? (ride)", a:"are going to ride", b:"will ride bikes", c:"ride our bikes", d:"are riding bike"},
+  {cat:"Angielski", q:"It's my birthday next Friday. Mum ________ a cake. (bake)", a:"is going to bake", b:"will bake cake", c:"bakes a cake", d:"is baking cake"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 9;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
