@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {
+    cat: "Angielski",
+    q: "Jakie jest polskie tłumaczenie czasu Future Perfect?",
+    a: "Czas przyszły zaprzeszły",
+    b: "Czas przyszły ciągły",
+    c: "Czas przeszły dokonany",
+    d: "Czas teraźniejszy prosty"
+  },
+  {
+    cat: "Angielski",
+    q: "Kiedy stosuje się czas Future Perfect?",
+    a: "Do czynności, które będą już ukończone do konkretnego momentu w przyszłości",
+    b: "Do czynności, które będą trwały ciągle przez dłuższy okres w przyszłości",
+    c: "Do zdarzeń, które wydarzyły się nagle w przeszłości przed innym zdarzeniem",
+    d: "Do opisywania nawyków i stałych sytuacji życiowych w teraźniejszości"
+  },
+  {
+    cat: "Angielski",
+    q: "Jaka jest budowa zdania twierdzącego w czasie Future Perfect?",
+    a: "Podmiot + will + have + III forma / -ed",
+    b: "Podmiot + will + be + czasownik z -ing",
+    c: "Podmiot + have + III forma / -ed + will",
+    d: "Podmiot + will + czasownik w formie podstawowej"
+  },
+  {
+    cat: "Angielski",
+    q: "Jaka jest budowa pytania w czasie Future Perfect?",
+    a: "Will + podmiot + have + III forma / -ed?",
+    b: "Have + podmiot + will + III forma / -ed?",
+    c: "Will + podmiot + be + czasownik z -ing?",
+    d: "Do + podmiot + have + III forma / -ed?"
+  },
+  {
+    cat: "Angielski",
+    q: "Jaka jest budowa zdania przeczącego w czasie Future Perfect?",
+    a: "Podmiot + will + not (won't) + have + III forma / -ed",
+    b: "Podmiot + have + not + III forma / -ed + will",
+    c: "Podmiot + will + not (won't) + be + czasownik z -ing",
+    d: "Podmiot + don't + have + III forma / -ed"
+  },
+  {
+    cat: "Angielski",
+    q: "Które przysłówki są charakterystyczne dla czasu Future Perfect?",
+    a: "by, till",
+    b: "for, all day, all night",
+    c: "yesterday, ago, last week",
+    d: "always, never, usually"
+  },
+  {
+    cat: "Angielski",
+    q: "Jak przetłumaczyć na angielski zdanie: 'Do następnego tygodnia przeczytam całą książkę'?",
+    a: "By next week I will have read the whole book.",
+    b: "By next week I will be reading the whole book.",
+    c: "Next week I will read the whole book completely.",
+    d: "By next week I have read all of the book."
+  },
+  {
+    cat: "Angielski",
+    q: "Jak przetłumaczyć na angielski zdanie: 'Mam nadzieję, że do jutra nauczę się całego wiersza na pamięć'?",
+    a: "I hope till tomorrow I will have learnt the whole poem by heart.",
+    b: "I hope till tomorrow I will learn the whole poem by heart.",
+    c: "I hope tomorrow I am learning the whole poem by heart.",
+    d: "I hope till tomorrow I will be learning the whole poem."
+  },
+  {
+    cat: "Angielski",
+    q: "Co oznacza słówko 'the whole'?",
+    a: "cała, cały, całe",
+    b: "część, fragment",
+    c: "połowa, pół",
+    d: "wiele, dużo"
+  },
+  {
+    cat: "Angielski",
+    q: "Co oznacza słówko 'poem'?",
+    a: "wiersz",
+    b: "poeta",
+    c: "powieść",
+    d: "opowiadanie"
+  },
+  {
+    cat: "Angielski",
+    q: "Co oznacza zwrot 'by heart'?",
+    a: "na pamięć",
+    b: "z serca",
+    c: "z chęcią",
+    d: "od zaraz"
+  },
+  {
+    cat: "Angielski",
+    q: "Jak przetłumaczyć na angielski zdanie: 'Napiszę wszystkie maile do końca dnia'?",
+    a: "I will have written all emails by end day.",
+    b: "I will write all of emails until the end day.",
+    c: "I will be writing all emails by end day.",
+    d: "I have written all emails by end day."
+  },
+  {
+    cat: "Angielski",
+    q: "Jak przetłumaczyć na angielski zdanie: 'Do 14:00 ugotuję obiad'?",
+    a: "I will have cooked dinner by two p.m.",
+    b: "I will cook dinner at two p.m. today.",
+    c: "I will be cooking dinner by two p.m.",
+    d: "I have cooked dinner for two p.m."
+  },
+  {
+    cat: "Angielski",
+    q: "Jakie jest polskie tłumaczenie czasu Future Continuous?",
+    a: "Czas przyszły ciągły",
+    b: "Czas przyszły zaprzeszły",
+    c: "Czas przeszły ciągły",
+    d: "Czas teraźniejszy ciągły"
+  },
+  {
+    cat: "Angielski",
+    q: "Kiedy stosuje się czas Future Continuous?",
+    a: "Do czynności, które będą miały miejsce w przyszłości i będą rozciągnięte w czasie (będą trwały długo)",
+    b: "Do czynności, które zakończą się całkowicie przed określonym momentem w przyszłości",
+    c: "Do jednorazowych i krótkich zdarzeń, które wydarzyły się w przeszłości",
+    d: "Do wyrażania obietnic i spontanicznych decyzji podejmowanych w chwili mówienia"
+  },
+  {
+    cat: "Angielski",
+    q: "Jaka jest budowa zdania twierdzącego w czasie Future Continuous?",
+    a: "Podmiot + will + be + czasownik + -ing + ...",
+    b: "Podmiot + will + have + III forma / -ed + ...",
+    c: "Podmiot + be + will + czasownik + -ing + ...",
+    d: "Podmiot + will + czasownik + -ing + ..."
+  },
+  {
+    cat: "Angielski",
+    q: "Jaka jest budowa pytania w czasie Future Continuous?",
+    a: "Will + podmiot + be + czasownik + -ing + ...?",
+    b: "Be + podmiot + will + czasownik + -ing + ...?",
+    c: "Will + podmiot + have + czasownik + -ing + ...?",
+    d: "Do + podmiot + will + be + czasownik + -ing + ...?"
+  },
+  {
+    cat: "Angielski",
+    q: "Jaka jest budowa zdania przeczącego w czasie Future Continuous?",
+    a: "Podmiot + won't + be + czasownik + -ing + ...",
+    b: "Podmiot + won't + have + czasownik + -ing + ...",
+    c: "Podmiot + be + not + will + czasownik + -ing + ...",
+    d: "Podmiot + don't + will + be + czasownik + -ing + ..."
+  },
+  {
+    cat: "Angielski",
+    q: "Które przysłówki są charakterystyczne dla czasu Future Continuous?",
+    a: "for, all day, all night, this time next week",
+    b: "by, till, by the time, before",
+    c: "already, just, yet, ever",
+    d: "yesterday, last night, in 1999"
+  },
+  {
+    cat: "Angielski",
+    q: "Jak przetłumaczyć na angielski zdanie: 'Będziemy spać w namiocie całą noc'?",
+    a: "We will be sleeping in the tent all night.",
+    b: "We will have slept in the tent all night.",
+    c: "We are sleeping in the tent all night long.",
+    d: "We will sleep inside tent for whole night."
+  },
+  {
+    cat: "Angielski",
+    q: "Jak przetłumaczyć na angielski zdanie: 'Będę uczyć się całą noc'?",
+    a: "I will be studying all night.",
+    b: "I will have studied all night.",
+    c: "I am going to study all night.",
+    d: "I will study through all night."
+  },
+  {
+    cat: "Angielski",
+    q: "Jak przetłumaczyć na angielski zdanie: 'Będziemy pracować nad tym projektem cały rok'?",
+    a: "We will be working on this project all year.",
+    b: "We will have worked on this project all year.",
+    c: "We will work for this project through whole year.",
+    d: "We are working on this project all the year."
+  },
+  {
+    cat: "Angielski",
+    q: "Jak przetłumaczyć na angielski zdanie: 'Będzie padać w tej części kraju przez kilka godzin'?",
+    a: "It will be raining in this part of the country for a few hours.",
+    b: "It will have rained in this part of the country for a few hours.",
+    c: "It is raining in this part of country for a few hours.",
+    d: "It will rain in this part of the country during few hours."
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 9;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
