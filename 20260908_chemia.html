@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  // Alkany: Nazwa -> Wzór (10)
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny metanu?", a:"CH4", b:"CH2", c:"C2H6", d:"C2H4"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny etanu?", a:"C2H6", b:"C2H4", c:"C2H2", d:"C3H8"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny propanu?", a:"C3H8", b:"C3H6", c:"C3H4", d:"C4H10"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny butanu?", a:"C4H10", b:"C4H8", c:"C4H6", d:"C5H12"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny pentanu?", a:"C5H12", b:"C5H10", c:"C5H8", d:"C6H14"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny heksanu?", a:"C6H14", b:"C6H12", c:"C6H10", d:"C7H16"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny heptanu?", a:"C7H16", b:"C7H14", c:"C7H12", d:"C8H18"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny oktanu?", a:"C8H18", b:"C8H16", c:"C8H14", d:"C9H20"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny nonanu?", a:"C9H20", b:"C9H18", c:"C9H16", d:"C10H22"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny dekanu?", a:"C10H22", b:"C10H20", c:"C10H18", d:"C9H20"},
+
+  // Alkany: Wzór -> Nazwa (10)
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze CH4?", a:"Metan", b:"Etan", c:"Propan", d:"Butan"},
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze C2H6?", a:"Etan", b:"Metan", c:"Eten", d:"Etyn"},
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze C3H8?", a:"Propan", b:"Propen", c:"Propyn", d:"Butan"},
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze C4H10?", a:"Butan", b:"Buten", c:"Butyn", d:"Pentan"},
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze C5H12?", a:"Pentan", b:"Penten", c:"Pentyn", d:"Heksan"},
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze C6H14?", a:"Heksan", b:"Heksen", c:"Heksyn", d:"Heptan"},
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze C7H16?", a:"Heptan", b:"Hepten", c:"Heptyn", d:"Oktan"},
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze C8H18?", a:"Oktan", b:"Okten", c:"Oktyn", d:"Nonan"},
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze C9H20?", a:"Nonan", b:"Nonen", c:"Nonyn", d:"Dekan"},
+  {cat:"Chemia", q:"Jak nazywa się alkan o wzorze C10H22?", a:"Dekan", b:"Deken", c:"Dekyn", d:"Nonan"},
+
+  // Alkeny: Nazwa -> Wzór (9)
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny etenu?", a:"C2H4", b:"C2H6", c:"C2H2", d:"C3H6"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny propenu?", a:"C3H6", b:"C3H8", c:"C3H4", d:"C4H8"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny butenu?", a:"C4H8", b:"C4H10", c:"C4H6", d:"C5H10"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny pentenu?", a:"C5H10", b:"C5H12", c:"C5H8", d:"C6H12"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny heksenu?", a:"C6H12", b:"C6H14", c:"C6H10", d:"C7H14"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny heptenu?", a:"C7H14", b:"C7H16", c:"C7H12", d:"C8H16"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny oktenu?", a:"C8H16", b:"C8H18", c:"C8H14", d:"C9H18"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny nonenu?", a:"C9H18", b:"C9H20", c:"C9H16", d:"C10H20"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny dekenu?", a:"C10H20", b:"C10H22", c:"C10H18", d:"C9H18"},
+
+  // Alkeny: Wzór -> Nazwa (9)
+  {cat:"Chemia", q:"Jak nazywa się alken o wzorze C2H4?", a:"Eten", b:"Etan", c:"Etyn", d:"Propen"},
+  {cat:"Chemia", q:"Jak nazywa się alken o wzorze C3H6?", a:"Propen", b:"Propan", c:"Propyn", d:"Buten"},
+  {cat:"Chemia", q:"Jak nazywa się alken o wzorze C4H8?", a:"Buten", b:"Butan", c:"Butyn", d:"Penten"},
+  {cat:"Chemia", q:"Jak nazywa się alken o wzorze C5H10?", a:"Penten", b:"Pentan", c:"Pentyn", d:"Heksen"},
+  {cat:"Chemia", q:"Jak nazywa się alken o wzorze C6H12?", a:"Heksen", b:"Heksan", c:"Heksyn", d:"Hepten"},
+  {cat:"Chemia", q:"Jak nazywa się alken o wzorze C7H14?", a:"Hepten", b:"Heptan", c:"Heptyn", d:"Okten"},
+  {cat:"Chemia", q:"Jak nazywa się alken o wzorze C8H16?", a:"Okten", b:"Oktan", c:"Oktyn", d:"Nonen"},
+  {cat:"Chemia", q:"Jak nazywa się alken o wzorze C9H18?", a:"Nonen", b:"Nonan", c:"Nonyn", d:"Deken"},
+  {cat:"Chemia", q:"Jak nazywa się alken o wzorze C10H20?", a:"Deken", b:"Dekan", c:"Dekyn", d:"Nonen"},
+
+  // Alkiny: Nazwa -> Wzór (9)
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny etynu?", a:"C2H2", b:"C2H4", c:"C2H6", d:"C3H4"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny propynu?", a:"C3H4", b:"C3H6", c:"C3H8", d:"C4H6"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny butynu?", a:"C4H6", b:"C4H8", c:"C4H10", d:"C5H8"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny pentynu?", a:"C5H8", b:"C5H10", c:"C5H12", d:"C6H10"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny heksynu?", a:"C6H10", b:"C6H12", c:"C6H14", d:"C7H12"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny heptynu?", a:"C7H12", b:"C7H14", c:"C7H16", d:"C8H14"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny oktynu?", a:"C8H14", b:"C8H16", c:"C8H18", d:"C9H16"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny nonynu?", a:"C9H16", b:"C9H18", c:"C9H20", d:"C10H18"},
+  {cat:"Chemia", q:"Jaki jest wzór sumaryczny dekynu?", a:"C10H18", b:"C10H20", c:"C10H22", d:"C9H16"},
+
+  // Alkiny: Wzór -> Nazwa (9)
+  {cat:"Chemia", q:"Jak nazywa się alkin o wzorze C2H2?", a:"Etyn", b:"Eten", c:"Etan", d:"Propyn"},
+  {cat:"Chemia", q:"Jak nazywa się alkin o wzorze C3H4?", a:"Propyn", b:"Propen", c:"Propan", d:"Butyn"},
+  {cat:"Chemia", q:"Jak nazywa się alkin o wzorze C4H6?", a:"Butyn", b:"Buten", c:"Butan", d:"Pentyn"},
+  {cat:"Chemia", q:"Jak nazywa się alkin o wzorze C5H8?", a:"Pentyn", b:"Penten", c:"Pentan", d:"Heksyn"},
+  {cat:"Chemia", q:"Jak nazywa się alkin o wzorze C6H10?", a:"Heksyn", b:"Heksen", c:"Heksan", d:"Heptyn"},
+  {cat:"Chemia", q:"Jak nazywa się alkin o wzorze C7H12?", a:"Heptyn", b:"Hepten", c:"Heptan", d:"Oktyn"},
+  {cat:"Chemia", q:"Jak nazywa się alkin o wzorze C8H14?", a:"Oktyn", b:"Okten", c:"Oktan", d:"Nonyn"},
+  {cat:"Chemia", q:"Jak nazywa się alkin o wzorze C9H16?", a:"Nonyn", b:"Nonen", c:"Nonan", d:"Dekyn"},
+  {cat:"Chemia", q:"Jak nazywa się alkin o wzorze C10H18?", a:"Dekyn", b:"Deken", c:"Dekan", d:"Nonyn"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let chemia =
+    localStorage.getItem("chemia") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        chemia =
+            parseInt(chemia) + 9;
+
+        localStorage.setItem(
+            "chemia",
+            chemia
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
