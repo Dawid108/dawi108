@@ -330,7 +330,7 @@ function generate() {
     if (form === "cwiczenia") {
 
         prompt =
-`W następującej tablicy zrób test dla zadań z ćwiczeń z przedmiotu ${subject} ze zdjęcia gdzie zawsze będzie "a" poprawne. 
+`W następującej tablicy zrób test dla zadań ze zdjęcia z ćwiczeń z przedmiotu ${subject} ze zdjęcia gdzie zawsze będzie "a" poprawne. 
 Dla każdego przykładu lub do uzupełnienia słowa na być jedno pytanie. 
 
 {cat:"Kategoria", q:"Pytanie?", a:"Poprawna odpowiedź", b:"Zła odpowiedź", c:"Zła odpowiedź", d:"Zła odpowiedź"},
@@ -340,7 +340,6 @@ W "q" będzie pytanie.
 W "a" będzie poprawna odpowiedź.
 W "b", "c", "d" będą złe odpowiedzi których długość będzie podobna do poprawnej.
 
-Poniżej masz zadania z ćwiczeń:
 ${text}`;
 
 
@@ -402,8 +401,6 @@ W "cat" zapisz "${subject}".
 W "q" będzie pytanie.
 W "a" będzie poprawna odpowiedź.
 W "b", "c", "d" będą złe odpowiedzi których długość będzie podobna do poprawnej.
-
-Poniżej masz informacje ze zdjęcia:
 
 ${text}`;
 
