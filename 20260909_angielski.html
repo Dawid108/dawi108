@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Angielski", q:"trener, szkoleniowiec", a:"trainer", b:"trainee", c:"teacher", d:"tracker"},
+{cat:"Angielski", q:"szkolenie", a:"training", b:"tracking", c:"trimming", d:"teaching"},
+{cat:"Angielski", q:"odbyć staż", a:"undergo a traineeship", b:"undergo a partnership", c:"undertake a fellowship", d:"undergo a sponsorship"},
+{cat:"Angielski", q:"pracować po godzinach", a:"work overtime", b:"work extended", c:"work daytime", d:"work parttime"},
+{cat:"Angielski", q:"miejsce pracy", a:"workplace", b:"worksheet", c:"workforce", d:"workshop"},
+{cat:"Angielski", q:"rozwój zawodowy", a:"career development", b:"career pathfinder", c:"career achievement", d:"career replacement"},
+{cat:"Angielski", q:"szczeble kariery", a:"career ladder", b:"career status", c:"career stepup", d:"career stairs"},
+{cat:"Angielski", q:"siła robocza", a:"workforce", b:"workplace", c:"workpower", d:"workhouse"},
+{cat:"Angielski", q:"zarządzać projektem", a:"be in charge of a project", b:"be in control of a project", c:"be in center of a project", d:"be in charge of a process"},
+{cat:"Angielski", q:"urodzony przywódca", a:"born leader", b:"born master", c:"born runner", d:"born driver"},
+{cat:"Angielski", q:"konstruktywna informacja zwrotna", a:"constructive feedback", b:"constructive argument", c:"perspective feedback", d:"productive response"},
+{cat:"Angielski", q:"przekazać zadania", a:"delegate tasks", b:"allocate items", c:"deliberate jobs", d:"relocate tasks"},
+{cat:"Angielski", q:"okazywać, manifestować", a:"display", b:"disown", c:"demand", d:"disprove"},
+{cat:"Angielski", q:"wzmocnić pozycję członków zespołu", a:"empower team members", b:"engage overall members", c:"enforce group members", d:"empower staff workers"},
+{cat:"Angielski", q:"koncentrować się na mocnych stronach członków zespołu", a:"focus on team members' strengths", b:"focus on team members' skills", c:"focus on group members' powers", d:"focus on team members' status"},
+{cat:"Angielski", q:"pomóc komuś", a:"give sb a hand", b:"give sb a lift", c:"give sb a clue", d:"give sb a push"},
+{cat:"Angielski", q:"stawiać wysokie oczekiwania", a:"set high expectations", b:"set high aspirations", c:"set strong limits", d:"set broad requirements"},
+{cat:"Angielski", q:"przejawiać", a:"manifest", b:"maintain", c:"maximize", d:"maneuver"},
+{cat:"Angielski", q:"potrzebować wsparcia", a:"need support", b:"need assist", c:"need backing", d:"need comfort"},
+{cat:"Angielski", q:"zaplanować próby", a:"schedule the rehearsals", b:"schedule the meetings", c:"organize the practices", d:"arrange the rehearsals"},
+{cat:"Angielski", q:"doprowadzić projekt do końca", a:"see the project through", b:"see the project ahead", c:"run the project around", d:"get the project done"},
+{cat:"Angielski", q:"wziąć odpowiedzialność", a:"take on responsibility", b:"take over reliability", c:"take in accountability", d:"take on responsiveness"},
+{cat:"Angielski", q:"złożyć wypowiedzenie", a:"give in your notice", b:"give up your office", c:"hand in your report", d:"take in your letter"},
+{cat:"Angielski", q:"dochodowy, opłacalny", a:"profitable", b:"predictable", c:"preferable", d:"permissible"},
+{cat:"Angielski", q:"zaliczka, awans; awansować", a:"advance", b:"admit", c:"adjust", d:"advise"},
+{cat:"Angielski", q:"zaawansowany, rozwinięty", a:"advanced", b:"adjusted", c:"admired", d:"advising"},
+{cat:"Angielski", q:"awans, rozwój, postęp", a:"advancement", b:"achievement", c:"adjustment", d:"assessment"},
+{cat:"Angielski", q:"być przepracowanym", a:"be overworked", b:"be overloaded", c:"be overused", d:"be overburdened"},
+{cat:"Angielski", q:"rozwijać uniwersalne umiejętności, które można wykorzystać w różnych dziedzinach", a:"boost your transferable skills", b:"build your practical talent", c:"boost your professional skills", d:"bring your trainable skills"},
+{cat:"Angielski", q:"kariera zawodowa", a:"career", b:"course", c:"clause", d:"chance"},
+{cat:"Angielski", q:"rozwój kariery zawodowej", a:"career advancement", b:"career achievement", c:"career development", d:"career improvement"},
+{cat:"Angielski", q:"szansa na awans", a:"chance of promotion", b:"choice of profession", c:"chance of progression", d:"change of position"},
+{cat:"Angielski", q:"list motywacyjny", a:"covering letter", b:"personal letter", c:"matching letter", d:"applying letter"},
+{cat:"Angielski", q:"zarobki", a:"earnings", b:"expenses", c:"pensions", d:"savings"},
+{cat:"Angielski", q:"zatrudniać", a:"employ", b:"engage", c:"enroll", d:"expand"},
+{cat:"Angielski", q:"możliwości zatrudnienia", a:"employability", b:"availability", c:"adaptability", d:"affordability"},
+{cat:"Angielski", q:"zdolny do pracy", a:"employable", b:"enjoyable", c:"executable", d:"enforceable"},
+{cat:"Angielski", q:"pracownik", a:"employee", b:"employer", c:"examinee", d:"attendee"},
+{cat:"Angielski", q:"zatrudniony", a:"employed", b:"enrolled", c:"enlisted", d:"engaged"},
+{cat:"Angielski", q:"pracodawca", a:"employer", b:"employee", c:"educator", d:"examiner"},
+{cat:"Angielski", q:"zatrudnienie", a:"employment", b:"enlistment", c:"engagement", d:"enrollment"},
+{cat:"Angielski", q:"przedsiębiorca", a:"entrepreneur", b:"entertainer", c:"executioner", d:"experimenter"},
+{cat:"Angielski", q:"przedsiębiorczy", a:"entrepreneurial", b:"environmental", c:"experimental", d:"extracurricular"},
+{cat:"Angielski", q:"radzić sobie", a:"fare", b:"fire", c:"fair", d:"firm"},
+{cat:"Angielski", q:"wspierać", a:"foster", b:"follow", c:"favor", d:"factor"},
+{cat:"Angielski", q:"uzyskać praktyczną wiedzę", a:"gain hands-on knowledge", b:"get direct experience", c:"gain full awareness", d:"grow functional skills"},
+{cat:"Angielski", q:"otrzymać emeryturę", a:"get a pension", b:"get a payment", c:"get a portion", d:"get a position"},
+{cat:"Angielski", q:"zatrudniać", a:"hire", b:"fire", c:"help", d:"hold"},
+{cat:"Angielski", q:"biuro pośrednictwa pracy", a:"job centre", b:"job circle", c:"job agency", d:"job corner"},
+{cat:"Angielski", q:"rynek pracy", a:"job market", b:"job margin", c:"job member", d:"job module"},
+{cat:"Angielski", q:"mobilność zawodowa", a:"job mobility", b:"job activity", c:"job security", d:"job stability"},
+{cat:"Angielski", q:"wiedzieć, umieć", a:"know", b:"keen", c:"keep", d:"knot"},
+{cat:"Angielski", q:"wiedza, znajomość", a:"knowledge", b:"knowing", c:"keepness", d:"keenness"},
+{cat:"Angielski", q:"obeznany, zorientowany, wykształcony", a:"knowledgeable", b:"understandable", c:"approachable", d:"manageable"},
+{cat:"Angielski", q:"zarabiać na życie", a:"make a living", b:"make a profit", c:"make a saving", d:"make a career"},
+{cat:"Angielski", q:"uczestnik", a:"participant", b:"prosecutor", c:"precedent", d:"particular"},
+{cat:"Angielski", q:"uczestniczyć, brać udział", a:"participate", b:"anticipate", c:"appreciate", d:"articulate"},
+{cat:"Angielski", q:"uczestniczenie; biorący udział", a:"participating", b:"anticipating", c:"preceding", d:"perceiving"},
+{cat:"Angielski", q:"uczestnictwo, udział", a:"participation", b:"anticipation", c:"appreciation", d:"preparation"},
+{cat:"Angielski", q:"praca na pół etatu", a:"part-time job", b:"full-time job", c:"flexi-time job", d:"spare-time job"},
+{cat:"Angielski", q:"podwyżka", a:"pay rise", b:"pay rate", c:"pay roll", d:"pay rank"},
+{cat:"Angielski", q:"zrezygnować z pracy", a:"quit a job", b:"leave a task", c:"drop a role", d:"stop a work"},
+{cat:"Angielski", q:"przejść na emeryturę", a:"retire", b:"refuse", c:"resign", d:"retain"},
+{cat:"Angielski", q:"poszukiwanie pracy", a:"search for employment", b:"search for engagement", c:"seeking of occupation", d:"search for placement"},
+{cat:"Angielski", q:"samozatrudniony", a:"self-employed", b:"self-directed", c:"self-governed", d:"self-assigned"},
+{cat:"Angielski", q:"szkolić (się), trenować", a:"train", b:"track", c:"trade", d:"trust"},
+{cat:"Angielski", q:"wykwalifikowany, przeszkolony", a:"trained", b:"tracked", c:"traded", d:"tested"},
+{cat:"Angielski", q:"praktykant, stażysta", a:"trainee", b:"trainer", c:"trader", d:"tracker"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 9;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
