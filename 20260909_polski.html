@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Polski", q:"Z jakiego tomiku pochodzi wiersz 'Kowal'?", a:"Sny o potędze", b:"Cienie i światła", c:"Ody do młodości", d:"Pieśni o nadziei"},
+  {cat:"Polski", q:"Kim jest bohater i podmiot liryczny w wierszu 'Kowal'?", a:"Kowal", b:"Szewc", c:"Hutnik", d:"Malarz"},
+  {cat:"Polski", q:"Skąd kowal wydobywa bezkształtną masę drogocennych kruszców?", a:"Z własnego wnętrza", b:"Z głębi kopalni", c:"Ze skarbca króla", d:"Z dna oceanu"},
+  {cat:"Polski", q:"Co kowal robi z bezkształtną masą kruszców?", a:"Rzuca ją na kowadło i uderza młotem", b:"Wrzuca ją do wrzącej wody i topi", c:"Przechowuje ją w drewnianej skrzyni", d:"Zakopuje ją głęboko pod ziemią"},
+  {cat:"Polski", q:"Co kowal chce wykuć z drogocennych kruszców?", a:"Serce mężne, dumne, silne", b:"Miecz twardy, ostry, prosty", c:"Tarczę wielką, ciężką, złotą", d:"Zbroję mocną, jasną, piękną"},
+  {cat:"Polski", q:"Co kowal zapowiada, że zrobi ze sercem, jeśli okaże się słabe i nieodporne na ciosy?", a:"Sam je rozbije w pył", b:"Odda je innemu kowalowi", c:"Wrzuci je powrotnie do ognia", d:"Porzuci je na drodze"},
+  {cat:"Polski", q:"Co symbolizuje proces tworzenia kowala?", a:"Proces twórczego wysiłku każdego człowieka, który stara się walczyć z własną słabością i wadami", b:"Proces budowania nowego państwa i walki o wolność narodu po powstaniu styczniowym", c:"Trud fizyczny robotników w fabrykach podczas rewolucji przemysłowej", d:"Dążenie do zdobycia wielkiego majątku oraz wysokiej pozycji społecznej"},
+  {cat:"Polski", q:"Jaka starożytna sentencja potwierdza metaforyczną i symboliczną wymowę 'Kowala'?", a:"'Każdy jest kowalem swojego losu'", b:"'Panta rhei - wszystko płynie'", c:"'Człowiek człowiekowi wilkiem'", d:"'Carpe diem - chwytaj dzień'"},
+  {cat:"Polski", q:"Do jakiej postawy filozoficznej nawiązuje utwór 'Kowal' poprzez budowanie duchowej siły?", a:"Do filozofii nietzscheańskiej (nadczłowieka)", b:"Do filozofii stoickiej (spokoju)", c:"Do filozofii epikurejskiej (przyjemności)", d:"Do filozofii egzystencjalnej (absurdu)"},
+  {cat:"Polski", q:"Rysy jakiej postaci mitologicznej posiada postać kowala?", a:"Wulkana (rzymskie) / Hefaustosa (greckie) - boga ognia i kowali", b:"Marsa (rzymskie) / Ares (greckie) - boga wojny i zniszczenia", c:"Merkurego (rzymskie) / Hermesa (greckie) - boga kupców", d:"Jowisza (rzymskie) / Zeusa (greckie) - boga piorunów"},
+  {cat:"Polski", q:"Przykładem jakiej formy poetyckiej jest wiersz 'Kowal' Staffa?", a:"Sonetu", b:"Hymnu", c:"Trenu", d:"Fraszki"},
+  {cat:"Polski", q:"Na czym polega podobieństwo między bohaterem wiersza 'Kowal' a Syzyfem (władcą Koryntu)?", a:"Praca męcząca - kowala z sercem, a Syzyfa z kamieniem", b:"Tragiczny los - kowala w niewoli, a Syzyfa w podziemiach", c:"Dążenie do sławy - kowala przez złoto, a Syzyfa przez spryt", d:"Samotność - kowala przy ogniu, a Syzyfa na szczycie góry"},
+  {cat:"Polski", q:"Co stara się wyrazić utwór 'Deszcz jesienny' Leopolda Staffa?", a:"Typowy dla Młodej Polski dekadentyzm i nastrój", b:"Zachwyt nad urokiem wiejskiego krajobrazu", c:"Radość z nadejścia nowej pory roku", d:"Duchową walkę i chęć pokonania własnych słabości"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 9;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
