@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Polski", q:"Jaki tytuł nosił wiersz Leopolda Staffa omawiany na lekcji?", a:"Kowal", b:"Deszcz jesienny", c:"Przedśpiew", d:"Curriculum vitae"},
+  {cat:"Polski", q:"Jakie poglądy filozoficzne były głoszone w epoce Młodej Polski?", a:"Filozofia Schopenhauera, Bergsona oraz Nietzschego", b:"Filozofia Platona, Arystotelesa oraz Sokratesa", c:"Filozofia Kartezjusza, Spinozy oraz Locke'a", d:"Filozofia Kanta, Hegla oraz Augusta Comte'a"},
+  {cat:"Polski", q:"Kim był Friedrich Nietzsche według notatek?", a:"Filozofem niemieckiego pochodzenia twierdzącym, że człowiek musi nadać sens swojemu życiu", b:"Polskim poetą romantycznym piszącym o wyzwoleniu narodowym i moralności", c:"Francuskim myślicielem uważającym intuicję za jedyne źródło prawdziwego poznania", d:"Oświeceniowym pisarzem propagującym utylitaryzm i empiryzm społeczny"},
+  {cat:"Polski", q:"Co według Nietzschego było zadaniem człowieka?", a:"Uporządkowanie chaotycznej i zmiennej rzeczywistości za pomocą określonych zasad i teorii", b:"Całkowite odrzucenie wiedzy naukowej na rzecz chrześcijańskiego mistycyzmu", c:"Bierne podporządkowanie się prawom natury oraz wyrokom boskim", d:"Poszukiwanie absolutnego spokoju ducha poprzez ucieczkę od spraw ludzkich"},
+  {cat:"Polski", q:"Czym według Nietzschego była moralność chrześcijańska?", a:"Moralnością ludzi słabych – niewolników", b:"Najwyższą formą doskonalenia ludzkiego ducha", c:"Jedyne prawdziwym źródłem ludzkiej etyki", d:"Filozofią zarezerwowaną dla elity intelektualnej"},
+  {cat:"Polski", q:"Dlaczego zdaniem Nietzschego niewolnicy wymyślili pokorę, miłosierdzie i litość?", a:"Zostali zmuszeni do uległości i wynieśli te cechy na piedestał (uwielbienie)", b:"Chcieli w ten sposób osiągnąć pełny rozwój swojego wewnętrznego dynamizmu", c:"Dążyli do stworzenia sprawiedliwego systemu prawnego dla wszystkich stanów", d:"Pragnęli w ten sposób wywołać rewolucję społeczną przeciwko władzy"},
+  {cat:"Polski", q:"Jakie radykalne stwierdzenie głosił Nietzsche?", a:"„Bóg umarł”", b:"„Wiem, że nic nie wiem”", c:"„Myślę, więc jestem”", d:"„Człowiek jest miarą wszechrzeczy”"},
+  {cat:"Polski", q:"Czym wyróżniała się Nietzscheańska koncepcja nadczłowieka?", a:"Brakowało mu jakiejkolwiek słabości, był jednostką wybitną, niezłomną o nieprzeciętnej sile woli", b:"Brakowało mu wykształcenia, był nastawiony wyłącznie na bierny odbiór świata", c:"Wyróżniał się bezgranicznym podporządkowaniem zasadom moralności chrześcijańskiej", d:"Cechował się całkowitą rezygnacją z działania na rzecz rozwoju własnego ducha"},
+  {cat:"Polski", q:"Jaki kodeks moralny obowiązywał nadludzi według filozofa?", a:"Moralność panów, arystokratów ducha i ciała", b:"Kodeks oparty na powszechnym miłosierdziu i równości", c:"Reguły pacyfizmu oraz odrzucenia wszelkiej przemocy", d:"Zasady skrajnego ascetyzmu i ucieczki od rzeczywistości"},
+  {cat:"Polski", q:"Odpowiedzią na co była Nietzscheańska koncepcja nadczłowieka?", a:"Reakcją filozofa na nastroje dekadenckie dominujące w okresie Młodej Polski", b:"Próbą nawiązania do idei średniowiecznego ascetyzmu", c:"Krytyką rozwijającego się szybko racjonalizmu oświeceniowego", d:"Pochwałą dla bierności i rezygnacji znanych z filozofii wschodu"},
+  {cat:"Polski", q:"W jaki sposób filozofia Nietzschego została zniekształcona w XX wieku?", a:"Została wypaczona przez ideologię nazistowską do uzasadnienia teorii o wyższości rasy niemieckiej", b:"Została wykorzystana przez pozytywistów do propagowania pracy u podstaw", c:"Stała się głównym filarem filozofii oświeceniowych encyklopedystów", d:"Została włączona do oficjalnej doktryny kościoła katolickiego"},
+  {cat:"Polski", q:"Twórcą ilu epok literackich był Leopold Staff?", a:"Trzech epok: Młodej Polski, Dwudziestolecia Międzywojennego i Współczesnej (powojennej)", b:"Dwóch epok: Romantyzmu oraz Pozytywizmu", c:"Jednej epoki: Wyłącznie Młodej Polski", d:"Czterech epok: Baroku, Oświecenia, Romantyzmu i Pozytywizmu"},
+  {cat:"Polski", q:"Jaki tytuł nosił debiutancki tomik Leopolda Staffa z 1901 roku?", a:"„Sny o potędze”", b:"„Kowal”", c:"„Echa leśne”", d:"„Kwiaty zła”"},
+  {cat:"Polski", q:"Co zapowiadał sam tytuł debiutanckiego tomiku Staffa?", a:"Dążenie poety do przezwyciężenia młodopolskiego dekadentyzmu", b:"Całkowitą akceptację biernej postawy życiowej", c:"Powrót do surowych zasad romantycznego mistycyzmu", d:"Chęć stworzenia pełnego opisu tradycji ludowych"},
+  {cat:"Polski", q:"Jakie było podejście Staffa do filozofii Nietzschego?", a:"Tłumaczył dzieła Nietzschego, ale nie akceptował wszystkich założeń jego filozofii", b:"Odrzucał w całości dorobek niemieckiego filozofa i krytykował go w pismach", c:"Bezrezerwoiwie przyjął wszystkie teorie Nietzschego jako własny program", d:"Nigdy nie zapoznał się z pismami i teoriami niemieckiego myśliciela"},
+  {cat:"Polski", q:"Co Staff głosił w swojej twórczości podobnie jak Nietzsche?", a:"Pochwałę siły i aktywnej postawy życiowej", b:"Kult rezygnacji, smutku i ucieczki od rzeczywistości", c:"Potrzebę bezwzględnego podporządkowania się losowi", d:"Niezmienność ludzkiego charakteru i brak wpływu na świat"},
+  {cat:"Polski", q:"Co według Staffa mógł robić człowiek ze swoim życiem?", a:"Kształtować siebie, doskonalić się i zmieniać otaczające światy", b:"Biernie poddawać się wyrokom losu i czekać na rozwój wydarzeń", c:"Szukać ucieczki od problemów wyłącznie w sferze marzeń i snów", d:"Rezygnować z własnych ambicji na rzecz ogółu społeczności"},
+  {cat:"Polski", q:"Z jakiego tomiku pochodzi wiersz „Kowal” Leopolda Staffa?", a:"Z tomiku „Sny o potędze”", b:"Z tomiku „Gałąź milczenia”", c:"Z tomiku „Barwa miodu”", d:"Z tomiku „Wysokie drzewa”"},
+  {cat:"Polski", q:"Jaki charakter ma wymowa wiersza „Kowal”?", a:"Antydekadencki", b:"Pesymistyczny", c:"Katastroficzny", d:"Nihilistyczny"},
+  {cat:"Polski", q:"Kim jest podmiot liryczny w wierszu „Kowal”?", a:"Kowal", b:"Filozof", c:"Dekadent", d:"Sny o potędze"},
+  {cat:"Polski", q:"Co kowal wydobywa z własnego wnętrza?", a:"Bezkształtną masę drogocennych kruszców", b:"Gotowe, misternie wykute narzędzia", c:"Słabość, zwątpienie oraz dekadencki smutek", d:"Czyste, nieoszlifowane kamienie szlachetne"},
+  {cat:"Polski", q:"Co kowal robi z masą kruszcu wydobytą z wnętrza?", a:"Rzuca ją na kowadło i uderza młotem", b:"Chowa ją głęboko przed resztą świata", c:"Przetapia ją na proste przedmioty codzienne", d:"Odrzuca ją, uznając za całkowicie bezwartościową"},
+  {cat:"Polski", q:"Co kowal chce wykuć z drogocennego kruszcu?", a:"Mężne serce", b:"Złotą koronę", c:"Trwały miecz", d:"Twardą zbroję"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 9;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
