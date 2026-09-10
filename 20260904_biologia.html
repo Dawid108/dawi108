@@ -60,10 +60,6 @@
 
 // PYTANIA
 let questions = [
-
-
-
-
   {
     cat: "Biologia",
     q: "Co jest łącznikiem pomiędzy gruczołami dokrewnymi w organizmie?",
@@ -184,7 +180,6 @@ let questions = [
     c: "Insulinę oraz glukagon",
     d: "Tyroksynę oraz tymozynę"
   },
-
 
   {
     cat: "Biologia",
@@ -309,145 +304,19 @@ let questions = [
   {
     cat: "Biologia",
     q: "Jakie funkcje pełnią estrogeny wydzielane przez jajniki?",
-    a: "Powodują rozwój żeńskich narządów rozrodczych, odpowiadają za żeńskie proporcje ciała, barwę głosu, żeński typ owłosienia oraz zmiany zachodzące w mac```javascript
-const testBiologia = [
-  {
-    cat: "Biologia",
-    q: "Jaka jest główna funkcja hormonu wzrostu wydzielanego przez przysadkę?",
-    a: "Pobudzanie przemiany białek, tłuszczów i węglowodanów oraz stymulowanie wzrostu organizmu",
-    b: "Regulacja gospodarki wodnej oraz sterowanie procesem zagęszczania moczu w nerkach",
-    c: "Zmniejszanie stężenia glukozy we krwi i magazynowanie jej w postaci glikogenu",
-    d: "Stymulowanie tarczycy oraz kory nadnerczy do wydzielania innych hormonów"
+    a: "Powodują rozwój żeńskich narządów rozrodczych, odpowiadają za żeńskie proporcje ciała, barwę głosu, żeński typ owłosienia oraz zmiany zachodzące w macicy podczas cyklu miesiączkowego.",
+    b: "Stymulują rozwój męskich cech płciowych, wywołują wzrost masy mięśniowej oraz przyspieszają syntezę białek ustrojowych.",
+    c: "Regulują proces laktacji po porodzie, hamują wydzielanie hormonów gonadotropowych oraz wspomagają trawienie tłuszczów.",
+    d: "Zwiększają stężenie glukozy we krwi, podnoszą ciśnienie tętnicze oraz wpływają na zagęszczanie moczu w nerkach."
   },
   {
     cat: "Biologia",
-    q: "Rola prolaktyny (PRL) w organizmie kobiety polega na:",
-    a: "Pobudzaniu gruczołów mlekowych do wytwarzania mleka oraz hamowaniu owulacji",
-    b: "Wywoływaniu skurczów macicy podczas porodu i stymulacji wydzielania mleka",
-    c: "Regulacji rytmu snu i czuwania w zależności od natężenia światła",
-    d: "Zwiększaniu stężenia wapnia we krwi poprzez uwalnianie go bezpośrednio z kości"
+    q: "Jakie jest działanie progesteronu wydzielanego przez jajniki?",
+    a: "Powoduje pogrubianie się błony śluzowej macicy podczas cyklu miesiączkowego, umożliwia prawidłowy przebieg ciąży.",
+    b: "Wywołuje skurcze macicy podczas porodu oraz stymuluje wydzielanie mleka po porodzie.",
+    c: "Pobudza wzrost ciśnienia krwi, przyspiesza akcję serca oraz podnosi poziom glukozy we krwi.",
+    d: "Zmniejsza stężenie wapnia we krwi poprzez hamowanie jego uwalniania z tkanki kostnej."
   },
-  {
-    cat: "Biologia",
-    q: "Wskaż zadanie hormonów tropowych (TSH, ACTH, FSH, LH):",
-    a: "Stymulowanie tarczycy, kory nadnerczy oraz gonad do wydzielania hormonów",
-    b: "Pobudzanie metabolizmu i ułatwianie wchłaniania glukozy z przewodu pokarmowego",
-    c: "Przyspieszanie dojrzewania limfocytów T oraz stymulowanie układu odpornościowego",
-    d: "Podwyższanie poziomu glukozy we krwi przez rozkład glikogenu w wątrobie"
-  },
-  {
-    cat: "Biologia",
-    q: "Hormon antydiuretyczny (wazopresyna, ADH) odpowiada za:",
-    a: "Regulację gospodarki wodnej poprzez sterowanie procesem zagęszczania moczu",
-    b: "Zmniejszanie stężenia wapnia we krwi przez blokowanie uwalniania go z kości",
-    c: "Powodowanie wzrostu ciśnienia krwi i częstotliwości skurczów serca",
-    d: "Pogrubianie błony śluzowej macicy podczas trwania cyklu miesiączkowego"
-  },
-  {
-    cat: "Biologia",
-    q: "Jaka jest rola oksytocyny u kobiet i mężczyzn?",
-    a: "Wywołuje skurcze macicy i wydzielanie mleka, a u mężczyzn skurcze nasieniowodów",
-    b: "Pobudza wzrost masy mięśniowej oraz odpowiada za męski typ owłosienia",
-    c: "Powoduje wzrost stężenia glukozy we krwi oraz obniża odporność organizmu",
-    d: "Odpowiada za żeńskie proporcje ciała, barwę głosu oraz przebieg cyklu"
-  },
-  {
-    cat: "Biologia",
-    q: "Szyszynka wydziela melatoninę, która odpowiada za:",
-    a: "Regulację rytmu snu i czuwania",
-    b: "Przyspieszanie dojrzewania limfocytów T",
-    c: "Ułatwianie wchłaniania glukozy z jelit",
-    d: "Zwiększanie stężenia wapnia w osoczu"
-  },
-  {
-    cat: "Biologia",
-    q: "Kalcytonina wydzielana przez tarczycę powoduje:",
-    a: "Zmniejszenie stężenia wapnia we krwi poprzez blokowanie uwalniania go z kości",
-    b: "Zwiększenie stężenia wapnia we krwi poprzez wzmożone wchłanianie w jelitach",
-    c: "Podwyższenie poziomu glukozy we krwi poprzez stymulację rozkładu glikogenu",
-    d: "Obniżenie ciśnienia krwi oraz zmniejszenie częstotliwości skurczów serca"
-  },
-  {
-    cat: "Biologia",
-    q: "Jakie działanie wykazują tyroksyna i trójjodotyronina?",
-    a: "Pobudzają metabolizm i ułatwiają wchłanianie glukozy z przewodu pokarmowego",
-    b: "Przyspieszają dojrzewanie limfocytów T i poprawiają odporność organizmu",
-    c: "Wywołują skurcze macicy podczas porodu oraz stymulują proces laktacji",
-    d: "Podnoszą poziom glukozy we krwi oraz hamują obwodowe zużycie tlenu"
-  },
-  {
-    cat: "Biologia",
-    q: "Działanie parathormonu (wydzielanego przez przytarczyce) polega na:",
-    a: "Zwiększaniu stężenia wapnia we krwi przez uwalnianie go z kości i wchłanianie z jelit",
-    b: "Zmniejszaniu ilości wapnia we krwi poprzez jego ponowne deponowanie w kośćcu",
-    c: "Stymulowaniu metabolizmu komórkowego i zwiększaniu wchłaniania węglowodanów",
-    d: "Regulowaniu dobowego rytmu snu oraz czuwania w zależności od por dnia"
-  },
-  {
-    cat: "Biologia",
-    q: "Hormon grasicy – tymozyna – odpowiada za:",
-    a: "Przyspieszanie dojrzewania limfocytów T",
-    b: "Hamowanie wydzielania soków trawiennych",
-    c: "Pobudzanie skurczów mięśni gładkich",
-    d: "Zmniejszanie stężenia glukozy we krwi"
-  },
-  {
-    cat: "Biologia",
-    q: "Adrenalina wydzielana przez nadnercza wywołuje w organizmie:",
-    a: "Wzrost ciśnienia krwi, częstotliwości skurczów serca, stężenia glukozy i oddechów",
-    b: "Spadek ciśnienia krwi, zwolnienie akcji serca oraz spadek poziomu glukozy",
-    c: "Rozwój męskich narządów rozrodczych oraz silny rozrost tkanki mięśniowej",
-    d: "Pogrubienie błony śluzowej macicy oraz przygotowanie jej do przyjęcia zarodka"
-  },
-  {
-    cat: "Biologia",
-    q: "Kortyzol wydzielany przez nadnercza powoduje:",
-    a: "Wzrost stężenia glukozy we krwi, działa przeciwzapalnie i obniża odporność",
-    b: "Spadek stężenia glukozy we krwi, działa prozapalnie i podnosi odporność",
-    c: "Zmniejszenie stężenia wapnia we krwi poprzez jego osadzanie w kościach",
-    d: "Stymulację tarczycy do produkcji tyroksyny oraz trójjodotyroniny"
-  },
-  {
-    cat: "Biologia",
-    q: "Główną funkcją insuliny wydzielanej przez trzustkę jest:",
-    a: "Zmniejszanie stężenia glukozy we krwi i gromadzenie jej w wątrobie jako glikogen",
-    b: "Podwyższanie poziomu glukozy we krwi poprzez rozkład glikogenu w wątrobie",
-    c: "Pobudzanie przemiany białek i tłuszczów we wszystkich komórkach ciała",
-    d: "Regulowanie poziomu wapnia we krwi poprzez wzmożone wchłanianie z jelit"
-  },
-  {
-    cat: "Biologia",
-    q: "Glukagon (hormon trzustki) działa poprzez:",
-    a: "Podwyższanie poziomu glukozy we krwi przez stymulację rozkładu glikogenu",
-    b: "Zmniejszanie poziomu glukozy we krwi i jej magazynowanie w wątrobie",
-    c: "Pobudzanie dojrzewania limfocytów T oraz stymulację układu odpornościowego",
-    d: "Zmniejszanie stężenia wapnia we krwi poprzez blokowanie uwalniania z kości"
-  },
-  {
-    cat: "Biologia",
-    q: "Jaka jest rola testosteronu wytwarzanego w jądrach?",
-    a: "Rozwój męskich narządów rozrodczych, wzrost mięśni, męski typ budowy i owłosienia",
-    b: "Rozwój żeńskich narządów rozrodczych, żeńskie proporcje ciała i zmiana głosu",
-    c: "Pogrubianie błony śluzowej macicy i umożliwianie prawidłowego przebiegu ciąży",
-    d: "Stymulowanie skurczów nasieniowodów oraz kontrola rytmu snu i czuwania"
-  },
-  {
-    cat: "Biologia",
-    q: "Estrogeny wydzielane przez jajniki odpowiadają za:",
-    a: "Rozwój żeńskich narządów rozrodczych, żeńskie proporcje ciała i cykl miesiączkowy",
-    b: "Rozwój męskich narządów rozrodczych, rozrost krtani oraz wzrost masy mięśniowej",
-    c: "Umożliwienie prawidłowego przebiegu ciąży poprzez pogrubianie śluzówki macicy",
-    d: "Pobudzenie gruczołów mlekowych do produkcji mleka i zahamowanie owulacji"
-  },
-  {
-    cat: "Biologia",
-    q: "Wskaż właściwą funkcję progesteronu wydzielanego przez jajniki:",
-    a: "Pogrubianie błony śluzowej macicy w cyklu oraz umożliwianie przebiegu ciąży",
-    b: "Wywoływanie skurczów macicy podczas porodu oraz stymulacja laktacji",
-    c: "Wzrost ciśnienia krwi, częstotliwości skurczów serca oraz poziomu glukozy",
-    d: "Ułatwianie wchłaniania glukozy z przewodu pokarmowego do komórek"
-  },
-
 
   {
     cat: "Biologia",
@@ -469,7 +338,7 @@ const testBiologia = [
     cat: "Biologia",
     q: "Gdzie znajdują się receptory pobudzane przez światło, które wpływają na produkcję melatoniny?",
     a: "W siatkówce oka",
-    b: "W ro rogówce oka",
+    b: "W rogówce oka",
     c: "W naskórku ciała",
     d: "W naczyniach krwionośnych"
   },
@@ -510,7 +379,7 @@ const testBiologia = [
     q: "Jakie hormony są wytwarzane przez tarczycę w celu stymulacji metabolizmu?",
     a: "Tyroksyna i trójjodotyronina",
     b: "Melatonina i hormon wzrostu",
-    c: "Insulina i glucagon",
+    c: "Insulina i glukagon",
     d: "Kortyzol i adrenalina"
   },
   {
@@ -523,7 +392,7 @@ const testBiologia = [
   },
   {
     cat: "Biologia",
-    q: "Jak tarczyca wpływa na kwas stężenia kwasów tłuszczowych we krwi?",
+    q: "Jak tarczyca wpływa na stężenie kwasów tłuszczowych we krwi?",
     a: "Zwiększa ich stężenie i stymuluje utlenianie w komórkach",
     b: "Zmniejsza ich stężenie i hamuje utlenianie w komórkach",
     c: "Całkowicie blokuje ich syntezę w komórkach wątroby",
@@ -579,7 +448,7 @@ const testBiologia = [
   },
   {
     cat: "Biologia",
-    q: "Jak hormon wzrostu wpływa na kwas tłuszczowy w procesie wzrostu?",
+    q: "Jak hormon wzrostu wpływa na kwasy tłuszczowe w procesie wzrostu?",
     a: "Stymuluje utlenianie kwasów tłuszczowych i pozyskiwanie z nich energii",
     b: "Powoduje gromadzenie tkanki tłuszczowej i hamuje rozkład energii",
     c: "Hamuje utlenianie kwasów tłuszczowych we wszystkich tkankach",
@@ -593,7 +462,7 @@ const testBiologia = [
     c: "W tkance nerwowej i nabłonkowej",
     d: "W narządach układu pokarmowego"
   }
-
+ 
 ];
 
 let current = 0;
