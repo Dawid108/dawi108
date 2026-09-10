@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  // Zadanie 1
+  {cat:"Angielski", q:"In five days I ... (prepare) for my final exams.", a:"will be preparing", b:"will have prepared", c:"will prepare", d:"am preparing"},
+  {cat:"Angielski", q:"Next year my parents ... (be married) for thirty years.", a:"will have been married", b:"will be marrying", c:"will be married", d:"will have married"},
+  {cat:"Angielski", q:"Scientists ... (discover) a cure for breast cancer by 2028.", a:"will have discovered", b:"will be discovering", c:"will discover", d:"are discovering"},
+  {cat:"Angielski", q:"By the end of the year they ... (build) a new house.", a:"will have built", b:"will be building", c:"will build", d:"are building"},
+  {cat:"Angielski", q:"Come round any time you wish tomorrow. I ... (stay) at home all day.", a:"will be staying", b:"will have stayed", c:"will stay", d:"am staying"},
+  {cat:"Angielski", q:"They ... (return) from Australia by next Thursday.", a:"will have returned", b:"will be returning", c:"will return", d:"are returning"},
+  {cat:"Angielski", q:"We ... (rehearse) next Monday and Tuesday.", a:"will be rehearsing", b:"will have rehearsed", c:"will rehearse", d:"are rehearsing"},
+  {cat:"Angielski", q:"Don't call me in the morning tomorrow, I ... (sleep).", a:"will be sleeping", b:"will have slept", c:"will sleep", d:"am sleeping"},
+  {cat:"Angielski", q:"When ... (you / pay off) your mortgage?", a:"will you have paid off", b:"will you be paying off", c:"will you pay off", d:"do you pay off"},
+  {cat:"Angielski", q:"My brothers ... (put in) bathroom fittings tomorrow in the afternoon.", a:"will be putting in", b:"will have put in", c:"will put in", d:"are putting in"},
+  // Zadanie 2
+  {cat:"Angielski", q:"A: Can I call you in the afternoon tomorrow?\nB: Sorry, I ... football with my friends.", a:"will be playing", b:"will have played", c:"will play", d:"am playing"},
+  {cat:"Angielski", q:"A: ... Judie this weekend?\nB: Yes, we need to meet to discuss details of our business plan.", a:"Will you be seeing", b:"Will you have seen", c:"Will you see", d:"Do you see"},
+  {cat:"Angielski", q:"A: Will you be free tomorrow at 6 pm?\nB: Yes, by that time I ... my assignment.", a:"will have finished", b:"will be finishing", c:"will finish", d:"am finishing"},
+  {cat:"Angielski", q:"A: What ... this time next Friday?\nB: I don't know yet. What about going to the swimming pool?", a:"will you be doing", b:"will you have done", c:"will you do", d:"do you do"},
+  {cat:"Angielski", q:"A: ... your room by 4 pm?\nB: I'm not sure, but I will do my best.", a:"Will you have tidied up", b:"Will you be tidying up", c:"Will you tidy up", d:"Do you tidy up"},
+  {cat:"Angielski", q:"A: ... the entire book by tomorrow?\nB: Sure, there aren't many pages left.", a:"Will you have read", b:"Will you be reading", c:"Will you read", d:"Do you read"},
+  {cat:"Angielski", q:"A: ... the hospital by the end of next month?\nB: Yes, it's possible.", a:"Will they have renovated", b:"Will they be renovating", c:"Will they renovate", d:"Do they renovate"},
+  {cat:"Angielski", q:"A: What do you think ... in five years' time?\nB: To be honest, I don't have the faintest idea.", a:"you will be doing", b:"you will have done", c:"you will do", d:"you are doing"},
+  {cat:"Angielski", q:"A: ... the carpets by 2 pm?\nB: She does it very slowly so I doubt it.", a:"Will Olivia have vacuumed", b:"Will Olivia be vacuuming", c:"Will Olivia vacuum", d:"Is Olivia vacuuming"},
+  {cat:"Angielski", q:"A: I don't think people ... on the moon in 2060.\nB: Neither do I.", a:"will be living", b:"will have lived", c:"will live", d:"are living"},
+  // Dodatkowe pytania z trudniejszymi słówkami
+  {cat:"Angielski", q:"By this time next year, the company ... its operation globally.", a:"will have expanded", b:"will be expanding", c:"will expand", d:"is expanding"},
+  {cat:"Angielski", q:"At 10 am tomorrow, the board ... the new corporate policy.", a:"will be scrutinizing", b:"will have scrutinized", c:"will scrutinize", d:"is scrutinizing"},
+  {cat:"Angielski", q:"By the end of the decade, researchers ... groundbreaking results.", a:"will have yielded", b:"will be yielding", c:"will yield", d:"are yielding"},
+  {cat:"Angielski", q:"Don't disturb him at 3 pm; he ... a delicate negotiation.", a:"will be conducting", b:"will have conducted", c:"will conduct", d:"is conducting"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: By the end of the year, I ... my first book.", a:"will have written", b:"will be writing", c:"will write", d:"am writing"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: Tomorrow at 2 pm. I ... Spanish on my language course.", a:"will be learning", b:"will have learned", c:"learn", d:"will learn"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: By the time Jack arrives, I ... dinner.", a:"will have made", b:"will be making", c:"will make", d:"have made"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: Don't call me between 9 and 11 am. I ... an important meeting.", a:"will be having", b:"will have had", c:"am to have", d:"will have"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: Next year Anna and Peter ... for five years.", a:"will have been married", b:"will be married", c:"are married", d:"will be marrying"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: ... your report by the end of the week?", a:"Will you have finished", b:"Will you be finishing", c:"Do you finish", d:"Have you finished"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: This time tomorrow we ... on the beach in Gdańsk.", a:"will be lying", b:"will have lain", c:"will lie", d:"are lying"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: ... a computer this evening?", a:"Will Adam be using", b:"Will Adam have used", c:"Is Adam using", d:"Does Adam use"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: Lucy ... this poem by heart by tomorrow.", a:"will have learned", b:"will be learning", c:"will learn", d:"learns"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: Where ... in two years' time?", a:"will George be working", b:"will George have worked", c:"does George work", d:"is George working"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: Tomorrow at 4 pm. we ... volleyball.", a:"will be playing", b:"will have played", c:"play", d:"will play"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: Our neighbours ... by the end of this month.", a:"will have moved out", b:"will be moving out", c:"moved out", d:"move out"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: At 8 pm tomorrow Alice ... Chemistry.", a:"will be studying", b:"will have studied", c:"studies", d:"is studying"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: This time next week they ... their daughter's birthday.", a:"will be celebrating", b:"will have celebrated", c:"celebrate", d:"are celebrating"},
+  {cat:"Angielski", q:"Uzupełnij zdanie: By the time you come back home, I ... the chicken and vegetables in the oven.", a:"will have roasted", b:"will be roasting", c:"roast", d:"am roasting"},
+  {cat:"Angielski", q:"Co oznacza wyrażenie 'by heart' w zdaniu 'learn by heart'?", a:"na pamięć", b:"z sercem", c:"powoli", d:"chętnie"},
+  {cat:"Angielski", q:"Jak przetłumaczysz czasownik 'move out'?", a:"wyprowadzić się", b:"wprowadzić się", c:"przesunąć", d:"zatrzymać się"},
+  {cat:"Angielski", q:"Co oznacza czasownik 'roast'?", a:"piec (np. w piekarniku)", b:"gotować w wodzie", c:"smażyć na głębokim oleju", d:"mrozić"},
+  {cat:"Angielski", q:"Jak przetłumaczysz zwrot 'in two years' time'?", a:"za dwa lata", b:"w ciągu dwóch lat", c:"dwa lata temu", d:"przez dwa lata"},
+  {cat:"Angielski", q:"Co znaczy 'by the end of the week'?", a:"do końca tygodnia", b:"na początku tygodnia", c:"w środku tygodnia", d:"przez cały tydzień"},
+  // Zadania ze zdjęcia (Future Continuous / Future Perfect)
+  {cat:"Angielski", q:"We [...] (run out) of coffee by Friday. Could you buy some when you're in the supermarket?", a:"will have run out", b:"will be running out", c:"will have running", d:"are running out"},
+  {cat:"Angielski", q:"They [...] (insulate) the attic at 5 pm next week.", a:"will be insulating", b:"will have insulated", c:"will be insulated", d:"are going to insulate"},
+  {cat:"Angielski", q:"In thirty minutes I [...] (peel) potatoes.", a:"will be peeling", b:"will have peeled", c:"will peeling", d:"will have been peel"},
+  {cat:"Angielski", q:"This time next Saturday Julie [...] (ski) in the Alps.", a:"will be skiing", b:"will have skied", c:"will skied", d:"is going to ski"},
+  {cat:"Angielski", q:"By 9 pm we [...] (arrive) in Rome.", a:"will have arrived", b:"will be arriving", c:"will arrive", d:"have arrived"},
+  {cat:"Angielski", q:"Tomorrow in the morning my friends and I [...] (skate) on the largest ice rink in our city.", a:"will be skating", b:"will have skated", c:"will skate", d:"are skating"},
+  {cat:"Angielski", q:"My grandma [...] (bake) delicious cakes this time on Saturday.", a:"will be baking", b:"will have baked", c:"will baked", d:"is baking"},
+  {cat:"Angielski", q:"Jessica [...] (do) yoga tomorrow at 6 pm.", a:"will be doing", b:"will have done", c:"will do", d:"is doing"},
+  {cat:"Angielski", q:"Our boss [...] (review) our performance by the end of this week.", a:"will have reviewed", b:"will be reviewing", c:"will review", d:"has reviewed"},
+  {cat:"Angielski", q:"Next year my mum [...] (be retired) for five years.", a:"will have been retired", b:"will be retired", c:"will have retired", d:"is being retired"},
+  {cat:"Angielski", q:"Peter [...] (do) research on endangered species at this time next month.", a:"will be doing", b:"will have done", c:"will do", d:"is doing"},
+
+  // Dodatkowe pytania z trudniejszym słownictwem
+  {cat:"Angielski", q:"Jak po angielsku jest 'ocieplać / izolować'?", a:"insulate", b:"isolate", c:"incubate", d:"inundate"},
+  {cat:"Angielski", q:"Jak po angielsku jest 'obierać (np. ziemniaki)'?", a:"peel", b:"peer", c:"peep", d:"pelt"},
+  {cat:"Angielski", q:"Jak po angielsku są 'zagrożone gatunki'?", a:"endangered species", b:"endangered spaces", c:"enforced species", d:"engraved species"},
+  {cat:"Angielski", q:"Jak po angielsku jest 'strych / poddasze'?", a:"attic", b:"alley", c:"aisle", d:"annex"},
+  {cat:"Angielski", q:"Jak po angielsku jest 'wyczerpać się / skończyć się (np. o zapasach)'?", a:"run out", b:"run off", c:"run away", d:"run over"}
+];
+
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 9;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
