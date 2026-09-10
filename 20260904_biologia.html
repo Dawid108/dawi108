@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+
+
+  {
+    cat: "Biologia",
+    q: "Co jest łącznikiem pomiędzy gruczołami dokrewnymi w organizmie?",
+    a: "Układ krwionośny",
+    b: "Układ limfatyczny",
+    c: "Układ nerwowy",
+    d: "Układ pokarmowy"
+  },
+  {
+    cat: "Biologia",
+    q: "Przez co regulowana jest praca układu hormonalnego?",
+    a: "Przez układ nerwowy za pośrednictwem podwzgórza",
+    b: "Przez układ pokarmowy za pośrednictwem żołądka",
+    c: "Przez układ krwionośny za pośrednictwem serca",
+    d: "Przez układ oddechowy za pośrednictwem płuc"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaki hormon wydziela szyszynka?",
+    a: "Melatoninę",
+    b: "Kortyzol",
+    c: "Tymozynę",
+    d: "Trokscynę"
+  },
+  {
+    cat: "Biologia",
+    q: "Czym jest podwzgórze i jaka jest jego funkcja?",
+    a: "To część mózgowia, która łączy układ nerwowy z układem hormonalnym i steruje funkcją wydzielniczą przysadki",
+    b: "To narząd jamy brzusznej, który reguluje poziom glukozy i wspomaga pracę trzustki oraz wątroby",
+    c: "To gruczoł szyjny, który bezpośrednio kontroluje tempo przemiany materii oraz gospodarkę wapniową",
+    d: "To element rdzenia kręgowego, który odpowiada za łuk odruchowy i przekazywanie impulsów ruchowych"
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie hormony wytwarza podwzgórze, które są transportowane do przysadki?",
+    a: "Hormon antydiuretyczny i oksytocynę",
+    b: "Insulinę oraz glukagon",
+    c: "Tymozynę oraz tyroksynę",
+    d: "Kortyzol oraz adrenalinę"
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie hormony wydziela przysadka?",
+    a: "Hormony tropowe oraz prolaktynę i hormon wzrostu",
+    b: "Hormony tarczycowe oraz tyroksynę i kalcytoninę",
+    c: "Hormony nadnerczowe oraz kortyzol i adrenalinę",
+    d: "Hormony płciowe oraz testosteron i estrogeny"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaką dodatkową rolę pełni przysadka wobec hormonów wytwarzanych przez podwzgórze?",
+    a: "Magazynuje je i uwalnia",
+    b: "Neutralizuje je i usuwa",
+    c: "Syntezuje je i rozkłada",
+    d: "Filtruje je i wchłania"
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie hormony wydziela tarczyca?",
+    a: "Tyroksynę, trójjodotyroninę i kalcytoninę",
+    b: "Parathormon, insulinę i glukagon",
+    c: "Melatoninę, prolaktynę i tymozynę",
+    d: "Kortyzol, adrenalinę i estrogeny"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaki hormon wydzielają przytarczyce?",
+    a: "Parathormon",
+    b: "Kalcytoninę",
+    c: "Testosteron",
+    d: "Prolaktynę"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaki hormon wydziela grasica?",
+    a: "Tymozynę",
+    b: "Melatoninę",
+    c: "Adrenalinę",
+    d: "Glukagon"
+  },
+  {
+    cat: "Biologia",
+    q: "Z jakich części są zbudowane nadnercza?",
+    a: "Z kory i rdzenia",
+    b: "Z trzonu i głowy",
+    c: "Z pęcherzyków i przewodów",
+    d: "Z przedniego i tylnego płata"
+  },
+  {
+    cat: "Biologia",
+    q: "Co wydziela kora nadnerczy, a co rdzeń nadnerczy?",
+    a: "Kora wydziela m.in. kortyzol, a rdzeń – adrenalinę",
+    b: "Kora wydziela m.in. insulinę, a rdzeń – glukagon",
+    c: "Kora wydziela m.in. tyroksynę, a rdzeń – kalcytoninę",
+    d: "Kora wydziela m.in. tymozynę, a rdzeń – melatoninę"
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie hormony wydziela trzustka?",
+    a: "Insulinę oraz glukagon",
+    b: "Tyroksynę oraz kortyzol",
+    c: "Prolaktynę oraz melatoninę",
+    d: "Testosteron oraz estrogeny"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaki hormon wydzielają jądra?",
+    a: "Testosteron",
+    b: "Progesteron",
+    c: "Estrogen",
+    d: "Kortyzol"
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie hormony wydzielają jajniki?",
+    a: "Estrogeny oraz progesteron",
+    b: "Testosteron oraz androsteron",
+    c: "Insulinę oraz glukagon",
+    d: "Tyroksynę oraz tymozynę"
+  },
+
+
+
+
+
+  {
+    cat: "Biologia",
+    q: "Jaka jest funkcja hormonu wzrostu wydzielanego przez przysadkę?",
+    a: "Pobudza przemianę białek, tłuszczów i węglowodanów we wszystkich komórkach, stymuluje wzrost organizmu.",
+    b: "Hamuje przemianę białek, tłuszczów i węglowodanów w wątrobie, spowalnia ogólny rozwój tkanki tłuszczowej.",
+    c: "Stymuluje rozwój tarczycy i nadnerczy do produkcji glukozy, zmniejsza ogólne przyswajanie białek.",
+    d: "Reguluje poziom substancji mineralnych we krwi, hamuje syntezę cząsteczek we wszystkich narządach."
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie działanie wykazuje prolaktyna (PRL)?",
+    a: "Pobudza gruczoły mlekowe u kobiet po porodzie do wytwarzania mleka, hamuje owulację.",
+    b: "Stymuluje skurcze macicy podczas porodu oraz przyspiesza dojrzewanie komórek jajowych.",
+    c: "Zwiększa stężenie wapnia we krwi po porodzie, przyspiesza wydzielanie soków trawiennych.",
+    d: "Pobudza rozwój żeńskich narządów rozrodczych, hamuje syntezę glikogenu w wątrobie."
+  },
+  {
+    cat: "Biologia",
+    q: "Jaka jest główna rola hormonów tropowych (TSH, ACTH, FSH i LH)?",
+    a: "Stymulują tarczycę (TSH), korę nadnerczy (ACTH) i gonady (FSH i LH) do wydzielania hormonów.",
+    b: "Hamują pracę tarczycy, rdzenia nadnerczy i trzustki w procesach metabolizmu białek i tłuszczów.",
+    c: "Pobudzają gruczoły mlekowe, przysadkę oraz szyszynkę do ciągłego uwalniania melatoniny.",
+    d: "Regulują poziom glukozy i wapnia we krwi poprzez bezpośrednie działanie na komórki docelowe."
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie działanie ma hormon antydiuretyczny (wazopresyna, ADH)?",
+    a: "Reguluje gospodarkę wodną przez sterowanie procesem zagęszczania moczu.",
+    b: "Podwyższa poziom glukozy we krwi przez stymulację rozkładu glikogenu.",
+    c: "Zmniejsza stężenie wapnia we krwi przez blokowanie uwalniania go z kości.",
+    d: "Przyspiesza dojrzewanie limfocytów T oraz reguluje ciśnienie krwi."
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie funkcje pełni oksytocyna u kobiet i mężczyzn?",
+    a: "U kobiet wywołuje skurcze macicy podczas porodu oraz wydzielanie mleka po porodzie, a u mężczyzn – skurcze nasieniowodów podczas ejakulacji.",
+    b: "U kobiet stymuluje wzrost pęcherzyków w jajnikach oraz hamuje owulację, a u mężczyzn – pobudza rozwój męskich narządów rozrodczych.",
+    c: "U kobiet reguluje zmiany w macicy podczas cyklu miesiączkowego, a u mężczyzn – powoduje wzrost ciśnienia krwi oraz stężenia glukozy.",
+    d: "U kobiet wywołuje rozwój piersi i proporcji ciała, a u mężczyzn – odpowiada za męską budowę ciała oraz głosu podczas dojrzewania."
+  },
+  {
+    cat: "Biologia",
+    q: "Za co odpowiada melatonina wydzielana przez szyszynkę?",
+    a: "Reguluje rytm snu i czuwania.",
+    b: "Obniża poziom stresu w organizmie.",
+    c: "Utrzymuje stałe ciśnienie tętnicze.",
+    d: "Wspomaga przemianę materii w nocy."
+  },
+  {
+    cat: "Biologia",
+    q: "W jaki sposób działa kalcytonina wydzielana przez tarczycę?",
+    a: "Zmniejsza stężenie wapnia we krwi przez blokowanie uwalniania wapnia z kości.",
+    b: "Zwiększa stężenie wapnia we krwi przez uwalnianie go z kości i wchłanianie.",
+    c: "Pobudza metabolizm oraz ułatwia wchłanianie glukozy z przewodu pokarmowego.",
+    d: "Podwyższa poziom cukru we krwi poprzez rozkład glikogenu w mięśniach."
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie jest działanie tyroksyny i trójjodotyroniny?",
+    a: "Pobudzają metabolizm, ułatwiają wchłanianie glukozy z przewodu pokarmowego.",
+    b: "Obniżają stężenie glukozy we krwi, hamują syntezę tłuszczów i białek.",
+    c: "Zwiększają wchłanianie wapnia z kości, hamują procesy oddychania komórkowego.",
+    d: "Regulują proces zagęszczania moczu, przyspieszają produkcję limfocytów T."
+  },
+  {
+    cat: "Biologia",
+    q: "Jaką funkcję pełni parathormon wydzielany przez przytarczyce?",
+    a: "Zwiększa stężenie wapnia we krwi przez uwalnianie go z kości i wzmożone wchłanianie z przewodu pokarmowego.",
+    b: "Zmniejsza stężenie wapnia we krwi przez wiązanie go w kościach i wydalanie nadmiaru wraz z moczem.",
+    c: "Pobudza dojrzewanie komórek odpornościowych oraz podnosi stężenie glukozy w osoczu krwi.",
+    d: "Reguluje gospodarkę wodną poprzez hamowanie wydzielania moczu w nerkach podczas wysiłku."
+  },
+  {
+    cat: "Biologia",
+    q: "Jaka jest rola tymozyny wydzielanej przez grasicę?",
+    a: "Przyspiesza dojrzewanie limfocytów T.",
+    b: "Stymuluje produkcję erytrocytów w kościach.",
+    c: "Reguluje pracę tarczycy i przytarczyc.",
+    d: "Obniża stężenie glukozy w osoczu krwi."
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie efekty w organizmie wywołuje adrenalina?",
+    a: "Powoduje wzrost: ciśnienia krwi, częstotliwości skurczów serca, stężenia glukozy we krwi oraz częstotliwości oddechów.",
+    b: "Sprawia spadek: ciśnienia krwi, poziomu cukru we krwi, tętna serca oraz zmniejsza ilość pobieranego tlenu.",
+    c: "Stymuluje rozwój: mięśni szkieletowych, męskich cech płciowych, kośćca oraz przyspiesza syntezę glikogenu.",
+    d: "Wymusza spadek: napięcia mięśniowego, stężenia hormonów tarczycy, tempa metabolizmu oraz liczby oddechów."
+  },
+  {
+    cat: "Biologia",
+    q: "Jak działa kortyzol wydzielany przez nadnercza?",
+    a: "Powoduje wzrost stężenia glukozy we krwi, działa przeciwzapalnie, obniża odporność organizmu.",
+    b: "Spowoduje spadek poziomu cukru we krwi, działa prozapalnie, podnosi odporność organizmu.",
+    c: "Reguluje metabolizm białek w mięśniach, przyspiesza wchłanianie wapnia, poprawia samopoczucie.",
+    d: "Zmniejsza tempo przemiany materii, obniża ciśnienie krwi, stymuluje syntezę przeciwciał."
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie działanie wykazuje insulina wydzielana przez trzustkę?",
+    a: "Zmniejsza stężenie glukozy we krwi i powoduje jej gromadzenie w wątrobie w postaci glikogenu.",
+    b: "Podwyższa poziom glukozy we krwi przez stymulację rozkładu glikogenu występującego w wątrobie.",
+    c: "Przyspiesza wchłanianie glukozy w jelitach i stymuluje uwalnianie wapnia do układu krążenia.",
+    d: "Powoduje bezpośrednie spalanie glukozy w komórkach i zmniejsza objętość osocza we krwi."
+  },
+  {
+    cat: "Biologia",
+    q: "Jaką rolę pełni glukagon?",
+    a: "Podwyższa poziom glukozy we krwi przez stymulację rozkładu glikogenu występującego w wątrobie.",
+    b: "Zmniejsza poziom cukru we krwi i ułatwia jego gromadzenie w tkance tłuszczowej organizmu.",
+    c: "Pobudza metabolizm białek i ułatwia wchłanianie węglowodanów z układu pokarmowego.",
+    d: "Reguluje stężenie jonów wapnia we krwi poprzez oddziaływanie na komórki kości i nerek."
+  },
+  {
+    cat: "Biologia",
+    q: "Za co odpowiada testosteron wydzielany przez jądra?",
+    a: "Powoduje rozwój męskich narządów rozrodczych i zwiększenie masy mięśniowej, odpowiada za męską budowę ciała, męski typ owłosienia oraz rozrost krtani.",
+    b: "Stymuluje dojrzewanie komórek jajowych, powiększenie macicy, wpływa na żeńskie proporcje ciała, barwę głosu oraz owłosienie w okresie dojrzewania.",
+    c: "Reguluje cykl miesiączkowy, umożliwia prawidłowy przebieg ciąży, wpływa na gęstość kości oraz gromadzenie tkanki tłuszczowej w biodrach.",
+    d: "Wywołuje powiększenie gruczołów mlekowych, reguluje gospodarkę wodno-mineralną, wpływa na obniżenie stężenia glukozy i ciśnienia krwi."
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie funkcje pełnią estrogeny wydzielane przez jajniki?",
+    a: "Powodują rozwój żeńskich narządów rozrodczych, odpowiadają za żeńskie proporcje ciała, barwę głosu, żeński typ owłosienia oraz zmiany zachodzące w mac```javascript
+const testBiologia = [
+  {
+    cat: "Biologia",
+    q: "Jaka jest główna funkcja hormonu wzrostu wydzielanego przez przysadkę?",
+    a: "Pobudzanie przemiany białek, tłuszczów i węglowodanów oraz stymulowanie wzrostu organizmu",
+    b: "Regulacja gospodarki wodnej oraz sterowanie procesem zagęszczania moczu w nerkach",
+    c: "Zmniejszanie stężenia glukozy we krwi i magazynowanie jej w postaci glikogenu",
+    d: "Stymulowanie tarczycy oraz kory nadnerczy do wydzielania innych hormonów"
+  },
+  {
+    cat: "Biologia",
+    q: "Rola prolaktyny (PRL) w organizmie kobiety polega na:",
+    a: "Pobudzaniu gruczołów mlekowych do wytwarzania mleka oraz hamowaniu owulacji",
+    b: "Wywoływaniu skurczów macicy podczas porodu i stymulacji wydzielania mleka",
+    c: "Regulacji rytmu snu i czuwania w zależności od natężenia światła",
+    d: "Zwiększaniu stężenia wapnia we krwi poprzez uwalnianie go bezpośrednio z kości"
+  },
+  {
+    cat: "Biologia",
+    q: "Wskaż zadanie hormonów tropowych (TSH, ACTH, FSH, LH):",
+    a: "Stymulowanie tarczycy, kory nadnerczy oraz gonad do wydzielania hormonów",
+    b: "Pobudzanie metabolizmu i ułatwianie wchłaniania glukozy z przewodu pokarmowego",
+    c: "Przyspieszanie dojrzewania limfocytów T oraz stymulowanie układu odpornościowego",
+    d: "Podwyższanie poziomu glukozy we krwi przez rozkład glikogenu w wątrobie"
+  },
+  {
+    cat: "Biologia",
+    q: "Hormon antydiuretyczny (wazopresyna, ADH) odpowiada za:",
+    a: "Regulację gospodarki wodnej poprzez sterowanie procesem zagęszczania moczu",
+    b: "Zmniejszanie stężenia wapnia we krwi przez blokowanie uwalniania go z kości",
+    c: "Powodowanie wzrostu ciśnienia krwi i częstotliwości skurczów serca",
+    d: "Pogrubianie błony śluzowej macicy podczas trwania cyklu miesiączkowego"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaka jest rola oksytocyny u kobiet i mężczyzn?",
+    a: "Wywołuje skurcze macicy i wydzielanie mleka, a u mężczyzn skurcze nasieniowodów",
+    b: "Pobudza wzrost masy mięśniowej oraz odpowiada za męski typ owłosienia",
+    c: "Powoduje wzrost stężenia glukozy we krwi oraz obniża odporność organizmu",
+    d: "Odpowiada za żeńskie proporcje ciała, barwę głosu oraz przebieg cyklu"
+  },
+  {
+    cat: "Biologia",
+    q: "Szyszynka wydziela melatoninę, która odpowiada za:",
+    a: "Regulację rytmu snu i czuwania",
+    b: "Przyspieszanie dojrzewania limfocytów T",
+    c: "Ułatwianie wchłaniania glukozy z jelit",
+    d: "Zwiększanie stężenia wapnia w osoczu"
+  },
+  {
+    cat: "Biologia",
+    q: "Kalcytonina wydzielana przez tarczycę powoduje:",
+    a: "Zmniejszenie stężenia wapnia we krwi poprzez blokowanie uwalniania go z kości",
+    b: "Zwiększenie stężenia wapnia we krwi poprzez wzmożone wchłanianie w jelitach",
+    c: "Podwyższenie poziomu glukozy we krwi poprzez stymulację rozkładu glikogenu",
+    d: "Obniżenie ciśnienia krwi oraz zmniejszenie częstotliwości skurczów serca"
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie działanie wykazują tyroksyna i trójjodotyronina?",
+    a: "Pobudzają metabolizm i ułatwiają wchłanianie glukozy z przewodu pokarmowego",
+    b: "Przyspieszają dojrzewanie limfocytów T i poprawiają odporność organizmu",
+    c: "Wywołują skurcze macicy podczas porodu oraz stymulują proces laktacji",
+    d: "Podnoszą poziom glukozy we krwi oraz hamują obwodowe zużycie tlenu"
+  },
+  {
+    cat: "Biologia",
+    q: "Działanie parathormonu (wydzielanego przez przytarczyce) polega na:",
+    a: "Zwiększaniu stężenia wapnia we krwi przez uwalnianie go z kości i wchłanianie z jelit",
+    b: "Zmniejszaniu ilości wapnia we krwi poprzez jego ponowne deponowanie w kośćcu",
+    c: "Stymulowaniu metabolizmu komórkowego i zwiększaniu wchłaniania węglowodanów",
+    d: "Regulowaniu dobowego rytmu snu oraz czuwania w zależności od por dnia"
+  },
+  {
+    cat: "Biologia",
+    q: "Hormon grasicy – tymozyna – odpowiada za:",
+    a: "Przyspieszanie dojrzewania limfocytów T",
+    b: "Hamowanie wydzielania soków trawiennych",
+    c: "Pobudzanie skurczów mięśni gładkich",
+    d: "Zmniejszanie stężenia glukozy we krwi"
+  },
+  {
+    cat: "Biologia",
+    q: "Adrenalina wydzielana przez nadnercza wywołuje w organizmie:",
+    a: "Wzrost ciśnienia krwi, częstotliwości skurczów serca, stężenia glukozy i oddechów",
+    b: "Spadek ciśnienia krwi, zwolnienie akcji serca oraz spadek poziomu glukozy",
+    c: "Rozwój męskich narządów rozrodczych oraz silny rozrost tkanki mięśniowej",
+    d: "Pogrubienie błony śluzowej macicy oraz przygotowanie jej do przyjęcia zarodka"
+  },
+  {
+    cat: "Biologia",
+    q: "Kortyzol wydzielany przez nadnercza powoduje:",
+    a: "Wzrost stężenia glukozy we krwi, działa przeciwzapalnie i obniża odporność",
+    b: "Spadek stężenia glukozy we krwi, działa prozapalnie i podnosi odporność",
+    c: "Zmniejszenie stężenia wapnia we krwi poprzez jego osadzanie w kościach",
+    d: "Stymulację tarczycy do produkcji tyroksyny oraz trójjodotyroniny"
+  },
+  {
+    cat: "Biologia",
+    q: "Główną funkcją insuliny wydzielanej przez trzustkę jest:",
+    a: "Zmniejszanie stężenia glukozy we krwi i gromadzenie jej w wątrobie jako glikogen",
+    b: "Podwyższanie poziomu glukozy we krwi poprzez rozkład glikogenu w wątrobie",
+    c: "Pobudzanie przemiany białek i tłuszczów we wszystkich komórkach ciała",
+    d: "Regulowanie poziomu wapnia we krwi poprzez wzmożone wchłanianie z jelit"
+  },
+  {
+    cat: "Biologia",
+    q: "Glukagon (hormon trzustki) działa poprzez:",
+    a: "Podwyższanie poziomu glukozy we krwi przez stymulację rozkładu glikogenu",
+    b: "Zmniejszanie poziomu glukozy we krwi i jej magazynowanie w wątrobie",
+    c: "Pobudzanie dojrzewania limfocytów T oraz stymulację układu odpornościowego",
+    d: "Zmniejszanie stężenia wapnia we krwi poprzez blokowanie uwalniania z kości"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaka jest rola testosteronu wytwarzanego w jądrach?",
+    a: "Rozwój męskich narządów rozrodczych, wzrost mięśni, męski typ budowy i owłosienia",
+    b: "Rozwój żeńskich narządów rozrodczych, żeńskie proporcje ciała i zmiana głosu",
+    c: "Pogrubianie błony śluzowej macicy i umożliwianie prawidłowego przebiegu ciąży",
+    d: "Stymulowanie skurczów nasieniowodów oraz kontrola rytmu snu i czuwania"
+  },
+  {
+    cat: "Biologia",
+    q: "Estrogeny wydzielane przez jajniki odpowiadają za:",
+    a: "Rozwój żeńskich narządów rozrodczych, żeńskie proporcje ciała i cykl miesiączkowy",
+    b: "Rozwój męskich narządów rozrodczych, rozrost krtani oraz wzrost masy mięśniowej",
+    c: "Umożliwienie prawidłowego przebiegu ciąży poprzez pogrubianie śluzówki macicy",
+    d: "Pobudzenie gruczołów mlekowych do produkcji mleka i zahamowanie owulacji"
+  },
+  {
+    cat: "Biologia",
+    q: "Wskaż właściwą funkcję progesteronu wydzielanego przez jajniki:",
+    a: "Pogrubianie błony śluzowej macicy w cyklu oraz umożliwianie przebiegu ciąży",
+    b: "Wywoływanie skurczów macicy podczas porodu oraz stymulacja laktacji",
+    c: "Wzrost ciśnienia krwi, częstotliwości skurczów serca oraz poziomu glukozy",
+    d: "Ułatwianie wchłaniania glukozy z przewodu pokarmowego do komórek"
+  },
+
+
+
+  {
+    cat: "Biologia",
+    q: "Który gruczoł odpowiada za regulację aktywności dobowej organizmu?",
+    a: "Szyszynka",
+    b: "Tarczyca",
+    c: "Przysadka",
+    d: "Trzustka"
+  },
+  {
+    cat: "Biologia",
+    q: "Jaki hormon jest wydzielany przez szyszynkę?",
+    a: "Melatonina",
+    b: "Tyroksyna",
+    c: "Adrenalina",
+    d: "Insulina"
+  },
+  {
+    cat: "Biologia",
+    q: "Gdzie znajdują się receptory pobudzane przez światło, które wpływają na produkcję melatoniny?",
+    a: "W siatkówce oka",
+    b: "W ro rogówce oka",
+    c: "W naskórku ciała",
+    d: "W naczyniach krwionośnych"
+  },
+  {
+    cat: "Biologia",
+    q: "Jak światło wpływa na wydzielanie melatoniny przez szyszynkę?",
+    a: "Pobudzenie receptorów światłem hamuje produkcję melatoniny",
+    b: "Pobudzenie receptorów światłem stymuluje produkcję melatoniny",
+    c: "Światło nie wywiera żadnego wpływu na wydzielanie melatoniny",
+    d: "Światło powoduje natychmiastowe rozkładanie melatoniny we krwi"
+  },
+  {
+    cat: "Biologia",
+    q: "Co dzieje się w szyszynce, gdy receptory w oczach nie są pobudzone przez światło (w ciemności)?",
+    a: "Szyszynka zaczyna wydzielać melatoninę",
+    b: "Szyszynka całkowicie zatrzymuje swoją pracę",
+    c: "Szyszynka wydziela tyroksynę oraz trójjodotyroninę",
+    d: "Szyszynka przekształca melatoninę w hormon wzrostu"
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie działanie wywołuje wysokie stężenie melatoniny w organizmie?",
+    a: "Jest sygnałem do spowolnienia aktywności",
+    b: "Gwałtownie przyspiesza metabolizm komórkowy",
+    c: "Stymuluje rozrost kości długich oraz mięśni",
+    d: "Zwiększa czujność i podnosi ciśnienie krwi"
+  },
+  {
+    cat: "Biologia",
+    q: "Który gruczoł w głównej mierze odpowiada za regulację tempa metabolizmu?",
+    a: "Tarczyca",
+    b: "Szyszynka",
+    c: "Trzustka",
+    d: "Nadnercza"
+  },
+  {
+    cat: "Biologia",
+    q: "Jakie hormony są wytwarzane przez tarczycę w celu stymulacji metabolizmu?",
+    a: "Tyroksyna i trójjodotyronina",
+    b: "Melatonina i hormon wzrostu",
+    c: "Insulina i glucagon",
+    d: "Kortyzol i adrenalina"
+  },
+  {
+    cat: "Biologia",
+    q: "W jaki sposób hormony tarczycy wpływają na produkcję ciepła w tkankach?",
+    a: "Powodują zwiększenie produkcji ciepła",
+    b: "Powodują znaczne zmniejszenie produkcji ciepła",
+    c: "Blokują procesy wymiany cieplnej w organizmie",
+    d: "Nie wywierają wpływu na termoregulację tkanek"
+  },
+  {
+    cat: "Biologia",
+    q: "Jak tarczyca wpływa na kwas stężenia kwasów tłuszczowych we krwi?",
+    a: "Zwiększa ich stężenie i stymuluje utlenianie w komórkach",
+    b: "Zmniejsza ich stężenie i hamuje utlenianie w komórkach",
+    c: "Całkowicie blokuje ich syntezę w komórkach wątroby",
+    d: "Przekształca je bezpośrednio w cząsteczki glukozy"
+  },
+  {
+    cat: "Biologia",
+    q: "Jak hormony tarczycy wpływają na wnikanie glukozy do wnętrza komórek?",
+    a: "Stymulują wnikanie glukozy do wnętrza komórek",
+    b: "Hamują transport glukozy przez błony komórkowe",
+    c: "Wyprowadzają nadmiar glukozy z wnętrza komórek",
+    d: "Rozkładają glukozę przed jej wniknięciem do komórki"
+  },
+  {
+    cat: "Biologia",
+    q: "W jaki sposób tarczyca wpływa na układ krążenia?",
+    a: "Przyspiesza czynność serca i zwiększa przepływ krwi",
+    b: "Spowalnia akcję serca i zmniejsza przepływ krwi",
+    c: "Zatrzymuje przepływ krwi przez narządy obwodowe",
+    d: "Nie wpływa na częstotliwość skurczów serca"
+  },
+  {
+    cat: "Biologia",
+    q: "Prawidłowe działanie jakich układów wymaga odpowiedniego stężenia hormonów tarczycy?",
+    a: "Układu nerwowego i rozrodczego",
+    b: "Układu pokarmowego i moczowego",
+    c: "Układu oddechowego i limfatycznego",
+    d: "Układu ruchu i powłokowego"
+  },
+  {
+    cat: "Biologia",
+    q: "Z funkcjonowaniem jakiego gruczołu związany jest wzrost organizmu?",
+    a: "Przysadki",
+    b: "Tarczycy",
+    c: "Szyszynki",
+    d: "Trzustki"
+  },
+  {
+    cat: "Biologia",
+    q: "Gdzie zlokalizowana jest przysadka?",
+    a: "Wewnątrz czaszki",
+    b: "W przedniej części szyi",
+    c: "Na górnym biegunie nerek",
+    d: "W jamie brzusznej za żołądkiem"
+  },
+  {
+    cat: "Biologia",
+    q: "Który z procesów stymulowanych przez hormon wzrostu prowadzi do zwiększania rozmiarów ciała?",
+    a: "Rozrost kości",
+    b: "Zmniejszenie masy tkanek",
+    c: "Spowolnienie podziałów komórkowych",
+    d: "Wydalanie soli mineralnych"
+  },
+  {
+    cat: "Biologia",
+    q: "Jak hormon wzrostu wpływa na kwas tłuszczowy w procesie wzrostu?",
+    a: "Stymuluje utlenianie kwasów tłuszczowych i pozyskiwanie z nich energii",
+    b: "Powoduje gromadzenie tkanki tłuszczowej i hamuje rozkład energii",
+    c: "Hamuje utlenianie kwasów tłuszczowych we wszystkich tkankach",
+    d: "Przekształca kwasy tłuszczowe bezpośrednio w tkankę kostną"
+  },
+  {
+    cat: "Biologia",
+    q: "W jakich tkankach hormon wzrostu stymuluje głównie syntezę białek?",
+    a: "W tkance kostnej i tkance mięśniowej",
+    b: "W tkance łącznej wiotkiej i tłuszczowej",
+    c: "W tkance nerwowej i nabłonkowej",
+    d: "W narządach układu pokarmowego"
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let biologia =
+    localStorage.getItem("biologia") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        biologia =
+            parseInt(biologia) + 9;
+
+        localStorage.setItem(
+            "biologia",
+            biologia
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
