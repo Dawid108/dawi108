@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Na czym opiera się przygotowanie środowiska pracy?",
+    a: "Na przygotowaniu fizycznym sprzętu oraz instalacji odpowiednich programów.",
+    b: "Na zakupie licencji na oprogramowanie oraz zatrudnieniu zewnętrznych audytorów.",
+    c: "Na sporządzeniu dokumentacji końcowej oraz archiwizacji plików źródłowych.",
+    d: "Na przeprowadzeniu szkolenia pracowników z zakresu zasad bezpieczeństwa BHP."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Jakie rodzaje programów wchodzą w skład środowiska pracy?",
+    a: "Programy do wytwarzania oprogramowania, zarządzania projektami i zarządzania testami.",
+    b: "Systemy do księgowania, programy antywirusowe oraz przeglądarki internetowe.",
+    c: "Narzędzia do edycji grafiki, odtwarzacze multimedialne oraz klienty pocztowe.",
+    d: "Sterowniki urządzeń peryferyjnych, bazy danych SQL oraz edytory tekstu."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Czym jest aplikacja HP ALM?",
+    a: "Aplikacją umożliwiającą planowanie i wykonywanie testów manualnych i automatycznych oraz zarządzanie defektami.",
+    b: "Zintegrowanym środowiskiem programistycznym przeznaczonym wyłącznie do kompilacji kodu C++.",
+    c: "Systemem operacyjnym dedykowanym do zarządzania złożonymi serwerami sieciowymi.",
+    d: "Automatycznym filtrem do wykrywania spamu oraz niepożądanych wiadomości email."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Na jakie dwie główne części dzieli się program HP ALM?",
+    a: "Panel administracyjny i panel użytkownika.",
+    b: "Panel deweloperski i panel analityczny.",
+    c: "Moduł sprzętowy i moduł bazodanowy.",
+    d: "Warstwę prezentacji i warstwę logiki."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Za co odpowiada moduł Dashboard w aplikacji HP ALM?",
+    a: "Za statystyki i raporty.",
+    b: "Za zarządzanie planem wersji.",
+    c: "Za definiowanie wymagań systemowych.",
+    d: "Za tworzenie zestawów testowych."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Jaka jest rola modułu Management w panelu użytkownika HP ALM?",
+    a: "Zarządzanie planem wersji.",
+    b: "Generowanie raportów błędów.",
+    c: "Pisanie automatycznych testów.",
+    d: "Edycja kodu źródłowego programu."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Za co odpowiada moduł Requirement w HP ALM?",
+    a: "Za definiowanie wymagań systemowych i zarządzanie nimi.",
+    b: "Za śledzenie statusów zgłoszonych błędów i usterek.",
+    c: "Za generowanie końcowych raportów dla klienta.",
+    d: "Za konfigurowanie fizycznego sprzętu serwerowego."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Czym zajmuje się moduł Testing w aplikacji HP ALM?",
+    a: "Tworzeniem zestawów testowych i ich przeprowadzaniem.",
+    b: "Monitorowaniem wydajności serwera w czasie rzeczywistym.",
+    c: "Tworzeniem kopii zapasowych całej bazy danych.",
+    d: "Zarządzaniem uprawnieniami poszczególnych użytkowników."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Za co odpowiada moduł Defect w HP ALM?",
+    a: "Za tworzenie i śledzenie statusów błędów.",
+    b: "Za projektowanie interfejsu graficznego.",
+    c: "Za planowanie harmonogramu wydań.",
+    d: "Za weryfikację poprawności składni kodu."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Jakie dwa elementy należy uwzględnić w procesie testowania?",
+    a: "Weryfikację i walidację.",
+    b: "Kompilację i debagowanie.",
+    c: "Refaktoryzację i estymację.",
+    d: "Instalację i deinstalację."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Na czym polega weryfikacja w procesie testowania?",
+    a: "Na sprawdzeniu, że program spełnia określone wymagania.",
+    b: "Na zebraniu opinii od końcowych użytkowników systemu.",
+    c: "Na automatycznym naprawianiu wykrytych usterek w kodzie.",
+    d: "Na przeniesieniu aplikacji na serwer produkcyjny klienta."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Na czym polega walidacja w procesie testowania?",
+    a: "Na dostarczeniu dowodów na to, że program spełnia wymagania i potrzeby użytkownika.",
+    b: "Na sprawdzeniu czy kod źródłowy jest zgodny z zasadami czystego kodu.",
+    c: "Na porównaniu wydajności aplikacji na różnych systemach operacyjnych.",
+    d: "Na sprawdzeniu czy baza danych została prawidłowo zoptymalizowana."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Jakie dwa typy wymagań należy ustalić w procesie sprawdzania błędów?",
+    a: "Wymagania funkcjonalne i wymagania niefunkcjonalne.",
+    b: "Wymagania sprzętowe i wymagania architektoniczne.",
+    c: "Wymagania finansowe i wymagania prawne.",
+    d: "Wymagania sieciowe i wymagania systemowe."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Co określają wymagania funkcjonalne?",
+    a: "Określają, czy program działa tak jak powinien.",
+    b: "Określają maksymalne obciążenie pamięci RAM.",
+    c: "Określają czas potrzebny na wdrożenie systemu.",
+    d: "Określają maksymalną liczbę użytkowników systemu."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Czego dotyczą wymagania niefunkcjonalne?",
+    a: "Dotyczą elementów, które mogą ograniczać funkcjonalność programu w specyficznych warunkach.",
+    b: "Listy konkretnych funkcji, które użytkownik może kliknąć w interfejsie graficznym.",
+    c: "Harmonogramu prac oraz budżetu przeznaczonego na realizację całego projektu.",
+    d: "Uprawnień poszczególnych programistów do edycji poszczególnych plików źródłowych."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Jakie cechy zaliczamy do wymagań niefunkcjonalnych?",
+    a: "Wydajność, dostępność, skalowalność oraz użyteczność.",
+    b: "Logowanie, rejestrację, koszyk zakupowy oraz płatności.",
+    c: "Bazy danych, serwery WWW, protokół HTTP oraz certyfikaty SSL.",
+    d: "Tworzenie raportów, edycję profilu, wyszukiwarkę oraz powiadomienia."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "W jakich środowiskach należy przetestować program według notatek?",
+    a: "Zarówno w środowisku programistycznym, jak i w środowisku produkcyjnym.",
+    b: "Wyłącznie na lokalnym komputerze pierwszego dewelopera.",
+    c: "Tylko na serwerze testowym firmy zewnętrznej.",
+    d: "W środowisku wirtualnym bez dostępu do sieci."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Czym jest środowisko produkcyjne według przedstawionych notatek?",
+    a: "U klienta na sprzęcie, na którym dany program ma być używany.",
+    b: "Serwerem stworzonym wyłącznie na potrzeby testów jednostkowych.",
+    c: "Komputerem deweloperskim wyposażonym w dedykowany kompilator.",
+    d: "Lokalną bazą danych używaną do generowania sztucznych danych."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Czym jest cykl życia błędu?",
+    a: "Procesem, przez który przechodzi błąd od momentu wykrycia do momentu usunięcia z upewnieniem się, że błąd nie został zduplikowany.",
+    b: "Czasem potrzebnym programiście na napisanie pierwszego kodu źródłowego bez żadnych pomyłek syntaktycznych.",
+    c: "Okresem od zgłoszenia nowej funkcjonalności w systemie do jej oficjalnej prezentacji klientowi końcowemu.",
+    d: "Czasem trwania rocznej gwarancji na oprogramowanie dostarczone i wdrożone u klienta."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Czym jest Git według notatek?",
+    a: "Repozytorium kodu, czyli narzędziem służącym do przenoszenia plików między komputerem a serwerem.",
+    b: "Zintegrowanym środowiskiem graficznym przeznaczonym do projektowania i tworzenia baz danych.",
+    c: "Automatycznym narzędziem służącym do przeprowadzenia walidacji interfejsu użytkownika.",
+    d: "Serwerem produkcyjnym przeznaczonym wyłącznie do uruchamiania skryptów wykonywalnych."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Dlaczego Git jest nazywany kontrolą wersji i na czym polega wersjonowanie?",
+    a: "Polega na przechowywaniu w osobnych gałęziach (branch) różnych wersji pochodzących od gałęzi głównej (master).",
+    b: "Polega na stałym nadpisywaniu jednego pliku produkcyjnego bez możliwości powrotu do wcześniejszych zmian.",
+    c: "Polega na automatycznym kasowaniu starych plików projektowych po upływie określonego czasu.",
+    d: "Polega na kompresowaniu całego kodu źródłowego do pojedynczego archiwum chronionego hasłem."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Co można zrobić z gałęziami (branch) w systemie Git po ich niezależnym rozwinięciu?",
+    a: "Mogą być rozwijane niezależnie, a następnie scalane.",
+    b: "Mogą być tylko usuwane bez możliwości ponownego połączenia.",
+    c: "Muszą być rozwijane jednocześnie przez tego samego autora.",
+    d: "Mogą być połączone tylko raz podczas inicjalizacji repozytorium."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Rozwinięciem jakiego skrótu jest IDE i czym ono jest?",
+    a: "Integrated Development Environment, czyli zintegrowane środowisko programistyczne.",
+    b: "Internal Data Engine, czyli wewnętrzny silnik przetwarzania danych.",
+    c: "Integrated Diagnostic Equipment, czyli zestaw narzędzi diagnostycznych.",
+    d: "Interactive Development Element, czyli interaktywny moduł programistyczny."
+  },
+  {
+    cat: "Testowanie i Dokumentowanie Aplikacji",
+    q: "Jakie przykładowe funkcje oferuje zintegrowane środowisko programistyczne (IDE)?",
+    a: "Uzupełnianie składni lub kontrola błędów.",
+    b: "Automatyczne zamawianie serwerów chmurowych.",
+    c: "Zarządzanie fizycznymi licencjami sprzętowymi.",
+    d: "Generowanie umów prawnych dla klientów."
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let programowanie =
+    localStorage.getItem("programowanie") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        programowanie =
+            parseInt(programowanie) + 9;
+
+        localStorage.setItem(
+            "programowanie",
+            programowanie
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
