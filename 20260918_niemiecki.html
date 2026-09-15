@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Niemiecki", q:"der Alltag", a:"codzienność", b:"przeszłość", c:"otoczenie", d:"przyszłość"},
+  {cat:"Niemiecki", q:"codzienność", a:"der Alltag", b:"der Ausflug", c:"der Abstand", d:"der Anfang"},
+
+  {cat:"Niemiecki", q:"die Bohrmaschine", a:"wiertarka", b:"spawarka", c:"kosiarka", d:"suszarka"},
+  {cat:"Niemiecki", q:"wiertarka", a:"die Bohrmaschine", b:"die Waschmaschine", c:"die Nähmaschine", d:"die Kaffeemaschine"},
+
+  {cat:"Niemiecki", q:"die Dampflokomotive", a:"lokomotywa parowa", b:"kolej podziemna", c:"stacja kolejowa", d:"maszyna parowa"},
+  {cat:"Niemiecki", q:"lokomotywa parowa", a:"die Dampflokomotive", b:"die Straßenbahn", c:"die Untergrundbahn", d:"die Eisenbahnstrecke"},
+
+  {cat:"Niemiecki", q:"der Erfinder", a:"wynalazca", b:"odkrywca", c:"założyciel", d:"projektant"},
+  {cat:"Niemiecki", q:"wynalazca", a:"der Erfinder", b:"der Entdecker", c:"der Einwohnerg", d:"der Empfänger"},
+
+  {cat:"Niemiecki", q:"die Erfindung", a:"wynalazek", b:"odkrycie", c:"przepis", d:"pomysł"},
+  {cat:"Niemiecki", q:"wynalazek", a:"die Erfindung", b:"die Erinnerung", c:"die Erfahrung", d:"die Empfehlung"},
+
+  {cat:"Niemiecki", q:"der Fotoapparat", a:"aparat fotograficzny", b:"rzutnik multimedialny", c:"odtwarzacz wideo", d:"odbiornik radiowy"},
+  {cat:"Niemiecki", q:"aparat fotograficzny", a:"der Fotoapparat", b:"der Geldautomat", c:"der Rasierapparat", d:"der Kopierapparat"},
+
+  {cat:"Niemiecki", q:"das Gerät", a:"urządzenie", b:"tworzywo", c:"przedmiot", d:"pojazd"},
+  {cat:"Niemiecki", q:"urządzenie", a:"das Gerät", b:"das Gebot", c:"das Gehirn", d:"das Gepäck"},
+
+  {cat:"Niemiecki", q:"der Klettverschluss", a:"zapięcie na rzepy", b:"zamek błyskawiczny", c:"zatrzask metalowy", d:"guzik plastikowy"},
+  {cat:"Niemiecki", q:"zapięcie na rzepy", a:"der Klettverschluss", b:"der Reißverschluss", c:"der Schutzhelm", d:"der Gürtelclip"},
+
+  {cat:"Niemiecki", q:"die Konservendose", a:"konserwa", b:"butelka", c:"pudełko", d:"słoik"},
+  {cat:"Niemiecki", q:"konserwa", a:"die Konservendose", b:"die Mülltonne", c:"die Geldbörse", d:"die Plastiktüte"},
+
+  {cat:"Niemiecki", q:"der Kühlschrank", a:"lodówka", b:"zmywarka", c:"pralka", d:"kuchenka"},
+  {cat:"Niemiecki", q:"lodówka", a:"der Kühlschrank", b:"der Kleiderschrank", c:"der Schreibtisch", d:"der Backofen"},
+
+  {cat:"Niemiecki", q:"der Laser", a:"laser", b:"radar", c:"ekran", d:"kabel"},
+  {cat:"Niemiecki", q:"laser", a:"der Laser", b:"der Leiter", c:"der Lenker", d:"der Laster"},
+
+  {cat:"Niemiecki", q:"der USB-Stick", a:"pendrive", b:"dysk", c:"karta", d:"kabel"},
+  {cat:"Niemiecki", q:"pendrive", a:"der USB-Stick", b:"der Kopfhörer", c:"der Bildschirm", d:"der Drucker"},
+
+  {cat:"Niemiecki", q:"das Werkzeug", a:"narzędzie", b:"tworzywo", c:"naczynie", d:"maszyna"},
+  {cat:"Niemiecki", q:"narzędzie", a:"das Werkzeug", b:"das Fahrzeug", c:"das Spielzeug", d:"das Flugzeug"},
+
+  {cat:"Niemiecki", q:"die Zahnpasta", a:"pasta do zębów", b:"szczoteczka", c:"płyn do ust", d:"nitka dentystyczna"},
+  {cat:"Niemiecki", q:"pasta do zębów", a:"die Zahnpasta", b:"die Zahnbürste", c:"die Handcreme", d:"die Seifendose"},
+
+  {cat:"Niemiecki", q:"aufhängen", a:"wieszać", b:"zdejmować", c:"zakładać", d:"układać"},
+  {cat:"Niemiecki", q:"wieszać", a:"aufhängen", b:"abholen", c:"anfangen", d:"aufstehen"},
+
+  {cat:"Niemiecki", q:"entwickeln", a:"opracować, rozwijać", b:"zwijać, niszczyć", c:"badać, sprawdzać", d:"budować, burzyć"},
+  {cat:"Niemiecki", q:"opracować, rozwijać", a:"entwickeln", b:"entscheiden", c:"entdecken", d:"entkommen"},
+
+  {cat:"Niemiecki", q:"erfinden", a:"wynaleźć", b:"odkryć", c:"stworzyć", d:"zbudować"},
+  {cat:"Niemiecki", q:"wynaleźć", a:"erfinden", b:"erinnern", c:"erklären", d:"erhalten"},
+
+  {cat:"Niemiecki", q:"fehlen", a:"brakować", b:"zostawać", c:"przybysz", d:"zostawiać"},
+  {cat:"Niemiecki", q:"brakować", a:"fehlen", b:"folgen", c:"führen", d:"frieren"},
+
+  {cat:"Niemiecki", q:"lagern", a:"przechowywać", b:"sprzedawać", c:"produkować", d:"transportować"},
+  {cat:"Niemiecki", q:"przechowywać", a:"lagern", b:"liefern", c:"landen", d:"lächeln"},
+
+  {cat:"Niemiecki", q:"lösen", a:"rozwiązywać", b:"związywać", c:"sklejać", d:"utrudniać"},
+  {cat:"Niemiecki", q:"rozwiązywać", a:"lösen", b:"lügen", c:"lesen", d:"leben"},
+
+  {cat:"Niemiecki", q:"nutzen", a:"używać", b:"psuć", c:"kupować", d:"szukać"},
+  {cat:"Niemiecki", q:"używać", a:"nutzen", b:"nennen", c:"nehmen", d:"neigen"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let niemiecki =
+    localStorage.getItem("niemiecki") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        niemiecki =
+            parseInt(niemiecki) + 9;
+
+        localStorage.setItem(
+            "niemiecki",
+            niemiecki
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
