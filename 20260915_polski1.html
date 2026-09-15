@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {
+    cat: "Polski",
+    q: "Na czym polega podobieństwo między bohaterem wiersza 'Kowal' a Syzyfem?",
+    a: "Na wykonywaniu nieustającej pracy – kowala wykuwającego z serca i Syzyfa wtaczającego kamień.",
+    b: "Na dążeniu do zdobycia władzy – kowala nad materiałem i Syzyfa nad mieszkańcami Koryntu.",
+    c: "Na walce z mitycznymi bogami – kowala chroniącego kuźnię i Syzyfa oszukującego przeznaczenie.",
+    d: "Na podjęciu prób ucieczki przed cierpieniem – kowala z kuźni oraz Syzyfa z podziemnego Hadesu."
+  },
+  {
+    cat: "Polski",
+    q: "Co wyraża Leopold Staff w wierszu 'Deszcz jesienny'?",
+    a: "Typowy dla Młodej Polski dekadentyzm oraz ogólny nastrój smutku i zmartwienia otaczającym światem.",
+    b: "Zachwyt nad urokiem jesiennej przyrody oraz optymistyczną wiarę w nadchodzące zmiany na świecie.",
+    c: "Bunt przeciwko zasadom społecznym oraz chęć odnowy religijnej i moralnej współczesnego człowieka.",
+    d: "Fascynację wiejskim życiem i spokojem wynikającym z rytmicznego powtarzania się pór roku."
+  },
+  {
+    cat: "Polski",
+    q: "Jaka jest budowa wiersza 'Deszcz jesienny' oraz rola jego refrenu i rymów?",
+    a: "Składa się z trzech zwrotek i refrenu nadającego muzyczność, a rymy są parzyste (aabb).",
+    b: "Składa się z czterech strof bez refrenu, a schemat rymów jest ciągły i nieregularny (abcd).",
+    c: "Składa się z dwóch długich zwrotek z refrenem końcowym, a rymy są wyłącznie krzyżowe (abab).",
+    d: "Składa się z pięciu zwrotek połączonych powtarzanym wersem, a rymy są okalające (abba)."
+  },
+  {
+    cat: "Polski",
+    q: "Kim jest podmiot liryczny w wierszu 'Deszcz jesienny' Staffa?",
+    a: "Dekadentem i mężczyzną, który poprzez przejmowanie się deszczem wyraża swoje wewnętrzne przeżycia.",
+    b: "Młodym obserwatorem natury, który zachwyca się melodią kropel i szuka inspiracji do tworzenia.",
+    c: "Pustelnikiem mieszkającym w lesie, który opowiada o minionych latach swojej dojrzałej młodości.",
+    d: "Filozofem starającym się wyjaśnić naukowe przyczyny powstawania zjawisk atmosferycznych jesienią."
+  },
+  {
+    cat: "Polski",
+    q: "Czym jest zabieg psychizacji krajobrazu zastosowany w utworze?",
+    a: "Nadawaniem przyrodzie emocji i cech psychicznych odzwierciedlających stan wewnętrzny bohatera.",
+    b: "Dokładnym i obiektywnym opisywaniem zjawisk pogodowych bez odwoływania się do ludzkich uczuć.",
+    c: "Przedstawianiem natury jako potężnej i wrogiej siły dążącej do całkowitego zniszczenia świata.",
+    d: "Używaniem skomplikowanych pojęć filozoficznych do opisu zmian zachodzących w otoczeniu poecie."
+  },
+  {
+    cat: "Polski",
+    q: "Jak opisany jest deszcz w wierszu i jakie wyrazy dźwiękonaśladowcze zostały użyte?",
+    a: "Deszcz jest miarowy i niezmienny, a użyte onomatopeje to np. trask, dzwoni, pluszcze, tłuką, jęk i płacz.",
+    b: "Deszcz jest gwałtowny i porywisty, a użyte onomatopeje to np. huczy, świszczy, grzmi, łamie i szumi.",
+    c: "Deszcz jest delikatny i powolny, a użyte onomatopeje to np. szeleści, kapie, szemrze, mruczy i cichnie.",
+    d: "Deszcz jest porywisty i zmienny, a użyte onomatopeje to np. łomot, stukanie, dudnienie, pisk i zgrzyt."
+  },
+  {
+    cat: "Polski",
+    q: "Jaki stan psychiczny podmiotu lirycznego ujawnia padający deszcz?",
+    a: "Jest przygnębiony, smutny, zrozpaczony, reprezentuje pesymizm i dekadentyzm, z którym deszcz współodczuwa.",
+    b: "Jest pełen nadziei, spokojny i radosny, w związku z czym deszcz przynosi mu ulgę oraz inspirację.",
+    c: "Jest rozgniewany, zbuntowany i agresywny, a padający deszcz potęguje w nim pragnienie natychmiastowej walki.",
+    d: "Jest obojętny i zdystansowany do świata, a padający deszcz pomaga mu w głębokiej medytacji nad życiem."
+  },
+  {
+    cat: "Polski",
+    q: "Co ukazuje pierwsza zwrotka wiersza 'Deszcz jesienny'?",
+    a: "Obraz spersonifikowanych marzeń sennych (mar), które w żałobnych szatach ze łzami szukają miejsca na groby.",
+    b: "Wizję pięknego ogrodu pełnego kwitnących róż, nad którym rozciąga się kolorowa i jasna tęcza po burzy.",
+    c: "Scenę spotkania podmiotu lirycznego z wędrowcem, który opowiada mu smutne historie ze swojego życia.",
+    d: "Opis spokojnego wieczoru na wsi, gdzie mieszkańcy zbierają się w domach przy ciepłym i jasnym kominku."
+  },
+  {
+    cat: "Polski",
+    q: "Czym są wieczorne mary i co symbolizują w pierwszej zwrotce?",
+    a: "Są symbolem marzeń dekadenckiego podmiotu lirycznego, które nigdy się nie spełnią, wywołując w nim cierpienie.",
+    b: "Są symbolem dawnych wspomnień z dzieciństwa, które przynoszą poecie ukojenie oraz poczucie spokoju.",
+    c: "Są symbolem nadchodzących groźnych niebezpieczeństw, przed którymi bohater próbuje ostrzec czytelnika.",
+    d: "Są symbolem nieznanych duchów przodków, które przybywają na ziemię, aby szukać modlitwy u żyjących."
+  },
+  {
+    cat: "Polski",
+    q: "Jaki podmiot i typ liryki występują w drugiej zwrotce utworu?",
+    a: "Liryka bezpośrednia z podmiotem pierwszoosobowym, który jest smutny, samotny i nie umie odwzajemnić uczuć.",
+    b: "Liryka pośrednia z podmiotem trzecioosobowym, który chłodno i bez emocji relacjonuje wydarzenia.",
+    c: "Liryka roli, w której podmiot wciela się w postać fantastyczną i opowiada o swoim mitycznym świecie.",
+    d: "Liryka apelatywna z podmiotem zbiorowym, który nawołuje odbiorców do podjęcia wspólnego działania."
+  },
+  {
+    cat: "Polski",
+    q: "Jakie dramatyczne wydarzenia z otaczającej rzeczywistości wymienia podmiot w drugiej zwrotce?",
+    a: "Śmierć nędzarza, spalenie się zagrody oraz śmierć dzieci, co wywołuje powszechną rozpacz ludzi.",
+    b: "Wybuch okrutnej wojny, opuszczenie wioski przez mieszkańców oraz wielki pożar w pobliskim lesie.",
+    c: "Zniszczenie plonów przez gradobicie, utratę majątku przez kupca oraz wygnanie władcy z królestwa.",
+    d: "Niezrozumienie ze strony przyjaciół, zdradę ukochanej kobiety oraz utratę osobistego majątku poety."
+  },
+  {
+    cat: "Polski",
+    q: "Co robi Szatan opisywany w wierszu 'Deszcz jesienny'?",
+    a: "Kroczy przez ogród, zamienia go w pustelnię, zasypuje kwiaty popiołem, po czym sam płacze nad spustoszeniem.",
+    b: "Niszczy okoliczne domy ludzkie, sprowadza straszliwą burzę z piorunami i śmieje się z ludzkiego cierpienia.",
+    c: "Kusi podmiot liryczny wizjami bogactwa, próbując przeciągnąć go na stronę zła i pozbawić wszelkiej nadziei.",
+    d: "Ucieka w popłochu przed padającym deszczem i szuka schronienia w ciemnych i opuszczonych jaskiniach."
+  },
+  {
+    cat: "Polski",
+    q: "Co w utworze symbolizują ogród oraz postać Szatana?",
+    a: "Ogród symbolizuje duszę dekadenta, a Szatan symbolizuje smutek, mrok i pesymizm niszczące tę duszę.",
+    b: "Ogród symbolizuje dawny raj utracony, a Szatan symbolizuje absolutne zło panujące na całym świecie.",
+    c: "Ogród symbolizuje ludzkie ciało, a Szatan symbolizuje nieuchronny proces starzenia się i choroby.",
+    d: "Ogród symbolizuje piękno otaczającej przyrody, a Szatan symbolizuje postępującą cywilizację i miasto."
+  },
+  {
+    cat: "Polski",
+    q: "Do jakiego rodzaju liryki i jakiego nurtu należy wiersz Staffa oraz na czym skupia się autor?",
+    a: "Należy do liryki nastrojowej i dekadentyzmu, a Staff skupił się na ukazaniu mrocznego wnętrza człowieka.",
+    b: "Należy do liryki patriotycznej i romantyzmu, a Staff skupił się na nawoływaniu do walki o wolność kraju.",
+    c: "Należy do liryki miłosnej i renesansu, a Staff skupił się na wysławianiu piękna swej ukochanej kobiety.",
+    d: "Należy do liryki religijnej i baroku, a Staff skupił się na przedstawianiu ulotności ziemskiego życia."
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 9;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
