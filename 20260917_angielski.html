@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Słówka z działu 2 pierwsze 2 kolumny</title>
+
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+<div id="game">
+
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+
+    <div class="category" id="category"></div>
+
+    <div class="question" id="question"></div>
+
+    <!-- WPISYWANIE ODPOWIEDZI -->
+    <div id="answers">
+
+        <input
+            type="text"
+            id="answerInput"
+            placeholder="Wpisz słówko po angielsku"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+        >
+
+        <button
+            id="checkButton"
+            onclick="checkAnswer()"
+        >
+            Sprawdź
+        </button>
+
+    </div>
+
+    <div id="result"></div>
+
+    <div id="counter"></div>
+
+</div>
+
+
+<div id="endScreen" class="hidden">
+
+    <h2 id="endTitle"></h2>
+
+    <p>
+        Twój wynik:
+        <span id="finalScore"></span>
+    </p>
+
+    <p>
+        Twój rekord:
+        <span id="record"></span>
+    </p>
+
+    <p>
+        Suma punktów:
+        <span id="dawid108"></span>
+    </p>
+
+    <button onclick="newGame()">
+        Nowa Gra
+    </button>
+
+</div>
+
+
+<script>
+
+let questions = [
+{cat:"Angielski", q:"siła robocza", a:"workforce", b:"workplace", c:"workpower", d:"workhouse"},
+{cat:"Angielski", q:"zarządzać projektem", a:"be in charge of a project", b:"be in control of a project", c:"be in center of a project", d:"be in charge of a process"},
+
+
+{cat:"Angielski", q:"stawiać wysokie oczekiwania", a:"set high expectations", b:"set high aspirations", c:"set strong limits", d:"set broad requirements"},
+
+{cat:"Angielski", q:"zaplanować próby", a:"schedule the rehearsals", b:"schedule the meetings", c:"organize the practices", d:"arrange the rehearsals"},
+{cat:"Angielski", q:"doprowadzić projekt do końca", a:"see the project through", b:"see the project ahead", c:"run the project around", d:"get the project done"},
+
+{cat:"Angielski", q:"złożyć wypowiedzenie", a:"give in your notice", b:"give up your office", c:"hand in your report", d:"take in your letter"},
+{cat:"Angielski", q:"dochodowy, opłacalny", a:"profitable", b:"predictable", c:"preferable", d:"permissible"},
+
+{cat:"Angielski", q:"rozwijać uniwersalne umiejętności, które można wykorzystać w różnych dziedzinach", a:"boost your transferable skills", b:"build your practical talent", c:"boost your professional skills", d:"bring your trainable skills"},
+
+
+{cat:"Angielski", q:"zdolny do pracy", a:"employable", b:"enjoyable", c:"executable", d:"enforceable"},
+
+
+{cat:"Angielski", q:"biuro pośrednictwa pracy", a:"job centre", b:"job circle", c:"job agency", d:"job corner"},
+
+{cat:"Angielski", q:"obeznany, zorientowany, wykształcony", a:"knowledgeable", b:"understandable", c:"approachable", d:"manageable"},
+
+
+{cat:"Angielski", q:"praktykant, stażysta", a:"trainee", b:"trainer", c:"trader", d:"tracker"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+let canAnswer = true;
+
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+    canAnswer = true;
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+function speakAnswer(){
+
+    if(!("speechSynthesis" in window)){
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    let text = current.a;
+
+    let utterance =
+        new SpeechSynthesisUtterance(text);
+
+    utterance.lang = "en-US";
+
+    utterance.rate = 0.85;
+
+    utterance.pitch = 1;
+
+    speechSynthesis.speak(utterance);
+}
+
+
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+    canAnswer = true;
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    let input =
+        document.getElementById("answerInput");
+
+    input.value = "";
+
+    input.disabled = false;
+
+    input.focus();
+
+
+    document
+        .getElementById("checkButton")
+        .disabled = false;
+
+
+    document
+        .getElementById("result")
+        .innerText = "";
+
+
+    document
+        .getElementById("result")
+        .className = "";
+
+
+
+    setTimeout(
+        () => speakAnswer(),
+        300
+    );
+
+}
+
+function checkAnswer(){
+
+    if(!canAnswer){
+        return;
+    }
+
+    let input =
+        document.getElementById("answerInput");
+
+    let userAnswer =
+        input.value.trim();
+
+    if(userAnswer === ""){
+        input.focus();
+        return;
+    }
+
+
+    canAnswer = false;
+
+    input.disabled = true;
+
+    document
+        .getElementById("checkButton")
+        .disabled = true;
+
+
+
+    let user =
+        userAnswer.toLowerCase();
+
+    let correctAnswer =
+        current.a.trim().toLowerCase();
+
+
+    if(user === correctAnswer){
+
+        correctAnswerAction();
+
+    }else{
+
+        wrongAnswerAction();
+
+    }
+
+}
+
+
+function correctAnswerAction(){
+
+    document
+        .getElementById("result")
+        .innerHTML =
+        "✅ <b>Poprawnie!</b>";
+
+    document
+        .getElementById("result")
+        .className =
+        "resultCorrect";
+
+
+    score++;
+
+
+    dawid108 =
+        parseInt(dawid108) + 9;
+
+    localStorage.setItem(
+        "dawid108",
+        dawid108
+    );
+
+
+    angielski =
+        parseInt(angielski) + 9;
+
+    localStorage.setItem(
+        "angielski",
+        angielski
+    );
+
+
+    updateStats();
+
+
+    setTimeout(
+        () => nextQuestion(),
+        1500
+    );
+
+}
+
+
+function wrongAnswerAction(){
+
+    document
+        .getElementById("result")
+        .innerHTML =
+        "❌ <b>Źle!</b><br>" +
+        "Poprawna odpowiedź: <strong>" +
+        current.a +
+        "</strong>";
+
+
+    document
+        .getElementById("result")
+        .className =
+        "resultWrong";
+
+
+    life--;
+
+    updateStats();
+
+
+    setTimeout(
+        () => speakAnswer(),
+        500
+    );
+
+
+    if(life <= 0){
+
+        setTimeout(
+            () => gameOver(),
+            6000
+        );
+
+    }else{
+
+        setTimeout(
+            () => nextQuestion(),
+            5000
+        );
+
+    }
+
+}
+
+
+document
+    .getElementById("answerInput")
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(event.key === "Enter"){
+                checkAnswer();
+            }
+
+        }
+    );
+
+
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
