@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Słówka Angielski 1 października</title>
+
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+<div id="game">
+
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+
+    <div class="category" id="category"></div>
+
+    <div class="question" id="question"></div>
+
+    <!-- WPISYWANIE ODPOWIEDZI -->
+    <div id="answers">
+
+        <input
+            type="text"
+            id="answerInput"
+            placeholder="Wpisz słówko po angielsku"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+        >
+
+        <button
+            id="checkButton"
+            onclick="checkAnswer()"
+        >
+            Sprawdź
+        </button>
+
+    </div>
+
+    <div id="result"></div>
+
+    <div id="counter"></div>
+
+</div>
+
+
+<div id="endScreen" class="hidden">
+
+    <h2 id="endTitle"></h2>
+
+    <p>
+        Twój wynik:
+        <span id="finalScore"></span>
+    </p>
+
+    <p>
+        Twój rekord:
+        <span id="record"></span>
+    </p>
+
+    <p>
+        Suma punktów:
+        <span id="dawid108"></span>
+    </p>
+
+    <button onclick="newGame()">
+        Nowa Gra
+    </button>
+
+</div>
+
+
+<script>
+
+let questions = [
+  {cat:"Angielski", q:"barista", a:"barista", b:"baker", c:"waiter", d:"chef"},
+  {cat:"Angielski", q:"zbudować, stworzyć portfolio", a:"build your portfolio", b:"create your project", c:"share your documents", d:"expand your contact"},
+  {cat:"Angielski", q:"pracownik centrum informacyjnego", a:"call centre worker", b:"office desk agent", c:"public relations officer", d:"customer care expert"},
+  {cat:"Angielski", q:"kraj zamieszkania", a:"country of residence", b:"place of employment", c:"country of origin", d:"state of birth"},
+  {cat:"Angielski", q:"bieżący/aktualny adres", a:"current address", b:"permanent home", c:"postal address", d:"former residence"},
+  {cat:"Angielski", q:"asystent ds. wprowadzania danych", a:"data entry assistant", b:"digital file manager", c:"database admin clerk", d:"system operator clerk"},
+  {cat:"Angielski", q:"data urodzenia", a:"date of birth", b:"date of issue", c:"year of entry", d:"time of arrival"},
+  {cat:"Angielski", q:"imię", a:"first name", b:"full name", c:"last name", d:"user name"},
+  {cat:"Angielski", q:"pracownik obsługi food trucka", a:"food truck attendant", b:"street food seller", c:"mobile chef helper", d:"fast food cashier"},
+  {cat:"Angielski", q:"ogłoszenie o pracę", a:"job advert", b:"job search", c:"job report", d:"job notice"},
+  {cat:"Angielski", q:"dodatkowe świadczenia", a:"job benefits", b:"job earnings", c:"job requirements", d:"job position"},
+  {cat:"Angielski", q:"gwarancja stałego zatrudnienia, bezpieczeństwo zatrudnienia", a:"job security", b:"job position", c:"job stability", d:"job agreement"},
+  {cat:"Angielski", q:"drugie imię", a:"middle name", b:"family name", c:"given name", d:"short name"},
+  {cat:"Angielski", q:"przyziemne, nieciekawe zadanie", a:"mundane task", b:"routine work", c:"simple chore", d:"boring duty"},
+  {cat:"Angielski", q:"tajemniczy klient", a:"mystery shopper", b:"secret buyer", c:"hidden agent", d:"unknown guest"},
+  {cat:"Angielski", q:"narodowość, obywatelstwo", a:"nationality", b:"citizenship", c:"background", d:"provenance"},
+  {cat:"Angielski", q:"prywatny nauczyciel/nauczycielka, korepetytor/korepetytorka online", a:"online tutor", b:"remote mentor", c:"virtual instructor", d:"digital teacher"},
+  {cat:"Angielski", q:"dane osobowe", a:"personal data", b:"private info", c:"user details", d:"person facts"},
+  {cat:"Angielski", q:"cechy osobowe", a:"personal qualities", b:"character traits", c:"individual features", d:"personal skills"},
+  {cat:"Angielski", q:"kod pocztowy", a:"postcode", b:"zip code", c:"mail code", d:"city code"},
+  {cat:"Angielski", q:"zatrudnienie na krótki okres", a:"short-term employment", b:"brief working contract", c:"part-time job period", d:"fixed-term position"},
+  {cat:"Angielski", q:"utrzymywać się samemu", a:"support yourself", b:"provide for all", c:"finance your life", d:"manage own money"},
+  {cat:"Angielski", q:"nazwisko", a:"surname", b:"nickname", c:"fullname", d:"lastname"},
+  {cat:"Angielski", q:"pracownik tymczasowy", a:"temp", b:"host", c:"aide", d:"clerk"},
+  {cat:"Angielski", q:"agencja pośrednictwa pracy tymczasowej", a:"temp agency", b:"work office", c:"job center", d:"staff firm"},
+  {cat:"Angielski", q:"praca dorywcza", a:"temporary job", b:"casual labor", c:"part-time work", d:"side position"},
+  {cat:"Angielski", q:"pracować zdalnie", a:"work remotely", b:"work distant", c:"work online", d:"work offsite"},
+  {cat:"Angielski", q:"pracować z domu", a:"work from home", b:"stay and work", c:"do home office", d:"work at house"},
+  {cat:"Angielski", q:"środowisko pracy", a:"working environment", b:"office space place", c:"company culture", d:"job climate area"},
+  {cat:"Angielski", q:"czas pracy", a:"working hours", b:"shift timing", c:"office time", d:"daily hours"},
+  {cat:"Angielski", q:"fizyczny", a:"blue-collar", b:"hard-worker", c:"field-based", d:"hand-labour"},
+  {cat:"Angielski", q:"wymagający", a:"challenging", b:"demanding", c:"exhausting", d:"difficult"},
+  {cat:"Angielski", q:"bez perspektyw", a:"dead-end", b:"no-future", c:"hopeless", d:"low-grade"},
+  {cat:"Angielski", q:"wymagający", a:"demanding", b:"exacting", c:"rigorous", d:"strenuous"},
+  {cat:"Angielski", q:"pełnoetatowy, w pełnym wymiarze", a:"full-time", b:"over-time", c:"half-time", d:"real-time"},
+  {cat:"Angielski", q:"ważny, odpowiedzialny", a:"high-powered", b:"top-ranking", c:"well-funded", d:"high-status"},
+  {cat:"Angielski", q:"nisko płatny", a:"low-paid", b:"bad-paid", c:"poor-pay", d:"sub-paid"},
+  {cat:"Angielski", q:"intratny", a:"lucrative", b:"rewarding", c:"profitable", d:"successful"},
+  {cat:"Angielski", q:"fizyczny, ręczny", a:"manual", b:"crafty", c:"direct", d:"handy"},
+  {cat:"Angielski", q:"niewykwalifikowany", a:"menial", b:"minor", c:"simple", d:"lesser"},
+  {cat:"Angielski", q:"monotonny", a:"monotonous", b:"repetitive", c:"dull-toned", d:"unchanging"},
+  {cat:"Angielski", q:"satysfakcjonujący", a:"rewarding", b:"fulfilling", c:"satisfying", d:"gratifying"},
+  {cat:"Angielski", q:"sezonowy", a:"seasonal", b:"periodic", c:"temporal", d:"cyclical"},
+  {cat:"Angielski", q:"wykwalifikowany, uzdolniony, wprawny", a:"skilled", b:"trained", c:"capable", d:"talented"},
+  {cat:"Angielski", q:"stresujący", a:"stressful", b:"tiring", c:"painful", d:"hectic"},
+  {cat:"Angielski", q:"niewykwalifikowany", a:"unskilled", b:"untrained", c:"raw-hand", d:"no-skill"},
+  {cat:"Angielski", q:"dobrze płatny", a:"well-paid", b:"high-paid", c:"rich-paid", d:"good-paid"},
+  {cat:"Angielski", q:"umysłowy, biurowy", a:"white-collar", b:"desk-worked", c:"office-bound", d:"paper-based"},
+  {cat:"Angielski", q:"wystarczający; dosyć, aż nadto", a:"ample", b:"enough", c:"plenty", d:"fairly"},
+  {cat:"Angielski", q:"sumienny", a:"conscientious", b:"scrupulous", c:"meticulous", d:"deliberate"},
+  {cat:"Angielski", q:"stanowisko, posada", a:"post", b:"role", c:"seat", d:"spot"},
+  {cat:"Angielski", q:"dążenie", a:"pursuit", b:"desire", c:"intent", d:"action"},
+  {cat:"Angielski", q:"być do czegoś stworzonym", a:"be cut out to do sth", b:"be born to handle sth", c:"be made to do anything", d:"be fit for doing sth"},
+  {cat:"Angielski", q:"mieć rozpaczliwą potrzebę, desperacko potrzebować", a:"be in desperate need of", b:"be in urgent search for", c:"be in grave problem with", d:"be in strong desire for"},
+  {cat:"Angielski", q:"nie być czegoś świadomym", a:"be unaware of", b:"be ignorant to", c:"be unmindful in", d:"be blind to it"},
+  {cat:"Angielski", q:"zatrudnić, używać", a:"employ", b:"engage", c:"retain", d:"enlist"},
+  {cat:"Angielski", q:"spróbować", a:"give it a go", b:"make a try", c:"take a risk", d:"have a run"},
+  {cat:"Angielski", q:"ziemia; wylądować", a:"land", b:"soil", c:"site", d:"drop"},
+  {cat:"Angielski", q:"znaleźć pracę", a:"land a job", b:"find a role", c:"get a post", d:"seek a work"},
+  {cat:"Angielski", q:"wiązać koniec z końcem", a:"make ends meet", b:"keep money safe", c:"hold costs low", d:"pay off debts"},
+  {cat:"Angielski", q:"przesunąć, poruszyć, wzruszyć", a:"move", b:"push", c:"shift", d:"stir"},
+  {cat:"Angielski", q:"wystawiać (sztukę), wykonywać zadania", a:"perform", b:"execute", c:"present", d:"fulfil"},
+  {cat:"Angielski", q:"biegać, zarządzać, prowadzić", a:"run", b:"lead", c:"keep", d:"direct"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+let canAnswer = true;
+
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+    canAnswer = true;
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+function speakAnswer(){
+
+    if(!("speechSynthesis" in window)){
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    let text = current.a;
+
+    let utterance =
+        new SpeechSynthesisUtterance(text);
+
+    utterance.lang = "en-US";
+
+    utterance.rate = 0.85;
+
+    utterance.pitch = 1;
+
+    speechSynthesis.speak(utterance);
+}
+
+
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+    canAnswer = true;
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    let input =
+        document.getElementById("answerInput");
+
+    input.value = "";
+
+    input.disabled = false;
+
+    input.focus();
+
+
+    document
+        .getElementById("checkButton")
+        .disabled = false;
+
+
+    document
+        .getElementById("result")
+        .innerText = "";
+
+
+    document
+        .getElementById("result")
+        .className = "";
+
+
+
+    setTimeout(
+        () => speakAnswer(),
+        300
+    );
+
+}
+
+function checkAnswer(){
+
+    if(!canAnswer){
+        return;
+    }
+
+    let input =
+        document.getElementById("answerInput");
+
+    let userAnswer =
+        input.value.trim();
+
+    if(userAnswer === ""){
+        input.focus();
+        return;
+    }
+
+
+    canAnswer = false;
+
+    input.disabled = true;
+
+    document
+        .getElementById("checkButton")
+        .disabled = true;
+
+
+
+    let user =
+        userAnswer.toLowerCase();
+
+    let correctAnswer =
+        current.a.trim().toLowerCase();
+
+
+    if(user === correctAnswer){
+
+        correctAnswerAction();
+
+    }else{
+
+        wrongAnswerAction();
+
+    }
+
+}
+
+
+function correctAnswerAction(){
+
+    document
+        .getElementById("result")
+        .innerHTML =
+        "✅ <b>Poprawnie!</b>";
+
+    document
+        .getElementById("result")
+        .className =
+        "resultCorrect";
+
+
+    score++;
+
+
+    dawid108 =
+        parseInt(dawid108) + 9;
+
+    localStorage.setItem(
+        "dawid108",
+        dawid108
+    );
+
+
+    angielski =
+        parseInt(angielski) + 9;
+
+    localStorage.setItem(
+        "angielski",
+        angielski
+    );
+
+
+    updateStats();
+
+
+    setTimeout(
+        () => nextQuestion(),
+        1500
+    );
+
+}
+
+
+function wrongAnswerAction(){
+
+    document
+        .getElementById("result")
+        .innerHTML =
+        "❌ <b>Źle!</b><br>" +
+        "Poprawna odpowiedź: <strong>" +
+        current.a +
+        "</strong>";
+
+
+    document
+        .getElementById("result")
+        .className =
+        "resultWrong";
+
+
+    life--;
+
+    updateStats();
+
+
+    setTimeout(
+        () => speakAnswer(),
+        500
+    );
+
+
+    if(life <= 0){
+
+        setTimeout(
+            () => gameOver(),
+            6000
+        );
+
+    }else{
+
+        setTimeout(
+            () => nextQuestion(),
+            5000
+        );
+
+    }
+
+}
+
+
+document
+    .getElementById("answerInput")
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(event.key === "Enter"){
+                checkAnswer();
+            }
+
+        }
+    );
+
+
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
