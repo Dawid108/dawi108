@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {
+    cat: "Geografia",
+    q: "Które z poniższych zalicza się do naturalnych źródeł zanieczyszczeń powietrza?",
+    a: "Wybuchy wulkanów, pożary lasów i sawann oraz pyły sprowokowane silnymi wiatrami",
+    b: "Procesy spalania w piecach domowych, emisje przemysłowe oraz wycieki ścieków",
+    c: "Transport samochodowy, spalanie paliw w elektrociepłowniach oraz hałas miejski",
+    d: "Stosowanie nawozów sztucznych, wysypiska śmieci oraz hodowla bydła na farmach"
+  },
+  {
+    cat: "Geografia",
+    q: "Do jakiej grupy antropogenicznych źródeł zanieczyszczeń należą elektrownie węglowe, kopalnie i rafinerie?",
+    a: "Energetyczne",
+    b: "Przemysłowe",
+    c: "Komunalne",
+    d: "Rolnicze"
+  },
+  {
+    cat: "Geografia",
+    q: "Do jakiej grupy antropogenicznych źródeł zanieczyszczeń należą huty metali, fabryki chemiczne i cementownie?",
+    a: "Przemysłowe",
+    b: "Energetyczne",
+    c: "Komunalne",
+    d: "Rolnicze"
+  },
+  {
+    cat: "Geografia",
+    q: "Do antropogenicznych źródeł komunikacyjnych zanieczyszczeń powietrza zaliczamy:",
+    a: "Samoloty, samochody, statki i pociągi",
+    b: "Elektrownie węglowe, kopalnie oraz rafinerie",
+    c: "Piece domowe, spalarnie śmieci oraz ścieki",
+    d: "Farmy hodowlane, sztuczne nawozy i wypalanie traw"
+  },
+  {
+    cat: "Geografia",
+    q: "Do rolniczych źródeł zanieczyszczeń powietrza zalicza się:",
+    a: "Farmy hodowlane, sztuczne nawozy i wypalanie traw",
+    b: "Huty metali, fabryki chemiczne oraz cementownie",
+    c: "Samoloty, samochody, statki oraz pociągi",
+    d: "Elektrownie węglowe, kopalnie oraz rafinerie"
+  },
+  {
+    cat: "Geografia",
+    q: "Do jakiej grupy zanieczyszczeń zaliczamy piece, śmieci i ścieki?",
+    a: "Komunalne",
+    b: "Rolnicze",
+    c: "Przemysłowe",
+    d: "Energetyczne"
+  },
+  {
+    cat: "Geografia",
+    q: "Jakie cztery główne zjawiska atmosferyczne wymieniono w notatce?",
+    a: "Smog, globalne ocieplenie, kwaśne opady, dziura ozonowa",
+    b: "Trąby powietrzne, tsunami, globalne ocieplenie, zorza",
+    c: "Smog, kwaśne opady, powodzie błyskawiczne, dziura ozonowa",
+    d: "Inwersja termiczna, porywisty wiatr, smog, wybuchy wulkanów"
+  },
+  {
+    cat: "Geografia",
+    q: "Czym jest inwersja termiczna?",
+    a: "Sytuacją, w której chłodniejsze powietrze zalega przy powierzchni Ziemi, a wyżej znajduje się powietrze cieplejsze",
+    b: "Sytuacją, w której gwałtowny spadek temperatury wraz z wysokością wywołuje burze z opadami gradu",
+    c: "Zjawiskiem polegającym na gwałtownym opadaniu ciepłego powietrza w dolinach górskich podczas lata",
+    d: "Zjawiskiem, gdy bardzo gorące powietrze przy powierzchni Ziemi wymusza ciągły i silny wiatr"
+  },
+  {
+    cat: "Geografia",
+    q: "Co sprzyja powstawaniu inwersji termicznej?",
+    a: "Brak wiatru oraz występowanie dolin i kotlin",
+    b: "Silne porywy wiatru oraz ukształtowanie nizinne",
+    c: "Wysokie ciśnienie powietrza oraz obecność morza",
+    d: "Niska wilgotność oraz duża intensywność opadów"
+  },
+  {
+    cat: "Geografia",
+    q: "Czym charakteryzuje się smog typu londyńskiego?",
+    a: "Jest to smog siarkowy",
+    b: "Jest to smog fotochemiczny",
+    c: "Jest to smog utleniający",
+    d: "Jest to smog azotowy"
+  },
+  {
+    cat: "Geografia",
+    q: "Czym charakteryzuje się smog typu Los Angeles?",
+    a: "Jest to smog fotochemiczny (transportowy)",
+    b: "Jest to smog siarkowy (przemysłowy)",
+    c: "Jest to smog kwaśny (ciepłowniczy)",
+    d: "Jest to smog azotowy (rolniczy)"
+  },
+  {
+    cat: "Geografia",
+    q: "Co należy do naturalnych przyczyn globalnych zmian klimatu?",
+    a: "Zmiana parametrów orbity Ziemi, aktywność Słońca, erupcje wulkanów",
+    b: "Spalanie surowców energetycznych oraz wysokie emisje gazów cieplarnianych",
+    c: "Karczowanie lasów równikowych, osuszanie bagien oraz gwałtowny rozwój miast",
+    d: "Intensywny rozwój rolnictwa, farmy hodowlane oraz masowy transport lotniczy"
+  },
+  {
+    cat: "Geografia",
+    q: "Co zalicza się do antropogenicznych przyczyn globalnych zmian klimatu?",
+    a: "Spalanie surowców energetycznych (węgiel, ropa, gaz) i powiązane emisje gazów cieplarnianych",
+    b: "Zmiana kąta nachylenia osi Ziemi oraz naturalne cykle i wybuchy na powierzchni Słońca",
+    c: "Wykazywana przez wulkany aktywność erupcyjna oraz powstawanie pyłów w atmosferze",
+    d: "Fluktuacje prądów morskich oraz naturalne pożary wielkich obszarów leśnych"
+  },
+  {
+    cat: "Geografia",
+    q: "Które z poniższych są skutkami globalnych zmian klimatu?",
+    a: "Częstsze ekstremalne zjawiska pogodowe, topnienie lodowców i lądolodów, podnoszenie się poziomu oceanów, pustynnienie, niedobory wody, zmiany prądów i siedlisk",
+    b: "Stabilizacja warunków pogodowych, stopniowe zwiększanie się zasobów słodkiej wody oraz szybki przyrost powierzchni lodowców górskich i lądolodów",
+    c: "Obniżenie się poziomu oceanów, całkowity zanik pożarów lasów i sawann oraz zauważalne zmniejszenie się obszarów pustynnych i półpustynnych",
+    d: "Spadek rocznej temperatury na kuli ziemskiej, wygaszenie aktywności wulkanicznej oraz brak jakichkolwiek zmian w dotychczasowych prądach morskich"
+  },
+  {
+    cat: "Geografia",
+    q: "Jak powstają kwaśne opady?",
+    a: "Para wodna łączy się z zanieczyszczeniami, tworząc żrący roztwór kwasu siarkowego",
+    b: "Dwutlenek węgla reaguje z azotem atmosferycznym, tworząc gęsty smog fotochemiczny",
+    c: "Cząstki pyłu wulkanicznego łączą się z tlenkiem węgla podczas opadów zimowego śniegu",
+    d: "Sztuczne nawozy rolnicze odparowują z gleby bezpośrednio do chmur deszczowych"
+  },
+  {
+    cat: "Geografia",
+    q: "Na co negatywnie oddziałują kwaśne opady według notatki?",
+    a: "Roślinność, ludzi, glebę i budynki",
+    b: "Warstwę ozonową, lodowce i satelity",
+    c: "Gazy cieplarniane, wiatry i orografię",
+    d: "Orbity planetarne, promienie i słońce"
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let geografia =
+    localStorage.getItem("geografia") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        geografia =
+            parseInt(geografia) + 10;
+
+        localStorage.setItem(
+            "geografia",
+            geografia
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
