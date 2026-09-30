@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {
+    cat: "Geografia",
+    q: "Przed czym głównie chroni Ziemię atmosfera?",
+    a: "Przed szkodliwym promieniowaniem ultrafioletowym",
+    b: "Przed wybuchami wulkanów i trzęsieniami ziemi",
+    c: "Przed powstawaniem kwaśnych opadów i mgieł",
+    d: "Przed nagłym wzrostem stężenia freonów"
+  },
+  {
+    cat: "Geografia",
+    q: "Jakie są dwie główne grupy źródeł zanieczyszczeń powietrza?",
+    a: "Zanieczyszczenia naturalne i antropogeniczne",
+    b: "Zanieczyszczenia przemysłowe i atmosferyczne",
+    c: "Zanieczyszczenia termiczne i biologiczne",
+    d: "Zanieczyszczenia chemiczne i promieniotwórcze"
+  },
+  {
+    cat: "Geografia",
+    q: "Co jest przykładem naturalnego źródła zanieczyszczeń powietrza?",
+    a: "Erupcje wulkanów oraz pożary lasów i sawann",
+    b: "Spalanie węgla kamiennego i ropy naftowej",
+    c: "Stosowanie nawozów mineralnych w rolnictwie",
+    d: "Palenie śmieci w domowych piecach"
+  },
+  {
+    cat: "Geografia",
+    q: "Gdzie położony jest wulkan Cotopaxi, podany jako przykład naturalnego źródła zanieczyszczeń?",
+    a: "W Andach",
+    b: "W Kordylierach",
+    c: "W Alpach",
+    d: "W Pirenejach"
+  },
+  {
+    cat: "Geografia",
+    q: "Do którego źródła antropogenicznego zalicza się spalanie surowców energetycznych?",
+    a: "Do źródeł energetycznych",
+    b: "Do źródeł komunikacyjnych",
+    c: "Do źródeł komunalnych",
+    d: "Do źródeł rolniczych"
+  },
+  {
+    cat: "Geografia",
+    q: "Jak nazywają się zanieczyszczenia związane głównie ze stosowaniem nawozów mineralnych i chowem zwierząt?",
+    a: "Rolnicze",
+    b: "Komunalne",
+    c: "Przemysłowe",
+    d: "Komunikacyjne"
+  },
+  {
+    cat: "Geografia",
+    q: "Z czym związane są komunalne źródła zanieczyszczeń?",
+    a: "Z codziennym życiem ludzi (np. palenie w piecach, składowanie śmieci)",
+    b: "Z przetwórstwem przemysłowym i produkcją dóbr materialnych",
+    c: "Z wykorzystaniem środków transportu w dużych aglomeracjach",
+    d: "Z wydobywaniem surowców kopalnych w kopalniach odkrywkowych"
+  },
+  {
+    cat: "Geografia",
+    q: "W jakim kraju rozrastające się miasta zmagają się z niekorzystnym wpływem rozwoju przemysłu i transportu na jakość powietrza?",
+    a: "W Chinach",
+    b: "W Indiach",
+    c: "W Japonii",
+    d: "W Brazylii"
+  },
+  {
+    cat: "Geografia",
+    q: "Z jakich angielskich słów powstała nazwa 'smog'?",
+    a: "smoke ('dym') i fog ('mgła')",
+    b: "smell ('zapach') i fog ('mgła')",
+    c: "smoke ('dym') i gas ('gaz')",
+    d: "smog ('pył') i frost ('mróz')"
+  },
+  {
+    cat: "Geografia",
+    q: "Czym jest inwersja termiczna?",
+    a: "Sytuacją pogodową, w której chłodniejsze powietrze znajduje się niżej, a wyżej ciepłe",
+    b: "Gwałtownym spływem zimnego powietrza z górskich szczytów do dolin",
+    c: "Szybkim wzrostem temperatury na skutek intensywnego nasłonecznienia",
+    d: "Zjawiskiem polegającym na całkowitym zaniku wiatru w miastach"
+  },
+  {
+    cat: "Geografia",
+    q: "Jak inaczej nazywa się smog typu londyńskiego?",
+    a: "Smogiem siarkowym",
+    b: "Smogiem fotochemicznym",
+    c: "Smogiem ozonowym",
+    d: "Smogiem spaliniowym"
+  },
+  {
+    cat: "Geografia",
+    q: "W jakiej temperaturze powietrza tworzy się smog typu Los Angeles (fotochemiczny)?",
+    a: "Od 25°C do 35°C",
+    b: "Od 10°C do 20°C",
+    c: "Od 0°C do 15°C",
+    d: "Od 35°C do 45°C"
+  },
+  {
+    cat: "Geografia",
+    q: "Z czego powstaje smog fotochemiczny?",
+    a: "Z tlenków azotu i węglowodorów pod wpływem światła słonecznego",
+    b: "Z pary wodnej, tlenków siarki i pyłów węglowych w chłodne dni",
+    c: "Z freonów i spalin pochodzących z domowych pieców grzewczych",
+    d: "Z gazów wulkanicznych połączonych z wilgotnym powietrzem"
+  },
+  {
+    cat: "Geografia",
+    q: "Skąd pochodzi niemal połowa emisji dwutlenku węgla wzmacniającego efekt cieplarniany?",
+    a: "Z produkcji energii elektrycznej",
+    b: "Z transportu drogowego i lotniczego",
+    c: "Z indywidualnego ogrzewania budynków",
+    d: "Z wycinki i wypalania lasów równikowych"
+  },
+  {
+    cat: "Geografia",
+    q: "Co jest skutkiem globalnych zmian klimatu?",
+    a: "Topnienie lodowców i lądolodów oraz podnoszenie się poziomu oceanów",
+    b: "Stopniowy spadek stężenia gazów cieplarnianych w atmosferze",
+    c: "Zmniejszanie się obszarów pustynnych i półpustynnych",
+    d: "Zwiększanie się grubości pokrywy lodowej w Alpach"
+  },
+  {
+    cat: "Geografia",
+    q: "O ile metrów rocznie zmniejsza się długość lodowca Pasterze w Alpach Wschodnich?",
+    a: "O 25–40 m",
+    b: "O 5–10 m",
+    c: "O 50–70 m",
+    d: "O 80–100 m"
+  },
+  {
+    cat: "Geografia",
+    q: "Jaki prąd morski wskazano w pytaniu kontrolnym dotyczącym klimatu Europy?",
+    a: "Prąd Północnoatlantycki",
+    b: "Prąd Benguelski",
+    c: "Prąd Norweski",
+    d: "Prąd Labrador"
+  },
+  {
+    cat: "Geografia",
+    q: "Jaki związek chemiczny przyczynia się głównie do powstawania żrących roztworów kwasu siarkowego w atmosferze?",
+    a: "Dwutlenek siarki",
+    b: "Tlenek węgla",
+    c: "Dwutlenek azotu",
+    d: "Metan"
+  },
+  {
+    cat: "Geografia",
+    q: "Na co negatywnie wpływają kwaśne opady?",
+    a: "Na roślinność, gleby, wody powierzchniowe oraz zabytkowe budynki",
+    b: "Na wielkość dziury ozonowej oraz stężenie freonów w stratosferze",
+    c: "Na powstawanie inwersji termicznej w dolinach i kotlinach",
+    d: "Na poziom energii elektrycznej wytwarzanej przez elektrownie"
+  },
+  {
+    cat: "Geografia",
+    q: "Gdzie pod koniec XX w. obumierały rośliny na skutek kwaśnych opadów i mgieł?",
+    a: "W zachodnich Sudetach",
+    b: "W Tatrach Wysokich",
+    c: "W Górach Świętokrzyskich",
+    d: "W Bieszczadach"
+  },
+  {
+    cat: "Geografia",
+    q: "Co oznacza pojęcie 'dziura ozonowa'?",
+    a: "Znaczny spadek koncentracji ozonu (O₃) w atmosferze",
+    b: "Całkowity brak tlenu w górnych warstwach atmosfery",
+    c: "Warstwę chmur zanieczyszczoną substancjami chemicznymi",
+    d: "Ubytek dwutlenku węgla nad obszarami podbiegunowymi"
+  },
+  {
+    cat: "Geografia",
+    q: "Co było główną przyczyną powstawania dziury ozonowej?",
+    a: "Przedostawanie się do atmosfery freonów",
+    b: "Emisja pyłów i tlenków siarki przez przemysł",
+    c: "Spalanie węgla brunatnego i ropy naftowej",
+    d: "Stosowanie sztucznych nawozów mineralnych"
+  },
+  {
+    cat: "Geografia",
+    q: "Gdzie pod koniec lat 70. XX w. zaobserwowano znaczny ubytek ozonu?",
+    a: "Nad Antarktydą",
+    b: "Nad Arktyką",
+    c: "Nad Europą",
+    d: "Nad Australią"
+  },
+  {
+    cat: "Geografia",
+    q: "Do którego roku naukowcy szacują odbudowę warstwy ozonowej do stanu sprzed 1980 r.?",
+    a: "Co najmniej do 2070 r.",
+    b: "Co najmniej do 2030 r.",
+    c: "Co najmniej do 2050 r.",
+    d: "Co najmniej do 2100 r."
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let geografia =
+    localStorage.getItem("geografia") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 9;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        geografia =
+            parseInt(geografia) + 9;
+
+        localStorage.setItem(
+            "geografia",
+            geografia
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
