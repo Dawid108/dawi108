@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {
+    cat: "Fizyka",
+    q: "Dlaczego widzisz swoje dokładne odbicie w lustrze, ale nie widzisz go na białej kartce papieru?",
+    a: "Lustro jest idealnie gładkie i odbija promienie równolegle, a kartka ma chropowatą powierzchnię i rozprasza światło.",
+    b: "Lustro pochłania całe światło padające z otoczenia, podczas gdy biała kartka papieru emituje własne światło.",
+    c: "Kartka papieru całkowicie załamuje promienie świetlne do swojego wnętrza, nie pozwalając im wrócić do oka.",
+    d: "Lustro zagęszcza promienie świetlne w jednym punkcie, a biała kartka zmienia barwę padającego na nią światła."
+  },
+  {
+    cat: "Fizyka",
+    q: "Co się dzieje z promieniem światła, gdy przechodzi pod kątem z powietrza do wody?",
+    a: "Zmienia kierunek biegu (załamuje się), ponieważ w wodzie porusza się z inną prędkością niż w powietrzu.",
+    b: "Odbija się całkowicie od powierzchni wody i wraca do powietrza bez zmiany swojej prędkości początkowej.",
+    c: "Rozprasza się we wszystkich możliwych kierunkach zaraz po przekroczeniu granicy obu tych ośrodków.",
+    d: "Przyspiesza dwukrotnie, co powoduje, że prostoliniowy promień zaczyna zataczać szerokie okręgi w wodzie."
+  },
+  {
+    cat: "Fizyka",
+    q: "Dlaczego ołówek zanurzony częściowo w szklance z wodą wygląda na złamany?",
+    a: "Promienie światła odbite od części ołówka będącej pod wodą zmieniają kierunek na granicy wody i powietrza.",
+    b: "Woda reaguje chemicznie z materiałem ołówka, co prowadzi do fizycznego wygięcia jego konstrukcji.",
+    c: "Powierzchnia wody działa jak idealne lustro, które nakłada dwa różne obrazy ołówka na siebie.",
+    d: "Masa wody naciska na ołówek z tak dużą siłą, że optycznie skraca go i uciska na całej długości."
+  },
+  {
+    cat: "Fizyka",
+    q: "Jakie zjawisko odpowiada za to, że widzisz ścianę w swoim pokoju z dowolnego miejsca?",
+    a: "Rozproszenie światła, ponieważ chropowata powierzchnia ściany odbija promienie we wszystkich kierunkach.",
+    b: "Zjawisko zwierciadlanego odbicia, które skupia całe światło w jednym wybranym punkcie pomieszczenia.",
+    c: "Załamanie światła przechodzącego bezpośrednio przez tynk do wewnątrz struktury całej ściany.",
+    d: "Całkowite wewnętrzne odbicie światła wewnątrz farby pokrywającej całą powierzchnię ściany."
+  },
+  {
+    cat: "Fizyka",
+    q: "Jak mierzymy kąt padania i kąt odbicia światła w fizyce?",
+    a: "Od prostej prostopadłej do powierzchni (normalnej) w punkcie padania promienia światła.",
+    b: "Od poziomej krawędzi stołu lub podłogi znajdującej się najbliżej danego źródła światła.",
+    c: "Bezpośrednio od powierzchni, na którą pada promień świetlny w danym doświadczeniu.",
+    d: "Od linii łączącej źródło światła z obiektywem aparatu lub okiem obserwującego zjawisko."
+  },
+  {
+    cat: "Fizyka",
+    q: "Dlaczego dno basenu wypełnionego wodą wydaje się leżeć wyżej niż w rzeczywistości?",
+    a: "Światło wychodzące z wody do powietrza załamuje się, tworząc w naszym oku obraz pozorny dna.",
+    b: "Woda w basenie rozprasza światło w taki sposób, że dno staje się całkowicie niewidoczne.",
+    c: "Ciężar wody wypycha cząsteczki dna do góry, zmniejszając fizyczną głębokość całego zbiornika.",
+    d: "Promienie świetlne odbijają się od dna basenu pod kątem prostym, co skraca drogę do oka."
+  },
+  {
+    cat: "Fizyka",
+    q: "Co się stanie z obrazem w jeziorze, gdy na spokojnej dotąd tafli wody pojawią się fale?",
+    a: "Czyste odbicie zniknie i stanie się rozmyte, bo pofalowana woda zacznie rozpraszać światło w różnych kierunkach.",
+    b: "Obraz stanie się dwa razy wyraźniejszy, ponieważ fale działają jak dodatkowe soczewki powiększające.",
+    c: "Promienie światła przestaną się odbijać i zaczną całkowicie wnikać pod powierzchnię wody w jeziorze.",
+    d: "Kąt padania promieni świetlnych stanie się większy od kąta odbicia na każdej z falujących powierzchni."
+  },
+  {
+    cat: "Fizyka",
+    q: "Jaka jest główna przyczyna załamania światła przy przejściu z jednego ośrodka do drugiego?",
+    a: "Zmiana prędkości rozchodzenia się światła w różnych materiałach lub substancjach.",
+    b: "Zwiększenie się masy fotonów tworzących promień pod wpływem grawitacji drugiego ośrodka.",
+    c: "Zmiana koloru światła spowodowana pochłanianiem poszczególnych fal przez cząsteczki wody.",
+    d: "Nierówność powierzchni granicznej dwóch ośrodków powodująca odbicia w losowych stronach."
+  },
+  {
+    cat: "Fizyka",
+    q: "Jeśli kąt padania promienia na lustro wynosi 30 stopni (mierzony do normalnej), to ile wynosi kąt odbicia?",
+    a: "Dokładnie 30 stopni, ponieważ kąt odbicia jest zawsze równy kątowi padania promienia.",
+    b: "60 stopni, ponieważ suma kąta padania i odbicia musi zawsze wynosić dokładnie kąt prosty.",
+    c: "0 stopni, ponieważ promień po odbiciu biegnie dokładnie po prostopadłej linii normalnej.",
+    d: "90 stopni, gdyż promień po odbiciu porusza się równolegle do płaszczyzny danego lustra."
+  },
+  {
+    cat: "Fizyka",
+    q: "Co to jest tzw. normalna w optyce?",
+    a: "Prosta prostopadła do powierzchni odbijającej lub załamującej, wystawiona w punkcie padania promienia.",
+    b: "Linia biegnąca równolegle do powierzchni lustra, od której mierzy się szerokość wiązki światła.",
+    c: "Promień świetlny, który nie ulega żądanemu załamaniu przy przejściu przez granicę dwóch ośrodków.",
+    d: "Maksymalna odległość, na jaką światło może się rozproszyć w chropowatym środowisku fizycznym."
+  },
+  {
+    cat: "Fizyka",
+    q: "Co się dzieje z promieniem światła, gdy pada na granicę dwóch ośrodków idealnie prostopadle (pod kątem 0 stopni do normalnej)?",
+    a: "Przechodzi do drugiego ośrodka bez zmiany kierunku, mimo że zmienia się jego prędkość.",
+    b: "Załamuje się pod kątem prostym i zaczyna bieg wzdłuż granicy rozdzielającej te dwa ośrodki.",
+    c: "Ulega całkowitemu rozproszeniu i zamienia się w rozmyty punkt na powierzchni granicznej.",
+    d: "Zostaje całkowicie pochłonięty na granicy i zamieniony w energię cieplną obu tych substancji."
+  },
+  {
+    cat: "Fizyka",
+    q: "Gdzie światło porusza się najszybciej?",
+    a: "W próżni (oraz bardzo podobnie w powietrzu).",
+    b: "W czystej wodzie destylowanej.",
+    c: "W gęstym szkle optycznym.",
+    d: "W przezroczystym diamentie."
+  },
+  {
+    cat: "Fizyka",
+    q: "Dlaczego widzimy tarczę Księżyca w nocy, skoro sam z siebie nie świeci?",
+    a: "Księżyc rozprasza światło słoneczne, które na niego pada, kierując część promieni w stronę Ziemi.",
+    b: "Księżyc działa jak idealne płaskie lustro, które skupia i odbija światło ze odległych gwiazd.",
+    c: "Światło ze Słońca ulega załamaniu w atmosferze Księżyca i uderza bezpośrednio w nasze oczy.",
+    d: "Skorupa Księżyca pochłania energię Słońca za dnia, a w nocy emituje własne światło widzialne."
+  },
+  {
+    cat: "Fizyka",
+    q: "Jaka jest różnica między odbiciem zwierciadlanym a rozproszeniem światła?",
+    a: "Przy odbiciu zwierciadlanym równoległa wiązka światła pozostaje równoległa, a przy rozproszeniu promienie biegną w różnych stronach.",
+    b: "Przy odbiciu zwierciadlanym światło zmienia kolor, a przy rozproszeniu prędkość światła spada do zera.",
+    c: "Odbicie zwierciadlane zachodzi tylko w wodzie, natomiast rozproszenie światła zachodzi wyłącznie w powietrzu.",
+    d: "Rozproszenie światła zmienia kąt padania, a przy odbiciu zwierciadlanym promień zniknie wewnątrz materiału."
+  },
+  {
+    cat: "Fizyka",
+    q: "Co sprawia, że szklana soczewka w okularach skupia lub rozprasza światło?",
+    a: "Zakrzywiony kształt szkła wymusza padanie promieni pod różnymi kątami, co powoduje ich odpowiednie załamanie.",
+    b: "Szkło w okularach ma chropowatą powierzchnię, która rozprasza promienie do środka oka.",
+    c: "Soczewka odbija promienie światła od swojej powierzchni i kieruje je z powrotem do otoczenia.",
+    d: "Gęstość szkła zmienia kolor światła przechodzącego przez środek soczewki na ciemniejsze barwy."
+  },
+  {
+    cat: "Fizyka",
+    q: "Czy podczas rozproszenia światła na chropowatej powierzchni obowiązuje prawo odbicia?",
+    a: "Tak, obowiązuje dla każdego mikrofragmentu powierzchni osobno, ale mikrofragmenty są nachylone w różne strony.",
+    b: "Nie, prawo odbicia przestaje działać, gdy powierzchnia jest chropowata lub nierówna.",
+    c: "Tak, ale tylko wtedy, gdy promień padający ma bardzo dużą natężenie światła i jasność.",
+    d: "Nie, ponieważ przy rozproszeniu światło ulega całkowitemu załamaniu do wnętrza przedmiotu."
+  },
+  {
+    cat: "Fizyka",
+    q: "Dlaczego ryba widziana w akwarium z boku pod pewnym kątem wydaje się znajdować w innym miejscu niż jest naprawdę?",
+    a: "Światło idące od ryby załamuje się na granicy wody, szkła i powietrza, zanim trafi do naszego oka.",
+    b: "Ryba rozprasza światło tak silnie, że jej realna pozycja ulega przesunięciu fizycznemu.",
+    c: "Szkło akwarium działa jak lustro, które tworzy odbicie ryby po drugiej stronie zbiornika.",
+    d: "Woda w akwarium działa jak pryzmat, który całkowicie zatrzymuje promienie świetlne ryby."
+  },
+  {
+    cat: "Fizyka",
+    q: "Co to jest ośrodek optyczny w fizyce?",
+    a: "Każde środowisko lub przezroczysty materiał, w którym może rozchodzić się światło.",
+    b: "Urządzenie służące do pomiaru kąta odbicia i załamania promieni świetlnych w laboratorium.",
+    c: "Punkt na powierzchni lustra, w którym promień padający styka się z prostą normalną.",
+    d: "Sztuczne źródło światła wytwarzające idealnie równoległe promienie w próżni lub powietrzu."
+  },
+  {
+    cat: "Fizyka",
+    q: "Co się dzieje z prędkością światła, gdy przechodzi ono z powietrza do szkła?",
+    a: "Prędkość światła maleje, co jest bezpośrednią przyczyną jego załamania na granicy obu tych ciał.",
+    b: "Prędkość światła rośnie, ponieważ szkło jest ciałem stałym o zwartej i twardej strukturze.",
+    c: "Prędkość światła nie zmienia się wcale, zmienia się tylko częstotliwość i barwa fali.",
+    d: "Światło natychmiast zatrzymuje się w miejscu, co powoduje powstawanie wyraźnego cienia."
+  },
+  {
+    cat: "Fizyka",
+    q: "Dlaczego czarny chropowaty asfalt nagrzewa się mocniej na słońcu niż biała gładka płyta?",
+    a: "Asfalt głównie pochłania światło i je rozprasza, podczas gdy biała płyta silnie odbija promienie słoneczne.",
+    b: "Czarny asfalt załamuje światło w głąb ziemi, a biała płyta wytwarza własny chłód w nocy.",
+    c: "Biała płyta pochłania całe światło, a asfalt odbija je równolegle we wszystkich kierunkach.",
+    d: "Asfalt całkowicie przepuszcza światło bez jakiegokolwiek odbicia czy rozproszenia promieni."
+  },
+  {
+    cat: "Fizyka",
+    q: "Jak wygląda promień padający i promień odbity na wykresie w stosunku do normalnej?",
+    a: "Leżą po przeciwnych stronach normalnej i w tej samej płaszczyźnie, tworząc z nią równe kąty.",
+    b: "Leżą po tej samej stronie normalnej i nakładają się na siebie bez względu na kąt padania.",
+    c: "Promień odbity leży zawsze na płaszczyźnie powierzchni odbijającej, tworząc kąt 90 stopni.",
+    d: "Promień padający i odbity są zawsze prostopadłe do siebie, tworząc stały kąt prosty."
+  },
+  {
+    cat: "Fizyka",
+    q: "Dlaczego używamy matowych ekranów w komputerach lub smartfonach?",
+    a: "Matowa powłoka rozprasza odbijające się światło otoczenia, dzięki czemu nie powstaną uciążliwe odblaski.",
+    b: "Matowa powłoka załamuje światło z ekranu tak, aby nie wychodziło ono poza obszar wyświetlacza.",
+    c: "Powierzchnia matowa zmienia ekran w idealne lustro, zwiększając kontrast wyświetlanych barw.",
+    d: "Matowa struktura całkowicie blokuje wnikanie światła słonecznego do wnętrza obudowy urządzenia."
+  },
+  {
+    cat: "Fizyka",
+    q: "Co widzimy, gdy patrzymy na przedmiot, który całkowicie odbija i rozprasza całe padające na niego światło widzialne?",
+    a: "Widzimy przedmiot w kolorze białym.",
+    b: "Widzimy przedmiot w kolorze czarnym.",
+    c: "Przedmiot staje się dla nas całkowicie przezroczysty.",
+    d: "Widzimy tylko ciemny cień na podłożu."
+  },
+  {
+    cat: "Fizyka",
+    q: "Jak zmieni się kąt między promieniem padającym a promieniem odbitym, jeśli kąt padania zwiększymy o 10 stopni?",
+    a: "Zwiększy się o 20 stopni, ponieważ zarówno kąt padania, jak i kąt odbicia wzrosną o 10 stopni.",
+    b: "Zwiększy się dokładnie o 10 stopni, gdyż kąt odbicia pozostaje na stałym, niezmiennym poziomie.",
+    c: "Zmniejszy się o 10 stopni, bo kąt odbicia maleje wraz ze wzrostem kąta padania światła.",
+    d: "Nie zmieni się wcale, ponieważ kąt między tymi promieniami jest stałą wartością fizyczną."
+  },
+  {
+    cat: "Fizyka",
+    q: "Dlaczego zanurzona w wodzie pusta probówka szklana pod pewnym kątem błyszczy jak srebrna?",
+    a: "Na granicy szkła z powietrzem wewnątrz probówki dochodzi do odbicia światła, które nie wychodzi na zewnątrz.",
+    b: "Szkło w wodzie rozprasza światło w sposób, który nadaje mu metaliczny, srebrzysty kolor.",
+    c: "Woda wchodzi w reakcję chemiczną ze szkłem, tworząc cienką warstwę odbijającego osadu.",
+    d: "Światło ulega tam ciągłemu załamaniu, co całkowicie wygasza promienie docierające do oka."
+  },
+  {
+    cat: "Fizyka",
+    q: "Wyobraź sobie, że stoisz przed płaskim lustrem w odległości 2 metrów. W jakiej odległości od Ciebie znajduje się Twój obraz pozorny?",
+    a: "4 metry od Ciebie (2 metry od Ciebie do lustra + 2 metry od lustra do obrazu).",
+    b: "2 metry od Ciebie, ponieważ obraz powstaje dokładnie na powierzchni danego lustra.",
+    c: "1 metr od Ciebie, gdyż lustro optycznie skraca odległość do obrazu o połowę dystansu.",
+    d: "8 metrów od Ciebie, ponieważ odległość obrazu rośnie kwadratowo wraz z dystansem."
+  },
+  {
+    cat: "Fizyka",
+    q: "Czym różni się obraz powstający w płaskim lustrze od przedmiotu rzeczywistego?",
+    a: "Jest obrazem pozornym, tej samej wielkości, ale symetrycznie odwróconym stronami (lewa-prawa).",
+    b: "Jest obrazem rzeczywistym, znacznie pomniejszonym i odwróconym do góry nogami.",
+    c: "Jest obrazem pozornym, dwukrotnie powiększonym i całkowicie wypratym z kolorów.",
+    d: "Jest obrazem rzeczywistym o zmodyfikowanych kształtach i zamazanych krawędziach."
+  },
+  {
+    cat: "Fizyka",
+    q: "Dlaczego promień światła przechodzący przez płasko-równoległą płytkę szklaną wychodzi równolegle do promienia padającego?",
+    a: "Ponieważ na pierwszej granicy załamuje się do normalnej, a na drugiej o tyle samo od normalnej.",
+    b: "Ponieważ wewnątrz szkła światło porusza się po torze kołowym, wyrównując kierunek biegu.",
+    c: "Ponieważ światło na pierwszej powierzchni ulega rozproszeniu, a na drugiej odbiciu.",
+    d: "Ponieważ gęstość szkła zmusza promień do powrotu do punktu startowego bez przesunięcia."
+  },
+  {
+    cat: "Fizyka",
+    q: "Co dzieje się ze światłem latarki, gdy świecisz na mgłę lub kurz w pokoju?",
+    a: "Kropelki wody lub pyłki rozpraszają światło we wszystkich kierunkach, dzięki czemu widzisz cały promień latarki.",
+    b: "Czasteczki mgły załamują światło w jeden punkt, skupiając całą energię w formę spójnego lasera.",
+    c: "Mgła odbija światło idealnie lustrzanie, kierując całe światło z powrotem do obudowy latarki.",
+    d: "Światło latarki zostaje całkowicie pochłonięte, przez co mgła staje się zupełnie czarna."
+  },
+  {
+    cat: "Fizyka",
+    q: "Jeśli promień światła przechodzi z wody do powietrza, to jak się załamuje względem normalnej?",
+    a: "Odchyla się od normalnej (kąt załamania w powietrzu jest większy niż kąt padania w wodzie).",
+    b: "Zbliża się do normalnej (kąt załamania w powietrzu jest mniejszy niż kąt padania w wodzie).",
+    c: "Biegnie dokładnie wzdłuż normalnej bez względu na początkowy kąt padania promienia.",
+    d: "Odbija się pod kątem prostym i biegnie równolegle do płaszczyzny rozdzielającej ośrodki."
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let fizyka =
+    localStorage.getItem("fizyka") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        fizyka =
+            parseInt(fizyka) + 10;
+
+        localStorage.setItem(
+            "fizyka",
+            fizyka
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
