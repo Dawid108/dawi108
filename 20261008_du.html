@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Niemiecki", q:"du machst - (Rób! / Zrób!)", a:"Mach!", b:"Macht!", c:"Machen!", d:"Machst!"},
+{cat:"Niemiecki", q:"du kommst - (Przyjdź! / Przychodzisz!)", a:"Komm!", b:"Kommt!", c:"Kommen!", d:"Kommst!"},
+{cat:"Niemiecki", q:"du gehst - (Idź! / Idziesz!)", a:"Geh!", b:"Geht!", c:"Gehen!", d:"Gehst!"},
+{cat:"Niemiecki", q:"du lernst - (Ucz się! / Uczysz się!)", a:"Lern!", b:"Lernt!", c:"Lernen!", d:"Lernst!"},
+{cat:"Niemiecki", q:"du spielst - (Graj! / Grasz!)", a:"Spiel!", b:"Spielt!", c:"Spielen!", d:"Spielst!"},
+{cat:"Niemiecki", q:"du arbeitest - (Pracuj! / Pracujesz!)", a:"Arbeite!", b:"Arbeitet!", c:"Arbeiten!", d:"Arbeitest!"},
+{cat:"Niemiecki", q:"du wartest - (Czekaj! / Czekasz!)", a:"Warte!", b:"Wartet!", c:"Warten!", d:"Wartest!"},
+{cat:"Niemiecki", q:"du hörst zu - (Słuchaj! / Słuchasz!)", a:"Hör zu!", b:"Hört zu!", c:"Hören zu!", d:"Hörst zu!"},
+{cat:"Niemiecki", q:"du liest - (Czytaj! / Czytasz!)", a:"Lies!", b:"Lest!", c:"Lesen!", d:"Liest!"},
+{cat:"Niemiecki", q:"du schreibst - (Pisz! / Piszesz!)", a:"Schreib!", b:"Schreibt!", c:"Schreiben!", d:"Schreibst!"},
+{cat:"Niemiecki", q:"du sprichst - (Mów! / Mówisz!)", a:"Sprich!", b:"Sprecht!", c:"Sprechen!", d:"Sprichst!"},
+{cat:"Niemiecki", q:"du nimmst - (Weź! / Bierzesz!)", a:"Nimm!", b:"Nehmt!", c:"Nehmen!", d:"Nimmst!"},
+{cat:"Niemiecki", q:"du gibst - (Daj! / Dajesz!)", a:"Gib!", b:"Gebt!", c:"Geben!", d:"Gibst!"},
+{cat:"Niemiecki", q:"du isst - (Jedz! / Jesz!)", a:"Iss!", b:"Esst!", c:"Essen!", d:"Isst!"},
+{cat:"Niemiecki", q:"du trinkst - (Pij! / Pijesz!)", a:"Trink!", b:"Trinkt!", c:"Trinken!", d:"Trinkst!"},
+{cat:"Niemiecki", q:"du fährst - (Jedź! / Jedziesz!)", a:"Fahr!", b:"Fahrt!", c:"Fahren!", d:"Fährst!"},
+{cat:"Niemiecki", q:"du läufst - (Biegnij! / Biegniesz!)", a:"Lauf!", b:"Lauft!", c:"Laufen!", d:"Läufst!"},
+{cat:"Niemiecki", q:"du schläfst - (Śpij! / Śpisz!)", a:"Schlaf!", b:"Schlaft!", c:"Schlafen!", d:"Schläfst!"},
+{cat:"Niemiecki", q:"du hilfst - (Pomóż! / Pomagasz!)", a:"Hilf!", b:"Helft!", c:"Helfen!", d:"Hilfst!"},
+{cat:"Niemiecki", q:"du siehst - (Patrz! / Widzisz!)", a:"Sieh!", b:"Seht!", c:"Sehen!", d:"Siehst!"},
+{cat:"Niemiecki", q:"du nimmst Platz - (Usiądź! / Siadasz!)", a:"Nimm Platz!", b:"Nehmt Platz!", c:"Nehmen Platz!", d:"Nimmst Platz!"},
+{cat:"Niemiecki", q:"du öffnest - (Otwórz! / Otwierasz!)", a:"Öffne!", b:"Öffnet!", c:"Öffnen!", d:"Öffnest!"},
+{cat:"Niemiecki", q:"du schließt - (Zamknij! / Zamykasz!)", a:"Schließe!", b:"Schließt!", c:"Schließen!", d:"Schließt du!"},
+{cat:"Niemiecki", q:"du bringst - (Przynieś! / Przynosisz!)", a:"Bring!", b:"Bringt!", c:"Bringen!", d:"Bringst!"},
+{cat:"Niemiecki", q:"du kaufst - (Kup! / Kupujesz!)", a:"Kauf!", b:"Kauft!", c:"Kaufen!", d:"Kaufst!"},
+{cat:"Niemiecki", q:"du fragst - (Zapytaj! / Pytasz!)", a:"Frag!", b:"Fragt!", c:"Fragen!", d:"Fragst!"},
+{cat:"Niemiecki", q:"du antwortest - (Odpowiedz! / Odpowiadasz!)", a:"Antworte!", b:"Antwortet!", c:"Antworten!", d:"Antwortest!"},
+{cat:"Niemiecki", q:"du sitzt - (Siedź! / Siedzisz!)", a:"Sitz!", b:"Sitzt!", c:"Sitzen!", d:"Sitzst!"},
+{cat:"Niemiecki", q:"du stehst - (Stań! / Stoisz!)", a:"Steh!", b:"Steht!", c:"Stehen!", d:"Stehst!"},
+{cat:"Niemiecki", q:"du bist - (Bądź! / Jesteś!)", a:"Sei!", b:"Seid!", c:"Sein!", d:"Bist!"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let niemiecki =
+    localStorage.getItem("niemiecki") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        niemiecki =
+            parseInt(niemiecki) + 10;
+
+        localStorage.setItem(
+            "niemiecki",
+            niemiecki
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
