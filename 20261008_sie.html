@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Niemiecki", q:"Sie machen - (Niech Pan/Pani zrobi! / Niech Państwo zrobią!)", a:"Machen Sie!", b:"Mach Sie!", c:"Macht Sie!", d:"Machen!"},
+{cat:"Niemiecki", q:"Sie kommen - (Niech Pan/Pani przyjdzie! / Niech Państwo przyjdą!)", a:"Kommen Sie!", b:"Komm Sie!", c:"Kommt Sie!", d:"Kommen!"},
+{cat:"Niemiecki", q:"Sie gehen - (Niech Pan/Pani idzie! / Niech Państwo idą!)", a:"Gehen Sie!", b:"Geh Sie!", c:"Geht Sie!", d:"Gehen!"},
+{cat:"Niemiecki", q:"Sie lernen - (Niech Pan/Pani się uczy! / Niech Państwo się uczą!)", a:"Lernen Sie!", b:"Lern Sie!", c:"Lernt Sie!", d:"Lernen!"},
+{cat:"Niemiecki", q:"Sie spielen - (Niech Pan/Pani gra! / Niech Państwo grają!)", a:"Spielen Sie!", b:"Spiel Sie!", c:"Spielt Sie!", d:"Spielen!"},
+{cat:"Niemiecki", q:"Sie arbeiten - (Niech Pan/Pani pracuje! / Niech Państwo pracują!)", a:"Arbeiten Sie!", b:"Arbeite Sie!", c:"Arbeitet Sie!", d:"Arbeiten!"},
+{cat:"Niemiecki", q:"Sie warten - (Niech Pan/Pani czeka! / Niech Państwo czekają!)", a:"Warten Sie!", b:"Warte Sie!", c:"Wartet Sie!", d:"Warten!"},
+{cat:"Niemiecki", q:"Sie hören zu - (Niech Pan/Pani słucha! / Niech Państwo słuchają!)", a:"Hören Sie zu!", b:"Hör Sie zu!", c:"Hört Sie zu!", d:"Hören zu!"},
+{cat:"Niemiecki", q:"Sie lesen - (Niech Pan/Pani czyta! / Niech Państwo czytają!)", a:"Lesen Sie!", b:"Lies Sie!", c:"Lest Sie!", d:"Lesen!"},
+{cat:"Niemiecki", q:"Sie schreiben - (Niech Pan/Pani pisze! / Niech Państwo piszą!)", a:"Schreiben Sie!", b:"Schreib Sie!", c:"Schreibt Sie!", d:"Schreiben!"},
+{cat:"Niemiecki", q:"Sie sprechen - (Niech Pan/Pani mówi! / Niech Państwo mówią!)", a:"Sprechen Sie!", b:"Sprich Sie!", c:"Sprecht Sie!", d:"Sprechen!"},
+{cat:"Niemiecki", q:"Sie nehmen - (Niech Pan/Pani weźmie! / Niech Państwo wezmą!)", a:"Nehmen Sie!", b:"Nimm Sie!", c:"Nehmt Sie!", d:"Nehmen!"},
+{cat:"Niemiecki", q:"Sie geben - (Niech Pan/Pani da! / Niech Państwo dadzą!)", a:"Geben Sie!", b:"Gib Sie!", c:"Gebt Sie!", d:"Geben!"},
+{cat:"Niemiecki", q:"Sie essen - (Niech Pan/Pani je! / Niech Państwo jedzą!)", a:"Essen Sie!", b:"Iss Sie!", c:"Esst Sie!", d:"Essen!"},
+{cat:"Niemiecki", q:"Sie trinken - (Niech Pan/Pani pije! / Niech Państwo piją!)", a:"Trinken Sie!", b:"Trink Sie!", c:"Trinkt Sie!", d:"Trinken!"},
+{cat:"Niemiecki", q:"Sie fahren - (Niech Pan/Pani jedzie! / Niech Państwo jadą!)", a:"Fahren Sie!", b:"Fahr Sie!", c:"Fahrt Sie!", d:"Fahren!"},
+{cat:"Niemiecki", q:"Sie laufen - (Niech Pan/Pani biegnie! / Niech Państwo biegną!)", a:"Laufen Sie!", b:"Lauf Sie!", c:"Lauft Sie!", d:"Laufen!"},
+{cat:"Niemiecki", q:"Sie schlafen - (Niech Pan/Pani śpi! / Niech Państwo śpią!)", a:"Schlafen Sie!", b:"Schlaf Sie!", c:"Schlaft Sie!", d:"Schlafen!"},
+{cat:"Niemiecki", q:"Sie helfen - (Niech Pan/Pani pomoże! / Niech Państwo pomogą!)", a:"Helfen Sie!", b:"Hilf Sie!", c:"Helft Sie!", d:"Helfen!"},
+{cat:"Niemiecki", q:"Sie sehen - (Niech Pan/Pani patrzy! / Niech Państwo patrzą!)", a:"Sehen Sie!", b:"Sieh Sie!", c:"Seht Sie!", d:"Sehen!"},
+{cat:"Niemiecki", q:"Sie nehmen Platz - (Niech Pan/Pani usiądzie! / Niech Państwo usiądą!)", a:"Nehmen Sie Platz!", b:"Nimm Sie Platz!", c:"Nehmt Sie Platz!", d:"Nehmen Platz!"},
+{cat:"Niemiecki", q:"Sie öffnen - (Niech Pan/Pani otworzy! / Niech Państwo otworzą!)", a:"Öffnen Sie!", b:"Öffne Sie!", c:"Öffnet Sie!", d:"Öffnen!"},
+{cat:"Niemiecki", q:"Sie schließen - (Niech Pan/Pani zamknie! / Niech Państwo zamkną!)", a:"Schließen Sie!", b:"Schließe Sie!", c:"Schließt Sie!", d:"Schließen!"},
+{cat:"Niemiecki", q:"Sie bringen - (Niech Pan/Pani przyniesie! / Niech Państwo przyniosą!)", a:"Bringen Sie!", b:"Bring Sie!", c:"Bringt Sie!", d:"Bringen!"},
+{cat:"Niemiecki", q:"Sie kaufen - (Niech Pan/Pani kupi! / Niech Państwo kupią!)", a:"Kaufen Sie!", b:"Kauf Sie!", c:"Kauft Sie!", d:"Kaufen!"},
+{cat:"Niemiecki", q:"Sie fragen - (Niech Pan/Pani zapyta! / Niech Państwo zapytają!)", a:"Fragen Sie!", b:"Frag Sie!", c:"Fragt Sie!", d:"Fragen!"},
+{cat:"Niemiecki", q:"Sie antworten - (Niech Pan/Pani odpowie! / Niech Państwo odpowiedzą!)", a:"Antworten Sie!", b:"Antworte Sie!", c:"Antwortet Sie!", d:"Antworten!"},
+{cat:"Niemiecki", q:"Sie sitzen - (Niech Pan/Pani siedzi! / Niech Państwo siedzą!)", a:"Sitzen Sie!", b:"Sitz Sie!", c:"Sitzt Sie!", d:"Sitzen!"},
+{cat:"Niemiecki", q:"Sie stehen - (Niech Pan/Pani wstanie! / Niech Państwo wstaną!)", a:"Stehen Sie!", b:"Steh Sie!", c:"Steht Sie!", d:"Stehen!"},
+{cat:"Niemiecki", q:"Sie sein - (Niech Pan/Pani będzie! / Niech Państwo będą!)", a:"Seien Sie!", b:"Sei Sie!", c:"Seid Sie!", d:"Sein Sie!"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let niemiecki =
+    localStorage.getItem("niemiecki") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        niemiecki =
+            parseInt(niemiecki) + 10;
+
+        localStorage.setItem(
+            "niemiecki",
+            niemiecki
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
