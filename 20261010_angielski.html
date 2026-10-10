@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Angielski", q:"uzależnienie", a:"addiction", b:"caffeine", c:"ward", d:"surgery"},
+  {cat:"Angielski", q:"uzależniający", a:"addictive", b:"paramedic", c:"chemist's", d:"check-up"},
+  {cat:"Angielski", q:"anoreksja", a:"anorexia", b:"injure", c:"health centre", d:"dietician"},
+  {cat:"Angielski", q:"pokonać huśtawki nastrojów", a:"beat one's mood swings", b:"toss and turn in bed", c:"take preventative measures", d:"health care system"},
+  {cat:"Angielski", q:"maraton filmowy/telewizyjny", a:"binge watching", b:"fall victim to sth", c:"health centre", d:"suffer from"},
+  {cat:"Angielski", q:"umówić się na wizytę (u lekarza)", a:"book/make an appointment (with a doctor)", b:"give up compulsive gaming", c:"addiction", d:"anorexia"},
+  {cat:"Angielski", q:"bulimia", a:"bulimia", b:"injure", c:"treat", d:"sleepwalker"},
+  {cat:"Angielski", q:"kofeina", a:"caffeine", b:"X-ray", c:"binge watching", d:"online gaming"},
+  {cat:"Angielski", q:"wizyta kontrolna", a:"check-up", b:"therapist", c:"sleepwalker", d:"sickness"},
+  {cat:"Angielski", q:"apteka", a:"chemist's", b:"get hooked on", c:"suffer from", d:"paramedic"},
+  {cat:"Angielski", q:"terapeuta", a:"counsellor", b:"get hooked on", c:"check-up", d:"take medicines"},
+  {cat:"Angielski", q:"wyleczyć; lekarstwo (na jakąś chorobę)", a:"cure", b:"feel sick", c:"addiction", d:"addictive"},
+  {cat:"Angielski", q:"szkodliwy sposób radzenia sobie z problemami", a:"damaging coping strategy", b:"fall victim to sth", c:"beat one's mood swings", d:"give up compulsive gaming"},
+  {cat:"Angielski", q:"wykształcić nałogi", a:"develop addictions", b:"easy way out", c:"beat one's mood swings", d:"operating theatre"},
+  {cat:"Angielski", q:"dietetyk/dietetyczka", a:"dietician", b:"feed addiction", c:"examination", d:"sleepwalker"},
+  {cat:"Angielski", q:"chodzenie na łatwiznę", a:"easy way out", b:"addiction", c:"show dependence on", d:"eating disorder"},
+  {cat:"Angielski", q:"zaburzenie odżywiania", a:"eating disorder", b:"home visit", c:"chemist's", d:"take medicines"},
+  {cat:"Angielski", q:"szpitalny oddział ratunkowy, SOR", a:"emergency unit", b:"feed addiction", c:"sleeping disorder", d:"gambling"},
+  {cat:"Angielski", q:"badanie", a:"examination", b:"bulimia", c:"feel sick", d:"treat"},
+  {cat:"Angielski", q:"zaspokajać nałóg", a:"feed addiction", b:"examination", c:"easy way out", d:"check-up"},
+  {cat:"Angielski", q:"hazard", a:"gambling", b:"caffeine", c:"health centre", d:"chemist's"},
+  {cat:"Angielski", q:"zatracić się w nałogu", a:"get hooked on", b:"hospice", c:"check-up", d:"develop addictions"},
+  {cat:"Angielski", q:"przestać kompulsywnie grać w gry", a:"give up compulsive gaming", b:"damaging coping strategy", c:"suffer/sustain minor injuries", d:"make/speed up a full recovery"},
+  {cat:"Angielski", q:"przyklejony do ekranu", a:"glued to the screen", b:"emergency unit", c:"damaging coping strategy", d:"fall victim to sth"},
+  {cat:"Angielski", q:"mieć/przejść operację", a:"have/undergo an operation", b:"make/speed up a full recovery", c:"beat one's mood swings", d:"obsess over unnecessary details"},
+  {cat:"Angielski", q:"ochrona zdrowia", a:"health care system", b:"eating disorder", c:"feed addiction", d:"online gaming"},
+  {cat:"Angielski", q:"przychodnia", a:"health centre", b:"hospice", c:"emergency unit", d:"therapist"},
+  {cat:"Angielski", q:"wizyta domowa", a:"home visit", b:"bulimia", c:"treat", d:"surgeon"},
+  {cat:"Angielski", q:"hospicjum", a:"hospice", b:"feel ill", c:"bulimia", d:"easy way out"},
+  {cat:"Angielski", q:"całkowicie wyzdrowieć / przyspieszyć całkowite wyzdrowienie", a:"make/speed up a full recovery", b:"give up compulsive gaming", c:"obsess over unnecessary details", d:"damaging coping strategy"},
+  {cat:"Angielski", q:"gry online", a:"online gaming", b:"operating theatre", c:"examination", d:"addictive"},
+  {cat:"Angielski", q:"sala operacyjna", a:"operating theatre", b:"get hooked on", c:"take its toll on", d:"beat one's mood swings"},
+  {cat:"Angielski", q:"ratownik medyczny/ratowniczka medyczna", a:"paramedic", b:"counsellor", c:"examination", d:"bulimia"},
+  {cat:"Angielski", q:"wykazywać objawy uzależnienia od czegoś", a:"show dependence on", b:"fall victim to sth", c:"easy way out", d:"glued to the screen"},
+  {cat:"Angielski", q:"cierpieć na coś", a:"suffer from", b:"injure", c:"dwell on problems", d:"X-ray"},
+  {cat:"Angielski", q:"doznać drobnych urazów", a:"suffer/sustain minor injuries", b:"give up compulsive gaming", c:"have/undergo an operation", d:"make/speed up a full recovery"},
+  {cat:"Angielski", q:"chirurg", a:"surgeon", b:"disease", c:"online gaming", d:"hospice"},
+  {cat:"Angielski", q:"operacja, gabinet chirurgiczny", a:"surgery", b:"chemist's", c:"examination", d:"sickness"},
+  {cat:"Angielski", q:"brać leki", a:"take medicines", b:"dietician", c:"easy way out", d:"glued to the screen"},
+  {cat:"Angielski", q:"podjąć środki zapobiegawcze", a:"take preventative measures", b:"obsess over unnecessary details", c:"beat one's mood swings", d:"give up compulsive gaming"},
+  {cat:"Angielski", q:"mierzyć komuś temperaturę/ciśnienie", a:"take sb's temperature / blood pressure", b:"paramedic", c:"chemist's", d:"hospice"},
+  {cat:"Angielski", q:"terapeuta", a:"therapist", b:"surgery", c:"feel unwell", d:"injure"},
+  {cat:"Angielski", q:"oddział", a:"ward", b:"anorexia", c:"feel ill", d:"addiction"},
+  {cat:"Angielski", q:"rentgen", a:"X-ray", b:"dietician", c:"feel sick", d:"gambling"},
+  {cat:"Angielski", q:"zaburzenie snu", a:"sleeping disorder", b:"put your life at risk", c:"feel unwell", d:"glued to the screen"},
+  {cat:"Angielski", q:"lunatyk/lunatyczka", a:"sleepwalker", b:"anorexia", c:"bulimia", d:"addiction"},
+  {cat:"Angielski", q:"choroba", a:"disease", b:"home visit", c:"bulimia", d:"sleepwalker"},
+  {cat:"Angielski", q:"zamartwiać się, przejmować się problemami", a:"dwell on problems", b:"eating disorder", c:"sleepwalker", d:"glued to the screen"},
+  {cat:"Angielski", q:"paść ofiarą czegoś", a:"fall victim to sth", b:"sleeping disorder", c:"glued to the screen", d:"easy way out"},
+  {cat:"Angielski", q:"źle się czuć", a:"feel ill", b:"chemist's", c:"counsellor", d:"injure"},
+  {cat:"Angielski", q:"źle się czuć, mieć mdłości", a:"feel sick", b:"sickness", c:"addiction", d:"surgeon"},
+  {cat:"Angielski", q:"źle się czuć", a:"feel unwell", b:"disease", c:"take medicines", d:"treat"},
+  {cat:"Angielski", q:"leczyć, goić się", a:"heal", b:"addictive", c:"check-up", d:"chemist's"},
+  {cat:"Angielski", q:"zranić, boleć; ranny", a:"hurt", b:"X-ray", c:"sickness", d:"counsellor"},
+  {cat:"Angielski", q:"choroba", a:"illness", b:"feel unwell", c:"easy way out", d:"cure"},
+  {cat:"Angielski", q:"zranić", a:"injure", b:"addiction", c:"gambling", d:"addictive"},
+  {cat:"Angielski", q:"przejmować się nieistotnymi szczegółami", a:"obsess over unnecessary details", b:"take preventative measures", c:"suffer/sustain minor injuries", d:"make/speed up a full recovery"},
+  {cat:"Angielski", q:"doprowadzić się do sytuacji zagrożenia życia", a:"put your life at risk", b:"dwell on problems", c:"glued to the screen", d:"operating theatre"},
+  {cat:"Angielski", q:"choroba", a:"sickness", b:"take medicines", c:"home visit", d:"easy way out"},
+  {cat:"Angielski", q:"odciskać swoje piętno na", a:"take its toll on", b:"operating theatre", c:"beat one's mood swings", d:"counsellor"},
+  {cat:"Angielski", q:"przewracać się z boku na bok w łóżku", a:"toss and turn in bed", b:"beat one's mood swings", c:"put your life at risk", d:"show dependence on"},
+  {cat:"Angielski", q:"leczyć", a:"treat", b:"surgery", c:"anorexia", d:"caffeine"},
+  {cat:"Angielski", q:"zranić; rana", a:"wound", b:"examination", c:"feel sick", d:"feel unwell"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 10;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
