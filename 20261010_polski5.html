@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+
+// 5. Postawy bohaterów
+{cat:"Polski", q:"Co oznacza postawa patriotyczna?", a:"Troskę o ojczyznę i chęć działania dla jej dobra", b:"Skupienie na własnych ozdobach i prywatnej wygodzie", c:"Przywiązanie wyłącznie do dawnych obyczajów weselnych", d:"Lekceważenie spraw narodowych i unikanie odpowiedzialności"},
+{cat:"Polski", q:"Co oznacza postawa bierna?", a:"Brak działania mimo posiadanej możliwości", b:"Gotowość do poświęcenia się dla ojczyzny", c:"Zachwyt nad kulturą i tradycjami wsi", d:"Krytyczne ocenianie wad całego społeczeństwa"},
+{cat:"Polski", q:"Co oznacza postawa chłopomańska?", a:"Zachwyt wsią i chłopami, czasem powierzchowny", b:"Odrzucenie wszelkich wiejskich tradycji i zwyczajów", c:"Przywiązanie do dawnych porządków politycznych", d:"Gotowość do natychmiastowego rozpoczęcia powstania"},
+{cat:"Polski", q:"Co oznacza postawa konserwatywna?", a:"Przywiązanie do tradycji i dawnych porządków", b:"Dążenie do natychmiastowego obalenia wszystkich dawnych zasad", c:"Skupienie wyłącznie na marzeniach i poetyckich wizjach", d:"Zachwyt nad wsią bez zainteresowania jej problemami"},
+{cat:"Polski", q:"Co oznacza postawa krytyczna?", a:"Dostrzeganie wad społeczeństwa i narodu", b:"Bezwarunkowe popieranie wszystkich decyzji bohaterów", c:"Całkowite unikanie oceniania zachowania innych osób", d:"Skupienie na weselnych ozdobach i prywatnych przyjemnościach"},
+{cat:"Polski", q:"Co oznacza postawa marzycielska?", a:"Skupienie na wyobrażeniach zamiast na konkretnym działaniu", b:"Konsekwentne realizowanie zadań i branie odpowiedzialności", c:"Przywiązanie do dawnych porządków i tradycji politycznych", d:"Dostrzeganie wad narodu i krytyczne ocenianie społeczeństwa"},
+{cat:"Polski", q:"Jaką postawę polityczną prezentuje Dziennikarz w notatce?", a:"Jest sceptyczny i bierny politycznie", b:"Jest gotowy dowodzić powstaniem narodowym", c:"Jest całkowicie pozbawiony poglądów politycznych", d:"Jest chłopem przywiązanym do tradycji wiejskich"},
+{cat:"Polski", q:"Jaką postawę początkowo prezentuje Gospodarz?", a:"Wierzy w możliwość zorganizowania walki narodowej", b:"Od początku odrzuca wszystkie plany odzyskania wolności", c:"Nie interesuje się sytuacją Polski ani sprawami narodowymi", d:"Pragnie jedynie zachować czapkę z pawimi piórami"},
+{cat:"Polski", q:"Co najlepiej świadczy o biernej postawie bohatera?", a:"Nie podejmuje działania mimo otrzymanej ważnej misji", b:"Podejmuje ryzyko i organizuje wszystkich do wspólnej walki", c:"Dostrzega problemy społeczne i otwarcie o nich rozmawia", d:"Troszczy się o ojczyznę i konsekwentnie realizuje plan"},
+{cat:"Polski", q:"Jak rozpoznać postawę chłopomańską w tekście?", a:"Bohater zachwyca się wsią, ale słabo zna problemy chłopów", b:"Bohater odrzuca kulturę ludową i unika kontaktu z chłopami", c:"Bohater skupia się wyłącznie na polityce zagranicznej", d:"Bohater odmawia udziału w jakichkolwiek spotkaniach towarzyskich"},
+{cat:"Polski", q:"Jak rozpoznać postawę patriotyczną w tekście?", a:"Bohater troszczy się o wolność kraju i chce mu pomóc", b:"Bohater dba jedynie o własny wygląd i majątek", c:"Bohater unika odpowiedzialności za wspólne sprawy", d:"Bohater lekceważy wszystkie problemy społeczeństwa"},
+{cat:"Polski", q:"Jaką postawę wyraża idealizowanie wsi bez znajomości jej problemów?", a:"Chłopomańską", b:"Patriotyczną", c:"Konserwatywną", d:"Krytyczną"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 10;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
