@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Język Polski - Wesele Wszystko</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+// 1. Okładki „Wesela”
+{cat:"Polski", q:"Co przedstawia pierwsza okładka „Wesela”?", a:"Czerwoną czapkę błazna z dzwonkami oraz róg", b:"Białego orła z koroną oraz złoty miecz", c:"Chłopów tańczących wokół weselnego stołu", d:"Chatę bronowicką z otwartymi drzwiami"},
+{cat:"Polski", q:"Co może symbolizować czapka błazna na pierwszej okładce?", a:"Ośmieszenie i niepoważne traktowanie spraw narodowych", b:"Zwycięstwo Polaków i odzyskanie niepodległości", c:"Jedność chłopów oraz inteligencji w walce", d:"Przywiązanie chłopów do tradycji ludowych"},
+{cat:"Polski", q:"Co symbolizuje róg na pierwszej okładce?", a:"Szansę na zjednoczenie Polaków i rozpoczęcie powstania", b:"Zwycięstwo szlachty nad chłopami w Galicji", c:"Pogodzenie się wszystkich weselnych gości", d:"Odejście bohaterów od tradycji narodowych"},
+{cat:"Polski", q:"Co przedstawia druga okładka „Wesela”?", a:"Białego orła w czerwonej czapce błazna", b:"Czarnego kruka z koroną na głowie", c:"Czerwonego orła trzymającego złoty róg", d:"Białego konia w chłopskiej zagrodzie"},
+{cat:"Polski", q:"Co symbolizuje orzeł na drugiej okładce?", a:"Polskę i naród polski", b:"Wyłącznie chłopów z Bronowic", c:"Przede wszystkim inteligencję krakowską", d:"Dawną władzę austriackich urzędników"},
+{cat:"Polski", q:"Co może oznaczać czapka błazna na głowie orła?", a:"Słabość narodu i zmarnowane szanse na niepodległość", b:"Ostateczne zwycięstwo narodu i odzyskanie wolności", c:"Zgodę między wszystkimi warstwami polskiego społeczeństwa", d:"Szczęście chłopów wynikające z weselnej zabawy"},
+
+// 2. Konflikt chłopów i inteligencji
+{cat:"Polski", q:"Jaki był pierwszy powód konfliktu chłopów i inteligencji?", a:"Uprzedzenia historyczne związane z krzywdami wyrządzonymi chłopom", b:"Różnice wynikające wyłącznie z wyznawanej religii", c:"Niechęć chłopów do wszystkich zagranicznych podróży", d:"Spór o podział pieniędzy z weselnej zabawy"},
+{cat:"Polski", q:"Jaki był drugi powód konfliktu chłopów i inteligencji?", a:"Różnice poglądów i powierzchowne idealizowanie wsi przez inteligencję", b:"Całkowity brak zainteresowania polityką u wszystkich chłopów", c:"Jednakowe poglądy obu grup na sprawy społeczne", d:"Spór o to, kto powinien organizować weselne tańce"},
+{cat:"Polski", q:"Jaki był trzeci powód konfliktu chłopów i inteligencji?", a:"Brak jedności i wzajemnego zaufania", b:"Nadmierne zainteresowanie chłopów zagranicznymi podróżami", c:"Wspólna niechęć do wszystkich polskich tradycji", d:"Brak jakichkolwiek różnic w poglądach obu grup"},
+{cat:"Polski", q:"Co pokazuje rozmowa Czepca z Dziennikarzem?", a:"Chłop interesuje się polityką, ale inteligent go lekceważy", b:"Inteligent prosi chłopa o pomoc w zorganizowaniu powstania", c:"Obaj bohaterowie zgadzają się we wszystkich sprawach politycznych", d:"Chłop nie chce rozmawiać o wydarzeniach w innych krajach"},
+{cat:"Polski", q:"Dlaczego chłopi nie ufali szlachcie?", a:"Pamiętali historyczne krzywdy i konflikty społeczne", b:"Uważali, że szlachta nie zna żadnych polskich tradycji", c:"Nie chcieli uczestniczyć w żadnych uroczystościach weselnych", d:"Uważali, że inteligencja nie potrafi mówić po polsku"},
+{cat:"Polski", q:"Jak inteligencja często przedstawiała wieś?", a:"Idealizowała ją i nie rozumiała wszystkich problemów chłopów", b:"Przedstawiała ją wyłącznie jako miejsce walk i powstań", c:"Uważała ją za miejsce pozbawione jakichkolwiek tradycji", d:"Opisywała ją jako środowisko całkowicie obojętne politycznie"},
+{cat:"Polski", q:"Co oznacza chłopomania?", a:"Fascynację wsią i kulturą chłopską, czasem powierzchowną", b:"Całkowite odrzucenie kultury ludowej przez inteligencję", c:"Niechęć chłopów do wszystkich dawnych polskich tradycji", d:"Polityczny plan natychmiastowego rozpoczęcia powstania"},
+
+// 3. Symbole
+{cat:"Polski", q:"Czym jest symbol?", a:"Elementem mającym znaczenie dosłowne i ukryte", b:"Elementem, który ma wyłącznie znaczenie dosłowne", c:"Wypowiedzią, która nie ma żadnego dodatkowego znaczenia", d:"Opisem wydarzenia pozbawionym znaczeń przenośnych"},
+{cat:"Polski", q:"Co symbolizuje złoty róg?", a:"Wezwanie do walki i szansę na odzyskanie wolności", b:"Próżność oraz przywiązanie do ozdób i własności", c:"Historyczne krzywdy wyrządzone chłopom przez szlachtę", d:"Uśpienie narodu i brak zdolności do działania"},
+{cat:"Polski", q:"Co symbolizuje czapka z pawimi piórami?", a:"Próżność i przywiązanie do własności, przez które Jasiek gubi róg", b:"Gotowość wszystkich Polaków do wspólnej walki", c:"Mądrość polityczną i odpowiedzialność za ojczyznę", d:"Zwycięstwo chłopów nad dawną polską szlachtą"},
+{cat:"Polski", q:"Co symbolizuje Chochoł?", a:"Uśpienie narodu, ale również nadzieję na odrodzenie", b:"Wyłącznie zwycięstwo Polaków w walce o wolność", c:"Historyczną zdradę szlachty podczas powstania", d:"Całkowite pojednanie wszystkich grup społecznych"},
+{cat:"Polski", q:"Co symbolizuje chocholi taniec?", a:"Bezwład, marazm i niezdolność Polaków do działania", b:"Radosne zwycięstwo narodu po udanym powstaniu", c:"Ostateczne pojednanie chłopów z dawną szlachtą", d:"Gotowość bohaterów do rozpoczęcia walki zbrojnej"},
+{cat:"Polski", q:"Co symbolizuje złota podkowa?", a:"Szczęście i szansę na powodzenie", b:"Zdradę narodową oraz historyczne winy szlachty", c:"Utracony patriotyzm i brak zainteresowania polityką", d:"Niezdolność chłopów do zachowania tradycji ludowych"},
+{cat:"Polski", q:"Z jakim bohaterem związany jest kaduceusz?", a:"Ze Stańczykiem, który przekazuje go Dziennikarzowi", b:"Z Wernyhorą, który przekazuje go Gospodarzowi", c:"Z Rycerzem, który przekazuje go Poecie", d:"Z Upiorem, który przekazuje go Dziadowi"},
+{cat:"Polski", q:"Co może oznaczać kaduceusz w „Weselu”?", a:"Wpływ polityczny i krytykę politycznej bierności", b:"Szansę na rozpoczęcie walki za pomocą złotego rogu", c:"Historyczne krzywdy chłopów podczas rabacji galicyjskiej", d:"Nadzieję na odrodzenie ukrytą w słomianym chochole"},
+{cat:"Polski", q:"Co miał zrobić Jasiek za pomocą sznura?", a:"Dzwonić na alarm, zgodnie z otrzymanym zadaniem", b:"Przywiązać złoty róg do weselnego stołu", c:"Związać wszystkich gości przed rozpoczęciem powstania", d:"Przywiązać czapkę z pawimi piórami do chochoła"},
+{cat:"Polski", q:"Dlaczego Jasiek zgubił złoty róg?", a:"Schylił się po czapkę z pawimi piórami", b:"Przekazał go Dziennikarzowi podczas rozmowy", c:"Oddał go Wernyhorze przed przybyciem weselników", d:"Zostawił go na stole podczas pierwszego tańca"},
+
+// 4. Zjawy i bohaterowie
+{cat:"Polski", q:"Komu ukazuje się Widmo?", a:"Marysi", b:"Dziennikarzowi", c:"Poecie", d:"Gospodarzowi"},
+{cat:"Polski", q:"Komu ukazuje się Stańczyk?", a:"Dziennikarzowi", b:"Marysi", c:"Panu Młodemu", d:"Dziadowi"},
+{cat:"Polski", q:"Komu ukazuje się Rycerz, czyli Zawisza Czarny?", a:"Poecie", b:"Gospodarzowi", c:"Marysi", d:"Czepcowi"},
+{cat:"Polski", q:"Komu ukazuje się Hetman, czyli Franciszek Ksawery Branicki?", a:"Panu Młodemu", b:"Dziennikarzowi", c:"Poecie", d:"Gospodarzowi"},
+{cat:"Polski", q:"Komu ukazuje się Upiór, czyli Jakub Szela?", a:"Dziadowi", b:"Marysi", c:"Czepcowi", d:"Panu Młodemu"},
+{cat:"Polski", q:"Komu ukazuje się Wernyhora?", a:"Gospodarzowi", b:"Dziennikarzowi", c:"Poecie", d:"Marysi"},
+{cat:"Polski", q:"Komu ukazuje się Chochoł na początku?", a:"Isi", b:"Czepcowi", c:"Dziennikarzowi", d:"Panu Młodemu"},
+{cat:"Polski", q:"Co symbolizuje Widmo ukazujące się Marysi?", a:"Dawną miłość i wspomnienia przeszłości", b:"Zdradę narodową i winy polskiej szlachty", c:"Mądrość polityczną i wyrzuty sumienia inteligencji", d:"Wezwanie do zorganizowania powstania narodowego"},
+{cat:"Polski", q:"Co symbolizuje Stańczyk?", a:"Mądrość polityczną i wyrzuty sumienia inteligencji", b:"Wyłącznie chłopskie przywiązanie do własności", c:"Romantyczną miłość i wspomnienia Marysi", d:"Nadzieję na odrodzenie ukrytą w słomianym chochole"},
+{cat:"Polski", q:"Co symbolizuje Rycerz ukazujący się Poecie?", a:"Siłę, honor i gotowość do walki", b:"Zdradę narodową i winy dawnej szlachty", c:"Historyczne krzywdy chłopów podczas rabacji", d:"Brak odpowiedzialności za utratę złotego rogu"},
+{cat:"Polski", q:"Co symbolizuje Hetman?", a:"Zdradę narodową i winy szlachty", b:"Siłę, honor i gotowość do walki", c:"Nadzieję na odrodzenie i wiosenne przebudzenie", d:"Mądrość polityczną oraz odpowiedzialność inteligencji"},
+{cat:"Polski", q:"Co przypomina Upiór ukazujący się Dziadowi?", a:"Rabację galicyjską i konflikt chłopów ze szlachtą", b:"Dawną miłość Marysi i jej wspomnienia", c:"Misję powstańczą powierzoną Gospodarzowi", d:"Polityczne wyrzuty sumienia Dziennikarza"},
+{cat:"Polski", q:"Co przynosi Wernyhora Gospodarzowi?", a:"Wezwanie do narodowego powstania", b:"Przypomnienie o dawnej miłości Marysi", c:"Ostrzeżenie przed historyczną zdradą szlachty", d:"Polecenie zatańczenia z pozostałymi weselnikami"},
+{cat:"Polski", q:"Co robi Chochoł w zakończeniu dramatu?", a:"Doprowadza do chocholego tańca weselników", b:"Organizuje udane powstanie i odzyskanie niepodległości", c:"Przekazuje Dziennikarzowi złoty róg i kaduceusz", d:"Przywraca złotą podkowę i godzi wszystkie grupy"},
+{cat:"Polski", q:"Jakie zadanie otrzymuje Gospodarz od Wernyhory?", a:"Zorganizować ludzi i przygotować wezwanie do powstania", b:"Przekazać Stańczykowi kaduceusz i zakończyć wesele", c:"Odnaleźć Widmo i pogodzić je z Marysią", d:"Zatrzymać taniec Chochoła i oddać czapkę Jaśkowi"},
+{cat:"Polski", q:"Kim był Jakub Szela?", a:"Przywódcą chłopskiego wystąpienia podczas rabacji galicyjskiej", b:"Przywódcą polskiego powstania w Bronowicach", c:"Poetą, któremu ukazał się Zawisza Czarny", d:"Dziennikarzem rozmawiającym z Czepcem o polityce"},
+
+// 5. Postawy bohaterów
+{cat:"Polski", q:"Co oznacza postawa patriotyczna?", a:"Troskę o ojczyznę i chęć działania dla jej dobra", b:"Skupienie na własnych ozdobach i prywatnej wygodzie", c:"Przywiązanie wyłącznie do dawnych obyczajów weselnych", d:"Lekceważenie spraw narodowych i unikanie odpowiedzialności"},
+{cat:"Polski", q:"Co oznacza postawa bierna?", a:"Brak działania mimo posiadanej możliwości", b:"Gotowość do poświęcenia się dla ojczyzny", c:"Zachwyt nad kulturą i tradycjami wsi", d:"Krytyczne ocenianie wad całego społeczeństwa"},
+{cat:"Polski", q:"Co oznacza postawa chłopomańska?", a:"Zachwyt wsią i chłopami, czasem powierzchowny", b:"Odrzucenie wszelkich wiejskich tradycji i zwyczajów", c:"Przywiązanie do dawnych porządków politycznych", d:"Gotowość do natychmiastowego rozpoczęcia powstania"},
+{cat:"Polski", q:"Co oznacza postawa konserwatywna?", a:"Przywiązanie do tradycji i dawnych porządków", b:"Dążenie do natychmiastowego obalenia wszystkich dawnych zasad", c:"Skupienie wyłącznie na marzeniach i poetyckich wizjach", d:"Zachwyt nad wsią bez zainteresowania jej problemami"},
+{cat:"Polski", q:"Co oznacza postawa krytyczna?", a:"Dostrzeganie wad społeczeństwa i narodu", b:"Bezwarunkowe popieranie wszystkich decyzji bohaterów", c:"Całkowite unikanie oceniania zachowania innych osób", d:"Skupienie na weselnych ozdobach i prywatnych przyjemnościach"},
+{cat:"Polski", q:"Co oznacza postawa marzycielska?", a:"Skupienie na wyobrażeniach zamiast na konkretnym działaniu", b:"Konsekwentne realizowanie zadań i branie odpowiedzialności", c:"Przywiązanie do dawnych porządków i tradycji politycznych", d:"Dostrzeganie wad narodu i krytyczne ocenianie społeczeństwa"},
+{cat:"Polski", q:"Jaką postawę polityczną prezentuje Dziennikarz w notatce?", a:"Jest sceptyczny i bierny politycznie", b:"Jest gotowy dowodzić powstaniem narodowym", c:"Jest całkowicie pozbawiony poglądów politycznych", d:"Jest chłopem przywiązanym do tradycji wiejskich"},
+{cat:"Polski", q:"Jaką postawę początkowo prezentuje Gospodarz?", a:"Wierzy w możliwość zorganizowania walki narodowej", b:"Od początku odrzuca wszystkie plany odzyskania wolności", c:"Nie interesuje się sytuacją Polski ani sprawami narodowymi", d:"Pragnie jedynie zachować czapkę z pawimi piórami"},
+{cat:"Polski", q:"Co najlepiej świadczy o biernej postawie bohatera?", a:"Nie podejmuje działania mimo otrzymanej ważnej misji", b:"Podejmuje ryzyko i organizuje wszystkich do wspólnej walki", c:"Dostrzega problemy społeczne i otwarcie o nich rozmawia", d:"Troszczy się o ojczyznę i konsekwentnie realizuje plan"},
+{cat:"Polski", q:"Jak rozpoznać postawę chłopomańską w tekście?", a:"Bohater zachwyca się wsią, ale słabo zna problemy chłopów", b:"Bohater odrzuca kulturę ludową i unika kontaktu z chłopami", c:"Bohater skupia się wyłącznie na polityce zagranicznej", d:"Bohater odmawia udziału w jakichkolwiek spotkaniach towarzyskich"},
+{cat:"Polski", q:"Jak rozpoznać postawę patriotyczną w tekście?", a:"Bohater troszczy się o wolność kraju i chce mu pomóc", b:"Bohater dba jedynie o własny wygląd i majątek", c:"Bohater unika odpowiedzialności za wspólne sprawy", d:"Bohater lekceważy wszystkie problemy społeczeństwa"},
+{cat:"Polski", q:"Jaką postawę wyraża idealizowanie wsi bez znajomości jej problemów?", a:"Chłopomańską", b:"Patriotyczną", c:"Konserwatywną", d:"Krytyczną"},
+
+// 6. Cytaty i rozpoznawanie bohaterów
+{cat:"Polski", q:"Kto mówi: „Cóż tam, panie, w polityce? Chińczyki trzymają się mocno!”?", a:"Czepiec", b:"Dziennikarz", c:"Gospodarz", d:"Pan Młody"},
+{cat:"Polski", q:"Kto mówi: „Miałeś, chamie, złoty róg…”?", a:"Chochoł", b:"Czepiec", c:"Poeta", d:"Gospodarz"},
+{cat:"Polski", q:"Kto wypowiada słowa: „Chłop potęgą jest i basta.”?", a:"Gospodarz", b:"Dziennikarz", c:"Pan Młody", d:"Czepiec"},
+{cat:"Polski", q:"Kto mówi: „Niech na całym świecie wojna, byle polska wieś zaciszna…”?", a:"Dziennikarz", b:"Czepiec", c:"Gospodarz", d:"Poeta"},
+{cat:"Polski", q:"Kto wypowiada słowa: „A to Polska właśnie.”?", a:"Gospodarz", b:"Pan Młody", c:"Dziennikarz", d:"Czepiec"},
+{cat:"Polski", q:"Kto mówi: „Trza być w butach na weselu.”?", a:"Czepiec", b:"Dziennikarz", c:"Gospodarz", d:"Poeta"},
+{cat:"Polski", q:"Kto wypowiada słowa: „Jak się żenić, to się żenić!”?", a:"Pan Młody", b:"Czepiec", c:"Poeta", d:"Dziennikarz"},
+{cat:"Polski", q:"Która postać jest chłopem zainteresowanym polityką?", a:"Czepiec", b:"Dziennikarz", c:"Poeta", d:"Gospodarz"},
+{cat:"Polski", q:"Która postać jest inteligentem, który poślubił chłopkę i zachwyca się wsią?", a:"Pan Młody", b:"Czepiec", c:"Dziad", d:"Stańczyk"},
+{cat:"Polski", q:"Która postać jest przedstawicielem konserwatywnej inteligencji?", a:"Dziennikarz", b:"Czepiec", c:"Jasiek", d:"Upiór"},
+{cat:"Polski", q:"Która postać jest artystą i marzycielem z kręgu inteligencji?", a:"Poeta", b:"Czepiec", c:"Dziad", d:"Jasiek"},
+{cat:"Polski", q:"Która postać otrzymuje misję od Wernyhory?", a:"Gospodarz", b:"Czepiec", c:"Dziennikarz", d:"Pan Młody"},
+{cat:"Polski", q:"Kto wypowiada słowa: „A, ja myślę, że panowie duża by już mogli mieć, ino oni nie chcom chcieć!”?", a:"Czepiec", b:"Dziennikarz", c:"Poeta", d:"Pan Młody"},
+{cat:"Polski", q:"Który bohater uosabia chłopa zainteresowanego sprawami publicznymi?", a:"Czepiec", b:"Stańczyk", c:"Hetman", d:"Rycerz"},
+{cat:"Polski", q:"Która postać jest gospodarzem wesela i przedstawicielem inteligencji mieszkającym na wsi?", a:"Gospodarz", b:"Dziennikarz", c:"Czepiec", d:"Upiór"},
+{cat:"Polski", q:"Który bohater poślubił Pannę Młodą?", a:"Pan Młody", b:"Gospodarz", c:"Dziennikarz", d:"Poeta"},
+{cat:"Polski", q:"Kto w dramacie reprezentuje artystów i skłonność do marzeń?", a:"Poeta", b:"Czepiec", c:"Jasiek", d:"Dziad"},
+{cat:"Polski", q:"Która postać jest związana z kaduceuszem i politycznymi wyrzutami sumienia?", a:"Stańczyk", b:"Wernyhora", c:"Hetman", d:"Upiór"},
+{cat:"Polski", q:"Kto wypowiada słowa: „Miałeś, chamie, złoty róg, miałeś, chamie, czapkę z piór”?", a:"Chochoł", b:"Gospodarz", c:"Czepiec", d:"Dziennikarz"},
+{cat:"Polski", q:"Która postać symbolizuje Polskę w słowach „A to Polska właśnie”?", a:"Gospodarz wskazuje na symboliczną wymowę postaci Chochoła", b:"Czepiec wskazuje na złotą podkowę znalezioną w chacie", c:"Dziennikarz wskazuje na kaduceusz przekazany Poecie", d:"Jasiek wskazuje na czapkę z pawimi piórami"},
+
+// 7. Budowa dramatu
+{cat:"Polski", q:"Kto jest autorem „Wesela”?", a:"Stanisław Wyspiański", b:"Adam Mickiewicz", c:"Juliusz Słowacki", d:"Aleksander Fredro"},
+{cat:"Polski", q:"Do jakiego rodzaju literackiego należy „Wesele”?", a:"Do dramatu", b:"Do epiki", c:"Do liryki", d:"Do publicystyki"},
+{cat:"Polski", q:"Jaki gatunek najlepiej opisuje „Wesele”?", a:"Dramat symboliczny z elementami realizmu i fantastyki", b:"Powieść historyczna z elementami reportażu", c:"Liryczny poemat o podróżach i przyrodzie", d:"Komedia obyczajowa pozbawiona symboliki"},
+{cat:"Polski", q:"Z ilu aktów składa się „Wesele”?", a:"Z trzech aktów", b:"Z dwóch aktów", c:"Z czterech aktów", d:"Z pięciu aktów"},
+{cat:"Polski", q:"Co przedstawia akt I „Wesela”?", a:"Rozmowy gości weselnych i relacje społeczne", b:"Wyłącznie pojawienie się wszystkich zjaw", c:"Przygotowania do powstania i utratę złotego rogu", d:"Końcowy chocholi taniec wszystkich weselników"},
+{cat:"Polski", q:"Co przedstawia akt II „Wesela”?", a:"Pojawienie się zjaw i ujawnienie problemów bohaterów", b:"Wyłącznie rozmowy o codziennych pracach w gospodarstwie", c:"Początek wesela i pierwszą rozmowę Czepca z Dziennikarzem", d:"Udane powstanie oraz zwycięstwo narodu polskiego"},
+{cat:"Polski", q:"Co przedstawia akt III „Wesela”?", a:"Przygotowania do powstania, utratę rogu i chocholi taniec", b:"Wyłącznie pierwsze spotkania i rozmowy gości weselnych", c:"Tylko pojawienie się Widma i wspomnienia Marysi", d:"Wspólne świętowanie zwycięstwa i odzyskania wolności"},
+{cat:"Polski", q:"Co łączy się w budowie „Wesela”?", a:"Elementy realistyczne, fantastyczne i symboliczne", b:"Wyłącznie elementy dokumentalne i naukowe", c:"Wyłącznie sceny historyczne bez świata fantastycznego", d:"Tylko opisy przyrody i osobiste wspomnienia bohaterów"},
+
+// 8. Początek dramatu
+{cat:"Polski", q:"Jak rozpoczyna się „Wesele”?", a:"Rozmową Czepca z Dziennikarzem", b:"Pojawieniem się Wernyhory przed Gospodarzem", c:"Utratą złotego rogu przez Jaśka", d:"Chocholim tańcem wszystkich weselników"},
+{cat:"Polski", q:"O co Czepiec pyta Dziennikarza na początku dramatu?", a:"O sytuację polityczną na świecie", b:"O miejsce ukrycia złotej podkowy", c:"O dawną miłość Marysi i jej wspomnienia", d:"O szczegóły planowanego weselnego tańca"},
+{cat:"Polski", q:"Co rozmowa Czepca z Dziennikarzem pokazuje o chłopach?", a:"Że interesują się polityką i wydarzeniami na świecie", b:"Że nie chcą znać żadnych wydarzeń spoza swojej wsi", c:"Że wszyscy są gotowi natychmiast rozpocząć powstanie", d:"Że nie mają żadnych własnych poglądów społecznych"},
+{cat:"Polski", q:"Jak Dziennikarz reaguje początkowo na zainteresowanie Czepca polityką?", a:"Lekceważy jego zainteresowanie", b:"Natychmiast powierza mu misję powstańczą", c:"Prosi go o przekazanie złotego rogu Jaśkowi", d:"Zgadza się z nim we wszystkich kwestiach politycznych"},
+
+// 9. Rabacja galicyjska
+{cat:"Polski", q:"W którym roku miała miejsce rabacja galicyjska?", a:"W 1846 roku", b:"W 1794 roku", c:"W 1830 roku", d:"W 1863 roku"},
+{cat:"Polski", q:"Czym była rabacja galicyjska?", a:"Wystąpieniem chłopów przeciwko szlachcie w Galicji", b:"Powstaniem inteligencji przeciwko władzom Krakowa", c:"Wojną chłopów z wojskami napoleońskimi na Śląsku", d:"Pokojowym zjednoczeniem chłopów i dawnej szlachty"},
+{cat:"Polski", q:"Kto był przywódcą chłopskiego wystąpienia podczas rabacji galicyjskiej?", a:"Jakub Szela", b:"Stanisław Wyspiański", c:"Zawisza Czarny", d:"Franciszek Ksawery Branicki"},
+{cat:"Polski", q:"Co robili chłopi podczas rabacji galicyjskiej?", a:"Atakowali dwory i zabijali przedstawicieli szlachty", b:"Organizowali wesela i wspólnie świętowali z arystokracją", c:"Bronili wszystkich dworów przed atakami wojsk obcych", d:"Przekazywali szlachcie złote rogi i kaduceusze"},
+{cat:"Polski", q:"Która zjawa przypomina o rabacji galicyjskiej?", a:"Upiór", b:"Widmo", c:"Stańczyk", d:"Chochoł"},
+{cat:"Polski", q:"Jakie znaczenie ma rabacja galicyjska w „Weselu”?", a:"Przypomina o historycznych krzywdach i braku zaufania między grupami", b:"Dowodzi, że chłopi i szlachta zawsze zgodnie współpracowali", c:"Pokazuje wyłącznie problemy związane z organizacją wesela", d:"Udowadnia, że wszyscy bohaterowie chcieli uniknąć rozmów o historii"},
+
+// 10. Dlaczego nie doszło do powstania?
+{cat:"Polski", q:"Jaka była pierwsza przyczyna niepowodzenia planów powstańczych?", a:"Brak jedności narodowej między chłopami a inteligencją", b:"Nadmiar złotych rogów i innych przedmiotów weselnych", c:"Całkowity brak zainteresowania wsią ze strony chłopów", d:"Zbyt duża liczba osób gotowych do wspólnej walki"},
+{cat:"Polski", q:"Jaka była druga przyczyna niepowodzenia planów powstańczych?", a:"Brak odpowiedzialności Gospodarza, który przekazał misję Jaśkowi", b:"Odmowa udziału w weselu wszystkich przedstawicieli inteligencji", c:"Zniszczenie chaty bronowickiej przez samego Wernyhorę", d:"Brak zainteresowania polską historią ze strony Chochoła"},
+{cat:"Polski", q:"Jaka była trzecia przyczyna niepowodzenia planów powstańczych?", a:"Jasiek zgubił złoty róg, schylając się po czapkę z pawimi piórami", b:"Gospodarz oddał złotą podkowę Stańczykowi podczas rozmowy", c:"Dziennikarz zgubił kaduceusz przed przybyciem Wernyhory", d:"Poeta odmówił przyjęcia czapki od Pana Młodego"},
+{cat:"Polski", q:"Co spowodował brak złotego rogu?", a:"Utracono szansę na wezwanie ludzi do walki", b:"Wszyscy weselnicy natychmiast odzyskali wolność", c:"Chłopi i inteligencja ostatecznie się pogodzili", d:"Wernyhora samodzielnie zakończył powstanie zwycięstwem"},
+{cat:"Polski", q:"Co dzieje się z weselnikami po zmarnowaniu szansy na powstanie?", a:"Pogrążają się w chocholim tańcu", b:"Rozpoczynają zwycięską walkę o niepodległość", c:"Wspólnie odnajdują złoty róg i przekazują go Gospodarzowi", d:"Wyruszają za Wernyhorą, aby odzyskać złotą podkowę"},
+{cat:"Polski", q:"Dlaczego Gospodarz nie dopilnował osobiście misji powstańczej?", a:"Przekazał zadanie Jaśkowi zamiast samemu go dopilnować", b:"Postanowił samodzielnie ukryć złoty róg w chacie", c:"Zdecydował się oddać misję Stańczykowi i Dziennikarzowi", d:"Uznał, że Wernyhora nie przyniósł żadnego ważnego zadania"},
+
+// 11. Chocholi taniec
+{cat:"Polski", q:"Czym jest chocholi taniec?", a:"Końcową sceną, w której weselnicy tańczą w rytm muzyki Chochoła", b:"Pierwszą sceną, w której Czepiec pyta o sytuację polityczną", c:"Tańcem wykonanym przez Rycerza i Poeta podczas spotkania", d:"Wspólnym świętowaniem odzyskania niepodległości przez Polskę"},
+{cat:"Polski", q:"Co symbolizuje chocholi taniec?", a:"Uśpienie narodu, marazm i brak zdolności do walki o wolność", b:"Zwycięstwo powstańców i odzyskanie niepodległości", c:"Całkowite pojednanie chłopów z inteligencją i szlachtą", d:"Radosne przyjęcie Wernyhory przez wszystkich weselników"},
+{cat:"Polski", q:"Kto wprowadza weselników w chocholi taniec?", a:"Chochoł", b:"Stańczyk", c:"Wernyhora", d:"Upiór"},
+{cat:"Polski", q:"Jaką dodatkową nadzieję może symbolizować Chochoł?", a:"Możliwość przyszłego odrodzenia narodu", b:"Ostateczne zwycięstwo zdrady narodowej", c:"Całkowity zanik polskiej kultury i tradycji", d:"Brak jakiejkolwiek szansy na przyszłe zmiany"},
+{cat:"Polski", q:"Dlaczego chocholi taniec jest ważnym zakończeniem dramatu?", a:"Pokazuje bezwład społeczeństwa po zmarnowaniu szansy na powstanie", b:"Udowadnia, że powstanie zakończyło się wielkim zwycięstwem", c:"Pokazuje, że wszyscy bohaterowie wykonali swoje zadania", d:"Potwierdza, że złoty róg nie miał żadnego znaczenia"},
+
+// 12. Chata bronowicka
+{cat:"Polski", q:"Czym jest chata bronowicka w „Weselu”?", a:"Miejscem wesela Pana Młodego i Panny Młodej", b:"Siedzibą polskiego króla podczas powstania", c:"Miejscem spotkania Stańczyka z Wernyhorą", d:"Zamkiem, w którym ukryto złoty róg i kaduceusz"},
+{cat:"Polski", q:"Kto bierze ślub w chacie bronowickiej?", a:"Pan Młody i Panna Młoda", b:"Gospodarz i Marysia", c:"Czepiec i Isia", d:"Dziennikarz i Rachela"},
+{cat:"Polski", q:"Co symbolizuje chata bronowicka?", a:"Polskę i całe społeczeństwo reprezentowane przez różne warstwy", b:"Wyłącznie świat chłopów pozbawiony inteligencji", c:"Władzę austriacką i jej urzędników w Galicji", d:"Wyłącznie przeszłość Marysi i jej dawną miłość"},
+{cat:"Polski", q:"Co pokazuje spotkanie chłopów i inteligencji w chacie?", a:"Nadzieję na pojednanie, ale też istniejące uprzedzenia i brak współpracy", b:"Ostateczne rozwiązanie wszystkich konfliktów społecznych", c:"Całkowity brak różnic między poglądami wszystkich gości", d:"Wyłącznie zainteresowanie weselników muzyką i tańcem"},
+{cat:"Polski", q:"Dlaczego chata bronowicka jest ważnym miejscem wydarzeń?", a:"Łączy różne warstwy społeczne i ujawnia problemy narodowe", b:"Jest miejscem, w którym odbywa się wyłącznie powstanie zbrojne", c:"Służy tylko do przechowywania złotej podkowy i kaduceusza", d:"Jest siedzibą króla, który rozstrzyga spory między chłopami"},
+
+// 13. Styl i język dramatu
+{cat:"Polski", q:"Jakim stylem napisane jest „Wesele”?", a:"Łączy styl potoczny, stylizację ludową i język poetycki", b:"Jest napisane wyłącznie językiem naukowym i urzędowym", c:"Łączy tylko język prawny z terminologią techniczną", d:"Jest napisane wyłącznie językiem obcym i archaicznym"},
+{cat:"Polski", q:"Czym charakteryzuje się styl potoczny w „Weselu”?", a:"Codziennymi rozmowami bohaterów", b:"Wyłącznie uroczystymi przemówieniami politycznymi", c:"Opisami naukowymi dotyczącymi historii Galicji", d:"Długimi definicjami symboli i gatunków literackich"},
+{cat:"Polski", q:"Czym charakteryzuje się stylizacja ludowa?", a:"Gwarą, powiedzeniami i sposobem mówienia chłopów", b:"Terminologią naukową i językiem urzędowych dokumentów", c:"Wyłącznie językiem obcym używanym przez inteligencję", d:"Całkowitym brakiem regionalnych słów i powiedzeń"},
+{cat:"Polski", q:"Czym charakteryzuje się język poetycki w „Weselu”?", a:"Metaforami, symbolami i nastrojowymi wypowiedziami", b:"Wyłącznie krótkimi poleceniami i instrukcjami technicznymi", c:"Definicjami historycznymi pozbawionymi znaczeń przenośnych", d:"Codziennymi rozmowami bez żadnych środków stylistycznych"},
+{cat:"Polski", q:"Jakie elementy łączą się w języku „Wesela”?", a:"Realizm, symbolika i świat fantastyczny", b:"Wyłącznie dokumenty historyczne i język urzędowy", c:"Tylko opisy przyrody oraz relacje z podróży", d:"Wyłącznie opisy bitew i wojskowych rozkazów"},
+{cat:"Polski", q:"Po co Wyspiański różnicuje sposób mówienia bohaterów?", a:"Aby pokazać ich pochodzenie, poglądy i problemy społeczne", b:"Aby udowodnić, że wszyscy bohaterowie mają identyczne poglądy", c:"Aby ukryć wszystkie różnice między chłopami i inteligencją", d:"Aby przedstawić wyłącznie historię życia autora dramatu"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 10;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
