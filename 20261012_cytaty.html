@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Polski", q:"Kto wypowiada cytat: „Niech na całym świecie wojna, byle polska wieś zaciszna, byle polska wieś spokojna”?", a:"Dziennikarz", b:"Gospodarz", c:"Poeta", d:"Pan Młody"},
+{cat:"Polski", q:"W którym akcie i scenie według notatki pojawia się cytat o spokojnej polskiej wsi?", a:"Akt I, scena 2", b:"Akt I, scena 3", c:"Akt II, scena 2", d:"Akt III, scena 2"},
+{cat:"Polski", q:"Kto mówi: „Są wsi spokojne. Jest w nich coś z arcydzieła”?", a:"Dziennikarz", b:"Czepiec", c:"Nos", d:"Żyd"},
+{cat:"Polski", q:"Kto wypowiada słowa: „Chłop gada, co wie, a pan wie, co gada”?", a:"Dziennikarz", b:"Poeta", c:"Gospodarz", d:"Stańczyk"},
+{cat:"Polski", q:"W której scenie według notatki pojawia się cytat „Chłop gada, co wie, a pan wie, co gada”?", a:"Akt I, scena 10", b:"Akt I, scena 1", c:"Akt II, scena 7", d:"Akt III, scena 16"},
+{cat:"Polski", q:"Kto wypowiada cytat: „Odnaleźć ten teatr mój, teatr ogromny...”?", a:"Poeta", b:"Dziennikarz", c:"Pan Młody", d:"Czepiec"},
+{cat:"Polski", q:"W którym akcie i scenie według notatki pojawia się cytat o teatrze ogromnym?", a:"Akt II, scena 23", b:"Akt I, scena 23", c:"Akt III, scena 23", d:"Akt II, scena 10"},
+{cat:"Polski", q:"Kto mówi: „Ptak ptakowi nie jednaki, człek człekowi nie równy”?", a:"Poeta", b:"Gospodarz", c:"Dziennikarz", d:"Radczyni"},
+{cat:"Polski", q:"Kto wypowiada słowa o uwielbieniu polskiego chłopa i jego wielkim duchu, tupetcie oraz sile?", a:"Pan Młody", b:"Poeta", c:"Gospodarz", d:"Czepiec"},
+{cat:"Polski", q:"Z kim utożsamiany jest Pan Młody?", a:"Z Lucjanem Rydlem", b:"Z Rudolfem Starzewskim", c:"Z Włodzimierzem Tetmajerem", d:"Z Kazimierzem Przerwą-Tetmajerem"},
+{cat:"Polski", q:"Kto mówi: „A bo chłop i ma coś z hetmana! (...) Chłop potęgą jest i basta”?", a:"Gospodarz", b:"Pan Młody", c:"Dziennikarz", d:"Nos"},
+{cat:"Polski", q:"W którym akcie i scenie według notatki pojawia się cytat „Chłop potęgą jest i basta”?", a:"Akt I, scena 25", b:"Akt I, scena 10", c:"Akt II, scena 25", d:"Akt III, scena 16"},
+{cat:"Polski", q:"Kto wypowiada cytat: „Trzeba się było z nimi żenić, bo weselisko to przeżyć trzeba...”?", a:"Gospodarz", b:"Poeta", c:"Żyd", d:"Dziennikarz"},
+{cat:"Polski", q:"W którym akcie i scenie według notatki pojawia się cytat o weselisku, które trzeba przeżyć?", a:"Akt III, scena 16", b:"Akt I, scena 16", c:"Akt II, scena 7", d:"Akt III, scena 2"},
+{cat:"Polski", q:"Kto mówi: „Wyście sobie, a my sobie. Każden sobie rzepkę skrobie”?", a:"Radczyni", b:"Rachel", c:"Panna Młoda", d:"Gospodyni"},
+{cat:"Polski", q:"Jaki problem społeczny obrazuje cytat „Wyście sobie, a my sobie”?", a:"Podział między różnymi warstwami społecznymi", b:"Zgodę i jedność wszystkich grup", c:"Konflikt między Polską a innymi państwami", d:"Spór o twórczość artystyczną"},
+{cat:"Polski", q:"Kto wypowiada cytat o nowinie, że Pan Młody z zachwytem przypatruje się chłopom?", a:"Radczyni", b:"Dziennikarz", c:"Czepiec", d:"Stańczyk"},
+{cat:"Polski", q:"Kto pyta: „Cóż tam, panie, w polityce? Chińczyki trzymają się mocno?”?", a:"Czepiec", b:"Gospodarz", c:"Poeta", d:"Nos"},
+{cat:"Polski", q:"W którym akcie i scenie według notatki Czepiec pyta o politykę?", a:"Akt I, scena 1", b:"Akt I, scena 10", c:"Akt II, scena 23", d:"Akt III, scena 37"},
+{cat:"Polski", q:"Kto wypowiada słowa: „Ino żeby nas nie zjedli...”?", a:"Żyd", b:"Czepiec", c:"Dziennikarz", d:"Poeta"},
+{cat:"Polski", q:"Jak ma na imię Żyd wskazany w notatce?", a:"Hirsz", b:"Rudolf", c:"Lucjan", d:"Kazimierz"},
+{cat:"Polski", q:"Kto mówi: „No, panie, z tą inteligencją to by tak trzeba raz na serio...”?", a:"Nos", b:"Gospodarz", c:"Czepiec", d:"Stańczyk"},
+{cat:"Polski", q:"W którym akcie i scenie według notatki pojawia się wypowiedź Nosa o inteligencji?", a:"Akt III, scena 2", b:"Akt I, scena 2", c:"Akt II, scena 7", d:"Akt III, scena 16"},
+{cat:"Polski", q:"Kto wypowiada słowa: „Mości panowie! Złote pęta! Złote pęta!”?", a:"Stańczyk", b:"Chochoł", c:"Wernyhora", d:"Rycerz"},
+{cat:"Polski", q:"W którym akcie i scenie według notatki pojawia się cytat Stańczyka o złotych pętach?", a:"Akt II, scena 7", b:"Akt I, scena 7", c:"Akt II, scena 23", d:"Akt III, scena 37"},
+{cat:"Polski", q:"Kto wypowiada słowa: „Miałeś, chamie, złoty róg, ostał ci się ino sznur”?", a:"Chochoł", b:"Jasiek", c:"Gospodarz", d:"Stańczyk"},
+{cat:"Polski", q:"W którym akcie i scenie pojawia się cytat o złotym rogu i sznurze?", a:"Akt III, scena 37", b:"Akt I, scena 37", c:"Akt II, scena 7", d:"Akt III, scena 16"},
+{cat:"Polski", q:"Co symbolizuje utrata złotego rogu w „Weselu”?", a:"Zmarnowaną szansę na wspólne działanie i narodowy zryw", b:"Zwycięstwo chłopów nad inteligencją", c:"Bogactwo i powodzenie weselników", d:"Pojednanie wszystkich warstw społecznych"},
+{cat:"Polski", q:"Z jakim historycznym i społecznym problemem wiąże się wiele cytatów z notatki?", a:"Podziałami społecznymi i trudnością we wspólnym działaniu", b:"Wyłącznie konfliktem między artystami", c:"Wyłącznie życiem codziennym w mieście", d:"Rozwojem przemysłu i techniki"},
+{cat:"Polski", q:"Który bohater jest wzorowany na Rudolfie Starzewskim?", a:"Dziennikarz", b:"Poeta", c:"Pan Młody", d:"Gospodarz"},
+{cat:"Polski", q:"Który bohater jest wzorowany na Lucjanie Rydlu?", a:"Pan Młody", b:"Dziennikarz", c:"Czepiec", d:"Nos"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 10;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
