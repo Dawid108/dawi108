@@ -210,8 +210,8 @@ let record =
 let dawid108 =
     localStorage.getItem("dawid108") || 0;
 
-let angielski =
-    localStorage.getItem("angielski") || 0;
+let polski =
+    localStorage.getItem("polski") || 0;
 
 
 // NOWA GRA
@@ -370,12 +370,12 @@ function answer(correct, btn){
         );
 
 
-        angielski =
-            parseInt(angielski) + 10;
+        polski =
+            parseInt(polski) + 10;
 
         localStorage.setItem(
-            "angielski",
-            angielski
+            "polski",
+            polski
         );
 
 
