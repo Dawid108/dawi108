@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Polski", q:"Co symbolizuje czapka z pawimi piórami?", a:"Próżność, prywatę i przywiązanie do dóbr materialnych", b:"Gotowość do walki i poświęcenie dla ojczyzny", c:"Zgodę między chłopami a przedstawicielami inteligencji", d:"Mądrość przywódców i odpowiedzialność za naród"},
+{cat:"Polski", q:"Kto nosił czapkę z pawimi piórami?", a:"Jasiek", b:"Gospodarz", c:"Czepiec", d:"Pan Młody"},
+{cat:"Polski", q:"Dlaczego Jasiek schylił się po czapkę?", a:"Chciał odzyskać czapkę z pawimi piórami", b:"Chciał podnieść złotą podkowę Wernyhory", c:"Chciał odnaleźć zgubione wici weselników", d:"Chciał pomóc Gospodarzowi zebrać kosy"},
+{cat:"Polski", q:"Co Jasiek zgubił, schylając się po czapkę?", a:"Złoty róg", b:"Złotą podkowę", c:"Kosę powstańczą", d:"List od Wernyhory"},
+{cat:"Polski", q:"Co symbolizuje utrata złotego rogu?", a:"Zmarnowanie szansy na narodowe powstanie", b:"Zwycięstwo chłopów nad przedstawicielami inteligencji", c:"Ostateczne zakończenie podziałów społecznych", d:"Odzyskanie przez Polaków pełnej niepodległości"},
+{cat:"Polski", q:"Do czego miał służyć złoty róg?", a:"Do zwołania ludzi i dania sygnału do walki", b:"Do oznajmienia końca wesela i rozpoczęcia tańca", c:"Do wezwania gości na wspólną ucztę", d:"Do przekazania wiadomości o odjeździe Wernyhory"},
+{cat:"Polski", q:"Kto przekazał złoty róg Gospodarzowi?", a:"Wernyhora", b:"Chochoł", c:"Jasiek", d:"Czepiec"},
+{cat:"Polski", q:"Komu Gospodarz przekazał złoty róg?", a:"Jaśkowi", b:"Czepcowi", c:"Panu Młodemu", d:"Poecie"},
+{cat:"Polski", q:"Dlaczego Gospodarz nie wykonał sam powierzonej mu misji?", a:"Przekazał zadanie Jaśkowi, a następnie zasnął", b:"Zgubił róg podczas drogi do kaplicy", c:"Schował podkowę i odmówił udziału w weselu", d:"Wyjechał z Bronowic przed przybyciem Wernyhory"},
+{cat:"Polski", q:"Co symbolizuje chocholi taniec?", a:"Bierność, marazm i niezdolność narodu do działania", b:"Zwycięstwo narodu i odzyskanie niepodległości", c:"Jedność chłopów i inteligencji w walce z zaborcami", d:"Radość społeczeństwa z rozpoczęcia powstania"},
+{cat:"Polski", q:"Kto gra muzykę podczas chocholego tańca?", a:"Chochoł", b:"Wernyhora", c:"Gospodarz", d:"Jasiek"},
+{cat:"Polski", q:"W jaki sposób tańczą bohaterowie w finale dramatu?", a:"Powoli i bezwolnie, pod wpływem muzyki Chochoła", b:"Szybko i radośnie, świętując zwycięstwo powstania", c:"Spokojnie i świadomie, przygotowując się do wymarszu", d:"Uroczyście i zgodnie, witając przybycie Wernyhory"},
+{cat:"Polski", q:"Co oznacza chocholi taniec dla przyszłości Polski?", a:"Naród nie jest gotowy do skutecznej walki o wolność", b:"Naród ostatecznie zwyciężył i odzyskał pełną wolność", c:"Społeczeństwo całkowicie pokonało podziały klasowe", d:"Inteligencja przejęła odpowiedzialność za los chłopów"},
+{cat:"Polski", q:"Co symbolizuje chatka bronowicka?", a:"Polskę w miniaturze, z jej podziałami i problemami", b:"Wyłącznie biedę chłopów i ich trudne warunki życia", c:"Zwycięstwo inteligencji i koniec konfliktów społecznych", d:"Potęgę zaborców i ich przewagę militarną"},
+{cat:"Polski", q:"Kto mieszkał w chacie będącej miejscem akcji dramatu?", a:"Gospodarz, czyli Włodzimierz Tetmajer", b:"Wernyhora, czyli legendarny ukraiński wieszcz", c:"Jasiek, czyli młody chłop z pawimi piórami", d:"Chochoł, czyli postać symbolizująca narodowy marazm"},
+{cat:"Polski", q:"Jakie dwie grupy społeczne spotykają się w chacie?", a:"Chłopi i inteligencja", b:"Szlachta i zaborcy", c:"Mieszczanie i żołnierze", d:"Arystokraci i duchowni"},
+{cat:"Polski", q:"Co ujawnia spotkanie chłopów z inteligencją?", a:"Podziały społeczne i brak prawdziwego porozumienia", b:"Całkowitą zgodę i wspólne rozumienie wszystkich spraw", c:"Pełną niezależność chłopów od pozostałych grup", d:"Zwycięstwo wspólnej polityki nad prywatnymi interesami"},
+{cat:"Polski", q:"Kim jest Wernyhora w tradycji ukraińskiej?", a:"Legendarnym wieszczem, wróżbitą i lirnikiem", b:"Królem Polski, który dowodził wojskami powstańczymi", c:"Chłopem, który zgubił złoty róg podczas wesela", d:"Malarzem, który zamieszkał w bronowickiej chacie"},
+{cat:"Polski", q:"Z czym wiąże się postać Wernyhory w dramacie?", a:"Z zapowiedzią narodowego zrywu i odrodzenia Polski", b:"Z zapowiedzią ostatecznej klęski wszystkich zaborców", c:"Z zakończeniem konfliktów między chłopami i inteligencją", d:"Z rezygnacją Polaków z walki o niepodległość"},
+{cat:"Polski", q:"W jakich okolicznościach pojawia się Wernyhora?", a:"W chacie podczas nocy weselnej", b:"Przed kaplicą następnego dnia po weselu", c:"Na polu bitwy podczas walk powstańczych", d:"W domu Jaśka po utracie złotego rogu"},
+{cat:"Polski", q:"W jaki sposób Wernyhora przybywa do chaty?", a:"Jako tajemnicza, dostojna postać na koniu", b:"Jako młody chłop niosący kosę powstańczą", c:"Jako weselnik trzymający czapkę z piórami", d:"Jako muzyk grający melodię chocholego tańca"},
+{cat:"Polski", q:"Dlaczego Wernyhora wybiera Gospodarza?", a:"Gospodarz łączy inteligencję ze środowiskiem chłopskim", b:"Gospodarz jest najbogatszym człowiekiem w całej Polsce", c:"Gospodarz wcześniej dowodził zwycięskim powstaniem", d:"Gospodarz potrafi samodzielnie pokonać wszystkich zaborców"},
+{cat:"Polski", q:"Jaką misję Wernyhora powierza Gospodarzowi?", a:"Zorganizowanie powstania przeciwko zaborcom", b:"Zakończenie wesela i wyjazd wszystkich gości", c:"Odnalezienie Chochoła i przerwanie jego muzyki", d:"Zebranie kosztowności i ukrycie ich w skrzyni"},
+{cat:"Polski", q:"Co oznaczały wici rozsyłane przez Gospodarza?", a:"Wezwania do ludzi, aby przygotowali się do walki", b:"Zaproszenia dla gości na kolejne przyjęcie weselne", c:"Wiadomości o konieczności ukrycia złotej podkowy", d:"Rozkazy nakazujące chłopom opuszczenie Bronowic"},
+{cat:"Polski", q:"Kiedy mieli się zgromadzić wezwani ludzie?", a:"O świcie przed kaplicą", b:"O północy przed bronowicką chatą", c:"Wieczorem na polu poza wsią", d:"W południe na rynku pobliskiego miasta"},
+{cat:"Polski", q:"Co miał oznaczać dźwięk złotego rogu?", a:"Sygnał do zgromadzenia się i rozpoczęcia walki", b:"Sygnał do zakończenia wesela i powrotu do domów", c:"Sygnał do schowania kosztowności w skrzyni", d:"Sygnał do rozpoczęcia chocholego tańca"},
+{cat:"Polski", q:"Co stało się ze złotą podkową Wernyhory?", a:"Gospodyni schowała ją do skrzyni", b:"Jasiek zgubił ją razem ze złotym rogiem", c:"Gospodarz przekazał ją wszystkim zgromadzonym", d:"Wernyhora wręczył ją Chochołowi przed odjazdem"},
+{cat:"Polski", q:"Kto schował złotą podkowę?", a:"Gospodyni", b:"Gospodarz", c:"Jasiek", d:"Czepiec"},
+{cat:"Polski", q:"Dlaczego Gospodyni schowała złotą podkowę?", a:"Traktowała ją jako przedmiot przynoszący szczęście", b:"Chciała wykorzystać ją jako sygnał do walki", c:"Zamierzała przekazać ją Wernyhorze następnego dnia", d:"Chciała sprzedać ją, aby sfinansować powstanie"},
+{cat:"Polski", q:"Jak można interpretować schowanie złotej podkowy?", a:"Jako odłożenie wspólnego szczęścia na później i prywatyzację daru", b:"Jako dowód gotowości do natychmiastowej walki narodowej", c:"Jako znak pełnego porozumienia wszystkich grup społecznych", d:"Jako symbol ostatecznego zwycięstwa nad zaborcami"},
+{cat:"Polski", q:"Co bezpośrednio uniemożliwiło wykorzystanie złotego rogu?", a:"Jasiek zgubił go, gdy schylił się po czapkę", b:"Wernyhora zabrał go przed odjazdem z Bronowic", c:"Gospodyni schowała go razem ze złotą podkową", d:"Chochoł zniszczył go podczas weselnego tańca"},
+{cat:"Polski", q:"Jakie znaczenie ma utrata rogu dla planowanego powstania?", a:"Ludzie nie otrzymują sygnału do wspólnego działania", b:"Wszyscy natychmiast rozpoczynają walkę z zaborcami", c:"Gospodarz samodzielnie prowadzi chłopów do zwycięstwa", d:"Wernyhora zmienia termin zbiórki na kolejny dzień"},
+{cat:"Polski", q:"Jaką postawę Gospodarza pokazuje jego zaśnięcie?", a:"Brak konsekwencji i niezdolność do sprostania misji", b:"Pełną odpowiedzialność i gotowość do przewodzenia", c:"Odwagę i umiejętność podejmowania trudnych decyzji", d:"Determinację w dążeniu do odzyskania niepodległości"},
+{cat:"Polski", q:"Jak została ukazana inteligencja jako grupa społeczna?", a:"Jako niezdolna do skutecznego przewodzenia narodowi", b:"Jako całkowicie przygotowana do kierowania powstaniem", c:"Jako wolna od egoizmu i konfliktów wewnętrznych", d:"Jako grupa posiadająca pełne zaufanie wszystkich chłopów"},
+{cat:"Polski", q:"Czym jest chłopomania?", a:"Powierzchownym zachwytem inteligencji nad życiem wiejskim", b:"Całkowitym odrzuceniem wsi przez przedstawicieli inteligencji", c:"Politycznym programem natychmiastowego uwłaszczenia chłopów", d:"Ruchem wojskowym organizowanym przez chłopów i szlachtę"},
+{cat:"Polski", q:"Co świadczy o powierzchowności chłopomanii?", a:"Zachwyt wsią nie prowadzi do rzeczywistego porozumienia", b:"Inteligencja całkowicie rezygnuje z zainteresowania chłopami", c:"Chłopi od początku odmawiają udziału w każdym powstaniu", d:"Wszyscy weselnicy zgodnie przygotowują plan walki"},
+{cat:"Polski", q:"Czego potrzebują chłopi, aby skutecznie walczyć?", a:"Mądrego przywództwa i odpowiedzialnej organizacji", b:"Kolejnych kosztowności oraz większego majątku prywatnego", c:"Rezygnacji z własnej tożsamości i życia na wsi", d:"Zgody na podporządkowanie się wszystkim zaborcom"},
+{cat:"Polski", q:"Jaką rolę odgrywają chłopi w planowanym powstaniu?", a:"Są gotowi do walki, ale brakuje im skutecznego przywództwa", b:"Odmawiają pomocy i od początku popierają zaborców", c:"Samodzielnie prowadzą powstanie bez żadnych przeszkód", d:"Nie wiedzą o planach i nie zostają wezwani do zbiórki"},
+{cat:"Polski", q:"Co powoduje uśpienie bohaterów w zakończeniu dramatu?", a:"Muzyka Chochoła po utracie szansy na wspólne działanie", b:"Zwycięski sygnał złotego rogu rozbrzmiewający nad wsią", c:"Przybycie wojsk polskich i zakończenie walk z zaborcami", d:"Uroczyste przemówienie Gospodarza przed kaplicą"},
+{cat:"Polski", q:"Jakie znaczenie mają kosy chłopów w kontekście dramatu?", a:"Przypominają o gotowości do walki, która nie zostaje wykorzystana", b:"Symbolizują zwycięstwo i zakończenie narodowego powstania", c:"Oznaczają rezygnację chłopów z udziału w wydarzeniach", d:"Stanowią dowód, że wszyscy bohaterowie są uzbrojeni w broń palną"},
+{cat:"Polski", q:"Jaka jest główna przyczyna klęski przedstawiona w dramacie?", a:"Połączenie bierności, prywaty i braku porozumienia", b:"Wyłącznie przewaga militarna wojsk polskich nad zaborcami", c:"Wyłącznie brak chęci do walki wśród wszystkich chłopów", d:"Przede wszystkim nieobecność Wernyhory podczas wesela"},
+{cat:"Polski", q:"Co łączy symbole czapki z piórami i złotego rogu?", a:"Pokazują, jak prywatny interes niszczy szansę na wspólny cel", b:"Przedstawiają dwa znaki zwycięstwa i odzyskanej niepodległości", c:"Symbolizują zgodę społeczną i odpowiedzialność przywódców", d:"Oznaczają bogactwo narodu i koniec wszystkich podziałów"},
+{cat:"Polski", q:"Jakie przesłanie niesie finał „Wesela”?", a:"Bez jedności i zdolności do działania naród nie odzyska wolności", b:"Samo posiadanie broni gwarantuje narodowi zwycięstwo", c:"Wystarczy przybycie legendarnego wieszcza, by pokonać zaborców", d:"Prywatne korzyści są ważniejsze niż wspólna sprawa narodowa"},
+{cat:"Polski", q:"Dlaczego chatę bronowicką można uznać za obraz całej Polski?", a:"Spotykają się w niej różne grupy społeczne z ich konfliktami", b:"Mieszkają w niej wyłącznie przedstawiciele polskiej arystokracji", c:"Jest miejscem, w którym zapada decyzja o zwycięskim powstaniu", d:"Przedstawia kraj pozbawiony jakichkolwiek różnic społecznych"},
+{cat:"Polski", q:"Jakie trzy najważniejsze problemy społeczne ukazuje „Wesele”?", a:"Bierność, brak porozumienia i nieodpowiedzialność przywódców", b:"Bogactwo, zwycięstwo militarne i pełną zgodę narodową", c:"Rozwój przemysłu, handel zagraniczny i reformy gospodarcze", d:"Nadmierną edukację, postęp techniczny i rozwój miast"},
+{cat:"Polski", q:"Co powinno było nastąpić po rozesłaniu wici?", a:"Zgromadzenie ludzi o świcie i rozpoczęcie przygotowań do walki", b:"Schowanie wszystkich kos i powrót weselników do domów", c:"Rozpoczęcie uroczystości i wybór nowego gospodarza wesela", d:"Odłożenie powstania do czasu kolejnego spotkania z Wernyhorą"},
+{cat:"Polski", q:"Dlaczego brak sygnału złotego rogu jest tak ważny?", a:"Uniemożliwia zorganizowanie ludzi zgodnie z planem Wernyhory", b:"Powoduje, że zaborcy natychmiast opuszczają polskie ziemie", c:"Sprawia, że Gospodarz otrzymuje od Chochoła nową misję", d:"Daje chłopom możliwość samodzielnego ogłoszenia zwycięstwa"},
+{cat:"Polski", q:"Jaki związek zachodzi między chocholim tańcem a utratą rogu?", a:"Utrata rogu przekreśla mobilizację, a taniec ukazuje narodową niemoc", b:"Utrata rogu rozpoczyna taniec zwycięstwa po udanym powstaniu", c:"Taniec umożliwia odnalezienie rogu i zebranie wszystkich chłopów", d:"Oba wydarzenia potwierdzają, że Polacy odzyskali niepodległość"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 10;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
