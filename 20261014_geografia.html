@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Geografia", q:"Czym jest smog?", a:"Zanieczyszczeniem powietrza z dymu, spalin i mgły", b:"Zanieczyszczeniem wód przez nawozy i ścieki", c:"Zjawiskiem wzrostu temperatury wraz z wysokością", d:"Nadmiernym nagrzewaniem powierzchni przez Słońce"},
+{cat:"Geografia", q:"Na czym polega inwersja termiczna?", a:"Temperatura powietrza wzrasta wraz z wysokością", b:"Temperatura powietrza spada wraz z wysokością", c:"Temperatura powietrza jest taka sama na każdej wysokości", d:"Temperatura powietrza zmienia się wyłącznie zimą"},
+{cat:"Geografia", q:"Co utrudnia rozprzestrzenianie zanieczyszczeń podczas inwersji termicznej?", a:"Zatrzymywanie chłodnego powietrza przy powierzchni", b:"Silne mieszanie powietrza na dużych wysokościach", c:"Szybkie usuwanie spalin przez opady śniegu", d:"Zmniejszenie ilości zanieczyszczeń w atmosferze"},
+{cat:"Geografia", q:"Kiedy powstaje głównie smog typu londyńskiego?", a:"Zimą, przy dużej wilgotności i spalaniu węgla", b:"Latem, przy silnym słońcu i dużym ruchu samochodowym", c:"Wiosną, przy intensywnym parowaniu wód", d:"Jesienią, przy dużym nasłonecznieniu i suszy"},
+{cat:"Geografia", q:"Co jest główną przyczyną smogu typu londyńskiego?", a:"Spalanie węgla przy dużej wilgotności powietrza", b:"Silne nasłonecznienie i spaliny samochodowe", c:"Nadmierne nawożenie pól związkami azotu", d:"Wzrost temperatury oceanów i topnienie lodowców"},
+{cat:"Geografia", q:"Kiedy powstaje głównie smog typu Los Angeles?", a:"Latem, przy silnym nasłonecznieniu i dużym ruchu samochodowym", b:"Zimą, przy dużej wilgotności i spalaniu węgla", c:"Wiosną, przy niskich temperaturach i opadach śniegu", d:"Jesienią, przy silnych wiatrach i niskim nasłonecznieniu"},
+{cat:"Geografia", q:"Co sprzyja powstawaniu smogu typu Los Angeles?", a:"Silne nasłonecznienie i spaliny samochodowe", b:"Spalanie węgla i duża wilgotność zimą", c:"Nadmierne nawożenie gleb i rozwój glonów", d:"Wzrost ilości ozonu w stratosferze"},
+{cat:"Geografia", q:"Czym jest globalne ocieplenie?", a:"Wzrostem średniej temperatury na Ziemi", b:"Spadkiem średniej temperatury na Ziemi", c:"Zmniejszeniem ilości tlenu w atmosferze", d:"Wzrostem zasolenia wszystkich oceanów"},
+{cat:"Geografia", q:"Co jest główną przyczyną współczesnego globalnego ocieplenia?", a:"Działalność człowieka zwiększająca ilość gazów cieplarnianych", b:"Wyłącznie zmiany pór roku na półkuli północnej", c:"Zmniejszenie ilości soli w wodach oceanicznych", d:"Naturalne przemieszczanie się kontynentów"},
+{cat:"Geografia", q:"Czym jest efekt cieplarniany?", a:"Zatrzymywaniem części ciepła w atmosferze przez gazy cieplarniane", b:"Odbijaniem całego ciepła z powierzchni Ziemi w kosmos", c:"Zmniejszaniem temperatury atmosfery przez chmury", d:"Przenikaniem promieniowania UV przez skorupę ziemską"},
+{cat:"Geografia", q:"Czy naturalny efekt cieplarniany jest potrzebny do życia na Ziemi?", a:"Tak, pomaga utrzymać temperaturę odpowiednią do życia", b:"Nie, zawsze powoduje niebezpieczny wzrost temperatury", c:"Nie, ponieważ całkowicie zatrzymuje światło słoneczne", d:"Tak, ponieważ usuwa z atmosfery wszystkie zanieczyszczenia"},
+{cat:"Geografia", q:"Czym są gazy cieplarniane?", a:"Gazami zatrzymującymi ciepło w atmosferze", b:"Gazami usuwającymi całe ciepło z atmosfery", c:"Gazami występującymi wyłącznie w oceanach", d:"Gazami powodującymi jedynie kwaśne opady"},
+{cat:"Geografia", q:"Który zestaw zawiera wyłącznie przykłady gazów cieplarnianych?", a:"Dwutlenek węgla, metan i para wodna", b:"Tlen, azot i wodór", c:"Hel, neon i argon", d:"Ozon, tlen i azot wyłącznie"},
+{cat:"Geografia", q:"Czym są kwaśne opady?", a:"Opadami o podwyższonej kwasowości", b:"Opadami zawierającymi nadmierną ilość soli", c:"Opadami o wyjątkowo wysokiej temperaturze", d:"Opadami powstającymi wyłącznie nad oceanami"},
+{cat:"Geografia", q:"Co przyczynia się do powstawania kwaśnych opadów?", a:"Zanieczyszczenia pochodzące z przemysłu i transportu", b:"Nadmierny rozwój glonów w jeziorach", c:"Stosowanie płodozmianu na polach uprawnych", d:"Wykorzystywanie maszyn podczas zbiorów"},
+{cat:"Geografia", q:"Czym jest dziura ozonowa?", a:"Znacznym zmniejszeniem ilości ozonu w stratosferze", b:"Całkowitym brakiem tlenu w dolnych warstwach atmosfery", c:"Zwiększeniem ilości ozonu w wodach oceanicznych", d:"Zmniejszeniem ilości dwutlenku węgla w troposferze"},
+{cat:"Geografia", q:"Jaki jest skutek powiększania się dziury ozonowej?", a:"Więcej szkodliwego promieniowania UV dociera do Ziemi", b:"Mniej szkodliwego promieniowania UV dociera do Ziemi", c:"Całkowicie ustaje naturalny efekt cieplarniany", d:"Wzrasta ilość tlenu rozpuszczonego w jeziorach"},
+{cat:"Geografia", q:"Czym jest eutrofizacja wód?", a:"Nadmiernym wzbogaceniem wód w związki azotu i fosforu", b:"Zmniejszeniem ilości minerałów w wodach jezior", c:"Nadmiernym zasoleniem wód przez parowanie", d:"Niszczeniem brzegów rzek przez działanie lodu"},
+{cat:"Geografia", q:"Jaki skutek powoduje eutrofizacja wód?", a:"Intensywny rozwój glonów", b:"Całkowite usunięcie glonów z wody", c:"Zmniejszenie ilości substancji odżywczych", d:"Powstawanie dziury ozonowej nad jeziorem"},
+{cat:"Geografia", q:"Jakie związki najczęściej powodują eutrofizację wód?", a:"Związki azotu i fosforu", b:"Związki tlenu i wodoru", c:"Związki helu i neonu", d:"Związki srebra i złota"},
+{cat:"Geografia", q:"Czym jest erozja?", a:"Niszczeniem i przemieszczaniem gleby lub skał", b:"Wzbogacaniem gleby w nawozy sztuczne", c:"Planową zmianą gatunków roślin na polu", d:"Zatrzymywaniem ciepła przez atmosferę"},
+{cat:"Geografia", q:"Jakie czynniki mogą powodować erozję?", a:"Woda, wiatr i lód", b:"Wyłącznie promieniowanie słoneczne", c:"Tylko nawozy i pestycydy", d:"Wyłącznie maszyny rolnicze"},
+{cat:"Geografia", q:"Czym są pestycydy?", a:"Środkami chemicznymi do zwalczania szkodników, chwastów i chorób roślin", b:"Maszynami wykorzystywanymi do zbioru roślin", c:"Naturalnymi opadami poprawiającymi wilgotność gleby", d:"Metodami zmiany roślin uprawianych na polu"},
+{cat:"Geografia", q:"Do czego stosuje się pestycydy?", a:"Do zwalczania szkodników, chwastów i chorób roślin", b:"Do nawadniania pól i odprowadzania nadmiaru wody", c:"Do zwiększania ilości ozonu w atmosferze", d:"Do przemieszczania gleby przez wiatr i wodę"},
+{cat:"Geografia", q:"Czym jest monokultura?", a:"Uprawianiem tego samego gatunku roślin przez dłuższy czas", b:"Uprawianiem różnych gatunków roślin każdego roku", c:"Naprzemiennym nawadnianiem i odwadnianiem pól", d:"Stosowaniem maszyn do wszystkich prac polowych"},
+{cat:"Geografia", q:"Jaka cecha jest charakterystyczna dla monokultury?", a:"Długotrwała uprawa jednego gatunku roślin na danym obszarze", b:"Coroczna zmiana gatunków roślin na tym samym polu", c:"Jednoczesna uprawa wszystkich gatunków roślin", d:"Całkowita rezygnacja z uprawiania roślin"},
+{cat:"Geografia", q:"Czym jest płodozmian?", a:"Planową zmianą gatunków roślin uprawianych w kolejnych latach", b:"Uprawianiem jednego gatunku roślin przez wiele lat", c:"Stosowaniem wyłącznie nawozów sztucznych na polu", d:"Odprowadzaniem nadmiaru wody z gleby"},
+{cat:"Geografia", q:"Jaki jest cel stosowania płodozmianu?", a:"Utrzymanie żyzności gleby i ograniczenie jej wyjałowienia", b:"Stałe zwiększanie ilości pestycydów w glebie", c:"Zastąpienie wszystkich prac rolniczych maszynami", d:"Przyspieszenie wzrostu temperatury powietrza"},
+{cat:"Geografia", q:"Czym jest chemizacja rolnictwa?", a:"Stosowaniem nawozów sztucznych i środków ochrony roślin", b:"Wykorzystywaniem maszyn do prac na polach", c:"Planową zmianą gatunków roślin uprawnych", d:"Odwadnianiem lub nawadnianiem gruntów rolnych"},
+{cat:"Geografia", q:"Jaki jest cel chemizacji rolnictwa?", a:"Zwiększenie plonów dzięki stosowaniu środków chemicznych", b:"Zmniejszenie ilości uprawianych roślin na polach", c:"Całkowite zaprzestanie stosowania nawozów", d:"Zwiększenie erozji gleby przez wiatr"},
+{cat:"Geografia", q:"Czym jest mechanizacja rolnictwa?", a:"Wykorzystywaniem maszyn i urządzeń do prac rolniczych", b:"Stosowaniem nawozów i pestycydów do upraw", c:"Planowym zmienianiem gatunków roślin na polu", d:"Poprawianiem stosunków wodnych w glebie"},
+{cat:"Geografia", q:"Który przykład przedstawia mechanizację rolnictwa?", a:"Wykorzystywanie ciągnika i kombajnu podczas prac polowych", b:"Stosowanie nawozów sztucznych do zwiększania plonów", c:"Zwalczanie chwastów za pomocą pestycydów", d:"Zmiana gatunków roślin uprawianych w kolejnych latach"},
+{cat:"Geografia", q:"Czym jest melioracja?", a:"Zabiegami poprawiającymi stosunki wodne gleby", b:"Zabiegami zwiększającymi ilość gazów cieplarnianych", c:"Uprawianiem jednego gatunku roślin przez wiele lat", d:"Zwalczaniem chorób i szkodników roślin"},
+{cat:"Geografia", q:"Które działania są przykładami melioracji?", a:"Odwadnianie lub nawadnianie pól", b:"Zwiększanie ruchu samochodowego i emisji spalin", c:"Stosowanie pestycydów i nawozów sztucznych", d:"Uprawianie jednego gatunku roślin przez wiele lat"},
+{cat:"Geografia", q:"Które pojęcie oznacza wzrost temperatury powietrza wraz z wysokością?", a:"Inwersja termiczna", b:"Globalne ocieplenie", c:"Eutrofizacja wód", d:"Melioracja"},
+{cat:"Geografia", q:"Który rodzaj smogu jest związany przede wszystkim ze spalaniem węgla zimą?", a:"Smog typu londyńskiego", b:"Smog typu Los Angeles", c:"Smog powstający wyłącznie nad oceanami", d:"Smog związany wyłącznie z nawożeniem pól"},
+{cat:"Geografia", q:"Który rodzaj smogu powstaje przy silnym nasłonecznieniu i dużym ruchu samochodowym?", a:"Smog typu Los Angeles", b:"Smog typu londyńskiego", c:"Smog powstający wyłącznie podczas opadów śniegu", d:"Smog związany wyłącznie ze spalaniem drewna zimą"},
+{cat:"Geografia", q:"Które pojęcie oznacza zatrzymywanie części ciepła w atmosferze?", a:"Efekt cieplarniany", b:"Dziura ozonowa", c:"Kwaśne opady", d:"Erozja"},
+{cat:"Geografia", q:"Które pojęcie oznacza wzrost średniej temperatury na Ziemi?", a:"Globalne ocieplenie", b:"Inwersja termiczna", c:"Eutrofizacja wód", d:"Melioracja"},
+{cat:"Geografia", q:"Które pojęcie dotyczy zmniejszenia ilości ozonu w stratosferze?", a:"Dziura ozonowa", b:"Efekt cieplarniany", c:"Kwaśne opady", d:"Monokultura"},
+{cat:"Geografia", q:"Które pojęcie oznacza niszczenie i przemieszczanie gleby przez wodę, wiatr lub lód?", a:"Erozja", b:"Eutrofizacja", c:"Chemizacja", d:"Mechanizacja"},
+{cat:"Geografia", q:"Która metoda polega na planowej zmianie roślin uprawianych na tym samym polu?", a:"Płodozmian", b:"Monokultura", c:"Melioracja", d:"Mechanizacja"},
+{cat:"Geografia", q:"Które pojęcie oznacza wykorzystanie maszyn i urządzeń w rolnictwie?", a:"Mechanizacja rolnictwa", b:"Chemizacja rolnictwa", c:"Eutrofizacja wód", d:"Inwersja termiczna"},
+{cat:"Geografia", q:"Które pojęcie oznacza poprawianie stosunków wodnych gleby?", a:"Melioracja", b:"Erozja", c:"Pestycydy", d:"Monokultura"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let geografia =
+    localStorage.getItem("geografia") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        geografia =
+            parseInt(geografia) + 10;
+
+        localStorage.setItem(
+            "geografia",
+            geografia
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
