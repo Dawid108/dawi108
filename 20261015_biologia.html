@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Biologia", q:"Jak działa hormon wzrostu?", a:"Pobudza wzrost organizmu i przemiany składników odżywczych.", b:"Hamuje wzrost organizmu i przemiany składników odżywczych.", c:"Pobudza odporność organizmu i obniża poziom glukozy.", d:"Reguluje sen organizmu i zwiększa poziom wapnia."},
+{cat:"Biologia", q:"Jaki hormon pobudza produkcję mleka po porodzie i hamuje owulację?", a:"Prolaktyna (PRL).", b:"Oksytocyna (OXY).", c:"Progesteron (PGR).", d:"Melatonina (MEL)."},
+{cat:"Biologia", q:"Jaką funkcję pełnią hormony TSH, ACTH, FSH i LH?", a:"Pobudzają tarczycę, korę nadnerczy i gonady do pracy.", b:"Hamują tarczycę, korę nadnerczy i gonady.", c:"Regulują sen, czuwanie i gospodarkę wodną organizmu.", d:"Obniżają poziom wapnia i glukozy we krwi."},
+{cat:"Biologia", q:"Jak inaczej nazywa się hormon antydiuretyczny (ADH)?", a:"Wazopresyna.", b:"Prolaktyna.", c:"Oksytocyna.", d:"Tyroksyna."},
+{cat:"Biologia", q:"Jak działa hormon antydiuretyczny (ADH)?", a:"Reguluje ilość wody w organizmie i zagęszcza mocz.", b:"Reguluje poziom wapnia i rozrzedza mocz.", c:"Przyspiesza metabolizm i zwiększa ilość moczu.", d:"Podwyższa poziom glukozy i zmniejsza ilość wody."},
+{cat:"Biologia", q:"Który hormon wywołuje skurcze macicy podczas porodu?", a:"Oksytocyna.", b:"Prolaktyna.", c:"Progesteron.", d:"Adrenalina."},
+{cat:"Biologia", q:"Jaką dodatkową funkcję pełni oksytocyna u kobiet po porodzie?", a:"Ułatwia wydzielanie mleka.", b:"Hamuje produkcję mleka.", c:"Obniża poziom wapnia we krwi.", d:"Przyspiesza dojrzewanie limfocytów T."},
+{cat:"Biologia", q:"Jak działa oksytocyna u mężczyzn podczas ejakulacji?", a:"Powoduje skurcze nasieniowodów.", b:"Powoduje rozluźnienie nasieniowodów.", c:"Pobudza produkcję testosteronu w jądrach.", d:"Hamuje rozwój męskich narządów rozrodczych."},
+{cat:"Biologia", q:"Który gruczoł wydziela melatoninę?", a:"Szyszynka.", b:"Przysadka mózgowa.", c:"Tarczyca.", d:"Grasica."},
+{cat:"Biologia", q:"Jaką funkcję pełni melatonina?", a:"Reguluje rytm snu i czuwania.", b:"Reguluje poziom wapnia i fosforu.", c:"Reguluje poziom glukozy i insuliny.", d:"Reguluje wzrost mięśni i kości."},
+{cat:"Biologia", q:"Który hormon obniża poziom wapnia we krwi?", a:"Kalcytonina.", b:"Parathormon.", c:"Glukagon.", d:"Kortyzol."},
+{cat:"Biologia", q:"Który gruczoł wydziela kalcytoninę?", a:"Tarczyca.", b:"Przytarczyce.", c:"Trzustka.", d:"Nadnercza."},
+{cat:"Biologia", q:"Jak działają tyroksyna i trójjodotyronina?", a:"Przyspieszają metabolizm i ułatwiają wchłanianie glukozy.", b:"Spowalniają metabolizm i utrudniają wchłanianie glukozy.", c:"Obniżają poziom wapnia i przyspieszają sen.", d:"Hamują wzrost i zmniejszają odporność organizmu."},
+{cat:"Biologia", q:"Który gruczoł wydziela tyroksynę i trójjodotyroninę?", a:"Tarczyca.", b:"Szyszynka.", c:"Przytarczyce.", d:"Grasica."},
+{cat:"Biologia", q:"Który hormon podwyższa poziom wapnia we krwi?", a:"Parathormon.", b:"Kalcytonina.", c:"Insulina.", d:"Melatonina."},
+{cat:"Biologia", q:"Który gruczoł wydziela parathormon?", a:"Przytarczyce.", b:"Tarczyca.", c:"Nadnercza.", d:"Przysadka mózgowa."},
+{cat:"Biologia", q:"Jaką funkcję pełni tymozyna?", a:"Przyspiesza dojrzewanie limfocytów T.", b:"Hamuje dojrzewanie limfocytów T.", c:"Przyspiesza dojrzewanie czerwonych krwinek.", d:"Pobudza produkcję mleka po porodzie."},
+{cat:"Biologia", q:"Który gruczoł wydziela tymozynę?", a:"Grasica.", b:"Szyszynka.", c:"Trzustka.", d:"Jajniki."},
+{cat:"Biologia", q:"Który hormon zwiększa ciśnienie krwi, tętno, częstotliwość oddechów i poziom glukozy?", a:"Adrenalina.", b:"Insulina.", c:"Melatonina.", d:"Kalcytonina."},
+{cat:"Biologia", q:"Który gruczoł wydziela adrenalinę?", a:"Nadnercza.", b:"Przytarczyce.", c:"Trzustka.", d:"Szyszynka."},
+{cat:"Biologia", q:"Jak działa kortyzol?", a:"Podwyższa glukozę, działa przeciwzapalnie i obniża odporność.", b:"Obniża glukozę, działa przeciwzapalnie i zwiększa odporność.", c:"Podwyższa wapń, przyspiesza sen i zwiększa odporność.", d:"Obniża wapń, hamuje metabolizm i zwiększa odporność."},
+{cat:"Biologia", q:"Który gruczoł wydziela kortyzol?", a:"Nadnercza.", b:"Tarczyca.", c:"Grasica.", d:"Jądra."},
+{cat:"Biologia", q:"Który hormon obniża poziom glukozy we krwi?", a:"Insulina.", b:"Glukagon.", c:"Adrenalina.", d:"Kortyzol."},
+{cat:"Biologia", q:"Jak insulina wpływa na glukozę?", a:"Obniża jej poziom i umożliwia magazynowanie w postaci glikogenu.", b:"Podwyższa jej poziom i pobudza rozkład glikogenu.", c:"Obniża jej poziom i pobudza rozkład glikogenu.", d:"Podwyższa jej poziom i umożliwia magazynowanie w postaci glikogenu."},
+{cat:"Biologia", q:"Który gruczoł wydziela insulinę?", a:"Trzustka.", b:"Nadnercza.", c:"Tarczyca.", d:"Przysadka mózgowa."},
+{cat:"Biologia", q:"Który hormon podwyższa poziom glukozy we krwi?", a:"Glukagon.", b:"Insulina.", c:"Kalcytonina.", d:"Oksytocyna."},
+{cat:"Biologia", q:"Jak glukagon podwyższa poziom glukozy we krwi?", a:"Pobudza rozkład glikogenu w wątrobie.", b:"Pobudza magazynowanie glukozy w mięśniach.", c:"Hamuje rozkład glikogenu w wątrobie.", d:"Pobudza wydzielanie glukozy z wapnia w kościach."},
+{cat:"Biologia", q:"Który hormon odpowiada za rozwój męskich narządów rozrodczych?", a:"Testosteron.", b:"Estrogen.", c:"Progesteron.", d:"Prolaktyna."},
+{cat:"Biologia", q:"Który gruczoł wydziela testosteron?", a:"Jądra.", b:"Jajniki.", c:"Trzustka.", d:"Przytarczyce."},
+{cat:"Biologia", q:"Za co odpowiada testosteron?", a:"Za rozwój męskich narządów, mięśni, owłosienia i obniżenie głosu.", b:"Za rozwój żeńskich narządów, mięśni, owłosienia i obniżenie głosu.", c:"Za rozwój męskich narządów, produkcję mleka i podwyższenie głosu.", d:"Za rozwój żeńskich narządów, produkcję mleka i obniżenie głosu."},
+{cat:"Biologia", q:"Które hormony odpowiadają za rozwój żeńskich narządów rozrodczych i kobiece cechy płciowe?", a:"Estrogeny.", b:"Androgeny.", c:"Glikokortykoidy.", d:"Hormony tropowe."},
+{cat:"Biologia", q:"Który gruczoł wydziela estrogeny?", a:"Jajniki.", b:"Jądra.", c:"Nadnercza.", d:"Szyszynka."},
+{cat:"Biologia", q:"Za jakie zmiany odpowiadają estrogeny?", a:"Za kobiecą sylwetkę, głos, owłosienie i zmiany cyklu miesiączkowego.", b:"Za męską sylwetkę, głos, owłosienie i zmiany cyklu miesiączkowego.", c:"Za kobiecą sylwetkę, wzrost mięśni i obniżenie głosu.", d:"Za rozwój kości, dojrzewanie limfocytów i rytm snu."},
+{cat:"Biologia", q:"Jaką funkcję pełni progesteron?", a:"Przygotowuje błonę śluzową macicy do ciąży i pomaga ją utrzymać.", b:"Hamuje przygotowanie macicy do ciąży i wywołuje owulację.", c:"Przygotowuje jajniki do produkcji mleka i hamuje ciążę.", d:"Przyspiesza metabolizm i obniża poziom glukozy."},
+{cat:"Biologia", q:"Który gruczoł wydziela progesteron?", a:"Jajniki.", b:"Jądra.", c:"Tarczyca.", d:"Grasica."},
+{cat:"Biologia", q:"Który hormon obniża poziom glukozy, a który go podwyższa?", a:"Insulina obniża, a glukagon podwyższa.", b:"Glukagon obniża, a insulina podwyższa.", c:"Adrenalina obniża, a insulina podwyższa.", d:"Kortyzol obniża, a melatonina podwyższa."},
+{cat:"Biologia", q:"Który hormon obniża poziom wapnia, a który go podwyższa?", a:"Kalcytonina obniża, a parathormon podwyższa.", b:"Parathormon obniża, a kalcytonina podwyższa.", c:"Insulina obniża, a glukagon podwyższa.", d:"Melatonina obniża, a adrenalina podwyższa."},
+{cat:"Biologia", q:"Który hormon kojarzy się przede wszystkim ze snem?", a:"Melatonina.", b:"Adrenalina.", c:"Testosteron.", d:"Glukagon."},
+{cat:"Biologia", q:"Który hormon odpowiada za mobilizację organizmu w sytuacji stresowej?", a:"Adrenalina.", b:"Insulina.", c:"Progesteron.", d:"Kalcytonina."},
+{cat:"Biologia", q:"Który hormon odpowiada za wzrost organizmu?", a:"Hormon wzrostu.", b:"Hormon antydiuretyczny.", c:"Hormon luteinizujący.", d:"Hormon antyzapalny."},
+{cat:"Biologia", q:"Który zestaw hormonów jest wydzielany przez przysadkę mózgową?", a:"Hormon wzrostu, prolaktyna, TSH, ACTH, FSH i LH.", b:"Insulina, glukagon, kalcytonina, melatonina i adrenalina.", c:"Testosteron, estrogeny, progesteron, tyroksyna i kortyzol.", d:"Tymozyna, parathormon, oksytocyna, insulina i glukagon."},
+{cat:"Biologia", q:"Które hormony podwzgórza są magazynowane i uwalniane przez przysadkę?", a:"ADH (wazopresyna) i oksytocyna.", b:"TSH i ACTH.", c:"Insulina i glukagon.", d:"Estrogeny i progesteron."}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let biologia =
+    localStorage.getItem("biologia") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        biologia =
+            parseInt(biologia) + 10;
+
+        localStorage.setItem(
+            "biologia",
+            biologia
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
