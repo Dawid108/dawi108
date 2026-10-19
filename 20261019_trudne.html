@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Słówka na Angielski</title>
+
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+<div id="game">
+
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+
+    <div class="category" id="category"></div>
+
+    <div class="question" id="question"></div>
+
+    <!-- WPISYWANIE ODPOWIEDZI -->
+    <div id="answers">
+
+        <input
+            type="text"
+            id="answerInput"
+            placeholder="Wpisz słówko po angielsku"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+        >
+
+        <button
+            id="checkButton"
+            onclick="checkAnswer()"
+        >
+            Sprawdź
+        </button>
+
+    </div>
+
+    <div id="result"></div>
+
+    <div id="counter"></div>
+
+</div>
+
+
+<div id="endScreen" class="hidden">
+
+    <h2 id="endTitle"></h2>
+
+    <p>
+        Twój wynik:
+        <span id="finalScore"></span>
+    </p>
+
+    <p>
+        Twój rekord:
+        <span id="record"></span>
+    </p>
+
+    <p>
+        Suma punktów:
+        <span id="dawid108"></span>
+    </p>
+
+    <button onclick="newGame()">
+        Nowa Gra
+    </button>
+
+</div>
+
+
+<script>
+
+let questions = [
+  {cat:"Angielski", q:"mieć reakcję alergiczną", a:"suffer from an allergic reaction", b:"sustain a minor medical condition", c:"support an allergic phenomenon", d:"supply an active reaction"},
+  {cat:"Angielski", q:"zostać użądlonym przez osę", a:"be stung by a wasp", b:"be bitten by a snake", c:"burn skin by acid", d:"break bone in arm"},
+  {cat:"Angielski", q:"nie reagować, nie wykazywać znaków życia", a:"be unresponsive", b:"be unconscious", c:"be unfortunate", d:"be unstable"},
+  {cat:"Angielski", q:"dławić się i nie móc złapać tchu", a:"choke and be out of breath", b:"cough and feel dizzy", c:"collapse and stay quiet", d:"catch a bad chest"},
+  {cat:"Angielski", q:"przytomny", a:"conscious", b:"caution", c:"condition", d:"contagious"},
+  {cat:"Angielski", q:"pocieszenie", a:"consolation", b:"congestion", c:"contusion", d:"convulsion"},
+  {cat:"Angielski", q:"jednorazowa sterylna rękawiczka", a:"disposable sterile glove", b:"dangerous surgical gauze", c:"damaged plastic system", d:"deep serious general"},
+  {cat:"Angielski", q:"wykonywać masaż serca", a:"give chest compressions", b:"get clinical condition", c:"grant cardiac process", d:"guard central system"},
+  {cat:"Angielski", q:"zrobić komuś sztuczne oddychanie / usta-usta", a:"give someone a mouth-to-mouth", b:"get serious medical measure", c:"give severe mental minute", d:"guard single muscle group"},
+  {cat:"Angielski", q:"stracić przytomność", a:"pass out", b:"pull away", c:"push down", d:"prevent over"},
+  {cat:"Angielski", q:"skręcić kostkę", a:"sprain one's ankle", b:"stretch one's artery", c:"scratch one's arm", d:"squeeze one's abdomen"},
+  {cat:"Angielski", q:"spray łagodzący użądlenia i ugryzienia", a:"spray to relieve stings and bites", b:"substance to remove spots and burns", c:"solution to reduce swelling and bruises", d:"syrup to release stress and blocks"},
+  {cat:"Angielski", q:"bezsenność", a:"insomnia", b:"infection", c:"immunity", d:"injury"},
+  {cat:"Angielski", q:"łagodzić stres", a:"alleviate stress", b:"accelerate strain", c:"aggregate system", d:"alternate status"},
+  {cat:"Angielski", q:"wywoływać bóle głowy", a:"cause headaches", b:"cure hormones", c:"create heartburns", d:"contract hepatitis"},
+  {cat:"Angielski", q:"przewlekły stres", a:"chronic stress", b:"clinical shock", c:"cardiac stroke", d:"chemical solution"},
+  {cat:"Angielski", q:"troska", a:"concern", b:"comfort", c:"capacity", d:"catalyst"},
+  {cat:"Angielski", q:"zmartwiony", a:"concerned", b:"connected", c:"contained", d:"convinced"},
+  {cat:"Angielski", q:"wykształcić złe nawyki", a:"develop bad habits", b:"damage body health", c:"disrupt brain harmony", d:"destroy personal energy"},
+  {cat:"Angielski", q:"dobrostan emocjonalny / psychiczny", a:"emotional well-being", b:"excessive medical weakness", c:"external mental weight", d:"extreme mood worsening"},
+  {cat:"Angielski", q:"nadmiar, przesada", a:"excess", b:"effect", c:"effort", d:"estate"},
+  {cat:"Angielski", q:"nadmierny, przesadny", a:"excessive", b:"expensive", c:"extensive", d:"explosive"},
+  {cat:"Angielski", q:"być zdenerwowanym, zestresowanym", a:"feel anxious", b:"feel averted", c:"feel affected", d:"feel annoyed"},
+  {cat:"Angielski", q:"być spiętym", a:"feel tense", b:"feel tired", c:"feel tough", d:"feel toxic"},
+  {cat:"Angielski", q:"być pod presją", a:"feel under pressure", b:"fall under problem", c:"face unwanted panic", d:"find usual pain"},
+  {cat:"Angielski", q:"problemy ze zdrowiem", a:"health problems", b:"heavy internal pressures", c:"harmful immune symptoms", d:"hidden heart patterns"},
+  {cat:"Angielski", q:"zmienny nastrój", a:"moodiness", b:"madness", c:"malady", d:"malaise"},
+  {cat:"Angielski", q:"zwalczyć stres", a:"overcome stress", b:"overload system", c:"observe strain", d:"outrun symptom"},
+  {cat:"Angielski", q:"podatny na stres", a:"prone to stress", b:"pushed to strain", c:"prepped to shock", d:"passed to state"},
+  {cat:"Angielski", q:"wywoływać", a:"trigger", b:"target", c:"tackle", d:"threat"},
+  {cat:"Angielski", q:"nie do zniesienia", a:"unbearable", b:"unbelievable", c:"unbreakable", d:"unfavourable"},
+  {cat:"Angielski", q:"forsowny, intensywny", a:"strenuous", b:"spacious", c:"spontaneous", d:"suspicious"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+let canAnswer = true;
+
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+    canAnswer = true;
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+function speakAnswer(){
+
+    if(!("speechSynthesis" in window)){
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    let text = current.a;
+
+    let utterance =
+        new SpeechSynthesisUtterance(text);
+
+    utterance.lang = "en-US";
+
+    utterance.rate = 0.85;
+
+    utterance.pitch = 1;
+
+    speechSynthesis.speak(utterance);
+}
+
+
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+    canAnswer = true;
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    let input =
+        document.getElementById("answerInput");
+
+    input.value = "";
+
+    input.disabled = false;
+
+    input.focus();
+
+
+    document
+        .getElementById("checkButton")
+        .disabled = false;
+
+
+    document
+        .getElementById("result")
+        .innerText = "";
+
+
+    document
+        .getElementById("result")
+        .className = "";
+
+
+
+    setTimeout(
+        () => speakAnswer(),
+        300
+    );
+
+}
+
+function checkAnswer(){
+
+    if(!canAnswer){
+        return;
+    }
+
+    let input =
+        document.getElementById("answerInput");
+
+    let userAnswer =
+        input.value.trim();
+
+    if(userAnswer === ""){
+        input.focus();
+        return;
+    }
+
+
+    canAnswer = false;
+
+    input.disabled = true;
+
+    document
+        .getElementById("checkButton")
+        .disabled = true;
+
+
+
+    let user =
+        userAnswer.toLowerCase();
+
+    let correctAnswer =
+        current.a.trim().toLowerCase();
+
+
+    if(user === correctAnswer){
+
+        correctAnswerAction();
+
+    }else{
+
+        wrongAnswerAction();
+
+    }
+
+}
+
+
+function correctAnswerAction(){
+
+    document
+        .getElementById("result")
+        .innerHTML =
+        "✅ <b>Poprawnie!</b>";
+
+    document
+        .getElementById("result")
+        .className =
+        "resultCorrect";
+
+
+    score++;
+
+
+    dawid108 =
+        parseInt(dawid108) + 9;
+
+    localStorage.setItem(
+        "dawid108",
+        dawid108
+    );
+
+
+    angielski =
+        parseInt(angielski) + 9;
+
+    localStorage.setItem(
+        "angielski",
+        angielski
+    );
+
+
+    updateStats();
+
+
+    setTimeout(
+        () => nextQuestion(),
+        1500
+    );
+
+}
+
+
+function wrongAnswerAction(){
+
+    document
+        .getElementById("result")
+        .innerHTML =
+        "❌ <b>Źle!</b><br>" +
+        "Poprawna odpowiedź: <strong>" +
+        current.a +
+        "</strong>";
+
+
+    document
+        .getElementById("result")
+        .className =
+        "resultWrong";
+
+
+    life--;
+
+    updateStats();
+
+
+    setTimeout(
+        () => speakAnswer(),
+        500
+    );
+
+
+    if(life <= 0){
+
+        setTimeout(
+            () => gameOver(),
+            6000
+        );
+
+    }else{
+
+        setTimeout(
+            () => nextQuestion(),
+            5000
+        );
+
+    }
+
+}
+
+
+document
+    .getElementById("answerInput")
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(event.key === "Enter"){
+                checkAnswer();
+            }
+
+        }
+    );
+
+
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
