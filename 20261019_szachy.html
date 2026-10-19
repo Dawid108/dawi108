@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Szachy w ZSP 2 w Krotoszynie</title>
+  <title>Szachy w ZSP nr 2 w Krotoszynie | Oficjalny Portal Szachowy</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Tailwind Config for Custom Colors and Font -->
+  <!-- Tailwind Config -->
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -89,32 +89,14 @@
             <h1 class="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
               Szachy <span class="text-brand-400">ZSP 2 Krotoszyn</span>
             </h1>
-            <p class="text-xs text-slate-400 font-medium">Oficjalna Kronika i Portal Turniejowy</p>
+            <p class="text-xs text-slate-400 font-medium">Oficjalna Kronika i Portal Szachowy</p>
           </div>
         </div>
 
-        <!-- Global Search Input -->
-        <div class="hidden md:flex items-center relative w-72">
-          <i class="fa-solid fa-magnifying-glass absolute left-3 text-slate-400 text-sm"></i>
-          <input type="text" id="searchInput" onkeyup="handleSearch()" placeholder="Szukaj gracza, roku lub wyniku..." 
-            class="w-full pl-9 pr-4 py-2 text-sm bg-slate-900/90 text-slate-200 rounded-xl border border-slate-700/60 focus:outline-none focus:border-brand-500 transition-colors">
-          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute right-3 text-slate-400 hover:text-white">
-            <i class="fa-solid fa-xmark text-sm"></i>
-          </button>
-        </div>
-
-        <!-- Mobile Menu Toggle Button -->
-        <button onclick="toggleMobileNav()" class="md:hidden p-2 rounded-lg text-slate-300 hover:bg-slate-800 focus:outline-none">
-          <i class="fa-solid fa-bars text-xl" id="menuIcon"></i>
-        </button>
-      </div>
-
-      <!-- Mobile Search Bar (Visible on mobile) -->
-      <div class="md:hidden pb-4">
-        <div class="relative w-full">
-          <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-sm"></i>
-          <input type="text" id="searchInputMobile" onkeyup="handleSearchMobile()" placeholder="Szukaj zawodnika, turnieju..." 
-            class="w-full pl-9 pr-4 py-2 text-sm bg-slate-900 text-slate-200 rounded-xl border border-slate-700 focus:outline-none focus:border-brand-500">
+        <!-- School Badge -->
+        <div class="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 border border-slate-700/60 text-xs text-slate-300 font-medium">
+          <i class="fa-solid fa-school text-brand-400"></i>
+          <span>ZSP nr 2 im. Karola Libelta</span>
         </div>
       </div>
     </div>
@@ -122,7 +104,7 @@
     <!-- MAIN NAVIGATION TABS -->
     <nav class="border-t border-slate-800/60 bg-slate-950/40">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex space-x-1 sm:space-x-4 overflow-x-auto py-2 no-scrollbar" id="navTabs">
+        <div class="flex space-x-1 sm:space-x-3 overflow-x-auto py-2 no-scrollbar" id="navTabs">
           <button onclick="switchTab('all')" id="tab-all" class="nav-btn active px-4 py-2 text-sm font-semibold rounded-lg whitespace-nowrap text-brand-400 bg-brand-500/10 border border-brand-500/30 transition-all">
             <i class="fa-solid fa-border-all mr-2"></i>Wszystko
           </button>
@@ -134,6 +116,9 @@
           </button>
           <button onclick="switchTab('powiat')" id="tab-powiat" class="nav-btn px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
             <i class="fa-solid fa-award mr-2 text-emerald-400"></i>Mistrzostwa Powiatu
+          </button>
+          <button onclick="switchTab('kategorie')" id="tab-kategorie" class="nav-btn px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
+            <i class="fa-solid fa-user-graduate mr-2 text-brand-400"></i>Osoby z Kategoriami
           </button>
           <button onclick="switchTab('linki')" id="tab-linki" class="nav-btn px-4 py-2 text-sm font-medium rounded-lg whitespace-nowrap text-slate-300 hover:text-white hover:bg-slate-800/50 transition-all">
             <i class="fa-solid fa-link mr-2 text-purple-400"></i>Polecane i Społeczność
@@ -252,22 +237,18 @@
       </div>
     </section>
 
-    <!-- KEY STATS QUICK COUNTER BAR -->
-    <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="glass-card p-4 rounded-2xl border border-slate-800 text-center">
-        <div class="text-2xl sm:text-3xl font-extrabold text-brand-400 font-mono">3 Edycje</div>
-        <div class="text-xs text-slate-400 mt-1 font-medium">Mistrzostw Szkolnych</div>
+    <!-- KEY STATS COUNTER BAR -->
+    <section class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="glass-card p-5 rounded-2xl border border-slate-800 text-center">
+        <div class="text-3xl font-extrabold text-brand-400 font-mono">3 Edycje</div>
+        <div class="text-xs text-slate-400 mt-1 font-medium">Mistrzostw Szkolnych ZSP2</div>
       </div>
-      <div class="glass-card p-4 rounded-2xl border border-slate-800 text-center">
-        <div class="text-2xl sm:text-3xl font-extrabold text-sky-400 font-mono">47+</div>
-        <div class="text-xs text-slate-400 mt-1 font-medium">Uczestników w Szkole</div>
-      </div>
-      <div class="glass-card p-4 rounded-2xl border border-slate-800 text-center">
-        <div class="text-2xl sm:text-3xl font-extrabold text-emerald-400 font-mono">3x Finał</div>
+      <div class="glass-card p-5 rounded-2xl border border-slate-800 text-center">
+        <div class="text-3xl font-extrabold text-sky-400 font-mono">3x Finał</div>
         <div class="text-xs text-slate-400 mt-1 font-medium">Mistrzostw Wielkopolski</div>
       </div>
-      <div class="glass-card p-4 rounded-2xl border border-slate-800 text-center">
-        <div class="text-2xl sm:text-3xl font-extrabold text-amber-400 font-mono">3x Wicemistrz</div>
+      <div class="glass-card p-5 rounded-2xl border border-slate-800 text-center">
+        <div class="text-3xl font-extrabold text-emerald-400 font-mono">3x Wicemistrz</div>
         <div class="text-xs text-slate-400 mt-1 font-medium">Powiatu Krotoszyńskiego</div>
       </div>
     </section>
@@ -286,12 +267,11 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
         <!-- 2. Mistrzostwa ZSP2 -->
-        <div class="searchable-card glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between"
-             data-search="2 mistrzostwa zsp2 czebatura antoni gustowski dawid guzikowski franciszek">
+        <div class="glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
               <span class="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                Edycja II (Poprzednia)
+                Edycja II
               </span>
               <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
                 <i class="fa-solid fa-users text-brand-400"></i> Frekwencja: <strong class="text-white">29 zawodników</strong>
@@ -299,7 +279,7 @@
             </div>
 
             <h3 class="text-xl font-bold text-white mb-2">2. Mistrzostwa ZSP2 w Szachach</h3>
-            <p class="text-xs text-slate-400 mb-4">Turniej wyłonienia najlepszych szachistów szkoły. Wysoki poziom rywalizacji i 29 graczy przy szachownicach.</p>
+            <p class="text-xs text-slate-400 mb-4">Emocjonujący turniej szkolny z rekordową frekwencją 29 zawodników walczących o tytuł mistrzowski.</p>
 
             <!-- PODIUM -->
             <div class="space-y-2 mb-6">
@@ -340,17 +320,16 @@
 
           <a href="https://www.chessmanager.com/pl-pl/tournaments/5884281875070976" target="_blank" rel="noopener noreferrer" 
              class="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-medium text-xs rounded-xl border border-slate-700 text-center flex items-center justify-center gap-2 transition-all">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> Pełne wyniki w ChessManager
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Wyniki w ChessManager
           </a>
         </div>
 
         <!-- 1. Mistrzostwa ZSP2 -->
-        <div class="searchable-card glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between"
-             data-search="1 mistrzostwa zsp2 gustowski dawid guzikowski franciszek barteczka eryk">
+        <div class="glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
               <span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-700 text-slate-300 border border-slate-600">
-                Edycja I (Historyczna)
+                Edycja I
               </span>
               <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
                 <i class="fa-solid fa-users text-brand-400"></i> Frekwencja: <strong class="text-white">18 zawodników</strong>
@@ -358,7 +337,7 @@
             </div>
 
             <h3 class="text-xl font-bold text-white mb-2">1. Mistrzostwa ZSP2 w Szachach</h3>
-            <p class="text-xs text-slate-400 mb-4">Inauguracyjny turniej mistrzowski w szkole, który zapoczątkował tradycję corocznych rozgrywek szachowych w ZSP 2.</p>
+            <p class="text-xs text-slate-400 mb-4">Pierwsze historyczne mistrzostwa szkoły, które dały początek stałej tradycji szachowej w ZSP2.</p>
 
             <!-- PODIUM -->
             <div class="space-y-2 mb-6">
@@ -399,7 +378,7 @@
 
           <a href="https://www.chessmanager.com/pl-pl/tournaments/5158063400288256" target="_blank" rel="noopener noreferrer" 
              class="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white font-medium text-xs rounded-xl border border-slate-700 text-center flex items-center justify-center gap-2 transition-all">
-            <i class="fa-solid fa-arrow-up-right-from-square"></i> Pełne wyniki w ChessManager
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Wyniki w ChessManager
           </a>
         </div>
 
@@ -408,47 +387,49 @@
 
     <!-- SECTION 2: FINAŁY MISTRZOSTW WIELKOPOLSKI -->
     <section id="section-wielkopolska" class="tab-content space-y-6">
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
         <div>
           <h2 class="text-2xl font-extrabold text-white flex items-center gap-3">
             <i class="fa-solid fa-chess-board text-sky-400"></i> Finały Mistrzostw Wielkopolski (Drużynowe)
           </h2>
-          <p class="text-sm text-slate-400 mt-1">Reprezentacja ZSP nr 2 w Krotoszynie w finałach wojewódzkich szkół ponadpodstawowych</p>
+          <p class="text-sm text-slate-400 mt-1">Reprezentacja ZSP nr 2 w Krotoszynie na szczeblu wojewódzkim</p>
         </div>
       </div>
 
-      <div class="space-y-6">
+      <div class="space-y-8">
 
         <!-- YEAR 2025 KALISZ -->
-        <div class="searchable-card glass-card rounded-2xl p-6 border border-slate-800" data-search="2025 kalisz gustowski dawid nabzdyk bartosz guzikowski franciszek gierlik oliwia wielkopolska">
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-            <div>
-              <div class="flex items-center gap-3">
-                <span class="text-xl font-black text-brand-400 font-mono">2025</span>
-                <h3 class="text-lg font-bold text-white">Finał Wojewódzki w Kaliszu</h3>
-              </div>
-              <p class="text-xs text-slate-400 mt-1">30. Miejsce na 40 drużyn w Wielkopolsce</p>
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-4">
+          <!-- Header block -->
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="text-2xl font-black text-brand-400 font-mono">2025</span>
+              <h3 class="text-xl font-bold text-white">Finał Wojewódzki w Kaliszu</h3>
             </div>
+            <p class="text-sm text-slate-300 font-medium mt-1">30. Miejsce na 40 drużyn w Wielkopolsce</p>
+          </div>
 
-            <div class="flex items-center gap-3 text-xs font-mono">
-              <span class="px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300">
-                Duże pkt: <strong class="text-white text-sm">6</strong>
-              </span>
-              <span class="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
-                Małe pkt: <strong class="text-white text-sm">12</strong>
-              </span>
-              <a href="https://www.chessarbiter.com/turnieje/2025/tdr_6776/" target="_blank" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg border border-slate-700 transition-colors">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> Wyniki
-              </a>
-            </div>
+          <!-- Stats & Link Sub-row -->
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <span class="px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-mono">
+              Duże pkt: <strong class="text-white text-sm">6</strong>
+            </span>
+            <span class="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono">
+              Małe pkt: <strong class="text-white text-sm">12</strong>
+            </span>
+            <a href="https://www.chessarbiter.com/turnieje/2025/tdr_6776/" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-lg border border-slate-700 text-xs font-medium transition-colors">
+              <i class="fa-solid fa-arrow-up-right-from-square text-brand-400"></i>
+              <span>Wyniki (Chessarbiter)</span>
+            </a>
           </div>
 
           <!-- TEAM TABLE 2025 -->
-          <div class="mt-4 overflow-x-auto">
+          <div class="overflow-x-auto pt-2">
             <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-slate-900/80 text-slate-400 uppercase font-mono text-[11px] border-b border-slate-800">
+              <thead class="bg-slate-900/90 text-slate-400 uppercase font-mono text-[11px] border-b border-slate-800">
                 <tr>
-                  <th class="py-2.5 px-3">Szachownica</th>
+                  <th class="py-2.5 px-3 w-16 text-center">Szach.</th>
                   <th class="py-2.5 px-3">Zawodnik</th>
                   <th class="py-2.5 px-3">Kategoria</th>
                   <th class="py-2.5 px-3">Ranking</th>
@@ -457,21 +438,21 @@
               </thead>
               <tbody class="divide-y divide-slate-800/50 text-slate-200">
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica I</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">I</td>
                   <td class="py-2.5 px-3 font-bold text-white">Gustowski Dawid</td>
                   <td class="py-2.5 px-3"><span class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-xs">II kat.</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-400">1800</td>
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-400">4 / 7 pkt</td>
                 </tr>
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica II</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">II</td>
                   <td class="py-2.5 px-3 font-bold text-white">Nabzdyk Bartosz</td>
                   <td class="py-2.5 px-3"><span class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-xs">IV kat.</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-400">1400</td>
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-slate-300">1 / 7 pkt</td>
                 </tr>
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica III</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">III</td>
                   <td class="py-2.5 px-3 font-bold text-white">
                     Guzikowski Franciszek
                     <span class="block sm:inline text-[10px] text-amber-400 font-normal italic">(spóźnił się na turniej)</span>
@@ -481,7 +462,7 @@
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-400">3 / 5 pkt</td>
                 </tr>
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica IV</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">IV</td>
                   <td class="py-2.5 px-3 font-bold text-white">Gierlik Oliwia</td>
                   <td class="py-2.5 px-3"><span class="text-slate-500 font-mono text-xs">-</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-500">-</td>
@@ -493,35 +474,37 @@
         </div>
 
         <!-- YEAR 2024 POZNAŃ -->
-        <div class="searchable-card glass-card rounded-2xl p-6 border border-slate-800" data-search="2024 poznań gustowski dawid czebatura antoni nabzdyk bartosz gierlik oliwia guzikowski franciszek wielkopolska">
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-            <div>
-              <div class="flex items-center gap-3">
-                <span class="text-xl font-black text-brand-400 font-mono">2024</span>
-                <h3 class="text-lg font-bold text-white">Finał Wojewódzki w Poznaniu</h3>
-              </div>
-              <p class="text-xs text-slate-400 mt-1">33. Miejsce na 45 drużyn w Wielkopolsce</p>
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-4">
+          <!-- Header block -->
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="text-2xl font-black text-brand-400 font-mono">2024</span>
+              <h3 class="text-xl font-bold text-white">Finał Wojewódzki w Poznaniu</h3>
             </div>
+            <p class="text-sm text-slate-300 font-medium mt-1">33. Miejsce na 45 drużyn w Wielkopolsce</p>
+          </div>
 
-            <div class="flex items-center gap-3 text-xs font-mono">
-              <span class="px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300">
-                Duże pkt: <strong class="text-white text-sm">6</strong>
-              </span>
-              <span class="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
-                Małe pkt: <strong class="text-white text-sm">11,5</strong>
-              </span>
-              <a href="https://www.chessarbiter.com/turnieje/2024/tdr_7170/" target="_blank" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg border border-slate-700 transition-colors">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> Wyniki
-              </a>
-            </div>
+          <!-- Stats & Link Sub-row -->
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <span class="px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-mono">
+              Duże pkt: <strong class="text-white text-sm">6</strong>
+            </span>
+            <span class="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono">
+              Małe pkt: <strong class="text-white text-sm">11,5</strong>
+            </span>
+            <a href="https://www.chessarbiter.com/turnieje/2024/tdr_7170/" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-lg border border-slate-700 text-xs font-medium transition-colors">
+              <i class="fa-solid fa-arrow-up-right-from-square text-brand-400"></i>
+              <span>Wyniki (Chessarbiter)</span>
+            </a>
           </div>
 
           <!-- TEAM TABLE 2024 -->
-          <div class="mt-4 overflow-x-auto">
+          <div class="overflow-x-auto pt-2">
             <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-slate-900/80 text-slate-400 uppercase font-mono text-[11px] border-b border-slate-800">
+              <thead class="bg-slate-900/90 text-slate-400 uppercase font-mono text-[11px] border-b border-slate-800">
                 <tr>
-                  <th class="py-2.5 px-3">Szachownica</th>
+                  <th class="py-2.5 px-3 w-16 text-center">Szach.</th>
                   <th class="py-2.5 px-3">Zawodnik</th>
                   <th class="py-2.5 px-3">Kategoria</th>
                   <th class="py-2.5 px-3">Ranking</th>
@@ -530,35 +513,35 @@
               </thead>
               <tbody class="divide-y divide-slate-800/50 text-slate-200">
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica I</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">I</td>
                   <td class="py-2.5 px-3 font-bold text-white">Gustowski Dawid</td>
                   <td class="py-2.5 px-3"><span class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-xs">II kat.</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-400">1800</td>
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-400">4,5 / 7 pkt</td>
                 </tr>
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica II</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">II</td>
                   <td class="py-2.5 px-3 font-bold text-white">Czebatura Antoni</td>
                   <td class="py-2.5 px-3"><span class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-xs">III kat.</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-400">1600</td>
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-400">4 / 7 pkt</td>
                 </tr>
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica III</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">III</td>
                   <td class="py-2.5 px-3 font-bold text-white">Nabzdyk Bartosz</td>
                   <td class="py-2.5 px-3"><span class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-xs">IV kat.</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-400">1400</td>
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-slate-400">0 / 7 pkt</td>
                 </tr>
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica IV</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">IV</td>
                   <td class="py-2.5 px-3 font-bold text-white">Gierlik Oliwia</td>
                   <td class="py-2.5 px-3"><span class="text-slate-500 font-mono text-xs">-</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-500">-</td>
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-400">3 / 7 pkt</td>
                 </tr>
                 <tr class="bg-slate-900/40">
-                  <td class="py-2.5 px-3 font-semibold text-slate-400">Rezerwa</td>
+                  <td class="py-2.5 px-3 font-semibold text-center text-slate-400 font-mono text-xs">Rezerwa</td>
                   <td class="py-2.5 px-3 font-medium text-slate-300">Guzikowski Franciszek</td>
                   <td class="py-2.5 px-3"><span class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-xs">III kat.</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-400">1600</td>
@@ -570,35 +553,37 @@
         </div>
 
         <!-- YEAR 2023 WĄGROWIEC -->
-        <div class="searchable-card glass-card rounded-2xl p-6 border border-slate-800" data-search="2023 wągrowiec wagrowiec gustowski dawid czebatura antoni nabzdyk bartosz gierlik oliwia wielkopolska">
-          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
-            <div>
-              <div class="flex items-center gap-3">
-                <span class="text-xl font-black text-brand-400 font-mono">2023</span>
-                <h3 class="text-lg font-bold text-white">Finał Wojewódzki w Wągrowcu</h3>
-              </div>
-              <p class="text-xs text-slate-400 mt-1">19. Miejsce na 46 drużyn w Wielkopolsce (Najlepszy wynik drużynowy!)</p>
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 space-y-4">
+          <!-- Header block -->
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="text-2xl font-black text-brand-400 font-mono">2023</span>
+              <h3 class="text-xl font-bold text-white">Finał Wojewódzki w Wągrowcu</h3>
             </div>
+            <p class="text-sm text-slate-300 font-medium mt-1">19. Miejsce na 46 drużyn w Wielkopolsce (Najlepszy wynik drużynowy!)</p>
+          </div>
 
-            <div class="flex items-center gap-3 text-xs font-mono">
-              <span class="px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300">
-                Duże pkt: <strong class="text-white text-sm">8</strong>
-              </span>
-              <span class="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300">
-                Małe pkt: <strong class="text-white text-sm">13</strong>
-              </span>
-              <a href="https://www.chessarbiter.com/turnieje/2023/tdr_7767/" target="_blank" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white rounded-lg border border-slate-700 transition-colors">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i> Wyniki
-              </a>
-            </div>
+          <!-- Stats & Link Sub-row -->
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <span class="px-3 py-1.5 rounded-lg bg-sky-500/10 border border-sky-500/30 text-sky-300 text-xs font-mono">
+              Duże pkt: <strong class="text-white text-sm">8</strong>
+            </span>
+            <span class="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/30 text-indigo-300 text-xs font-mono">
+              Małe pkt: <strong class="text-white text-sm">13</strong>
+            </span>
+            <a href="https://www.chessarbiter.com/turnieje/2023/tdr_7767/" target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 hover:text-white rounded-lg border border-slate-700 text-xs font-medium transition-colors">
+              <i class="fa-solid fa-arrow-up-right-from-square text-brand-400"></i>
+              <span>Wyniki (Chessarbiter)</span>
+            </a>
           </div>
 
           <!-- TEAM TABLE 2023 -->
-          <div class="mt-4 overflow-x-auto">
+          <div class="overflow-x-auto pt-2">
             <table class="w-full text-left text-xs sm:text-sm">
-              <thead class="bg-slate-900/80 text-slate-400 uppercase font-mono text-[11px] border-b border-slate-800">
+              <thead class="bg-slate-900/90 text-slate-400 uppercase font-mono text-[11px] border-b border-slate-800">
                 <tr>
-                  <th class="py-2.5 px-3">Szachownica</th>
+                  <th class="py-2.5 px-3 w-16 text-center">Szach.</th>
                   <th class="py-2.5 px-3">Zawodnik</th>
                   <th class="py-2.5 px-3">Kategoria</th>
                   <th class="py-2.5 px-3">Ranking</th>
@@ -607,28 +592,28 @@
               </thead>
               <tbody class="divide-y divide-slate-800/50 text-slate-200">
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica I</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">I</td>
                   <td class="py-2.5 px-3 font-bold text-white">Gustowski Dawid</td>
                   <td class="py-2.5 px-3"><span class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-xs">II kat.</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-400">1800</td>
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-slate-300">2,5 / 7 pkt</td>
                 </tr>
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica II</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">II</td>
                   <td class="py-2.5 px-3 font-bold text-white">Czebatura Antoni</td>
                   <td class="py-2.5 px-3"><span class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-xs">III kat.</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-400">1600</td>
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-400">4,5 / 7 pkt</td>
                 </tr>
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica III</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">III</td>
                   <td class="py-2.5 px-3 font-bold text-white">Nabzdyk Bartosz</td>
                   <td class="py-2.5 px-3"><span class="px-2 py-0.5 bg-slate-800 rounded border border-slate-700 font-mono text-xs">IV kat.</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-400">1400</td>
                   <td class="py-2.5 px-3 text-right font-mono font-bold text-emerald-400">4 / 7 pkt</td>
                 </tr>
                 <tr>
-                  <td class="py-2.5 px-3 font-semibold text-brand-400">Szachownica IV</td>
+                  <td class="py-2.5 px-3 font-bold text-center text-brand-400 font-mono">IV</td>
                   <td class="py-2.5 px-3 font-bold text-white">Gierlik Oliwia</td>
                   <td class="py-2.5 px-3"><span class="text-slate-500 font-mono text-xs">-</span></td>
                   <td class="py-2.5 px-3 font-mono text-slate-500">-</td>
@@ -649,25 +634,30 @@
           <h2 class="text-2xl font-extrabold text-white flex items-center gap-3">
             <i class="fa-solid fa-award text-emerald-400"></i> Mistrzostwa Powiatu Krotoszyńskiego
           </h2>
-          <p class="text-sm text-slate-400 mt-1">Drużynowe eliminacje szkół ponadpodstawowych w powiecie krotoszyńskim</p>
+          <p class="text-sm text-slate-400 mt-1">
+            Eliminacje powiatowe szkół ponadpodstawowych — <strong class="text-emerald-400">Top 2 drużyny uzyskują awans do Finału Mistrzostw Wielkopolski</strong>
+          </p>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
         <!-- POWIAT 2025 -->
-        <div class="searchable-card glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between" data-search="2025 powiat krotoszyn zsp2 liceum zsp1 zsp3">
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
               <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 Rok 2025
               </span>
-              <span class="text-xs text-emerald-400 font-bold flex items-center gap-1">
-                <i class="fa-solid fa-circle-check"></i> Awans do Wlkp!
+              <span class="text-xs text-amber-400 font-bold flex items-center gap-1">
+                🥈 Wicemistrz Powiatu
               </span>
             </div>
 
-            <h3 class="text-lg font-bold text-white mb-4">Tabela Powiatowa 2025</h3>
+            <h3 class="text-lg font-bold text-white mb-2">Tabela Powiatowa 2025</h3>
+            <p class="text-[11px] text-emerald-400 font-medium mb-4 flex items-center gap-1">
+              <i class="fa-solid fa-circle-check"></i> Awans drużyn z miejsc 1 i 2!
+            </p>
 
             <ol class="space-y-2.5 text-xs sm:text-sm">
               <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800">
@@ -692,34 +682,38 @@
 
           <a href="https://krotoszynskiszs.pl/szachy-druzynowe-wyniki-6/" target="_blank" rel="noopener noreferrer"
              class="mt-6 w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs rounded-xl border border-slate-700 text-center flex items-center justify-center gap-2 transition-all">
-            <i class="fa-solid fa-newspaper"></i> Artykuł SZS Krotoszyn
+            <i class="fa-solid fa-newspaper"></i> Wyniki SZS Krotoszyn
           </a>
         </div>
 
         <!-- POWIAT 2024 -->
-        <div class="searchable-card glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between" data-search="2024 powiat krotoszyn zsp2 liceum zsp1 zstio">
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
               <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 Rok 2024
               </span>
               <span class="text-xs text-amber-400 font-bold flex items-center gap-1">
-                🥈 II Miejsce
+                🥈 Wicemistrz Powiatu
               </span>
             </div>
 
-            <h3 class="text-lg font-bold text-white mb-4">Tabela Powiatowa 2024</h3>
+            <h3 class="text-lg font-bold text-white mb-2">Tabela Powiatowa 2024</h3>
+            <p class="text-[11px] text-emerald-400 font-medium mb-4 flex items-center gap-1">
+              <i class="fa-solid fa-circle-check"></i> Awans drużyn z miejsc 1 i 2!
+            </p>
 
             <ol class="space-y-2.5 text-xs sm:text-sm">
               <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800">
                 <span class="text-slate-300 font-medium">1. I LO Krotoszyn</span>
+                <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">Awans</span>
               </li>
               <li class="flex items-center justify-between p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/40">
                 <span class="text-white font-bold flex items-center gap-1.5">
                   <span>2. ZSP nr 2 Krotoszyn</span>
                   <span>🥈</span>
                 </span>
-                <span class="text-[10px] font-bold text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-700/50">Wicemistrz</span>
+                <span class="text-[10px] font-bold text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-700/50">Awans!</span>
               </li>
               <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800">
                 <span class="text-slate-400">3. ZSP nr 1 Krotoszyn</span>
@@ -732,51 +726,152 @@
 
           <a href="https://krotoszynskiszs.pl/mistrzostwa-powiatu-w-druzynowych-szachach-wyniki/" target="_blank" rel="noopener noreferrer"
              class="mt-6 w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs rounded-xl border border-slate-700 text-center flex items-center justify-center gap-2 transition-all">
-            <i class="fa-solid fa-newspaper"></i> Artykuł SZS Krotoszyn
+            <i class="fa-solid fa-newspaper"></i> Wyniki SZS Krotoszyn
           </a>
         </div>
 
         <!-- POWIAT 2023 -->
-        <div class="searchable-card glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between" data-search="2023 powiat krotoszyn zsp2 liceum zsp1">
+        <div class="glass-card rounded-2xl p-6 border border-slate-800 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between mb-4">
-              <span class="px-3 py-1 rounded-full text-xs font-bold bg-slate-700 text-slate-300 border border-slate-600">
+              <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
                 Rok 2023
               </span>
-              <span class="text-xs text-amber-600 font-bold flex items-center gap-1">
-                🥈 II Miejsce
+              <span class="text-xs text-amber-400 font-bold flex items-center gap-1">
+                🥈 Wicemistrz Powiatu
               </span>
             </div>
 
-            <h3 class="text-lg font-bold text-white mb-4">Tabela Powiatowa 2023</h3>
+            <h3 class="text-lg font-bold text-white mb-2">Tabela Powiatowa 2023</h3>
+            <p class="text-[11px] text-emerald-400 font-medium mb-4 flex items-center gap-1">
+              <i class="fa-solid fa-circle-check"></i> Awans drużyn z miejsc 1 i 2!
+            </p>
 
             <ol class="space-y-2.5 text-xs sm:text-sm">
               <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800">
                 <span class="text-slate-300 font-medium">1. I LO Krotoszyn</span>
+                <span class="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/50">Awans</span>
               </li>
-              <li class="flex items-center justify-between p-2.5 rounded-xl bg-amber-900/20 border border-amber-800/40">
+              <li class="flex items-center justify-between p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/40">
                 <span class="text-white font-bold flex items-center gap-1.5">
-                  <span>3. ZSP nr 2 Krotoszyn</span>
+                  <span>2. ZSP nr 2 Krotoszyn</span>
                   <span>🥈</span>
                 </span>
-                <span class="text-[10px] font-bold text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-700/50">Wicemistrz</span>
+                <span class="text-[10px] font-bold text-amber-300 bg-amber-950/80 px-2 py-0.5 rounded border border-amber-700/50">Awans!</span>
               </li>
               <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800">
-                <span class="text-slate-300 font-medium">2. ZSP nr 1 Krotoszyn</span>
+                <span class="text-slate-400">3. ZSP nr 1 Krotoszyn</span>
+              </li>
+              <li class="flex items-center justify-between p-2.5 rounded-xl bg-slate-900/60 border border-slate-800">
+                <span class="text-slate-400">4. ZSTiO Krotoszyn</span>
               </li>
             </ol>
           </div>
 
           <a href="https://krotoszynskiszs.pl/szachy-druzynowe-wyniki-3/" target="_blank" rel="noopener noreferrer"
              class="mt-6 w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white font-medium text-xs rounded-xl border border-slate-700 text-center flex items-center justify-center gap-2 transition-all">
-            <i class="fa-solid fa-newspaper"></i> Artykuł SZS Krotoszyn
+            <i class="fa-solid fa-newspaper"></i> Wyniki SZS Krotoszyn
           </a>
         </div>
 
       </div>
     </section>
 
-    <!-- SECTION 4: POLECANE LINKI & SPOŁECZNOŚĆ -->
+    <!-- SECTION 4: OSOBY Z KATEGORIAMI -->
+    <section id="section-kategorie" class="tab-content space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <h2 class="text-2xl font-extrabold text-white flex items-center gap-3">
+            <i class="fa-solid fa-user-graduate text-brand-400"></i> Osoby z Kategoriami Szachowymi
+          </h2>
+          <p class="text-sm text-slate-400 mt-1">Ewidencja zawodników ZSP 2 z kategoriami szachowymi i rankingami FIDE</p>
+        </div>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 border border-slate-800 overflow-x-auto">
+        <table class="w-full text-left text-xs sm:text-sm">
+          <thead class="bg-slate-900/90 text-slate-400 uppercase font-mono text-[11px] border-b border-slate-800">
+            <tr>
+              <th class="py-3 px-4 w-12 text-center">Lp.</th>
+              <th class="py-3 px-4">Nazwisko i Imię</th>
+              <th class="py-3 px-4 text-center">Kategoria</th>
+              <th class="py-3 px-4 text-center">FIDE</th>
+              <th class="py-3 px-4 text-center">Szybkie</th>
+              <th class="py-3 px-4 text-center">Blitz</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 text-slate-200">
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="py-3 px-4 text-center font-mono text-slate-400">1.</td>
+              <td class="py-3 px-4 font-bold text-white">Gustowski Dawid</td>
+              <td class="py-3 px-4 text-center">
+                <span class="px-2.5 py-1 bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-lg font-mono font-bold text-xs">II</span>
+              </td>
+              <td class="py-3 px-4 text-center font-mono font-semibold text-brand-400">1513</td>
+              <td class="py-3 px-4 text-center font-mono font-semibold text-emerald-400">1599</td>
+              <td class="py-3 px-4 text-center font-mono font-semibold text-sky-400">1453</td>
+            </tr>
+
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="py-3 px-4 text-center font-mono text-slate-400">2.</td>
+              <td class="py-3 px-4 font-bold text-white">Czebatura Antoni</td>
+              <td class="py-3 px-4 text-center">
+                <span class="px-2.5 py-1 bg-sky-500/20 text-sky-300 border border-sky-500/40 rounded-lg font-mono font-bold text-xs">III</span>
+              </td>
+              <td class="py-3 px-4 text-center font-mono font-semibold text-brand-400">1419</td>
+              <td class="py-3 px-4 text-center font-mono font-semibold text-emerald-400">1413</td>
+              <td class="py-3 px-4 text-center font-mono font-semibold text-sky-400">1503</td>
+            </tr>
+
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="py-3 px-4 text-center font-mono text-slate-400">3.</td>
+              <td class="py-3 px-4 font-bold text-white">Guzikowski Franciszek</td>
+              <td class="py-3 px-4 text-center">
+                <span class="px-2.5 py-1 bg-sky-500/20 text-sky-300 border border-sky-500/40 rounded-lg font-mono font-bold text-xs">III</span>
+              </td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+              <td class="py-3 px-4 text-center font-mono font-semibold text-emerald-400">1411</td>
+              <td class="py-3 px-4 text-center font-mono font-semibold text-sky-400">1449</td>
+            </tr>
+
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="py-3 px-4 text-center font-mono text-slate-400">4.</td>
+              <td class="py-3 px-4 font-bold text-white">Zając Rafał</td>
+              <td class="py-3 px-4 text-center">
+                <span class="px-2.5 py-1 bg-slate-800 text-slate-300 border border-slate-700 rounded-lg font-mono font-bold text-xs">IV</span>
+              </td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+            </tr>
+
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="py-3 px-4 text-center font-mono text-slate-400">5.</td>
+              <td class="py-3 px-4 font-bold text-white">Nabzdyk Bartosz</td>
+              <td class="py-3 px-4 text-center">
+                <span class="px-2.5 py-1 bg-slate-800 text-slate-300 border border-slate-700 rounded-lg font-mono font-bold text-xs">IV</span>
+              </td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+            </tr>
+
+            <tr class="hover:bg-slate-800/30 transition-colors">
+              <td class="py-3 px-4 text-center font-mono text-slate-400">6.</td>
+              <td class="py-3 px-4 font-bold text-white">Sobkowiak Jan</td>
+              <td class="py-3 px-4 text-center">
+                <span class="px-2.5 py-1 bg-slate-800 text-slate-300 border border-slate-700 rounded-lg font-mono font-bold text-xs">IV</span>
+              </td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+              <td class="py-3 px-4 text-center font-mono text-slate-500">0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECTION 5: POLECANE LINKI & SPOŁECZNOŚĆ -->
     <section id="section-linki" class="tab-content space-y-6">
       <div class="flex items-center justify-between border-b border-slate-800 pb-4">
         <div>
@@ -791,8 +886,7 @@
 
         <!-- GRAND PRIX POWIATU -->
         <a href="https://www.facebook.com/profile.php?id=61574114915932" target="_blank" rel="noopener noreferrer"
-           class="searchable-card glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between group"
-           data-search="grand prix powiatu krotoszyńskiego facebook fb turnieje lokalne">
+           class="glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between group">
           <div>
             <div class="w-12 h-12 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center text-xl font-bold mb-4 group-hover:scale-110 transition-transform">
               <i class="fa-brands fa-facebook-f"></i>
@@ -812,29 +906,27 @@
 
         <!-- CHESS.COM DRAGONS MOLICE -->
         <a href="https://www.chess.com/club/dragonsmolice" target="_blank" rel="noopener noreferrer"
-           class="searchable-card glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between group"
-           data-search="klub szachowy chess.com dragons molice dragonsmolice online">
+           class="glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between group">
           <div>
             <div class="w-12 h-12 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center text-xl font-bold mb-4 group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-chess text-2xl"></i>
             </div>
             <h3 class="text-lg font-bold text-white group-hover:text-brand-400 transition-colors">
-              Klub Dragon Smolice (Chess.com)
+              DragonSmolice (Chess.com)
             </h3>
             <p class="text-xs text-slate-400 mt-2 leading-relaxed">
-              Wirtualny klub szachowy na platformie Chess.com. Dołącz do społeczności, graj w turniejach online i trenuj taktykę.
+              Oficjalny klub DragonSmolice na platformie Chess.com. Dołącz do społeczności, graj w turniejach online i szlifuj taktykę.
             </p>
           </div>
           <div class="mt-6 flex items-center text-xs font-semibold text-brand-400 gap-1">
-            <span>Przejdź do Chess.com</span>
+            <span>Przejdź do klubu Chess.com</span>
             <i class="fa-solid fa-arrow-right text-xs group-hover:translate-x-1 transition-transform"></i>
           </div>
         </a>
 
         <!-- SZS KROTOSZYN -->
         <a href="https://krotoszynskiszs.pl/" target="_blank" rel="noopener noreferrer"
-           class="searchable-card glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between group"
-           data-search="zawody szkolne krotoszyński krotoszynszs szs powiatowy szkolny związek sportowy">
+           class="glass-card glass-card-hover rounded-2xl p-6 border border-slate-800 flex flex-col justify-between group">
           <div>
             <div class="w-12 h-12 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center text-xl font-bold mb-4 group-hover:scale-110 transition-transform">
               <i class="fa-solid fa-globe"></i>
@@ -855,16 +947,6 @@
       </div>
     </section>
 
-    <!-- NO SEARCH RESULTS FALLBACK -->
-    <div id="noResultsMessage" class="hidden text-center py-12 glass-card rounded-2xl border border-slate-800">
-      <i class="fa-solid fa-magnifying-glass text-4xl text-slate-600 mb-3"></i>
-      <h3 class="text-lg font-bold text-white">Brak wyników wyszukiwania</h3>
-      <p class="text-xs text-slate-400 mt-1">Spróbuj wpisać inne nazwisko, rok lub nazwę turnieju.</p>
-      <button onclick="clearSearch()" class="mt-4 px-4 py-2 bg-brand-500 text-slate-950 font-bold rounded-xl text-xs">
-        Wyczyść wyszukiwanie
-      </button>
-    </div>
-
   </main>
 
   <!-- FOOTER -->
@@ -878,7 +960,7 @@
     </div>
   </footer>
 
-  <!-- MODAL / LIGHTBOX DLA PLAKATU -->
+  <!-- MODAL DLA PLAKATU -->
   <div id="posterModal" class="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md hidden flex items-center justify-center p-4 transition-opacity">
     <div class="relative max-w-3xl w-full max-h-[90vh] flex flex-col items-center">
       <button onclick="closePosterModal()" class="absolute -top-12 right-0 text-slate-300 hover:text-white text-2xl font-bold focus:outline-none bg-slate-800/80 w-10 h-10 rounded-full flex items-center justify-center border border-slate-700">
@@ -899,10 +981,9 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT INTERACTION LOGIC -->
+  <!-- JAVASCRIPT LOGIC -->
   <script>
     // --- 1. COUNTDOWN TIMER LOGIC ---
-    // Target Date: Wednesday, October 28, 2026 09:00:00
     const targetDate = new Date("2026-10-28T09:00:00").getTime();
 
     function updateCountdown() {
@@ -932,13 +1013,11 @@
       document.getElementById("seconds").innerText = seconds < 10 ? "0" + seconds : seconds;
     }
 
-    // Run immediately and set interval
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
     // --- 2. TAB SWITCHING SYSTEM ---
     function switchTab(tabId) {
-      // Update nav buttons style
       const navButtons = document.querySelectorAll('.nav-btn');
       navButtons.forEach(btn => {
         btn.classList.remove('active', 'text-brand-400', 'bg-brand-500/10', 'border', 'border-brand-500/30');
@@ -963,75 +1042,9 @@
         if (activeSection) activeSection.style.display = 'block';
         if (heroSection) heroSection.style.display = (tabId === 'szkolne') ? 'block' : 'none';
       }
-
-      // Clear search when switching tabs
-      clearSearch();
     }
 
-    // --- 3. LIVE SEARCH FILTERING ---
-    function handleSearch() {
-      const query = document.getElementById('searchInput').value.toLowerCase().trim();
-      filterContent(query);
-    }
-
-    function handleSearchMobile() {
-      const query = document.getElementById('searchInputMobile').value.toLowerCase().trim();
-      document.getElementById('searchInput').value = query; // keep inputs in sync
-      filterContent(query);
-    }
-
-    function filterContent(query) {
-      const clearBtn = document.getElementById('clearSearchBtn');
-      if (query.length > 0) {
-        clearBtn.classList.remove('hidden');
-      } else {
-        clearBtn.classList.add('hidden');
-      }
-
-      const searchableCards = document.querySelectorAll('.searchable-card');
-      let visibleCount = 0;
-
-      if (query === "") {
-        // Show all
-        searchableCards.forEach(card => card.style.display = "flex");
-        document.getElementById('noResultsMessage').classList.add('hidden');
-        return;
-      }
-
-      // Temporarily reveal all tabs so search searches everywhere
-      document.querySelectorAll('.tab-content').forEach(sec => sec.style.display = 'block');
-
-      searchableCards.forEach(card => {
-        const searchData = card.getAttribute('data-search') ? card.getAttribute('data-search').toLowerCase() : "";
-        const textContent = card.textContent.toLowerCase();
-
-        if (searchData.includes(query) || textContent.includes(query)) {
-          card.style.display = "flex";
-          visibleCount++;
-        } else {
-          card.style.display = "none";
-        }
-      });
-
-      const noResultsMsg = document.getElementById('noResultsMessage');
-      if (visibleCount === 0) {
-        noResultsMsg.classList.remove('hidden');
-      } else {
-        noResultsMsg.classList.add('hidden');
-      }
-    }
-
-    function clearSearch() {
-      document.getElementById('searchInput').value = "";
-      document.getElementById('searchInputMobile').value = "";
-      document.getElementById('clearSearchBtn').classList.add('hidden');
-      document.getElementById('noResultsMessage').classList.add('hidden');
-
-      const searchableCards = document.querySelectorAll('.searchable-card');
-      searchableCards.forEach(card => card.style.display = "flex");
-    }
-
-    // --- 4. MODAL / LIGHTBOX FOR POSTER ---
+    // --- 3. MODAL FOR POSTER ---
     function openPosterModal() {
       const modal = document.getElementById('posterModal');
       modal.classList.remove('hidden');
@@ -1044,21 +1057,18 @@
       document.body.style.overflow = 'auto';
     }
 
-    // Close modal on click outside content
     document.getElementById('posterModal').addEventListener('click', function(e) {
       if (e.target === this) {
         closePosterModal();
       }
     });
 
-    // Close modal on Escape key
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         closePosterModal();
       }
     });
 
-    // Initialize display mode
     window.onload = function() {
       switchTab('all');
     }
