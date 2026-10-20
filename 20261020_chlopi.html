@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Polski", q:"Kto jest autorem powieści „Chłopi”?", a:"Władysław Reymont", b:"Adam Mickiewicz", c:"Bolesław Prus", d:"Henryk Sienkiewicz"},
+{cat:"Polski", q:"Jak nazywa się wieś, w której rozgrywa się akcja „Chłopów”?", a:"Lipce", b:"Soplicowo", c:"Nad Niemnem", d:"Korczyn"},
+{cat:"Polski", q:"Co przedstawia powieść „Chłopi” Władysława Reymonta?", a:"Życie mieszkańców wsi, ich zwyczaje, pracę i problemy", b:"Życie szlachty, jej podróże, wojny i przygody", c:"Życie mieszczan, ich naukę, karierę i podróże", d:"Życie żołnierzy, ich walki, zwycięstwa i porażki"},
+{cat:"Polski", q:"Jakich zasad przestrzegali mieszkańcy Lipiec?", a:"Norm obyczajowych i moralnych", b:"Zasad wyłącznie wojskowych i politycznych", c:"Reguł wyłącznie handlowych i finansowych", d:"Zasad wyłącznie szkolnych i naukowych"},
+{cat:"Polski", q:"Co oznaczają normy obyczajowe i moralne?", a:"Zasady zachowania obowiązujące w danej społeczności", b:"Przepisy dotyczące wyłącznie pracy na polu", c:"Zasady dotyczące wyłącznie podziału majątku", d:"Przepisy dotyczące wyłącznie świąt kościelnych"},
+{cat:"Polski", q:"Jak zachowywała się Jagna, łamiąc normy obyczajowe?", a:"Prowadziła rozwiązłe życie i romansowała z mężczyznami", b:"Unikała mężczyzn i całkowicie poświęcała się pracy", c:"Zajmowała się wyłącznie gospodarstwem i rodziną", d:"Przestrzegała wszystkich zasad i unikała konfliktów"},
+{cat:"Polski", q:"Z kim między innymi romansowała Jagna?", a:"Z Antkiem", b:"Z Maciejem Boryną", c:"Z Kubą", d:"Z Mateuszem"},
+{cat:"Polski", q:"Jak mieszkańcy wsi ocenili zachowanie Jagny?", a:"Uznali je za niewłaściwe i ukarali ją", b:"Uznali je za wzorowe i nagrodzili ją", c:"Zignorowali je i nie wyciągnęli konsekwencji", d:"Uznali je za pożyteczne i pochwalili ją"},
+{cat:"Polski", q:"Na czym polegała kara dla Jagny?", a:"Wywieziono ją poza wieś", b:"Odebrano jej wszystkie pola", c:"Zmuszono ją do opuszczenia rodziny", d:"Zakazano jej udziału w pracach polowych"},
+{cat:"Polski", q:"Co oznacza, że życie chłopów zależało od cykliczności pór roku?", a:"Ich praca i codzienność zmieniały się wraz z porami roku", b:"Ich praca wyglądała tak samo przez cały rok", c:"Pracowali wyłącznie wiosną i odpoczywali zimą", d:"Zajmowali się tylko pracą niezależną od przyrody"},
+{cat:"Polski", q:"Co chłopi robili wiosną?", a:"Siali rośliny", b:"Zbierali wszystkie jesienne plony", c:"Przygotowywali wyłącznie zapasy na zimę", d:"Odpoczywali od wszystkich prac gospodarskich"},
+{cat:"Polski", q:"Jaką pracę wykonywali chłopi latem?", a:"Zbierali plony", b:"Siali wyłącznie ozime zboże", c:"Przygotowywali tylko zimowe zapasy", d:"Zajmowali się wyłącznie naprawą domów"},
+{cat:"Polski", q:"Do czego chłopi przygotowywali się jesienią?", a:"Do zimy", b:"Do wiosennych zasiewów", c:"Do letnich żniw", d:"Do rozpoczęcia nauki w szkole"},
+{cat:"Polski", q:"Od czego zależało życie chłopów?", a:"Od przyrody i pogody", b:"Od podróży i handlu zagranicznego", c:"Od pracy w fabrykach i kopalniach", d:"Od służby wojskowej i polityki"},
+{cat:"Polski", q:"Jacy byli mieszkańcy Lipiec pod względem religijności?", a:"Byli bardzo pobożni i religijni", b:"Nie interesowali się religią ani tradycją", c:"Unikali kościoła i uroczystości religijnych", d:"Uznawali wyłącznie zasady pracy na roli"},
+{cat:"Polski", q:"Jak mieszkańcy Lipiec okazywali swoją religijność?", a:"Modlili się i chodzili do kościoła", b:"Unikali modlitwy i omijali kościół", c:"Organizowali wyłącznie spotkania handlowe", d:"Poświęcali czas tylko na zabawy i odpoczynek"},
+{cat:"Polski", q:"Jak chłopi przeżywali uroczystości kościelne?", a:"Uroczyście i bardzo emocjonalnie", b:"Obojętnie i bez żadnego zaangażowania", c:"Wyłącznie jako okazję do handlu", d:"Spokojnie, ale bez udziału w obrzędach"},
+{cat:"Polski", q:"Jaką wiedzę religijną posiadali lipczanie?", a:"Znali przykazania Boże", b:"Znali wyłącznie zasady prowadzenia gospodarstwa", c:"Znali tylko przepisy dotyczące handlu", d:"Znali jedynie tradycje innych narodów"},
+{cat:"Polski", q:"Czy chłopi zawsze przestrzegali przykazań Bożych?", a:"Nie, czasami o nich zapominali", b:"Tak, zawsze przestrzegali wszystkich przykazań", c:"Nie, ponieważ nie znali żadnych przykazań", d:"Tak, ale tylko podczas pracy w gospodarstwie"},
+{cat:"Polski", q:"Który bohater romansował z Jagną, mimo że był żonaty?", a:"Antek", b:"Maciej Boryna", c:"Kuba", d:"Mateusz"},
+{cat:"Polski", q:"Jak nazywała się żona Antka?", a:"Hanka", b:"Jagna", c:"Dominikowa", d:"Weronka"},
+{cat:"Polski", q:"Co było największą wartością dla chłopów?", a:"Ziemia", b:"Podróże", c:"Wykształcenie", d:"Służba wojskowa"},
+{cat:"Polski", q:"Co zapewniała chłopom ziemia?", a:"Utrzymanie, bogactwo i szacunek we wsi", b:"Wykształcenie, podróże i karierę urzędniczą", c:"Wolny czas, rozrywkę i brak obowiązków", d:"Sławę, władzę polityczną i wojskowe zaszczyty"},
+{cat:"Polski", q:"Od czego zależała pozycja człowieka w gromadzie?", a:"Między innymi od posiadanej ziemi", b:"Wyłącznie od liczby odbytych podróży", c:"Wyłącznie od zdobytego wykształcenia", d:"Wyłącznie od liczby znajomych w innych wsiach"},
+{cat:"Polski", q:"Dlaczego ziemia była przedmiotem pożądania chłopów?", a:"Dawała utrzymanie i zapewniała wysoką pozycję we wsi", b:"Pozwalała uniknąć każdej pracy i wszystkich obowiązków", c:"Umożliwiała wyjazd za granicę i zdobycie wykształcenia", d:"Zapewniała stanowisko urzędnika i służbę wojskową"},
+{cat:"Polski", q:"Kim był Maciej Boryna?", a:"Bogaty gospodarz, który dbał o swoje pole", b:"Biedny robotnik, który nie posiadał własnego pola", c:"Nauczyciel, który uczył dzieci w wiejskiej szkole", d:"Kupiec, który prowadził handel w odległych miastach"},
+{cat:"Polski", q:"Jak Maciej Boryna traktował swoją ziemię?", a:"Bardzo o nią dbał i uważał ją za ważną wartość", b:"Nie interesował się nią i chciał ją szybko sprzedać", c:"Oddał ją sąsiadom i przestał zajmować się gospodarstwem", d:"Uważał ją za niepotrzebną i unikał pracy na polu"},
+{cat:"Polski", q:"Co było przyczyną konfliktu Macieja Boryny z Antkiem?", a:"Ziemia i pragnienie posiadania własnego gospodarstwa przez Antka", b:"Podział obowiązków kościelnych i udział w uroczystościach", c:"Spór o wyjazd do miasta i zdobycie wykształcenia", d:"Różnice w poglądach dotyczących podróży zagranicznych"},
+{cat:"Polski", q:"Czego chciał Antek w związku z gospodarstwem?", a:"Chciał mieć własne gospodarstwo i być niezależny", b:"Chciał porzucić wieś i zostać nauczycielem", c:"Chciał sprzedać całą ziemię i wyjechać za granicę", d:"Chciał oddać ojcu wszystkie swoje obowiązki"},
+{cat:"Polski", q:"Jaką wartość chłopi cenili oprócz ziemi?", a:"Pracę i rodzinę", b:"Podróże i rozrywkę", c:"Sławę i karierę polityczną", d:"Naukę i życie w wielkim mieście"},
+{cat:"Polski", q:"Gdzie chłopi wykonywali dużą część swojej pracy?", a:"Na polach i w gospodarstwach", b:"W fabrykach i dużych zakładach", c:"W urzędach i szkołach", d:"W kopalniach i portach"},
+{cat:"Polski", q:"Jakie prace wykonywali chłopi na polach?", a:"Siali zboże, kosili trawę i zbierali plony", b:"Budowali drogi, naprawiali tory i mosty", c:"Pisali dokumenty, uczyli dzieci i prowadzili urzędy", d:"Wydobywali węgiel, produkowali maszyny i narzędzia"},
+{cat:"Polski", q:"Czym jeszcze zajmowali się chłopi w gospodarstwie?", a:"Opiekowali się zwierzętami", b:"Prowadzili wyłącznie handel zagraniczny", c:"Pracowali tylko jako urzędnicy państwowi", d:"Zajmowali się wyłącznie nauczaniem dzieci"},
+{cat:"Polski", q:"Co zapewniała chłopom ciężka praca?", a:"Jedzenie i pieniądze", b:"Bezpłatne podróże i zagraniczne wycieczki", c:"Wykształcenie i stanowiska urzędnicze", d:"Wolny czas i brak obowiązków rodzinnych"},
+{cat:"Polski", q:"Czy w rodzinach chłopskich zdarzały się konflikty?", a:"Tak, na przykład między Maciejem Boryną a Antkiem", b:"Nie, ponieważ wszyscy zawsze się ze sobą zgadzali", c:"Nie, ponieważ rodziny nie miały wspólnych obowiązków", d:"Tak, ale wyłącznie z powodu świąt kościelnych"},
+{cat:"Polski", q:"Jakie czynniki wpływały na życie chłopów?", a:"Praca, przyroda, religia i tradycja", b:"Podróże, polityka, przemysł i służba wojskowa", c:"Wyłącznie nauka, handel i życie w mieście", d:"Wyłącznie rozrywka, sport i kontakty zagraniczne"},
+{cat:"Polski", q:"Co było ważne dla chłopów oprócz ziemi i rodziny?", a:"Opinia innych mieszkańców wsi", b:"Sława wśród mieszkańców wielkich miast", c:"Kariera w zagranicznych urzędach", d:"Udział w dalekich podróżach i wyprawach"},
+{cat:"Polski", q:"Jaki był ogólny charakter życia chłopów przedstawiony w powieści?", a:"Życie było ciężkie i podporządkowane wielu obowiązkom", b:"Życie było łatwe i pozbawione codziennych obowiązków", c:"Życie polegało głównie na podróżach i odpoczynku", d:"Życie było niezależne od przyrody i pracy"},
+{cat:"Polski", q:"Co pokazuje historia Jagny w kontekście życia społecznego Lipiec?", a:"Złamanie norm wsi mogło prowadzić do surowej kary", b:"Każdy mieszkaniec mógł łamać zasady bez konsekwencji", c:"Mieszkańcy nie interesowali się zachowaniem innych ludzi", d:"Wszyscy mieszkańcy popierali romanse i odrzucali tradycję"},
+{cat:"Polski", q:"Co pokazuje konflikt Boryny i Antka?", a:"Ziemia była ważna i mogła prowadzić do konfliktów rodzinnych", b:"Religia była jedyną przyczyną wszystkich sporów rodzinnych", c:"Chłopi nie przywiązywali żadnej wagi do gospodarstwa", d:"Rodzina nie miała żadnego znaczenia w życiu mieszkańców"},
+{cat:"Polski", q:"Jak przyroda wpływała na codzienność mieszkańców Lipiec?", a:"Wyznaczała rytm pracy i przygotowania do kolejnych pór roku", b:"Nie wpływała na pracę, ponieważ chłopi pracowali w fabrykach", c:"Decydowała jedynie o terminach świąt kościelnych", d:"Wpływała wyłącznie na czas odpoczynku i zabawy"},
+{cat:"Polski", q:"Które zdanie najlepiej podsumowuje egzystencję chłopów w powieści?", a:"Ich życie opierało się na ziemi, pracy, rodzinie, religii i tradycji", b:"Ich życie opierało się na podróżach, nauce, polityce i rozrywce", c:"Ich życie opierało się na handlu, przemyśle, wojsku i urzędach", d:"Ich życie opierało się na karierze, sławie, pieniądzach i podróżach"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 10;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
