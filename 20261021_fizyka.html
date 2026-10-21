@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  // --- ODBICIE (1-10) ---
+  {
+    cat: "Fizyka",
+    q: "Przeglądasz się rano w lustrze łazienkowym, widząc wyraźnie swoją twarz. Jakie zjawisko za to odpowiada?",
+    a: "Odbicie światła od gładkiej powierzchni lustra, w którym kąt padania równa się kątowi odbicia.",
+    b: "Rozproszenie promieni słonecznych na matowej powłoce szklanej tafli zamontowanej w łazience.",
+    c: "Załamanie światła przechodzącego przez grubą warstwę przezroczystego szkła kryształowego.",
+    d: "Całkowite wewnętrzne pochłanianie wiązki światła w całej strukturze lustrzanej powłoki."
+  },
+  {
+    cat: "Fizyka",
+    q: "Podczas spaceru nad jeziorem widzisz idealne odbicie drzew i chmur w spokojnej tafli wody. Co to za zjawisko?",
+    a: "Odbicie zwierciadlane światła od gładkiej i równej powierzchni wody, która działa jak lustro.",
+    b: "Rozproszenie chaotyczne promieni światła na chropowatej i pofalowanej strukturze zbiornika.",
+    c: "Załamanie światła słonecznego wnikającego głęboko pod powierzchnię czystej wody w jeziorze.",
+    d: "Interferencja fal świetlnych odbijających się od dna jeziora i powierzchni tafli wodnej."
+  },
+  {
+    cat: "Fizyka",
+    q: "Dentysta używa w gabinecie małego, okrągłego lusterka na długim trzonku, aby zobaczyć zęby od tyłu. Jakiego zjawiska używa?",
+    a: "Odbicia światła, które pozwala skierować promień w niewidoczne miejsca i ujrzeć dokładny obraz.",
+    b: "Rozproszenia światła, które równomiernie oświetla całą jamę ustną pacjenta z każdego boku.",
+    c: "Załamania światła na małej soczewce umieszczonej na metalowej rączce stomatologicznego narzędzia.",
+    d: "Dyfrakcji światła przechodzącego przez miniaturową szczelinę w oprawie lustrzanego przyrządu."
+  },
+  {
+    cat: "Fizyka",
+    q: "Jedziesz nocą samochodem, a światła reflektorów odbijają się jaskrawie od płaskiego znaku drogowego. Co to za zjawisko?",
+    a: "Odbicie światła od gładkiej powierzchni tablicy znaku, które kieruje wiązkę z powrotem do kierowcy.",
+    b: "Rozproszenie światła żarówek na chropowatej farbie pokrywającej metalową powierzchnię znaku.",
+    c: "Załamanie światła wewnątrz folii odblaskowej naklejonej na zewnętrzną stronę tarczy drogowej.",
+    d: "Pochłanianie i ponowna emisja fotonów przez barwniki chemiczne zastosowane na znaku."
+  },
+  {
+    cat: "Fizyka",
+    q: "Podczas jazdy samochodem spoglądasz w boczne lusterko, aby ocenić sytuację na drodze. Jakie zjawisko zachodzi w lusterku?",
+    a: "Odbicie światła od wypolerowanej warstwy metalu zabezpieczonej szkłem, dające wyraźny obraz.",
+    b: "Rozproszenie światła otoczenia na matowej powierzchni szkła bocznego lusterka pojazdu.",
+    c: "Załamanie promieni świetlnych przechodzących przez cienką warstwę ochronną zwierciadła.",
+    d: "Polaryzacja liniowa światła słonecznego odbijanego od karoserii samochodów jadących z tyłu."
+  },
+  {
+    cat: "Fizyka",
+    q: "Światło słoneczne pada na błyszczącą, metalową tacę leżącą na stole, tworząc jasną plamę na ścianie. Jak to nazwać?",
+    a: "Odbicie światła od gładkiej i równej powierzchni metalowej tacy zgodnie z prawem odbicia.",
+    b: "Rozproszenie światła na mikrostrukturze metalu, które kieruje promienie dookoła pokoju.",
+    c: "Załamanie światła wnikającego w głąb struktury metalowej tacy i powracającego na zewnątrz.",
+    d: "Dyspersja światła białego na krawędziach tacy rozdzielająca je na barwne pasmo tęczy."
+  },
+  {
+    cat: "Fizyka",
+    q: "Czekasz na windę i widzisz swoją sylwetkę w błyszczących, metalowych drzwiach kabiny. Z jakim zjawiskiem masz do czynienia?",
+    a: "Odbiciem światła od gładkiej metalowej powierzchni drzwi działających jak zwierciadło.",
+    b: "Rozproszeniem światła korytarza na nierównościach metalowej powłoki drzwi windy.",
+    c: "Załamaniem światła na cieniutkiej warstwie powietrza znajdującej się tuż przed drzwiami.",
+    d: "Interferencją światła odbitego od sufitu i podłogi szybu windowego w budynku."
+  },
+  {
+    cat: "Fizyka",
+    q: "Marynarze na łodzi podwodnej używają peryskopu, aby zobaczyć statki na powierzchni wody. Jaka zasada tam działa?",
+    a: "Wielokrotne odbicie światła od zwierciadeł umieszczonych pod odpowiednim kątem w rurze.",
+    b: "Rozproszenie światła słonecznego wewnątrz układu optycznego tuby peryskopu morskiego.",
+    c: "Załamanie światła przechodzącego przez soczewki skupiające znajdujące się w okularze.",
+    d: "Całkowite wewnętrzne załamanie światła na ściankach metalowego tubusu urządzenia."
+  },
+  {
+    cat: "Fizyka",
+    q: "Robisz zdjęcie telefonem przez szybę w nocy i na zdjęciu widać odbitą twarz zamiast widoku na zewnątrz. Co to?",
+    a: "Odbicie światła od gładkiej powierzchni szklanej szyby, która w ciemności działa jak lustro.",
+    b: "Rozproszenie światła ekranu telefonu na chropowatej strukturze czystego okna domowego.",
+    c: "Załamanie światła lampy błyskowej wewnątrz grubego pakietu szyby zespolonej w oknie.",
+    d: "Absorpcja promieni świetlnych przez powłokę antywłamaniową zastosowaną na szybie."
+  },
+  {
+    cat: "Fizyka",
+    q: "Zawieszasz na choince szklaną bombkę o idealnie gładkiej powierzchni, w której odbija się cały pokój. Co to za zjawisko?",
+    a: "Odbicie światła od zakrzywionej, ale gładkiej powierzchni bombki tworzącej pomniejszony obraz.",
+    b: "Rozproszenie światła lampek choinkowych na powierzchni bombki w losowych kierunkach.",
+    c: "Załamanie światła przechodzącego przez cienką ściankę szkła ozdoby choinkowej do wnętrza.",
+    d: "Dyfrakcja fal świetlnych na nieregularnościach malunku pokrywającego szklaną powierzchnię."
+  },
+
+  // --- ROZPROSZENIE (11-20) ---
+  {
+    cat: "Fizyka",
+    q: "Stoisz w pokoju i widzisz białą, matową ścianę z każdego miejsca, w którym się znajdziesz. Jakie to zjawisko?",
+    a: "Rozproszenie światła na chropowatej powierzchni ściany, która odbija promienie w różne strony.",
+    b: "Odbicie zwierciadlane światła od idealnie gładkiej i płaskiej powłoki farby emulsyjnej.",
+    c: "Załamanie światła wnikającego przez całą grubość tynku i cegieł budujących ścianę pokoju.",
+    d: "Całkowite wewnętrzne odbicie światła wewnątrz mikrostruktury cząsteczek białego pigmentu."
+  },
+  {
+    cat: "Fizyka",
+    q: "Wiatr wzburzył powierzchnię jeziora i piękne odbicie drzew zniknęło, dając rozmyty widok. Dlaczego?",
+    a: "Rozproszenie światła na pofalowanej i nierównej tafli wody rozbijającej promienie w chaosie.",
+    b: "Odbicie zwierciadlane światła o podwojonej prędkości na skutek ruchu fal wodnych.",
+    c: "Załamanie światła w głębszych warstwach wody spowodowane zmianą temperatury cieczy.",
+    d: "Całkowite pochłanianie światła słonecznego przez spienione grzbiety fal na jeziorze."
+  },
+  {
+    cat: "Fizyka",
+    q: "Włączasz laser w zakurzonym lub zadymionym pokoju i wyraźnie widać całą czerwoną linię światła. Co to za zjawisko?",
+    a: "Rozproszenie światła lasera na mikroskopijnych cząsteczkach pyłu lub dymu unoszących się w powietrzu.",
+    b: "Odbicie światła od gładkich ścianek cząsteczek kurzu działających jak miniaturowe lusterka.",
+    c: "Załamanie światła laserowego w kroplach wody zawieszonych w atmosferze całego pomieszczenia.",
+    d: "Interferencja spójnych fal świetlnych emitowanych przez diodę laserową w wolnej przestrzeni."
+  },
+  {
+    cat: "Fizyka",
+    q: "Czytasz książkę wydrukowaną na matowym papierze, który nie razi oczu odbiciem światła lampy. Z czym masz do czynienia?",
+    a: "Rozproszeniem światła na chropowatej strukturze papieru, dzięki czemu tekst widać z każdej strony.",
+    b: "Odbiciem zwierciadlanym światła żarówki od idealnie płaskiej i błyszczącej powierzchni kartek.",
+    c: "Załamaniem światła przechodzącego przez wszystkie strony zadrukowanej kartki papieru.",
+    d: "Fluorescencją cząsteczek celulozy pod wpływem padającego na książkę światła sztucznego."
+  },
+  {
+    cat: "Fizyka",
+    q: "Świecisz latarką w gęstą mgłę i zamiast wąskiego punktu widzisz oświetloną, jasną chmurę wokół siebie. Dlaczego?",
+    a: "Rozproszenie światła na licznych drobnych kropelkach wody zawieszonych w powietrzu zamieniających wiązkę.",
+    b: "Odbicie światła od zewnętrznej powłoki gładkich mikroskopijnych kryształków lodu lub wody.",
+    c: "Załamanie światła w kropelkach mgły działających jak wielkie soczewki skupiające o dużej mocy.",
+    d: "Absorpcja i ponowne wypromieniowanie energii świetlnej przez parę wodną w atmosferze."
+  },
+  {
+    cat: "Fizyka",
+    q: "Patrzysz w ciągu dnia na bezchmurne, błękitne niebo nad głową. Jaki proces fizyczny odpowiada za ten kolor?",
+    a: "Rozproszenie Rayleigha światła słonecznego na cząsteczkach gazów budujących ziemską atmosferę.",
+    b: "Odbicie światła od górnej granicy atmosfery ziemskiej działającej jak wielka niebieska tarcza.",
+    c: "Załamanie światła w warstwie ozonowej znajdującej się w stratosferze nad powierzchnią Ziemi.",
+    d: "Absorpcja czerwonej części widma światła przez cząsteczki azotu i tlenu w powietrzu."
+  },
+  {
+    cat: "Fizyka",
+    q: "W pokoju świeci matowa żarówka w mlecznym kloszu, równomiernie oświetlając całe wnętrze bez ostrych cieni. Co to?",
+    a: "Rozproszenie światła na mlecznej strukturze szklanego klosza rozpraszającego promienie na boki.",
+    b: "Odbicie światła od wewnętrznej powierzchni żarówki pokrytej gładką warstwą lustrzaną.",
+    c: "Załamanie światła w próżni znajdującej się wewnątrz szklanej bańki tradycyjnej żarówki.",
+    d: "Dyfrakcja fal świetlnych na metalowym żarniku wolframowym rozgrzanym do wysokiej temperatury."
+  },
+  {
+    cat: "Fizyka",
+    q: "Spacerujesz po parku i widzisz zielone liście na drzewach. Jak światło tworzy ten widok dla twoich oczu?",
+    a: "Rozproszenie i odbicie wyselekcjonowanego zielonego widma światła przez barwniki zawarte w liściach.",
+    b: "Odbicie zwierciadlane całego światła słonecznego od idealnie gładkiej powierzchni blaszki liściowej.",
+    c: "Załamanie światła wewnątrz komórek roślinnych działających jak miniaturowe pryzmaty szklane.",
+    d: "Całkowite wewnętrzne odbicie światła czerwonego i niebieskiego w naczyniach liścia."
+  },
+  {
+    cat: "Fizyka",
+    q: "Twój smartfon ma matową folie ochronną na ekranie, dzięki czemu w słońcu nie widzisz w nim odbicia swojej twarzy. Co to?",
+    a: "Rozproszenie światła padającego na matową strukturę folii, co eliminuje denerwujące odblaski.",
+    b: "Odbicie światła od idealnie gładkiej powierzchni kleju łączącego folię z wyświetlaczem.",
+    c: "Załamanie światła wewnątrz matowej warstwy plastiku zmieniające kierunek całego obrazu.",
+    d: "Całkowite pochłanianie zewnętrznego światła słonecznego przez czarną powłokę folii ochronnej."
+  },
+  {
+    cat: "Fizyka",
+    q: "Reflektor samochodu oświetla szorstką nawierzchnię asfaltową drogi w nocy. Jak zachowuje się światło na asfalcie?",
+    a: "Rozprasza się na nierównościach chropowatej struktury asfaltu, oświetlając drogę we wszystkich kierunkach.",
+    b: "Odbija się zwierciadlanie jak w lustrze, kierując całą wiązkę z powrotem w niebo nad autem.",
+    c: "Załamuje się w głąb struktury kamieni i smoły, tworząc podziemne źródło jasnego blasku.",
+    d: "Zostaje całkowicie zatrzymane na powierzchni przez czarny barwnik bez żadnych skutków optycznych."
+  },
+
+  // --- ZAŁAMANIE (21-30) ---
+  {
+    cat: "Fizyka",
+    q: "Wkładasz prostą słomkę do szklanki z wodą i widzisz, że na granicy wody i powietrza wygląda na złamaną. Co to?",
+    a: "Załamanie światła biegnącego z wody do powietrza na skutek zmiany prędkości jego rozchodzenia się.",
+    b: "Odbicie zwierciadlane światła od wewnętrznej ścianki szklanki wypełnionej przezroczystym płynem.",
+    c: "Rozproszenie światła na cząsteczkach wody w miejscu zanurzenia plastikowej słomki.",
+    d: "Całkowite pochłanianie promieni świetlnych przez ścianki naczynia szklanego w dolnej partii."
+  },
+  {
+    cat: "Fizyka",
+    q: "Patrzysz na dno czystego basenu i wydaje się ono znacznie płytsze, niż jest w rzeczywistości. Jakie to zjawisko?",
+    a: "Załamanie światła na granicy wody i powietrza, które tworzy pozorny obraz dna wyżej niż leży.",
+    b: "Odbicie światła od płytek basenowych działających jak wielkie płaskie zwierciadło wodne.",
+    c: "Rozproszenie światła na czystej wodzie basenowej zmniejszające rzeczywistą głębokość obiektu.",
+    d: "Ciśnienie hydrostatyczne wody dociskające dno basenu w stronę powierzchni tafli."
+  },
+  {
+    cat: "Fizyka",
+    q: "Wrzucasz monetę do miski z wodą i patrząc z góry widzisz ją w innym miejscu niż faktycznie leży. Dlaczego?",
+    a: "Załamanie światła wychodzącego z wody do powietrza zmienia kąt biegu promieni docierających do oka.",
+    b: "Odbicie światła od metalowej powierzchni monety pod wpływem gęstości płynu w naczyniu.",
+    c: "Rozproszenie światła na gładkim dnie miski tworzące fałszywy obraz przedmiotu w toni.",
+    d: "Efekt optyczny wywołany parowaniem wody z powierzchni otwartego naczynia kuchennego."
+  },
+  {
+    cat: "Fizyka",
+    q: "Osoba dalekowzroczna nosi okulary ze szkłami powiększającymi tekst w gazecie. Jakie zjawisko w nich zachodzi?",
+    a: "Załamanie światła na zakrzywionych powierzchniach soczewek okularowych skupiających promienie.",
+    b: "Odbicie światła od wewnętrznych powłok antyrefleksyjnych nałożonych na szkła korekcyjne.",
+    c: "Rozproszenie światła druku na gładkiej powierzchni szklanej soczewki optycznej pacjenta.",
+    d: "Interferencja fal świetlnych przechodzących przez cienkie oprawki markowych okularów."
+  },
+  {
+    cat: "Fizyka",
+    q: "Używasz lupy (szkła powiększającego), aby odczytać drobny druczek na mapie turystycznej. Co wykorzystujesz?",
+    a: "Załamanie światła przechodzącego przez wypukłą soczewkę, która skupia promienie i powiększa obraz.",
+    b: "Odbicie światła od oprawy lupy kierujące dodatkowe promienie w stronę czytanego tekstu.",
+    c: "Rozproszenie światła na szklanej powierzchni soczewki rozpraszającej małe litery mapy.",
+    d: "Całkowite wewnętrzne odbicie światła wewnątrz grubego uchwytu plastikowego narzędzia."
+  },
+  {
+    cat: "Fizyka",
+    q: "Po burzy na niebie pojawia się kolorowa tęcza powstała w wyniku działania kropli deszczu. Jakie zjawisko za to odpowiada?",
+    a: "Załamanie i rozszczepienie światła białego przechodzącego przez przezroczyste kropelki wody.",
+    b: "Odbicie zwierciadlane światła słonecznego od idealnie płaskich chmur burzowych na niebie.",
+    c: "Rozproszenie chaotyczne promieni słonecznych na suchej warstwie powietrza po deszczu.",
+    d: "Interferencja fal elektromagnetycznych emitowanych przez wyładowania atmosferyczne."
+  },
+  {
+    cat: "Fizyka",
+    q: "Widzisz pływającą złotą rybkę w szklanej kuli, ale jej pozycja wydaje się przesunięta w bok. Co to za zjawisko?",
+    a: "Załamanie światła na zakrzywionej powierzchni wody i szkła zmieniające kierunek promieni do oka.",
+    b: "Odbicie światła od łusek ryby działających jak miniaturowe lusterka wewnątrz akwarium.",
+    c: "Rozproszenie światła na pęcherzykach powietrza w pompie napowietrzającej wodę w kuli.",
+    d: "Złudzenie optyczne niemające nic wspólnego z fizycznymi właściwościami ośrodków."
+  },
+  {
+    cat: "Fizyka",
+    q: "Wypukła soczewka skupiająca pozwala rozpalić ognisko za pomocą promieni słonecznych w lesie. Jak działa?",
+    a: "Załamanie światła słonecznego padającego na soczewkę i skierowanie całej energii w jeden punkt.",
+    b: "Odbicie światła od obu powierzchni soczewki i kumulacja ciepła w oprawie narzędzia.",
+    c: "Rozproszenie światła na brzegach szklanego krążka powodujące wzrost temperatury powietrza.",
+    d: "Pochłanianie fotonów przez masę szkła i zamiana ich na promieniowanie podczerwone."
+  },
+  {
+    cat: "Fizyka",
+    q: "Obserwujesz nocą migotanie gwiazd na nieboskłonie, gdy światło przechodzi przez warstwy powietrza. Co to?",
+    a: "Ciągłe załamanie światła w zmieniających gęstość i temperaturę warstwach ziemskiej atmosfery.",
+    b: "Odbicie światła gwiazd od kosmicznych śmieci krążzących po orbicieokołoziemskiej.",
+    c: "Rozproszenie światła na pyłach meteorytowych wpadających w atmosferę z dużą prędkością.",
+    d: "Okresowe wyłączanie się źródła światła dalekich gwiazd w przestrzeni galaktycznej."
+  },
+  {
+    cat: "Fizyka",
+    q: "Obiektyw profesjonalnego aparatu fotograficznego składa się z wielu soczewek optycznych. Do czego służą?",
+    a: "Precyzyjne załamanie światła wpadającego do aparatu, aby uzyskać ostry obraz na matrycy.",
+    b: "Odbicie całego niepotrzebnego światła z powrotem na zewnątrz obudowy obiektywu.",
+    c: "Rozproszenie światła na poszczególnych elementach szklanych w celu zmiękczenia fotografii.",
+    d: "Filtrowanie barw za pomocą całkowitego wewnętrznego pochłaniania fal świetlnych."
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let fizyka =
+    localStorage.getItem("fizyka") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        fizyka =
+            parseInt(fizyka) + 10;
+
+        localStorage.setItem(
+            "fizyka",
+            fizyka
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
