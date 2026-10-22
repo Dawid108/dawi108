@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {
+    cat: "Biologia",
+    q: "Co to jest gen?",
+    a: "Podstawowa jednostka dziedziczenia. Pojedynczy gen to fragment DNA, zawiera informacje dotyczące budowy białka lub cząsteczki RNA.[span_3](start_span)[span_3](end_span)",
+    b: "Sekwencja niekodująca, która nie zawiera żadnych informacji o budowie białek ani o budowie RNA.[span_4](start_span)[span_4](end_span)",
+    c: "Zestaw wszystkich chromosomów w komórce danego organizmu, charakterystyczny dla danego gatunku.[span_5](start_span)[span_5](end_span)",
+    d: "Proces zachodzący w jądrze komórkowym, który prowadzi do uzyskania 2 identycznych cząsteczek DNA.[span_6](start_span)[span_6](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Czym są eksony?",
+    a: "Sekwencje kodujące, które zawierają informacje o kolejności ułożenia aminokwasów w białkach lub o budowie RNA.[span_7](start_span)[span_7](end_span)",
+    b: "Sekwencje niekodujące, które nie zawierają informacji o budowie białek ani o budowie RNA.[span_8](start_span)[span_8](end_span)",
+    c: "Podstawowe jednostki budujące DNA i RNA składające się z cukru, reszty fosforanowej i zasady.[span_9](start_span)[span_9](end_span)",
+    d: "Zestaw genów danego organizmu, który zawiera precyzyjne informacje genetyczne o jego cechach.[span_10](start_span)[span_10](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Czym są introny?",
+    a: "Sekwencje niekodujące, które nie zawierają informacji o budowie białek ani o budowie RNA.[span_11](start_span)[span_11](end_span)",
+    b: "Sekwencje kodujące, które zawierają informacje o kolejności ułożenia aminokwasów w białkach.[span_12](start_span)[span_12](end_span)",
+    c: "Sposób zapisu informacji o budowie białek w sekwencji kwasów nukleinowych DNA lub mRNA.[span_13](start_span)[span_13](end_span)",
+    d: "Jedna z wersji tego samego genu, która wywiera duży wpływ na daną cechę organizmu.[span_14](start_span)[span_14](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Co to są nukleotydy?",
+    a: "Podstawowe jednostki budujące DNA i RNA. Składa się z cukru 5-węglowego, reszty fosforanowej i zasady azotowej.[span_15](start_span)[span_15](end_span)",
+    b: "Zespół cech organizmu, które widzimy, takich jak kolor oczu czy włosów, zależne od środowiska.[span_16](start_span)[span_16](end_span)",
+    c: "Zestaw wszystkich chromosomów w komórce danego organizmu, charakterystyczny dla gatunku.[span_17](start_span)[span_17](end_span)",
+    d: "Wymiana odcinków chromatyd w chromosomach homologicznych podczas zachodzącej mejozy.[span_18](start_span)[span_18](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Jak definiuje się kod genetyczny?",
+    a: "Sposób zapisu informacji o budowie białek w sekwencji kwasów nukleinowych DNA lub mRNA.[span_19](start_span)[span_19](end_span)",
+    b: "Zestaw genów danego organizmu, który zawiera wszystkie ważne informacje genetyczne o cechach.[span_20](start_span)[span_20](end_span)",
+    c: "Jedna z wersji tego samego genu, która wpływa bezpośrednio na określoną cechę organizmu.[span_21](start_span)[span_21](end_span)",
+    d: "Proces zachodzący w jądrze komórkowym prowadzący do uzyskania identycznych cząsteczek.[span_22](start_span)[span_22](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Co to jest fenotyp?",
+    a: "Zespół cech organizmu, które widzimy (kolor oczu, włosów, wzrost). Zależy od genotypu i wpływu środowiska.[span_23](start_span)[span_23](end_span)",
+    b: "Zestaw wszystkich chromosomów w komórce danego organizmu, charakterystyczny dla jego gatunku.[span_24](start_span)[span_24](end_span)",
+    c: "Organizm, który posiada dwa dokładnie takie same allele danego typu oznaczane jako AA.[span_25](start_span)[span_25](end_span)",
+    d: "Dział biologii, który zajmuje się dziedziczeniem cech oraz zmiennością żywych organizmów.[span_26](start_span)[span_26](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Co to jest genotyp?",
+    a: "Zestaw genów danego organizmu, zawiera informacje genetyczne o jego cechach.[span_27](start_span)[span_27](end_span)",
+    b: "Podstawowa jednostka dziedziczenia będąca pojedynczym fragmentem cząsteczki DNA.[span_28](start_span)[span_28](end_span)",
+    c: "Sekwencja kodująca zawierająca informacje o kolejności ułożenia aminokwasów.[span_29](start_span)[span_29](end_span)",
+    d: "Organizm, który posiada dwa różne allele danego typu oznaczane jako heterozygota.[span_30](start_span)[span_30](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Czym jest kariotyp?",
+    a: "Zestaw wszystkich chromosomów w komórce danego organizmu, charakterystyczny dla danego gatunku (człowiek ma 46).[span_31](start_span)[span_31](end_span)",
+    b: "Sposób zapisu informacji o budowie białek w sekwencji kwasów nukleinowych DNA lub mRNA.[span_32](start_span)[span_32](end_span)",
+    c: "Allel, który ujawnia swoją cechę również wtedy, gdy występuje razem z recesywnym.[span_33](start_span)[span_33](end_span)",
+    d: "Proces zachodzący w jądrze komórkowym, który prowadzi do uzyskania cząsteczek DNA.[span_34](start_span)[span_34](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Co to jest allel?",
+    a: "Jedna z wersji tego samego genu, która wpływa na daną cechę organizmu.[span_35](start_span)[span_35](end_span)",
+    b: "Sekwencja niekodująca, która nie zawiera informacji o budowie białek ani RNA.[span_36](start_span)[span_36](end_span)",
+    c: "Podstawowa jednostka budująca DNA i RNA składająca się z cukru i reszty.[span_37](start_span)[span_37](end_span)",
+    d: "Zespół cech organizmu, które widzimy i które zależą od genotypu oraz środowiska.[span_38](start_span)[span_38](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Czym jest allel dominujący?",
+    a: "Allel, który ujawnia swoją cechę również wtedy, gdy występuje razem z allelem recesywnym (oznaczenie = A).[span_39](start_span)[span_39](end_span)",
+    b: "Allel, którego cecha ujawnia się zazwyczaj wtedy, gdy występuje w 2 kopiach (oznaczenie = a).[span_40](start_span)[span_40](end_span)",
+    c: "Organizm, który ma 2 takie same allele danego typu występujące w układzie jako AA.[span_41](start_span)[span_41](end_span)",
+    d: "Dział biologii, który zajmuje się badaniem dziedziczenia cech oraz zmiennością.[span_42](start_span)[span_42](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Czym jest allel recesywny?",
+    a: "Allel, którego cecha ujawnia się zazwyczaj wtedy, gdy występuje w 2 kopiach (oznaczenie = a).[span_43](start_span)[span_43](end_span)",
+    b: "Allel, który ujawnia swoją cechę również wtedy, gdy występuje razem z dominującym (oznaczenie = A).[span_44](start_span)[span_44](end_span)",
+    c: "Organizm, który ma 2 różne allele danego typu występujące w układzie oznaczone jako Aa.[span_45](start_span)[span_45](end_span)",
+    d: "Proces zachodzący w jądrze komórkowym, który prowadzi do uzyskania 2 cząsteczek DNA.[span_46](start_span)[span_46](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Co to jest homozygota?",
+    a: "Organizm, który ma 2 takie same allele danego typu – AA.[span_47](start_span)[span_47](end_span)",
+    b: "Organizm, który ma 2 różne allele danego typu – Aa.[span_48](start_span)[span_48](end_span)",
+    c: "Zestaw wszystkich chromosomów w komórce danego organizmu gatunku.[span_49](start_span)[span_49](end_span)",
+    d: "Wymiana odcinków chromatyd w chromosomach homologicznych podczas mejozy.[span_50](start_span)[span_50](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Co to jest heterozygota?",
+    a: "Organizm, który ma 2 różne allele danego typu – Aa.[span_51](start_span)[span_51](end_span)",
+    b: "Organizm, który ma 2 takie same allele danego typu – AA.[span_52](start_span)[span_52](end_span)",
+    c: "Sekwencja kodująca, która zawiera informacje o kolejności ułożenia aminokwasów.[span_53](start_span)[span_53](end_span)",
+    d: "Zespół cech organizmu, które widzimy i które zależą od wpływu środowiska.[span_54](start_span)[span_54](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Czym zajmuje się genetyka?",
+    a: "Dział biologii, który zajmuje się dziedziczeniem cech oraz zmiennością organizmów.[span_55](start_span)[span_55](end_span)",
+    b: "Sposób zapisu informacji o budowie białek w sekwencji kwasów nukleinowych.[span_56](start_span)[span_56](end_span)",
+    c: "Proces zachodzący w jądrze komórkowym prowadzący do powstania cząsteczek.[span_57](start_span)[span_57](end_span)",
+    d: "Zestaw wszystkich chromosomów w komórce danego organizmu dla gatunku.[span_58](start_span)[span_58](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Na czym polega crossing-over?",
+    a: "Wymiana odcinków chromatyd w chromosomach homologicznych podczas mejozy. Większa różnorodność genetyczna potomstwa.[span_59](start_span)[span_59](end_span)",
+    b: "Proces zachodzący w jądrze komórkowym, który prowadzi do uzyskania 2 identycznych cząsteczek DNA.[span_60](start_span)[span_60](end_span)",
+    c: "Podział komórkowy, który nie wpływa na zmienność genetyczną oraz różnorodność potomstwa.[span_61](start_span)[span_61](end_span)",
+    d: "Połączenie dwóch różnych alleli tego samego genu w jedną parę dominującą w komórce.[span_62](start_span)[span_62](end_span)"
+  },
+  {
+    cat: "Biologia",
+    q: "Co to jest replikacja DNA?",
+    a: "Proces zachodzący w jądrze komórkowym, który prowadzi do uzyskania 2 identycznych cząsteczek DNA. Zachodzi przed podziałem komórkowym.[span_63](start_span)[span_63](end_span)",
+    b: "Wymiana odcinków chromatyd w chromosomach homologicznych podczas mejozy dla różnorodności.[span_64](start_span)[span_64](end_span)",
+    c: "Dział biologii, który zajmuje się dziedziczeniem cech oraz zmiennością organizmów żywych.[span_65](start_span)[span_65](end_span)",
+    d: "Sposób zapisu informacji o budowie białek w sekwencji kwasów nukleinowych DNA lub mRNA.[span_66](start_span)[span_66](end_span)"
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let biologia =
+    localStorage.getItem("biologia") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        biologia =
+            parseInt(biologia) + 10;
+
+        localStorage.setItem(
+            "biologia",
+            biologia
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
