@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Niemiecki", q:"der Alltag", a:"codzienność", b:"przeszłość", c:"przyszłość", d:"większość"},
+  {cat:"Niemiecki", q:"die Bohrmaschine, -n", a:"wiertarka", b:"szlifierka", c:"spawarka", d:"piła taśmowa"},
+  {cat:"Niemiecki", q:"die Dampflokomotive, -n", a:"lokomotywa parowa", b:"samochód osobowy", c:"maszyna rolnicza", d:"elektrowozy sieci"},
+  {cat:"Niemiecki", q:"der Erfinder, -", a:"wynalazca", b:"projektant", c:"mechanik", d:"konstruktor"},
+  {cat:"Niemiecki", q:"die Erfindung, -en", a:"wynalazek", b:"urządzenie", c:"odkrycie", d:"narzędzie"},
+  {cat:"Niemiecki", q:"der Fotoapparat, -e", a:"aparat fotograficzny", b:"telefon komórkowy", c:"odtwarzacz płyt", d:"kamera cyfrowa"},
+  {cat:"Niemiecki", q:"das Gerät, -e", a:"urządzenie", b:"narzędzie", c:"maszyna", d:"aparatura"},
+  {cat:"Niemiecki", q:"der Klettverschluss, \"e", a:"zapięcie na rzepy", b:"zamek błyskawiczny", c:"pasek skórzany", d:"klamra metalowa"},
+  {cat:"Niemiecki", q:"die Konservendose, -n", a:"konserwa", b:"puszka piwa", c:"butelka soku", d:"karton mleka"},
+  {cat:"Niemiecki", q:"der Kühlschrank, \"e", a:"lodówka", b:"zamrażarka", c:"piekarnik", d:"zmywarka"},
+  {cat:"Niemiecki", q:"der Laser, -", a:"laser", b:"skaner", c:"sensor", d:"monitor"},
+  {cat:"Niemiecki", q:"der USB-Stick, -s", a:"pendrive", b:"kabel usb", c:"dyskietka", d:"czytnik kart"},
+  {cat:"Niemiecki", q:"das Werkzeug, -e", a:"narzędzie", b:"akcesorium", c:"wyposażenie", d:"urządzenie"},
+  {cat:"Niemiecki", q:"die Zahnpasta, -pasten", a:"pasta do zębów", b:"mydło w płynie", c:"szampon do włos", d:"krem nawilżający"},
+  {cat:"Niemiecki", q:"auf|hängen", a:"wieszać", b:"zbierać", c:"chować", d:"układać"},
+  {cat:"Niemiecki", q:"entwickeln", a:"opracować, rozwijać", b:"analizować dane", c:"projektować dom", d:"przygotować plik"},
+  {cat:"Niemiecki", q:"erfinden", a:"wynaleźć", b:"zbudować", c:"stworzyć", d:"zaprojekt"},
+  {cat:"Niemiecki", q:"fehlen", a:"brakować", b:"szukać", c:"unikać", d:"gubić się"},
+  {cat:"Niemiecki", q:"lagern", a:"przechowywać", b:"segregować", c:"pakować", d:"układać"},
+  {cat:"Niemiecki", q:"lösen", a:"rozwiązywać", b:"zrozumieć", c:"analizować", d:"przetwarzać"},
+  {cat:"Niemiecki", q:"nutzen", a:"używać", b:"tworzyć", c:"znaleźć", d:"zbierać"},
+  {cat:"Niemiecki", q:"der Föhn, -e", a:"suszarka do włosów", b:"maszynka do golenia", c:"prostownica do rąk", d:"szczotka elektryczna"},
+  {cat:"Niemiecki", q:"die Kaffeemaschine, -n", a:"ekspres do kawy", b:"maszyna do chleba", c:"czajnik bezprzew", d:"sokowirówka polna"},
+  {cat:"Niemiecki", q:"die Kamera, -s", a:"aparat fotograficzny", b:"kamera wideo", c:"telewizor plazm", d:"projektor slajdów"},
+  {cat:"Niemiecki", q:"das Ladegerät, -e", a:"ładowarka", b:"bateria", c:"przewód", d:"zasilacz"},
+  {cat:"Niemiecki", q:"die Mikrowelle, -n", a:"mikrofalówka", b:"zamrażarka", c:"piekarnik", d:"zmywarka"},
+  {cat:"Niemiecki", q:"der Mixer, -", a:"mikser", b:"blender", c:"toster", d:"piekarnik"},
+  {cat:"Niemiecki", q:"das Objektiv, -e", a:"obiektyw", b:"reflektor", c:"wysięgnik", d:"projektor"},
+  {cat:"Niemiecki", q:"die Reiseapotheke, -n", a:"apteczka podróżna", b:"torba sportowa", c:"plecak turystyczny", d:"walizka podróżna"},
+  {cat:"Niemiecki", q:"die Sache, -n", a:"rzecz", b:"sprawa", c:"część", d:"cecha"},
+  {cat:"Niemiecki", q:"die Taschelampe, -n", a:"latarka", b:"żarówka", c:"bateria", d:"kontrolka"},
+  {cat:"Niemiecki", q:"der Toaster, -", a:"toster", b:"opiekacz", c:"mikser", d:"czajnik"},
+  {cat:"Niemiecki", q:"der Wasserkocher, -", a:"czajnik elektryczny", b:"ekspres do herbaty", c:"podgrzewacz wody", d:"filtr do kranu"},
+  {cat:"Niemiecki", q:"auf|laden", a:"ładować (baterię)", b:"włączać zasilanie", c:"podłączać prąd", d:"uruchamiać sprzęt"},
+  {cat:"Niemiecki", q:"auf|wärmen", a:"podgrzewać", b:"schładzać", c:"gotować", d:"piec"},
+  {cat:"Niemiecki", q:"ein|packen", a:"pakować", b:"odpakowywać", c:"układać", d:"chowac"},
+  {cat:"Niemiecki", q:"funktionieren", a:"funkcjonować", b:"pracować", c:"działać", d:"obsługiwać"},
+  {cat:"Niemiecki", q:"leihen", a:"pożyczać", b:"oddać", c:"dawać", d:"kupić"},
+  {cat:"Niemiecki", q:"reparieren", a:"naprawiać", b:"budować", c:"tworzyć", d:"poprawiać"},
+  {cat:"Niemiecki", q:"trocknen", a:"suszyć", b:"moczyć", c:"myć", d:"czerpać"},
+  {cat:"Niemiecki", q:"verreisen", a:"wyjeżdżać", b:"podróżować", c:"zwiedzać", d:"przemieszczać"},
+  {cat:"Niemiecki", q:"zu|bereiten", a:"przygotowywać", b:"organizować", c:"projektować", d:"zaplanować"},
+  {cat:"Niemiecki", q:"auf eine Reise mit|nehmen", a:"zabierać w podróż", b:"wysyłać w drogę", c:"przygotować auto", d:"rezerwować hotel"},
+  {cat:"Niemiecki", q:"mit der Kamera fotografieren", a:"robić zdjęcia aparatem", b:"nagrywać film kamerą", c:"ustawiać ostrość zdjęć", d:"wywoływać klisze w lab"},
+  {cat:"Niemiecki", q:"zum Wandern", a:"na wędrówkę", b:"na wycieczkę", c:"na spacer", d:"na polowanie"},
+  {cat:"Niemiecki", q:"die Anleitung, -en", a:"instrukcja", b:"poradnik", c:"receptura", d:"dokument"},
+  {cat:"Niemiecki", q:"die Bedienungsanleitung, -en", a:"instrukcja obsługi", b:"karta gwarancyjna", c:"regulamin serwisu", d:"zasady użytkowani"},
+  {cat:"Niemiecki", q:"der Beipackzettel, -", a:"ulotka informacyjna", b:"prospekt reklamowy", c:"katalog produktowy", d:"cennik sklepowy"},
+  {cat:"Niemiecki", q:"die Funktion, -en", a:"funkcja", b:"działanie", c:"wartość", d:"struktura"},
+  {cat:"Niemiecki", q:"die Garantie, -n", a:"gwarancja", b:"rekojmia", c:"ochrona", d:"pewność"},
+  {cat:"Niemiecki", q:"die Mensaordnung, -en", a:"regulamin stołówki", b:"zasady biblioteki", c:"statut szkoły", d:"rozkład lekcyjny"},
+  {cat:"Niemiecki", q:"die Option, -en", a:"opcja", b:"wybór", c:"szansa", d:"wersja"},
+  {cat:"Niemiecki", q:"an|machen", a:"włączać", b:"wyłączać", c:"przestawiać", d:"odłączać"},
+  {cat:"Niemiecki", q:"sich an|schauen", a:"oglądać", b:"widzieć", c:"patrzyć", d:"obserwować"},
+  {cat:"Niemiecki", q:"aus|probieren", a:"wypróbować", b:"przetestować", c:"zastosować", d:"zainstalować"},
+  {cat:"Niemiecki", q:"aus|schalten", a:"wyłączać", b:"włączać", c:"resetować", d:"odłączać"},
+  {cat:"Niemiecki", q:"bedienen", a:"obsługiwać", b:"kierować", c:"sterować", d:"zarządzać"},
+  {cat:"Niemiecki", q:"reinigen", a:"czyścić", b:"myć", c:"płukać", d:"polerować"},
+  {cat:"Niemiecki", q:"rein|stecken", a:"wsadzić, wetknąć", b:"wyciągnąć", c:"schować", d:"przestawić"},
+  {cat:"Niemiecki", q:"kaputt", a:"zepsuty", b:"zniszczony", c:"zużyty", d:"stary"},
+  {cat:"Niemiecki", q:"talentiert", a:"utalentowany", b:"uzdolniony", c:"inteligentny", d:"kreatywny"},
+  {cat:"Niemiecki", q:"technisch", a:"technicznie", b:"praktycznie", c:"fizycznie", d:"logicznie"},
+  {cat:"Niemiecki", q:"selbst reparieren", a:"naprawiać samemu", b:"zlecać serwisowi", c:"wymieniać części", d:"kontrolować stan"},
+  {cat:"Niemiecki", q:"zum Service schicken", a:"wysyłać do serwisu", b:"odwozić do punktu", c:"zamawiać naprawę", d:"wymieniać sprzęt"},
+  {cat:"Niemiecki", q:"der Benutzername, -n", a:"nazwa użytkownika", b:"hasło dostępu", c:"adres e-mailowy", d:"profil systemowy"},
+  {cat:"Niemiecki", q:"der Bildschirm, -e", a:"ekran", b:"monitor", c:"wyświetlacz", d:"panel"},
+  {cat:"Niemiecki", q:"der Browser, -", a:"przeglądarka", b:"edytor tekstu", c:"odtwarzacz mp3", d:"program pocztowy"},
+  {cat:"Niemiecki", q:"der / das Log-in, -s", a:"login", b:"hasło", c:"profil", d:"indeks"},
+  {cat:"Niemiecki", q:"die Maus, \"e", a:"myszka", b:"klawiatura", c:"drukarka", d:"kamera"},
+  {cat:"Niemiecki", q:"die Maustaste, -n", a:"klawisz myszki", b:"przycisk panelu", c:"włącznik sprzętu", d:"sensor ekranowy"},
+  {cat:"Niemiecki", q:"das Passwort, \"er", a:"hasło", b:"login", c:"kod", d:"klucz"},
+  {cat:"Niemiecki", q:"der Suchbutton, -s", a:"przycisk „szukaj”", b:"klawisz enter", c:"pole filtrowania", d:"ikonka podglądu"},
+  {cat:"Niemiecki", q:"das Suchfeld, -er", a:"pole wyszukiwania", b:"okno przeglądarki", c:"zakładka strony", d:"formularz danych"},
+  {cat:"Niemiecki", q:"die Tastatur, -en", a:"klawiatura", b:"obudowa komput", c:"jednostka bazow", d:"ekran dotykowy"},
+  {cat:"Niemiecki", q:"die Taste, -n", a:"klawisz", b:"przycisk", c:"sensor", d:"przełącznik"},
+  {cat:"Niemiecki", q:"sich an|hören", a:"suchać", b:"słyszeć", c:"odbierać", d:"nagrywać"},
+  {cat:"Niemiecki", q:"an|klicken", a:"klikać", b:"naciskać", c:"dotykać", d:"przesuwać"},
+  {cat:"Niemiecki", q:"auf|machen", a:"otwierać", b:"zamykać", c:"przeglądać", d:"uruchamiać"},
+  {cat:"Niemiecki", q:"checken", a:"sprawdzać", b:"testować", c:"analizować", d:"weryfikować"},
+  {cat:"Niemiecki", q:"ein|geben", a:"podawać", b:"wpisywać", c:"zapisywać", d:"kopiować"},
+  {cat:"Niemiecki", q:"sich an|loggen", a:"zalogować się", b:"rejestrować się", c:"wylogować się", d:"autoryzować się"},
+  {cat:"Niemiecki", q:"den Benutzernamen ein|geben", a:"podać nazwę użytkownika", b:"wpisać hasło dostępu", c:"zapisać adres mailowy", d:"uzupełnić profil konta"},
+  {cat:"Niemiecki", q:"den Browser öffnen", a:"otworzyć przeglądarkę", b:"uruchomić program poczt", c:"zamknąć okno systemu", d:"zainstalować aplikację"},
+  {cat:"Niemiecki", q:"sich in ein Mailkonto ein|loggen", a:"zalogować się do konta e-mailowego", b:"otworzyć nową wiadomość tekstową", c:"wysłać załącznik do znajomego", d:"sprawdzić ustawienia skrzynki"},
+  {cat:"Niemiecki", q:"auf die Webseite gehen", a:"wejść na stronę internetową", b:"odwiedzić profil społeczności", c:"uruchomić serwer domowy", d:"pobrać plik instalacyjny"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let niemiecki =
+    localStorage.getItem("niemiecki") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        niemiecki =
+            parseInt(niemiecki) + 10;
+
+        localStorage.setItem(
+            "niemiecki",
+            niemiecki
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
