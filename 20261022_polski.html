@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Polski", q:"Czym w świecie Lipiec było wspólne kiszenie ogórków i szatkowanie kapusty?", a:"Gospodarskim rytuałem przygotowującym wieś do zimy", b:"Zwykłym obowiązkiem narzuconym przez dwór", c:"Formą kary nałożonej na kobiety przez wójta", d:"Corocznym świętem dziękczynnym po żniwach"},
+  {cat:"Polski", q:"Jaką funkcję społeczną pełniły wspólne jesienne prace kobiet w chałupie?", a:"Zacieśniały więzi sąsiedzkie i służyły wymianie wiejskich plotek", b:"Umożliwiały opłacenie podatków na rzecz wiejskiego kościoła", c:"Służyły wybieraniu nowego sołtysa spośród gospodarzy", d:"Stanowiły wyłączny czas na nauka czytania dla dzieci"},
+  {cat:"Polski", q:"W którym tomie powieści „Chłopi” odbywa się kiszenie ogórków i kapusty?", a:"W tomie pierwszym – „Jesień”", b:"W tomie drugim – „Zima”", c:"W tomie trzecim – „Wiosna”", d:"W tomie czwartym – „Lato”"},
+  {cat:"Polski", q:"Co według ludowych wierzeń działo się w Lipcach podczas Dnia Zadusznego?", a:"Dusze zmarłych przodków wracały do swoich dawnych domostw", b:"Złe duchy opanowywały wszystkie wiejskie gospodarstwa", c:"Aniołowie schodzili na ziemię by zbierać plony", d:"Zmarli surowo karali chłopów za niezebrane plony"},
+  {cat:"Polski", q:"W jaki sposób chłopi składali ofiary za dusze zmarłych w Dzień Zaduszny?", a:"Dawali dziadowi żebrakowi chleb, jaja i drobne pieniądze", b:"Zostawiali zapalone świece w progach swoich chałup", c:"Oddawali część zebranych zbóż na rzecz dworu", d:"Rzucali ziarno do rzeki dla wiejskiego proboszcza"},
+  {cat:"Polski", q:"Który bohater „Chłopów” wykazał się wyjątkową, wrażliwą postawą w Dzień Zaduszny?", a:"Parobek Kuba Socha dzielący się chlebem z ptakami", b:"Kowal szukający złota na cmentarzu parafialnym", c:"Roch czytający dzieciom stare księgi w chałupie", d:"Jankiel grający na skrzypcach dla całej wsi"},
+  {cat:"Polski", q:"Czym charakteryzowała się religijność chłopów ukazana podczas Zaduszek?", a:"Połączeniem liturgii katolickiej z dawnymi pogańskimi mitami", b:"Ścisłym przestrzeganiem wyłącznie nauk kościelnych", c:"Całkowitym odrzuceniem tradycji i modlitwy liturgicznej", d:"Wiarą opartą tylko na obietnicach wiejskiego dziedzica"},
+  {cat:"Polski", q:"Ile lat miał Maciej Boryna w momencie ślubu z Jagną Paczesiówną?", a:"58 lat", b:"35 lat", c:"42 lata", d:"70 lat"},
+  {cat:"Polski", q:"Co było głównym powodem wyrażenia zgody na ślub Jagny z Maciejem Boryną?", a:"Kalkulacja majątkowa i wola matki Jagny – Dominikowej", b:"Wielka i wzajemna miłość od pierwszego wejrzenia", c:"Nakaz wydany bezpośrednio przez wiejskiego proboszcza", d:"Ucieczka przed gniewem młodego Antka Boryny"},
+  {cat:"Polski", q:"Majątek o jakiej wielkości zapisał Maciej Boryna Jagnie w oprawie ślubnej?", a:"6 morgów ziemi", b:"10 morgów ziemi", c:"2 morgi ziemi", d:"12 morgów ziemi"},
+  {cat:"Polski", q:"Jak na wiadomość o zapisie ziemi dla Jagny zareagował Antek Boryna?", a:"Wszczął gwałtowną kłótnię i bójkę ze swoim ojcem", b:"Błogosławił młodej parze i zorganizował wesele", c:"Opuścił Lipce na zawsze bez słowa sprzeciwu", d:"Podarował Jagnie cenną chustę w geście zgody"},
+  {cat:"Polski", q:"Z jaką dokładnością Władysław Reymont opisał obrzęd wesela w powieści?", a:"Z bogatą dokładnością etnograficzną i opisem obyczajów", b:"Bardzo powierzchownie i bez podawania żadnych detali", c:"Skupiając się wyłącznie na przemyśleniach proboszcza", d:"Pijąc do historii innych królów i szlachty polskiej"},
+  {cat:"Polski", q:"Który z wymienionych elementów był tradycyjnym obrzędem oczepinowym na weselu?", a:"Zdejmowanie wianka i nakładanie czepca kobiecego Jagnie", b:"Sadzanie panny młodej na wielkim wozie drabiniastym", c:"Wędrówka wszystkich gości ze świecami wokół kościoła", d:"Targowanie się o cenę wykupu wiejskiego sołtysa"},
+  {cat:"Polski", q:"Jakie tańce dominowały podczas uroczystości weselnych w Lipcach?", a:"Chodzony, oberek oraz żywiołowo tańczony mazur", b:"Polonez, walce wiedeńskie i tradycyjne kadryle", c:"Tango, trojak oraz powolne tańce dworskie", d:"Krakowiak, zbójnicki oraz skoczne tańce lwowskie"},
+  {cat:"Polski", q:"Jaki dramatyczny konflikt ukryty był pod powierzchnią hucznego wesela Boryny?", a:"Ukryty romans Jagny z synem Boryny – Antkiem", b:"Spór graniczy Lipiec z sąsiednią wsią o las", c:"Brak pieniędzy na opłacenie grajków z kapeli", d:"Odmowa udzielenia ślubu przez lokalnego księdza"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 10;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
