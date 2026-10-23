@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="pl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strava Segmenty Dawida - Krotoszyn i Okolice</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        strava: {
+                            orange: '#FC4C02',
+                            hover: '#E04300',
+                            dark: '#121214',
+                            card: '#1E1E22',
+                            border: '#2E2E35'
+                        },
+                        kom: '#00E676',
+                        podium: '#FFD700',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts Inter -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d0f;
+            color: #f3f4f6;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #121214;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2e2e38;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #fc4c02;
+        }
+        .kom-glow {
+            box-shadow: 0 0 15px rgba(0, 230, 118, 0.25);
+        }
+        .podium-glow {
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.15);
+        }
+        .strava-gradient {
+            background: linear-gradient(135deg, #FC4C02 0%, #FF7A00 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-12 antialiased">
+
+    <!-- Header / Navbar -->
+    <header class="bg-strava-card/90 backdrop-blur-md border-b border-strava-border sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl strava-gradient flex items-center justify-center text-white shadow-lg shadow-strava-orange/30">
+                    <i class="fa-solid fa-person-running text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-black tracking-wider text-white uppercase flex items-center gap-2">
+                        STRAVA <span class="text-strava-orange font-bold text-sm bg-strava-orange/10 px-2 py-0.5 rounded border border-strava-orange/30">KROTOSZYN</span>
+                    </h1>
+                    <p class="text-xs text-gray-400">Dashboard Segmentów i Rekordów Dawida</p>
+                </div>
+            </div>
+
+            <!-- Header Quick Stats -->
+            <div class="flex items-center space-x-2 text-xs sm:text-sm">
+                <div class="bg-strava-dark px-3 py-1.5 rounded-lg border border-strava-border flex items-center gap-2">
+                    <span class="text-kom"><i class="fa-solid fa-crown"></i></span>
+                    <span class="text-gray-400">KOM/CR:</span>
+                    <span id="header-kom-count" class="font-bold text-white">0</span>
+                </div>
+                <div class="bg-strava-dark px-3 py-1.5 rounded-lg border border-strava-border flex items-center gap-2">
+                    <span class="text-podium"><i class="fa-solid fa-trophy"></i></span>
+                    <span class="text-gray-400">Podium:</span>
+                    <span id="header-podium-count" class="font-bold text-white">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 flex-grow w-full">
+
+        <!-- Statystyki Górne (KPI Cards) -->
+        <section class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+            <div class="bg-strava-card p-4 rounded-2xl border border-strava-border relative overflow-hidden group hover:border-strava-orange/50 transition">
+                <div class="absolute -right-3 -bottom-3 opacity-10 text-6xl text-white group-hover:scale-110 transition"><i class="fa-solid fa-route"></i></div>
+                <p class="text-xs font-semibold uppercase text-gray-400 tracking-wider">Wszystkie Segmenty</p>
+                <h3 id="stat-total" class="text-3xl font-extrabold text-white mt-2">0</h3>
+                <p class="text-xs text-gray-500 mt-1">w bazie danych</p>
+            </div>
+
+            <div class="bg-strava-card p-4 rounded-2xl border border-strava-border relative overflow-hidden group hover:border-kom/50 transition kom-glow">
+                <div class="absolute -right-3 -bottom-3 opacity-15 text-6xl text-kom group-hover:scale-110 transition"><i class="fa-solid fa-crown"></i></div>
+                <p class="text-xs font-semibold uppercase text-kom tracking-wider flex items-center gap-1">
+                    <i class="fa-solid fa-crown"></i> Miejsce 1 (KOM)
+                </p>
+                <h3 id="stat-kom" class="text-3xl font-extrabold text-white mt-2">0</h3>
+                <p id="stat-kom-pct" class="text-xs text-kom font-medium mt-1">0% całości</p>
+            </div>
+
+            <div class="bg-strava-card p-4 rounded-2xl border border-strava-border relative overflow-hidden group hover:border-podium/50 transition podium-glow">
+                <div class="absolute -right-3 -bottom-3 opacity-15 text-6xl text-podium group-hover:scale-110 transition"><i class="fa-solid fa-trophy"></i></div>
+                <p class="text-xs font-semibold uppercase text-podium tracking-wider flex items-center gap-1">
+                    <i class="fa-solid fa-medal"></i> Podium (Top 3)
+                </p>
+                <h3 id="stat-podium" class="text-3xl font-extrabold text-white mt-2">0</h3>
+                <p id="stat-podium-pct" class="text-xs text-podium font-medium mt-1">0% całości</p>
+            </div>
+
+            <div class="bg-strava-card p-4 rounded-2xl border border-strava-border relative overflow-hidden group hover:border-blue-500/50 transition">
+                <div class="absolute -right-3 -bottom-3 opacity-10 text-6xl text-blue-400 group-hover:scale-110 transition"><i class="fa-solid fa-person-running"></i></div>
+                <p class="text-xs font-semibold uppercase text-blue-400 tracking-wider">Ukończone</p>
+                <h3 id="stat-completed" class="text-3xl font-extrabold text-white mt-2">0</h3>
+                <p id="stat-todo" class="text-xs text-gray-400 mt-1">Pozostało: 0 do zrobienia</p>
+            </div>
+
+            <div class="bg-strava-card p-4 rounded-2xl border border-strava-border relative overflow-hidden group hover:border-strava-orange/50 transition col-span-2 sm:col-span-1">
+                <div class="absolute -right-3 -bottom-3 opacity-10 text-6xl text-strava-orange group-hover:scale-110 transition"><i class="fa-solid fa-ruler-horizontal"></i></div>
+                <p class="text-xs font-semibold uppercase text-strava-orange tracking-wider">Łączny Dystans</p>
+                <h3 id="stat-distance" class="text-3xl font-extrabold text-white mt-2">0 km</h3>
+                <p class="text-xs text-gray-500 mt-1">unikalnych odcinków</p>
+            </div>
+        </section>
+
+        <!-- Wykresy (Charts Section - Expandable) -->
+        <section class="mb-8">
+            <div class="bg-strava-card rounded-2xl border border-strava-border p-5">
+                <div class="flex justify-between items-center mb-4 cursor-pointer" id="toggle-charts-btn">
+                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-strava-orange"></i> Analiza i Statystyki
+                    </h2>
+                    <button class="text-gray-400 hover:text-white text-sm flex items-center gap-1 bg-strava-dark px-3 py-1 rounded-lg border border-strava-border">
+                        <span id="charts-toggle-text">Zwiń wykresy</span>
+                        <i id="charts-toggle-icon" class="fa-solid fa-chevron-up transition-transform"></i>
+                    </button>
+                </div>
+                
+                <div id="charts-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                    <div class="bg-strava-dark p-4 rounded-xl border border-strava-border/60 flex flex-col items-center">
+                        <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 w-full text-left">Rozkład Miejsc w Segmentach</h3>
+                        <div class="w-full max-w-[280px] h-[220px] flex items-center justify-center">
+                            <canvas id="placesChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-strava-dark p-4 rounded-xl border border-strava-border/60 flex flex-col justify-center">
+                        <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3 w-full text-left">Liczba Segmentów wg Rejonu</h3>
+                        <div class="w-full h-[220px]">
+                            <canvas id="regionsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filtry i Kontrolki -->
+        <section class="space-y-4 mb-6">
+            <!-- Pasek Wyszukiwania i Wyboru Widoku -->
+            <div class="flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+                <!-- Search Input -->
+                <div class="relative flex-grow">
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="search-input" placeholder="Szukaj segmentu po nazwie lub miejscowości..." 
+                        class="w-full pl-11 pr-10 py-3 bg-strava-card border border-strava-border rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-strava-orange transition text-sm">
+                    <button id="clear-search" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Control Buttons: Sort & View Mode -->
+                <div class="flex items-center gap-3">
+                    <!-- Sort Dropdown -->
+                    <div class="relative flex-grow sm:flex-grow-0">
+                        <select id="sort-select" class="w-full appearance-none bg-strava-card border border-strava-border text-white text-sm rounded-xl px-4 py-3 pr-8 focus:outline-none focus:border-strava-orange cursor-pointer">
+                            <option value="default">Domyślne sortowanie</option>
+                            <option value="place-asc">Miejsce: Od najlepszego (1-10)</option>
+                            <option value="dist-desc">Dystans: Od najdłuższego</option>
+                            <option value="dist-asc">Dystans: Od najkrótszego</option>
+                            <option value="name-asc">Nazwa: A-Z</option>
+                            <option value="diff-desc">Różnica do lidera: Największa</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+                    </div>
+
+                    <!-- View Toggle -->
+                    <div class="bg-strava-card border border-strava-border p-1 rounded-xl flex items-center shrink-0">
+                        <button id="view-cards-btn" class="px-3 py-2 rounded-lg text-sm font-medium transition text-white bg-strava-orange shadow">
+                            <i class="fa-solid fa-border-all"></i> <span class="hidden sm:inline ml-1">Karty</span>
+                        </button>
+                        <button id="view-table-btn" class="px-3 py-2 rounded-lg text-sm font-medium transition text-gray-400 hover:text-white">
+                            <i class="fa-solid fa-list"></i> <span class="hidden sm:inline ml-1">Tabela</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filtry Statusu (Tabs) -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 pt-1 no-scrollbar text-xs sm:text-sm">
+                <button data-filter="all" class="filter-btn active whitespace-nowrap px-4 py-2 rounded-xl font-medium border transition bg-strava-orange text-white border-strava-orange">
+                    Wszystkie (<span id="cnt-all">0</span>)
+                </button>
+                <button data-filter="kom" class="filter-btn whitespace-nowrap px-4 py-2 rounded-xl font-medium border transition bg-strava-card text-gray-300 border-strava-border hover:border-kom/50">
+                    👑 KOM / CR (<span id="cnt-kom">0</span>)
+                </button>
+                <button data-filter="podium" class="filter-btn whitespace-nowrap px-4 py-2 rounded-xl font-medium border transition bg-strava-card text-gray-300 border-strava-border hover:border-podium/50">
+                    🏆 Podium Top 3 (<span id="cnt-podium">0</span>)
+                </button>
+                <button data-filter="completed" class="filter-btn whitespace-nowrap px-4 py-2 rounded-xl font-medium border transition bg-strava-card text-gray-300 border-strava-border hover:border-blue-500/50">
+                    🏃 Ukończone (<span id="cnt-completed">0</span>)
+                </button>
+                <button data-filter="todo" class="filter-btn whitespace-nowrap px-4 py-2 rounded-xl font-medium border transition bg-strava-card text-gray-300 border-strava-border hover:border-red-500/50">
+                    🎯 Do zrobienia (<span id="cnt-todo">0</span>)
+                </button>
+            </div>
+
+            <!-- Filter Categories / Regions Bar -->
+            <div class="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar text-xs">
+                <span class="text-gray-500 uppercase font-semibold text-[10px] tracking-wider shrink-0 mr-1">Rejon:</span>
+                <select id="region-select" class="bg-strava-card border border-strava-border text-gray-300 text-xs rounded-lg px-3 py-1.5 focus:outline-none focus:border-strava-orange cursor-pointer">
+                    <option value="all">Wszystkie rejon / wydarzenia (18)</option>
+                    <!-- Populated dynamically -->
+                </select>
+                <div id="active-region-badge" class="hidden items-center gap-1 bg-strava-orange/10 border border-strava-orange/30 text-strava-orange px-2.5 py-1 rounded-lg">
+                    <span id="active-region-name"></span>
+                    <i id="reset-region" class="fa-solid fa-xmark cursor-pointer ml-1 hover:text-white"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nagłówek Podsumowujący Wyniki -->
+        <div class="flex justify-between items-center mb-4 text-xs sm:text-sm text-gray-400 px-1">
+            <div>
+                Znaleziono: <span id="visible-count" class="font-bold text-white">0</span> segmentów
+            </div>
+            <div id="active-filters-desc" class="italic text-gray-500"></div>
+        </div>
+
+        <!-- Główna zawartość: Widok Kart (Grid) -->
+        <section id="cards-view" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Cards populated dynamically via JS -->
+        </section>
+
+        <!-- Alternatywny Widok: Tabela -->
+        <section id="table-view" class="hidden">
+            <div class="bg-strava-card border border-strava-border rounded-2xl overflow-hidden shadow-xl">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-gray-300">
+                        <thead class="bg-strava-dark uppercase text-[11px] font-bold text-gray-400 border-b border-strava-border">
+                            <tr>
+                                <th class="py-3.5 px-4">Miejsce</th>
+                                <th class="py-3.5 px-4">Nazwa segmentu</th>
+                                <th class="py-3.5 px-4">Rejon</th>
+                                <th class="py-3.5 px-4 text-right">Dystans</th>
+                                <th class="py-3.5 px-4 text-center">Mój Czas</th>
+                                <th class="py-3.5 px-4 text-center">Moje Tempo</th>
+                                <th class="py-3.5 px-4 text-center">Best Time</th>
+                                <th class="py-3.5 px-4 text-center">Best Pace</th>
+                                <th class="py-3.5 px-4 text-center">Strava</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-body" class="divide-y divide-strava-border/60">
+                            <!-- Table rows populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- No Results Empty State -->
+        <div id="no-results" class="hidden py-16 text-center">
+            <div class="w-16 h-16 bg-strava-card border border-strava-border rounded-full flex items-center justify-center mx-auto text-gray-500 text-2xl mb-4">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1">Brak pasujących segmentów</h3>
+            <p class="text-gray-400 text-sm mb-4">Spróbuj zmienić kryteria wyszukiwania lub filtry.</p>
+            <button id="reset-all-filters-btn" class="bg-strava-orange hover:bg-strava-hover text-white px-4 py-2 rounded-xl text-sm font-medium transition">
+                Resetuj wszystkie filtry
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="mt-16 border-t border-strava-border bg-strava-card/50 py-6 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p>© Segmenty Strava Krotoszyn & Okolice — Statystyki Biegowe</p>
+            <p class="flex items-center gap-2">
+                <span>Napędzane pasją do biegania</span>
+                <span class="text-strava-orange"><i class="fa-solid fa-fire"></i></span>
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript - Baza danych i Logika aplikacji -->
+    <script>
+        // --- Baza Danych Segmentów ---
+        const rawSegmentsData = [
+            // 1. Krotoszyn
+            { region: "Krotoszyn", name: "Krotoszyn podbieg Wiewiórkowskiego", dist: 0.19, myTime: "0:36", myPace: "3:06", place: 4, bestTime: "0:32", bestPace: "2:46" },
+            { region: "Krotoszyn", name: "Podbieg wieża", dist: 0.26, myTime: "0:50", myPace: "3:07", place: 2, bestTime: "0:44", bestPace: "2:44" },
+            { region: "Krotoszyn", name: "Bieżnia liceum kołątaja", dist: 0.27, myTime: "-", myPace: "-", place: null, bestTime: "0:43", bestPace: "2:35" },
+            { region: "Krotoszyn", name: "Krotoszyn stadion LO", dist: 0.30, myTime: "0:44", myPace: "2:27", place: 1, bestTime: "0:44", bestPace: "2:27" },
+            { region: "Krotoszyn", name: "Podbieg Sulmierzycka", dist: 0.33, myTime: "0:57", myPace: "2:51", place: 3, bestTime: "0:56", bestPace: "2:48" },
+            { region: "Krotoszyn", name: "Jasna Ścieżka od Ronda", dist: 0.72, myTime: "2:16", myPace: "3:07", place: 1, bestTime: "2:16", bestPace: "3:07" },
+            { region: "Krotoszyn", name: "Ostrowska", dist: 0.76, myTime: "2:29", myPace: "3:16", place: 1, bestTime: "2:29", bestPace: "3:16" },
+            { region: "Krotoszyn", name: "Łąkowa Up", dist: 0.80, myTime: "2:46", myPace: "3:26", place: 2, bestTime: "2:44", bestPace: "3:23" },
+            { region: "Krotoszyn", name: "Leśniczówka Krotoszyn", dist: 0.82, myTime: "3:50", myPace: "4:39", place: 1, bestTime: "3:50", bestPace: "4:39" },
+            { region: "Krotoszyn", name: "Żwirowa Krotoszyn", dist: 0.83, myTime: "3:54", myPace: "4:42", place: 3, bestTime: "3:49", bestPace: "4:36" },
+            { region: "Krotoszyn", name: "Pętla Zagłady", dist: 0.86, myTime: "3:34", myPace: "4:07", place: 1, bestTime: "3:34", bestPace: "4:07" },
+            { region: "Krotoszyn", name: "Kobierno - Nowy Folwark", dist: 0.87, myTime: "4:09", myPace: "4:45", place: 1, bestTime: "4:09", bestPace: "4:45" },
+            { region: "Krotoszyn", name: "Krotoszyński Bieg Po Zdrowie", dist: 0.88, myTime: "4:22", myPace: "4:55", place: 3, bestTime: "4:12", bestPace: "4:44" },
+            { region: "Krotoszyn", name: "Osadnicza Krotoszyn", dist: 0.92, myTime: "4:01", myPace: "4:22", place: 3, bestTime: "3:42", bestPace: "4:01" },
+            { region: "Krotoszyn", name: "Lazurowy Diament Krotoszyn", dist: 0.99, myTime: "5:28", myPace: "5:29", place: 3, bestTime: "4:43", bestPace: "4:44" },
+            { region: "Krotoszyn", name: "Chwaliszewska bez Zadyszki", dist: 1.02, myTime: "3:46", myPace: "3:40", place: 1, bestTime: "3:46", bestPace: "3:40" },
+            { region: "Krotoszyn", name: "Kazimierza Grudzielskiego Krotoszyn", dist: 1.04, myTime: "4:29", myPace: "4:18", place: 4, bestTime: "4:15", bestPace: "4:04" },
+            { region: "Krotoszyn", name: "Przemysłowa Krotoszyn", dist: 1.07, myTime: "4:28", myPace: "4:10", place: 9, bestTime: "4:59", bestPace: "4:39" },
+            { region: "Krotoszyn", name: "Krotoszyn - Kobierno", dist: 1.11, myTime: "5:14", myPace: "4:42", place: 9, bestTime: "4:43", bestPace: "4:15" },
+            { region: "Krotoszyn", name: "Droga Perzyce", dist: 1.16, myTime: "5:48", myPace: "4:48", place: 10, bestTime: "4:59", bestPace: "4:16" },
+            { region: "Krotoszyn", name: "Wyboista Szutrowa Autostrada z Perzyc", dist: 1.20, myTime: "5:59", myPace: "4:57", place: 5, bestTime: "4:56", bestPace: "4:05" },
+            { region: "Krotoszyn", name: "Pod Górkę z Perzyc", dist: 1.24, myTime: "6:35", myPace: "5:19", place: 8, bestTime: "5:16", bestPace: "4:15" },
+            { region: "Krotoszyn", name: "Rondo Władysława Rybkowskiego - skrzyżowanie Młyńska / Ogrodowskiego / 56 Pułku Piechoty", dist: 1.33, myTime: "5:17", myPace: "3:57", place: 4, bestTime: "3:42", bestPace: "2:46" },
+            { region: "Krotoszyn", name: "Błonie- duża pętla", dist: 1.41, myTime: "5:01", myPace: "3:33", place: 2, bestTime: "4:54", bestPace: "3:28" },
+            { region: "Krotoszyn", name: "Wieża - krzyżówka przy Rezerwacie Miejski Bór", dist: 1.58, myTime: "5:56", myPace: "3:45", place: 1, bestTime: "5:56", bestPace: "3:45" },
+            { region: "Krotoszyn", name: "Droga do skarbów - Zbójecki Kamień", dist: 1.82, myTime: "6:58", myPace: "3:49", place: 2, bestTime: "6:46", bestPace: "3:43" },
+            { region: "Krotoszyn", name: "Parcelki-Wróżewy", dist: 2.24, myTime: "8:10", myPace: "3:39", place: 1, bestTime: "8:10", bestPace: "3:39" },
+            { region: "Krotoszyn", name: "Osiedle tour", dist: 2.27, myTime: "8:37", myPace: "3:47", place: 1, bestTime: "8:37", bestPace: "3:47" },
+            { region: "Krotoszyn", name: "Kobylińska-Salnia", dist: 3.58, myTime: "-", myPace: "-", place: null, bestTime: "14:28", bestPace: "4:02" },
+            { region: "Krotoszyn", name: "Krotoszyn-Chachalnia-Zduny", dist: 8.68, myTime: "40:41", myPace: "4:41", place: 7, bestTime: "33:11", bestPace: "3:49" },
+            { region: "Krotoszyn", name: "Bożacin", dist: 10.09, myTime: "51:54", myPace: "5:09", place: 1, bestTime: "51:54", bestPace: "5:09" },
+
+            // 2. Chachalnia
+            { region: "Chachalnia", name: "Lekkoduch® Mała Pętla Cross", dist: 0.67, myTime: "2:23", myPace: "3:32", place: 1, bestTime: "2:23", bestPace: "3:32" },
+            { region: "Chachalnia", name: "Leśne Hopy i Stare Wodociągi", dist: 1.08, myTime: "4:05", myPace: "3:46", place: 1, bestTime: "4:05", bestPace: "3:46" },
+            { region: "Chachalnia", name: "Krotoszyn kros w lesie mała pętla", dist: 1.10, myTime: "3:50", myPace: "3:29", place: 1, bestTime: "3:50", bestPace: "3:29" },
+            { region: "Chachalnia", name: "Lekkoduch ® Singletrack", dist: 1.42, myTime: "5:37", myPace: "3:57", place: 1, bestTime: "5:37", bestPace: "3:57" },
+            { region: "Chachalnia", name: "Lekkoduch® - Leśna Pętla", dist: 1.43, myTime: "5:34", myPace: "3:52", place: 1, bestTime: "5:34", bestPace: "3:52" },
+            { region: "Chachalnia", name: "Buczyna Helenopol", dist: 1.52, myTime: "5:17", myPace: "3:28", place: 1, bestTime: "5:17", bestPace: "3:28" },
+            { region: "Chachalnia", name: "Krotoszyn kros w lesie duża pętla", dist: 1.53, myTime: "6:06", myPace: "3:59", place: 1, bestTime: "6:06", bestPace: "3:59" },
+            { region: "Chachalnia", name: "Prosta do krzyżówki", dist: 2.33, myTime: "9:41", myPace: "4:09", place: 2, bestTime: "9:06", bestPace: "3:54" },
+            { region: "Chachalnia", name: "Krotoszyn->Chachalnia ścieżka rowerowa", dist: 2.51, myTime: "10:46", myPace: "4:17", place: 10, bestTime: "9:17", bestPace: "3:42" },
+            { region: "Chachalnia", name: "Chachalnia las #1", dist: 2.93, myTime: "11:07", myPace: "3:47", place: 3, bestTime: "10:31", bestPace: "3:35" },
+            { region: "Chachalnia", name: "Fyrtel do żółtego", dist: 3.07, myTime: "12:47", myPace: "4:10", place: 2, bestTime: "12:14", bestPace: "3:59" },
+            { region: "Chachalnia", name: "Rondo Staszica - Światełko UP!", dist: 5.47, myTime: "-", myPace: "-", place: null, bestTime: "21:49", bestPace: "3:59" },
+            { region: "Chachalnia", name: "Lekkoduch® Winter Cross", dist: 5.52, myTime: "24:27", myPace: "4:26", place: 1, bestTime: "24:27", bestPace: "4:26" },
+            { region: "Chachalnia", name: "Lekkoduch ® Trail Loop", dist: 6.05, myTime: "28:35", myPace: "4:43", place: 1, bestTime: "28:35", bestPace: "4:43" },
+
+            // 3. Zduny
+            { region: "Zduny", name: "Stadion Zduny", dist: 0.30, myTime: "1:05", myPace: "3:33", place: 5, bestTime: "0:55", bestPace: "3:00" },
+            { region: "Zduny", name: "Słoneczną do Zdun", dist: 0.44, myTime: "-", myPace: "-", place: null, bestTime: "1:28", bestPace: "3:20" },
+            { region: "Zduny", name: "Leśny kwadrat", dist: 1.64, myTime: "-", myPace: "-", place: null, bestTime: "8:03", bestPace: "4:53" },
+            { region: "Zduny", name: "Podbieg Zduny", dist: 1.84, myTime: "7:14", myPace: "3:56", place: 1, bestTime: "7:14", bestPace: "3:56" },
+            { region: "Zduny", name: "Ścieżka Zduny - Krotoszyn", dist: 3.39, myTime: "16:57", myPace: "5:00", place: null, bestTime: "12:25", bestPace: "3:39" },
+
+            // 4. Cieszków
+            { region: "Cieszków", name: "Stadion Cieszków", dist: 0.35, myTime: "0:57", myPace: "2:40", place: 1, bestTime: "0:57", bestPace: "2:40" },
+            { region: "Cieszków", name: "Biadaszka to Cieszkow", dist: 1.07, myTime: "3:29", myPace: "3:15", place: 1, bestTime: "3:29", bestPace: "3:15" },
+            { region: "Cieszków", name: "Past the Stadium", dist: 1.10, myTime: "4:51", myPace: "4:23", place: 1, bestTime: "4:51", bestPace: "4:23" },
+            { region: "Cieszków", name: "Cieszków - Zduny", dist: 1.68, myTime: "-", myPace: "-", place: null, bestTime: "7:12", bestPace: "4:17" },
+            { region: "Cieszków", name: "Cieszkow Straight", dist: 2.16, myTime: "8:54", myPace: "4:07", place: 1, bestTime: "8:54", bestPace: "4:07" },
+            { region: "Cieszków", name: "Biadaszka Straight", dist: 2.25, myTime: "8:45", myPace: "3:53", place: 1, bestTime: "8:45", bestPace: "3:53" },
+            { region: "Cieszków", name: "Into the wild", dist: 2.88, myTime: "13:57", myPace: "4:51", place: 7, bestTime: "12:11", bestPace: "4:14" },
+            { region: "Cieszków", name: "Podbieg Cieszków", dist: 3.12, myTime: "12:09", myPace: "3:54", place: 1, bestTime: "12:09", bestPace: "3:54" },
+
+            // 5. Kobylin
+            { region: "Kobylin", name: "SK-Długołęka", dist: 1.79, myTime: "-", myPace: "-", place: null, bestTime: "8:22", bestPace: "4:40", location: "Stary Kobylin" },
+            { region: "Kobylin", name: "Prosta na Ochłodę", dist: 1.98, myTime: "-", myPace: "-", place: null, bestTime: "7:47", bestPace: "3:55", location: "Smolice" },
+            { region: "Kobylin", name: "Długa prosta na Stary", dist: 3.96, myTime: "-", myPace: "-", place: null, bestTime: "19:29", bestPace: "4:55", location: "Długołęka" },
+
+            // 6. Koźmin Wielkopolski
+            { region: "Koźmin Wielkopolski", name: "Podbieg 140 metrów nachylenie ~6%", dist: 0.25, myTime: "-", myPace: "-", place: null, bestTime: "0:59", bestPace: "3:52" },
+            { region: "Koźmin Wielkopolski", name: "podbieg na górki", dist: 0.29, myTime: "-", myPace: "-", place: null, bestTime: "1:10", bestPace: "3:55" },
+            { region: "Koźmin Wielkopolski", name: "podbieg od Orli do drogi", dist: 0.40, myTime: "-", myPace: "-", place: null, bestTime: "1:23", bestPace: "3:28" },
+            { region: "Koźmin Wielkopolski", name: "zbieg od drogi do Orli", dist: 0.50, myTime: "-", myPace: "-", place: null, bestTime: "2:01", bestPace: "4:02" },
+            { region: "Koźmin Wielkopolski", name: "Strzelecka EPIC KOM", dist: 0.54, myTime: "-", myPace: "-", place: null, bestTime: "2:04", bestPace: "3:47" },
+            { region: "Koźmin Wielkopolski", name: "pętla biegu - policz się z cukrzycą", dist: 0.71, myTime: "-", myPace: "-", place: null, bestTime: "2:31", bestPace: "3:33" },
+            { region: "Koźmin Wielkopolski", name: "wierzbowa - prosta w stronę miasta", dist: 1.09, myTime: "-", myPace: "-", place: null, bestTime: "4:18", bestPace: "3:57" },
+            { region: "Koźmin Wielkopolski", name: "Zbieg do Orli", dist: 1.21, myTime: "-", myPace: "-", place: null, bestTime: "4:55", bestPace: "4:04" },
+            { region: "Koźmin Wielkopolski", name: "pętla cmentarz > Jana Pawła", dist: 1.51, myTime: "-", myPace: "-", place: null, bestTime: "6:23", bestPace: "4:14" },
+            { region: "Koźmin Wielkopolski", name: "górki - cross", dist: 1.88, myTime: "-", myPace: "-", place: null, bestTime: "8:31", bestPace: "4:32" },
+            { region: "Koźmin Wielkopolski", name: "Koźmin -> Psie Pole", dist: 2.75, myTime: "-", myPace: "-", place: null, bestTime: "10:51", bestPace: "3:56" },
+            { region: "Koźmin Wielkopolski", name: "Nowa Obra > Koźmin", dist: 2.99, myTime: "-", myPace: "-", place: null, bestTime: "12:14", bestPace: "4:05" },
+
+            // 7. Powiat Krotoszyński
+            { region: "Powiat Krotoszyński", name: "300m loop", dist: 0.30, myTime: "-", myPace: "-", place: null, bestTime: "0:57", bestPace: "3:09", location: "Sulmierzyce", url: "https://www.strava.com/segments/32353606" },
+            { region: "Powiat Krotoszyński", name: "Do blachy Sulmierzyce", dist: 0.46, myTime: "-", myPace: "-", place: null, bestTime: "1:56", bestPace: "4:10", location: "Sulmierzyce", url: "https://www.strava.com/segments/21850621" },
+            { region: "Powiat Krotoszyński", name: "Gorzupia->Tomnice podbieg", dist: 1.67, myTime: "6:14", myPace: "3:44", place: 1, bestTime: "6:14", bestPace: "3:44", location: "Gorzupia", url: "https://www.strava.com/segments/23800692" },
+            { region: "Powiat Krotoszyński", name: "od wiejskiej do krotoszyńskiej", dist: 2.41, myTime: "-", myPace: "-", place: null, bestTime: "10:57", bestPace: "4:33", location: "Biadki", url: "https://www.strava.com/segments/39710988" },
+            { region: "Powiat Krotoszyński", name: "Roszki 10km - koło pomiarowe", dist: 9.92, myTime: "-", myPace: "-", place: null, bestTime: "34:34", bestPace: "3:29", location: "Roszki", url: "https://www.strava.com/segments/26332197" },
+
+            // 8. Milicz
+            { region: "Milicz", name: "Prosta KOM - Lokomotywa", dist: 0.38, myTime: "1:11", myPace: "3:04", place: 1, bestTime: "1:11", bestPace: "3:04" },
+            { region: "Milicz", name: "Sprint wzdłuż łąki na stawy", dist: 0.44, myTime: "1:30", myPace: "3:23", place: 2, bestTime: "1:27", bestPace: "3:17" },
+            { region: "Milicz", name: "Aleja Dębowa w kierunku Ostoi", dist: 0.52, myTime: "1:41", myPace: "3:12", place: 1, bestTime: "1:41", bestPace: "3:12" },
+            { region: "Milicz", name: "Ostoja-> Grzybowa", dist: 0.61, myTime: "2:15", myPace: "3:39", place: 1, bestTime: "2:15", bestPace: "3:39" },
+            { region: "Milicz", name: "Poprzeczna Sprint do Kom", dist: 0.70, myTime: "2:16", myPace: "3:12", place: 1, bestTime: "2:16", bestPace: "3:12" },
+            { region: "Milicz", name: "Od ścieżki do Grabownicy", dist: 0.82, myTime: "-", myPace: "-", place: null, bestTime: "2:06", bestPace: "2:34" },
+            { region: "Milicz", name: "Od Rudy M do grobli", dist: 0.91, myTime: "-", myPace: "-", place: null, bestTime: "2:52", bestPace: "3:08" },
+            { region: "Milicz", name: "Poprzeczna, Powstancow-Wesola", dist: 1.30, myTime: "4:51", myPace: "3:43", place: 1, bestTime: "4:51", bestPace: "3:43" },
+            { region: "Milicz", name: "Droga na Kaszowo-> Tomaszków", dist: 1.34, myTime: "-", myPace: "-", place: null, bestTime: "5:20", bestPace: "3:58" },
+            { region: "Milicz", name: "Dookoła zalewu", dist: 1.39, myTime: "5:37", myPace: "4:01", place: 3, bestTime: "4:26", bestPace: "3:10" },
+            { region: "Milicz", name: "Od Rudy M do ścieżki", dist: 1.46, myTime: "-", myPace: "-", place: null, bestTime: "4:01", bestPace: "2:44" },
+            { region: "Milicz", name: "Tomaszków -> Kaszowo (rozjazd) ścieżką rowerową", dist: 1.53, myTime: "-", myPace: "-", place: null, bestTime: "4:29", bestPace: "2:55" },
+            { region: "Milicz", name: "Kaszowo (rozjazd)-> Milicz ul. Niepodległości", dist: 1.61, myTime: "-", myPace: "-", place: null, bestTime: "3:58", bestPace: "2:27" },
+            { region: "Milicz", name: "Aleja Niepodleglosci", dist: 1.85, myTime: "6:49", myPace: "3:41", place: 1, bestTime: "6:49", bestPace: "3:41" },
+            { region: "Milicz", name: "podbieg do Gogołowic", dist: 1.92, myTime: "-", myPace: "-", place: null, bestTime: "7:53", bestPace: "4:05" },
+            { region: "Milicz", name: "Od znaku do Rudy Milickiej", dist: 2.20, myTime: "-", myPace: "-", place: null, bestTime: "6:29", bestPace: "2:57" },
+            { region: "Milicz", name: "szpital - ławka w koruszce - szpital", dist: 4.66, myTime: "-", myPace: "-", place: null, bestTime: "17:58", bestPace: "3:51" },
+
+            // 9. Lasowice
+            { region: "Lasowice", name: "Wzgórze Joanny uphill", dist: 0.25, myTime: "-", myPace: "-", place: null, bestTime: "0:52", bestPace: "3:25" },
+            { region: "Lasowice", name: "Górka w drugą", dist: 0.26, myTime: "1:05", myPace: "4:08", place: 2, bestTime: "0:57", bestPace: "3:37" },
+            { region: "Lasowice", name: "Górka w pierwszą", dist: 0.26, myTime: "1:17", myPace: "4:50", place: 2, bestTime: "1:10", bestPace: "4:23" },
+            { region: "Lasowice", name: "wzgórze Joanny - stromo w dół", dist: 0.43, myTime: "-", myPace: "-", place: null, bestTime: "1:17", bestPace: "2:59" },
+            { region: "Lasowice", name: "Górka", dist: 0.51, myTime: "2:19", myPace: "4:29", place: 2, bestTime: "2:10", bestPace: "4:11" },
+            { region: "Lasowice", name: "Z górki na pazurki ;-)", dist: 0.53, myTime: "-", myPace: "-", place: null, bestTime: "1:37", bestPace: "3:03" },
+            { region: "Lasowice", name: "Wzgórze 404 - Tlen Not Found", dist: 0.59, myTime: "-", myPace: "-", place: null, bestTime: "2:15", bestPace: "3:48" },
+            { region: "Lasowice", name: "krzyż Postolin - kopalnia", dist: 1.45, myTime: "5:31", myPace: "3:48", place: 1, bestTime: "5:31", bestPace: "3:48" },
+            { region: "Lasowice", name: "krzy Postolin - rzeczka z wiatą", dist: 2.03, myTime: "8:07", myPace: "3:59", place: 1, bestTime: "8:07", bestPace: "3:59" },
+            { region: "Lasowice", name: "krzyżówka Postolin w kier parkingu", dist: 2.14, myTime: "-", myPace: "-", place: null, bestTime: "8:45", bestPace: "4:05" },
+            { region: "Lasowice", name: "Hannibal's Tract uphill", dist: 2.68, myTime: "-", myPace: "-", place: null, bestTime: "11:10", bestPace: "4:10" },
+            { region: "Lasowice", name: "Pętla Postolin", dist: 6.70, myTime: "-", myPace: "-", place: null, bestTime: "29:59", bestPace: "4:28" },
+            { region: "Lasowice", name: "Pętla crosowa Wzgórza", dist: 6.79, myTime: "-", myPace: "-", place: null, bestTime: "39:23", bestPace: "5:48" },
+            { region: "Lasowice", name: "Parking-Gruszeczka-Pracze-Parking", dist: 12.28, myTime: "-", myPace: "-", place: null, bestTime: "1:10:00", bestPace: "5:42" },
+
+            // 10. Stadion Krotoszyn
+            { region: "Stadion Krotoszyn", name: "400 m Stadion Krotoszyn", dist: 0.40, myTime: "1:00", myPace: "2:29", place: 2, bestTime: "0:59", bestPace: "2:27" },
+            { region: "Stadion Krotoszyn", name: "800 m Stadion Krotoszyn", dist: 0.80, myTime: "2:44", myPace: "3:25", place: null, bestTime: "2:09", bestPace: "2:40" },
+            { region: "Stadion Krotoszyn", name: "1000 m Stadion Krotoszyn", dist: 1.00, myTime: "3:19", myPace: "3:18", place: 8, bestTime: "2:38", bestPace: "2:38" },
+            { region: "Stadion Krotoszyn", name: "2000 m Stadion Krotoszyn", dist: 2.00, myTime: "7:01", myPace: "3:30", place: 5, bestTime: "6:39", bestPace: "3:19" },
+
+            // 11. Parkrun Błonie Krotoszyn
+            { region: "Parkrun Błonie Krotoszyn", name: "Dokrętka parkrun Krotoszyn", dist: 0.71, myTime: "2:35", myPace: "3:36", place: 7, bestTime: "2:17", bestPace: "3:11" },
+            { region: "Parkrun Błonie Krotoszyn", name: "Kółko parkrun Krotoszyn", dist: 1.41, myTime: "5:18", myPace: "3:45", place: null, bestTime: "4:33", bestPace: "3:14" },
+            { region: "Parkrun Błonie Krotoszyn", name: "parkrun Błonie, Krotoszyn", dist: 4.97, myTime: "19:06", myPace: "3:51", place: null, bestTime: "16:24", bestPace: "3:18" },
+
+            // 12. Bieg Krotosa
+            { region: "Bieg Krotosa", name: "Deptak Express", dist: 0.48, myTime: "1:34", myPace: "3:16", place: 2, bestTime: "1:31", bestPace: "3:10" },
+            { region: "Bieg Krotosa", name: "Sprint po promocje w Biedrze", dist: 0.48, myTime: "1:42", myPace: "3:31", place: 8, bestTime: "1:33", bestPace: "3:13" },
+            { region: "Bieg Krotosa", name: "Słowiańska Szarża", dist: 0.68, myTime: "2:18", myPace: "3:21", place: 4, bestTime: "2:12", bestPace: "3:12" },
+            { region: "Bieg Krotosa", name: "Bieg Krotosa-finisz", dist: 0.95, myTime: "3:31", myPace: "3:41", place: 3, bestTime: "3:12", bestPace: "3:21" },
+
+            // 13. Cross Krotoszyński
+            { region: "Cross Krotoszyński", name: "IV Cross Krotoszyński 5 km", dist: 4.45, myTime: "21:35", myPace: "4:51", place: 4, bestTime: "16:35", bestPace: "3:43" },
+            { region: "Cross Krotoszyński", name: "Lekkoduch ® - Cross Krotoszyński Pętla", dist: 5.09, myTime: "22:38", myPace: "4:27", place: 4, bestTime: "21:16", bestPace: "4:11" },
+            { region: "Cross Krotoszyński", name: "Lekkoduch ® - 3. Cross Krotoszyński 10 km", dist: 10.32, myTime: "47:13", myPace: "4:34", place: 4, bestTime: "39:30", bestPace: "3:50" },
+
+            // 14. Bieg o Zdunowskiego Kafla
+            { region: "Bieg o Zdunowskiego Kafla", name: "Zduny Prosta Strzelecka", dist: 0.39, myTime: "1:16", myPace: "3:13", place: 1, bestTime: "1:16", bestPace: "3:13" },
+            { region: "Bieg o Zdunowskiego Kafla", name: "Ze Stadionu ku Zieleni Zduny", dist: 0.47, myTime: "1:42", myPace: "3:37", place: 1, bestTime: "1:42", bestPace: "3:37" },
+            { region: "Bieg o Zdunowskiego Kafla", name: "Pozostałości Zapory Granicznej", dist: 0.60, myTime: "2:01", myPace: "3:21", place: 1, bestTime: "2:01", bestPace: "3:21" },
+            { region: "Bieg o Zdunowskiego Kafla", name: "Wydmy 159 m n.p.m.", dist: 0.63, myTime: "2:47", myPace: "4:25", place: 3, bestTime: "2:27", bestPace: "3:53" },
+            { region: "Bieg o Zdunowskiego Kafla", name: "Prosta na Wdechu", dist: 0.69, myTime: "2:36", myPace: "3:44", place: 1, bestTime: "2:36", bestPace: "3:44" },
+
+            // 15. Bieg im. Marszałka Józefa Piłsudskiego
+            { region: "Bieg im. Marszałka Józefa Piłsudskiego", name: "Z Lasu do Rzemiechowa", dist: 0.85, myTime: "3:40", myPace: "4:17", place: 4, bestTime: "2:58", bestPace: "3:23" },
+            { region: "Bieg im. Marszałka Józefa Piłsudskiego", name: "Leśna Droga z Zakrętem - Kobylin", dist: 1.21, myTime: "5:08", myPace: "4:13", place: 3, bestTime: "4:09", bestPace: "3:22" },
+            { region: "Bieg im. Marszałka Józefa Piłsudskiego", name: "Z Rzemiechowa do Kobylina", dist: 2.44, myTime: "10:37", myPace: "4:21", place: null, bestTime: "7:49", bestPace: "3:12" },
+            { region: "Bieg im. Marszałka Józefa Piłsudskiego", name: "Baszkowska Szybka Droga", dist: 2.95, myTime: "12:16", myPace: "4:09", place: null, bestTime: "10:03", bestPace: "3:24" },
+
+            // 16. Ćwierćmaraton Wiejski w Rozdrażewie
+            { region: "Ćwierćmaraton Wiejski w Rozdrażewie", name: "Rozdrażew Wzdłuż Krotoszyńskiej", dist: 0.91, myTime: "3:34", myPace: "3:55", place: 9, bestTime: "3:05", bestPace: "3:23" },
+            { region: "Ćwierćmaraton Wiejski w Rozdrażewie", name: "Rozdrażewska Sportowa Prosta", dist: 0.92, myTime: "3:28", myPace: "3:44", place: 4, bestTime: "3:06", bestPace: "3:21" },
+            { region: "Ćwierćmaraton Wiejski w Rozdrażewie", name: "Ulica Szybka jak Wiatr Rozdrażewek", dist: 1.32, myTime: "4:35", myPace: "3:27", place: 1, bestTime: "4:35", bestPace: "3:27" },
+            { region: "Ćwierćmaraton Wiejski w Rozdrażewie", name: "Kościuszków w Ruchu", dist: 1.50, myTime: "5:29", myPace: "3:39", place: 2, bestTime: "5:21", bestPace: "3:34" },
+            { region: "Ćwierćmaraton Wiejski w Rozdrażewie", name: "Droga do Rozdrażewka", dist: 1.55, myTime: "5:34", myPace: "3:35", place: 2, bestTime: "5:32", bestPace: "3:34" },
+            { region: "Ćwierćmaraton Wiejski w Rozdrażewie", name: "Chwałki - Droga Spokoju", dist: 2.35, myTime: "9:09", myPace: "3:53", place: 4, bestTime: "8:21", bestPace: "3:33" },
+
+            // 17. Bieg Maćka
+            { region: "Bieg Maćka", name: "Bieg Maćka - finisz", dist: 0.32, myTime: "-", myPace: "-", place: null, bestTime: "0:58", bestPace: "2:58" },
+            { region: "Bieg Maćka", name: "Modlibowskiego Metr po Metrze", dist: 0.43, myTime: "1:40", myPace: "3:53", place: null, bestTime: "1:26", bestPace: "3:20" },
+            { region: "Bieg Maćka", name: "Pleszewska Prosta Koźmin", dist: 0.55, myTime: "2:13", myPace: "4:02", place: null, bestTime: "1:50", bestPace: "3:20" },
+            { region: "Bieg Maćka", name: "Bieg Maćka - Koźmin Wielkopolski", dist: 5.00, myTime: "-", myPace: "-", place: null, bestTime: "16:29", bestPace: "3:18" },
+
+            // 18. Zimowa Zabawa Biegowa
+            { region: "Zimowa Zabawa Biegowa", name: "Lodowy Dukt", dist: 0.58, myTime: "2:22", myPace: "4:02", place: 4, bestTime: "2:11", bestPace: "3:43" },
+            { region: "Zimowa Zabawa Biegowa", name: "Walerianowska Ścieżka Przy Lesie", dist: 0.62, myTime: "2:47", myPace: "4:26", place: null, bestTime: "2:20", bestPace: "3:43" },
+            { region: "Zimowa Zabawa Biegowa", name: "Mroźna Prosta", dist: 0.80, myTime: "3:26", myPace: "4:16", place: 1, bestTime: "3:26", bestPace: "4:16" },
+            { region: "Zimowa Zabawa Biegowa", name: "Zmarznięte Ramiona", dist: 1.09, myTime: "4:50", myPace: "4:25", place: 1, bestTime: "4:50", bestPace: "4:25" },
+            { region: "Zimowa Zabawa Biegowa", name: "Kryształowa Podkowa", dist: 1.16, myTime: "5:02", myPace: "4:19", place: 1, bestTime: "5:02", bestPace: "4:19" },
+            { region: "Zimowa Zabawa Biegowa", name: "Droga Prosta Jak Pień", dist: 1.70, myTime: "7:51", myPace: "4:37", place: 4, bestTime: "6:46", bestPace: "3:58" },
+            { region: "Zimowa Zabawa Biegowa", name: "Leśne Zakręty Zimowej Zabawy", dist: 1.92, myTime: "8:28", myPace: "4:24", place: 6, bestTime: "7:28", bestPace: "3:52" },
+            { region: "Zimowa Zabawa Biegowa", name: "Prosta w Sercu Lasu", dist: 2.02, myTime: "8:58", myPace: "4:25", place: 1, bestTime: "8:58", bestPace: "4:25" },
+            { region: "Zimowa Zabawa Biegowa", name: "Zimowa Leśna Runda", dist: 2.92, myTime: "13:36", myPace: "4:39", place: 5, bestTime: "11:45", bestPace: "4:01" }
+        ];
+
+        // --- Helper Functions ---
+        function timeToSeconds(timeStr) {
+            if (!timeStr || timeStr === '-') return Infinity;
+            const parts = timeStr.split(':').map(Number);
+            if (parts.length === 2) return parts[0] * 60 + parts[1];
+            if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+            return Infinity;
+        }
+
+        function getDiffSeconds(myTime, bestTime) {
+            const mySec = timeToSeconds(myTime);
+            const bestSec = timeToSeconds(bestTime);
+            if (mySec === Infinity || bestSec === Infinity) return null;
+            return mySec - bestSec;
+        }
+
+        function formatDiff(diffSec) {
+            if (diffSec === null || diffSec < 0) return null;
+            if (diffSec === 0) return "KOM / CR";
+            const mins = Math.floor(diffSec / 60);
+            const secs = diffSec % 60;
+            if (mins > 0) {
+                return `+${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+            }
+            return `+${secs}s`;
+        }
+
+        // Process data
+        const processedSegments = rawSegmentsData.map((item, id) => {
+            const diffSec = getDiffSeconds(item.myTime, item.bestTime);
+            const isCompleted = item.myTime !== "-";
+            
+            return {
+                ...item,
+                id: id + 1,
+                diffSec: diffSec,
+                diffFormatted: formatDiff(diffSec),
+                isCompleted: isCompleted,
+                placeNum: item.place !== null ? item.place : 999
+            };
+        });
+
+        // App State
+        let currentFilter = 'all';
+        let currentRegion = 'all';
+        let currentSearch = '';
+        let currentSort = 'default';
+        let currentView = 'cards'; // 'cards' or 'table'
+        let chartsInstance = {};
+
+        // DOM Elements
+        const cardsView = document.getElementById('cards-view');
+        const tableView = document.getElementById('table-view');
+        const tableBody = document.getElementById('table-body');
+        const noResults = document.getElementById('no-results');
+        const searchInput = document.getElementById('search-input');
+        const clearSearchBtn = document.getElementById('clear-search');
+        const sortSelect = document.getElementById('sort-select');
+        const regionSelect = document.getElementById('region-select');
+        const visibleCountEl = document.getElementById('visible-count');
+        const viewCardsBtn = document.getElementById('view-cards-btn');
+        const viewTableBtn = document.getElementById('view-table-btn');
+        const activeRegionBadge = document.getElementById('active-region-badge');
+        const activeRegionName = document.getElementById('active-region-name');
+        const resetRegionBtn = document.getElementById('reset-region');
+        const resetAllFiltersBtn = document.getElementById('reset-all-filters-btn');
+
+        // --- Initialize App ---
+        window.addEventListener('DOMContentLoaded', () => {
+            initRegionsDropdown();
+            updateKPIs();
+            renderCharts();
+            render();
+
+            // Event Listeners
+            searchInput.addEventListener('input', (e) => {
+                currentSearch = e.target.value.trim().toLowerCase();
+                clearSearchBtn.classList.toggle('hidden', currentSearch === '');
+                render();
+            });
+
+            clearSearchBtn.addEventListener('click', () => {
+                searchInput.value = '';
+                currentSearch = '';
+                clearSearchBtn.classList.add('hidden');
+                render();
+            });
+
+            sortSelect.addEventListener('change', (e) => {
+                currentSort = e.target.value;
+                render();
+            });
+
+            regionSelect.addEventListener('change', (e) => {
+                currentRegion = e.target.value;
+                updateRegionBadge();
+                render();
+            });
+
+            resetRegionBtn.addEventListener('click', () => {
+                currentRegion = 'all';
+                regionSelect.value = 'all';
+                updateRegionBadge();
+                render();
+            });
+
+            resetAllFiltersBtn.addEventListener('click', () => {
+                currentFilter = 'all';
+                currentRegion = 'all';
+                currentSearch = '';
+                currentSort = 'default';
+                
+                searchInput.value = '';
+                clearSearchBtn.classList.add('hidden');
+                sortSelect.value = 'default';
+                regionSelect.value = 'all';
+                
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-strava-orange', 'text-white', 'border-strava-orange');
+                    b.classList.add('bg-strava-card', 'text-gray-300', 'border-strava-border');
+                });
+                document.querySelector('.filter-btn[data-filter="all"]').classList.add('bg-strava-orange', 'text-white', 'border-strava-orange');
+
+                updateRegionBadge();
+                render();
+            });
+
+            // Filter Tabs
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.remove('bg-strava-orange', 'text-white', 'border-strava-orange');
+                        b.classList.add('bg-strava-card', 'text-gray-300', 'border-strava-border');
+                    });
+                    btn.classList.remove('bg-strava-card', 'text-gray-300', 'border-strava-border');
+                    btn.classList.add('bg-strava-orange', 'text-white', 'border-strava-orange');
+
+                    currentFilter = btn.dataset.filter;
+                    render();
+                });
+            });
+
+            // View Toggles
+            viewCardsBtn.addEventListener('click', () => {
+                currentView = 'cards';
+                viewCardsBtn.classList.add('bg-strava-orange', 'text-white', 'shadow');
+                viewCardsBtn.classList.remove('text-gray-400');
+                viewTableBtn.classList.remove('bg-strava-orange', 'text-white', 'shadow');
+                viewTableBtn.classList.add('text-gray-400');
+                cardsView.classList.remove('hidden');
+                tableView.classList.add('hidden');
+            });
+
+            viewTableBtn.addEventListener('click', () => {
+                currentView = 'table';
+                viewTableBtn.classList.add('bg-strava-orange', 'text-white', 'shadow');
+                viewTableBtn.classList.remove('text-gray-400');
+                viewCardsBtn.classList.remove('bg-strava-orange', 'text-white', 'shadow');
+                viewCardsBtn.classList.add('text-gray-400');
+                tableView.classList.remove('hidden');
+                cardsView.classList.add('hidden');
+            });
+
+            // Toggle Charts Collapse
+            const toggleChartsBtn = document.getElementById('toggle-charts-btn');
+            const chartsContainer = document.getElementById('charts-container');
+            const chartsToggleText = document.getElementById('charts-toggle-text');
+            const chartsToggleIcon = document.getElementById('charts-toggle-icon');
+
+            toggleChartsBtn.addEventListener('click', () => {
+                const isHidden = chartsContainer.classList.contains('hidden');
+                chartsContainer.classList.toggle('hidden', !isHidden);
+                chartsToggleText.textContent = isHidden ? 'Zwiń wykresy' : 'Rozwiń wykresy';
+                chartsToggleIcon.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(180deg)';
+            });
+        });
+
+        // Populate Regions Dropdown
+        function initRegionsDropdown() {
+            const regions = [...new Set(processedSegments.map(s => s.region))];
+            regions.forEach(r => {
+                const opt = document.createElement('option');
+                opt.value = r;
+                opt.textContent = `${r} (${processedSegments.filter(s => s.region === r).length})`;
+                regionSelect.appendChild(opt);
+            });
+        }
+
+        function updateRegionBadge() {
+            if (currentRegion !== 'all') {
+                activeRegionName.textContent = currentRegion;
+                activeRegionBadge.classList.remove('hidden');
+                activeRegionBadge.classList.add('flex');
+            } else {
+                activeRegionBadge.classList.add('hidden');
+                activeRegionBadge.classList.remove('flex');
+            }
+        }
+
+        // Update KPIs Header & Stats
+        function updateKPIs() {
+            const total = processedSegments.length;
+            const koms = processedSegments.filter(s => s.place === 1).length;
+            const podiums = processedSegments.filter(s => s.place && s.place <= 3).length;
+            const completed = processedSegments.filter(s => s.isCompleted).length;
+            const todo = total - completed;
+            const totalDistance = processedSegments.reduce((sum, s) => sum + s.dist, 0).toFixed(1);
+
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-kom').textContent = koms;
+            document.getElementById('stat-kom-pct').textContent = `${((koms / total) * 100).toFixed(1)}% segmentów`;
+            
+            document.getElementById('stat-podium').textContent = podiums;
+            document.getElementById('stat-podium-pct').textContent = `${((podiums / total) * 100).toFixed(1)}% segmentów`;
+
+            document.getElementById('stat-completed').textContent = completed;
+            document.getElementById('stat-todo').textContent = `Pozostało: ${todo} bez czasu`;
+
+            document.getElementById('stat-distance').textContent = `${totalDistance} km`;
+
+            // Header quick stats
+            document.getElementById('header-kom-count').textContent = koms;
+            document.getElementById('header-podium-count').textContent = podiums;
+
+            // Filter tab counters
+            document.getElementById('cnt-all').textContent = total;
+            document.getElementById('cnt-kom').textContent = koms;
+            document.getElementById('cnt-podium').textContent = podiums;
+            document.getElementById('cnt-completed').textContent = completed;
+            document.getElementById('cnt-todo').textContent = todo;
+        }
+
+        // Render Charts using Chart.js
+        function renderCharts() {
+            // Places Chart (Doughnut)
+            const koms = processedSegments.filter(s => s.place === 1).length;
+            const p2 = processedSegments.filter(s => s.place === 2).length;
+            const p3 = processedSegments.filter(s => s.place === 3).length;
+            const p4plus = processedSegments.filter(s => s.place && s.place > 3).length;
+            const noTime = processedSegments.filter(s => !s.isCompleted).length;
+
+            const ctxPlaces = document.getElementById('placesChart').getContext('2d');
+            chartsInstance.places = new Chart(ctxPlaces, {
+                type: 'doughnut',
+                data: {
+                    labels: ['1. Miejsce (KOM)', '2. Miejsce', '3. Miejsce', 'Miejsca 4+', 'Brak czasu'],
+                    datasets: [{
+                        data: [koms, p2, p3, p4plus, noTime],
+                        backgroundColor: ['#00E676', '#FFD700', '#C0C0C0', '#3B82F6', '#EF4444'],
+                        borderWidth: 2,
+                        borderColor: '#1E1E22'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#9CA3AF', font: { size: 10, family: 'Inter' }, boxWidth: 12 }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // Regions Chart (Bar Chart)
+            const regions = [...new Set(processedSegments.map(s => s.region))];
+            const regionCounts = regions.map(r => processedSegments.filter(s => s.region === r).length);
+
+            const ctxRegions = document.getElementById('regionsChart').getContext('2d');
+            chartsInstance.regions = new Chart(ctxRegions, {
+                type: 'bar',
+                data: {
+                    labels: regions.map(r => r.length > 12 ? r.substring(0, 10) + '...' : r),
+                    datasets: [{
+                        label: 'Liczba segmentów',
+                        data: regionCounts,
+                        backgroundColor: '#FC4C02',
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: '#9CA3AF', font: { size: 9 } },
+                            grid: { display: false }
+                        },
+                        y: {
+                            ticks: { color: '#9CA3AF', font: { size: 10 } },
+                            grid: { color: '#2E2E35' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Filter and Sort Data
+        function getFilteredData() {
+            return processedSegments.filter(item => {
+                // Status Filter
+                if (currentFilter === 'kom' && item.place !== 1) return false;
+                if (currentFilter === 'podium' && (!item.place || item.place > 3)) return false;
+                if (currentFilter === 'completed' && !item.isCompleted) return false;
+                if (currentFilter === 'todo' && item.isCompleted) return false;
+
+                // Region Filter
+                if (currentRegion !== 'all' && item.region !== currentRegion) return false;
+
+                // Search Query
+                if (currentSearch) {
+                    const matchName = item.name.toLowerCase().includes(currentSearch);
+                    const matchRegion = item.region.toLowerCase().includes(currentSearch);
+                    const matchLoc = item.location && item.location.toLowerCase().includes(currentSearch);
+                    if (!matchName && !matchRegion && !matchLoc) return false;
+                }
+
+                return true;
+            }).sort((a, b) => {
+                if (currentSort === 'place-asc') {
+                    return a.placeNum - b.placeNum;
+                } else if (currentSort === 'dist-desc') {
+                    return b.dist - a.dist;
+                } else if (currentSort === 'dist-asc') {
+                    return a.dist - b.dist;
+                } else if (currentSort === 'name-asc') {
+                    return a.name.localeCompare(b.name);
+                } else if (currentSort === 'diff-desc') {
+                    const diffA = a.diffSec !== null ? a.diffSec : -1;
+                    const diffB = b.diffSec !== null ? b.diffSec : -1;
+                    return diffB - diffA;
+                }
+                return a.id - b.id; // Default
+            });
+        }
+
+        // Render Function
+        function render() {
+            const items = getFilteredData();
+            visibleCountEl.textContent = items.length;
+
+            if (items.length === 0) {
+                cardsView.innerHTML = '';
+                tableBody.innerHTML = '';
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            // Render Cards
+            cardsView.innerHTML = items.map(item => renderCardHtml(item)).join('');
+
+            // Render Table
+            tableBody.innerHTML = items.map(item => renderTableRowHtml(item)).join('');
+        }
+
+        // Render Single Card HTML
+        function renderCardHtml(item) {
+            let placeBadge = '';
+            let cardBorder = 'border-strava-border hover:border-gray-500';
+
+            if (item.place === 1) {
+                placeBadge = `
+                    <div class="bg-kom/10 text-kom border border-kom/30 px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-crown"></i> 1. miejsce (KOM)
+                    </div>`;
+                cardBorder = 'border-kom/40 kom-glow';
+            } else if (item.place === 2) {
+                placeBadge = `
+                    <div class="bg-podium/10 text-podium border border-podium/30 px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-medal"></i> 2. miejsce
+                    </div>`;
+                cardBorder = 'border-podium/30 podium-glow';
+            } else if (item.place === 3) {
+                placeBadge = `
+                    <div class="bg-amber-600/10 text-amber-500 border border-amber-500/30 px-2.5 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 shrink-0">
+                        <i class="fa-solid fa-award"></i> 3. miejsce
+                    </div>`;
+            } else if (item.place) {
+                placeBadge = `
+                    <div class="bg-blue-500/10 text-blue-400 border border-blue-500/30 px-2.5 py-1 rounded-full text-xs font-bold shrink-0">
+                        ${item.place}. miejsce
+                    </div>`;
+            } else {
+                placeBadge = `
+                    <div class="bg-red-500/10 text-red-400 border border-red-500/30 px-2 py-0.5 rounded text-[11px] font-semibold shrink-0">
+                        Brak mojego czasu
+                    </div>`;
+            }
+
+            const stravaLink = item.url ? `
+                <a href="${item.url}" target="_blank" class="text-xs text-strava-orange hover:text-white transition flex items-center gap-1 mt-1 font-medium">
+                    <span>Otwórz na Strava</span> <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                </a>
+            ` : '';
+
+            const locationInfo = item.location ? `
+                <span class="text-gray-400 text-xs flex items-center gap-1">
+                    <i class="fa-solid fa-location-dot text-strava-orange text-[10px]"></i> ${item.location}
+                </span>
+            ` : '';
+
+            // Calculating time difference status string
+            let diffDisplay = '';
+            if (item.place === 1) {
+                diffDisplay = `<span class="text-kom font-bold text-xs"><i class="fa-solid fa-crown mr-1"></i>Najlepszy wynik!</span>`;
+            } else if (item.diffFormatted) {
+                diffDisplay = `<span class="text-gray-400 text-xs">Strata: <strong class="text-red-400 font-semibold">${item.diffFormatted}</strong> do 1. miejsca</span>`;
+            } else {
+                diffDisplay = `<span class="text-gray-500 text-xs">Wyzwanie do zrobienia</span>`;
+            }
+
+            return `
+                <div class="bg-strava-card rounded-2xl border ${cardBorder} p-5 flex flex-col justify-between transition duration-200 hover:scale-[1.01]">
+                    <div>
+                        <!-- Card Header -->
+                        <div class="flex justify-between items-start gap-3 mb-2">
+                            <div>
+                                <span class="inline-block bg-strava-dark text-gray-400 text-[10px] uppercase font-extrabold tracking-wider px-2 py-0.5 rounded border border-strava-border mb-1.5">
+                                    ${item.region}
+                                </span>
+                                <h3 class="font-bold text-white text-base leading-snug hover:text-strava-orange transition cursor-default">
+                                    ${item.name}
+                                </h3>
+                                ${locationInfo}
+                            </div>
+                            ${placeBadge}
+                        </div>
+
+                        <!-- Distance & Pace info bar -->
+                        <div class="flex items-center gap-4 text-xs text-gray-400 py-2 my-2 border-y border-strava-border/60">
+                            <div class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-ruler text-strava-orange"></i>
+                                <span><strong class="text-white">${item.dist}</strong> km</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <i class="fa-solid fa-gauge-high text-blue-400"></i>
+                                <span>Moje tempo: <strong class="text-white">${item.myPace !== '-' ? item.myPace + ' /km' : '-'}</strong></span>
+                            </div>
+                        </div>
+
+                        <!-- Stats Comparison Grid -->
+                        <div class="grid grid-cols-2 gap-2 my-3 text-xs">
+                            <div class="bg-strava-dark p-2.5 rounded-xl border border-strava-border/80">
+                                <span class="text-gray-500 text-[10px] uppercase block font-semibold">Mój Czas</span>
+                                <span class="text-base font-extrabold ${item.myTime !== '-' ? 'text-white' : 'text-gray-600'}">${item.myTime}</span>
+                            </div>
+                            <div class="bg-strava-dark p-2.5 rounded-xl border border-strava-border/80">
+                                <span class="text-gray-500 text-[10px] uppercase block font-semibold">Best Time (KOM)</span>
+                                <span class="text-base font-extrabold text-kom">${item.bestTime}</span>
+                                <span class="text-[10px] text-gray-400 block">Tempo: ${item.bestPace} /km</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="pt-2 border-t border-strava-border/40 flex justify-between items-center">
+                        ${diffDisplay}
+                        ${stravaLink}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render Single Table Row HTML
+        function renderTableRowHtml(item) {
+            let placeTag = '';
+            if (item.place === 1) {
+                placeTag = `<span class="bg-kom/10 text-kom font-bold px-2 py-0.5 rounded text-xs border border-kom/30"><i class="fa-solid fa-crown mr-1"></i>1</span>`;
+            } else if (item.place === 2) {
+                placeTag = `<span class="bg-podium/10 text-podium font-bold px-2 py-0.5 rounded text-xs border border-podium/30">2</span>`;
+            } else if (item.place === 3) {
+                placeTag = `<span class="bg-amber-600/10 text-amber-500 font-bold px-2 py-0.5 rounded text-xs border border-amber-500/30">3</span>`;
+            } else if (item.place) {
+                placeTag = `<span class="text-gray-300 font-semibold">${item.place}</span>`;
+            } else {
+                placeTag = `<span class="text-gray-600">-</span>`;
+            }
+
+            const stravaIcon = item.url ? `
+                <a href="${item.url}" target="_blank" class="text-strava-orange hover:text-white text-base">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+            ` : '<span class="text-gray-600">-</span>';
+
+            return `
+                <tr class="hover:bg-strava-dark/80 transition">
+                    <td class="py-3 px-4 text-center">${placeTag}</td>
+                    <td class="py-3 px-4 font-semibold text-white">
+                        ${item.name}
+                        ${item.location ? `<span class="text-[11px] text-gray-500 block font-normal">${item.location}</span>` : ''}
+                    </td>
+                    <td class="py-3 px-4 text-xs text-gray-400">${item.region}</td>
+                    <td class="py-3 px-4 text-right font-medium text-white">${item.dist} km</td>
+                    <td class="py-3 px-4 text-center font-bold ${item.myTime !== '-' ? 'text-white' : 'text-gray-600'}">${item.myTime}</td>
+                    <td class="py-3 px-4 text-center text-xs text-gray-300">${item.myPace}</td>
+                    <td class="py-3 px-4 text-center font-bold text-kom">${item.bestTime}</td>
+                    <td class="py-3 px-4 text-center text-xs text-gray-300">${item.bestPace}</td>
+                    <td class="py-3 px-4 text-center">${stravaIcon}</td>
+                </tr>
+            `;
+        }
+    </script>
+</body>
+</html>
