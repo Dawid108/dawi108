@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje Korony & Segmenty Strava 👑</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        strava: {
+                            DEFAULT: '#FC4C02',
+                            dark: '#E03D00',
+                            light: '#FF6622',
+                        },
+                        navy: {
+                            800: '#111827',
+                            900: '#0B0F17',
+                            950: '#05070B',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #05070B;
+            color: #F3F4F6;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0F17;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1F2937;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FC4C02;
+        }
+        .glow-orange {
+            box-shadow: 0 0 25px -5px rgba(252, 76, 2, 0.25);
+        }
+        .glow-gold {
+            box-shadow: 0 0 20px -5px rgba(245, 158, 11, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-navy-950 text-gray-100 pb-12 antialiased selection:bg-strava selection:text-white">
+
+    <!-- HERO HEADER -->
+    <header class="relative border-b border-gray-800 bg-navy-900/80 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <!-- Title & Badge -->
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-strava/10 border border-strava/30 rounded-xl text-strava">
+                        <i data-lucide="crown" class="w-8 h-8 text-amber-400 fill-amber-400/20"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                                Moje Korony & Segmenty Strava
+                            </h1>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-400/10 text-amber-400 border border-amber-400/30">
+                                #1 KOM / CR
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-400 mt-0.5">Lokalny Król Segmentów w Okolicy • Krotoszyn & Okolice</p>
+                    </div>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="flex items-center gap-3">
+                    <a href="https://www.strava.com/athletes/146199607" target="_blank" rel="noopener noreferrer" 
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-strava hover:bg-strava-dark text-white font-semibold text-sm transition-all duration-200 shadow-lg shadow-strava/20 hover:scale-[1.02]">
+                        <i data-lucide="user" class="w-4 h-4"></i>
+                        <span>Profil Strava</span>
+                        <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-70"></i>
+                    </a>
+                    <a href="https://www.strava.com/athletes/146199607/segments/leader" target="_blank" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-navy-800 hover:bg-gray-800 text-amber-400 border border-amber-500/30 font-semibold text-sm transition-all duration-200 hover:scale-[1.02]">
+                        <i data-lucide="award" class="w-4 h-4 text-amber-400"></i>
+                        <span>Pełna Lista Koronek</span>
+                        <i data-lucide="external-link" class="w-3.5 h-3.5 opacity-70"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+
+        <!-- STATS DASHBOARD SUMMARY -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <!-- Total KOMs -->
+            <div class="bg-navy-900/90 border border-gray-800 p-5 rounded-xl glow-gold transition-all hover:border-amber-500/40">
+                <div class="flex items-center justify-between text-gray-400 mb-2">
+                    <span class="text-xs uppercase tracking-wider font-semibold">Zdobyte Korony</span>
+                    <i data-lucide="crown" class="w-5 h-5 text-amber-400"></i>
+                </div>
+                <div class="text-3xl sm:text-4xl font-black text-white" id="stat-count">45</div>
+                <div class="text-xs text-amber-400/80 mt-1 font-medium">100% pozycja #1 na liście</div>
+            </div>
+
+            <!-- Total Distance -->
+            <div class="bg-navy-900/90 border border-gray-800 p-5 rounded-xl transition-all hover:border-strava/40">
+                <div class="flex items-center justify-between text-gray-400 mb-2">
+                    <span class="text-xs uppercase tracking-wider font-semibold">Suma Dystansów</span>
+                    <i data-lucide="map-pin" class="w-5 h-5 text-strava"></i>
+                </div>
+                <div class="text-3xl sm:text-4xl font-black text-white" id="stat-distance">0.0 km</div>
+                <div class="text-xs text-gray-400 mt-1">Długość wszystkich segmentów</div>
+            </div>
+
+            <!-- Fast Pace -->
+            <div class="bg-navy-900/90 border border-gray-800 p-5 rounded-xl transition-all hover:border-emerald-500/40">
+                <div class="flex items-center justify-between text-gray-400 mb-2">
+                    <span class="text-xs uppercase tracking-wider font-semibold">Najszybsze Tempo</span>
+                    <i data-lucide="zap" class="w-5 h-5 text-emerald-400"></i>
+                </div>
+                <div class="text-3xl sm:text-4xl font-black text-emerald-400" id="stat-fastest-pace">--:--</div>
+                <div class="text-xs text-gray-400 mt-1" id="stat-fastest-name">Ładowanie...</div>
+            </div>
+
+            <!-- Longest Segment -->
+            <div class="bg-navy-900/90 border border-gray-800 p-5 rounded-xl transition-all hover:border-blue-500/40">
+                <div class="flex items-center justify-between text-gray-400 mb-2">
+                    <span class="text-xs uppercase tracking-wider font-semibold">Najdłuższy Segment</span>
+                    <i data-lucide="route" class="w-5 h-5 text-blue-400"></i>
+                </div>
+                <div class="text-3xl sm:text-4xl font-black text-blue-400" id="stat-longest-dist">0.0 km</div>
+                <div class="text-xs text-gray-400 mt-1" id="stat-longest-name">Ładowanie...</div>
+            </div>
+        </section>
+
+        <!-- MAIN LAYOUT: WIDGETS SIDEBAR & SEGMENTS MAIN -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- SIDEBAR: WIDGETS STRAVA (3 Cols on LG) -->
+            <aside class="lg:col-span-4 space-y-6">
+                <div class="bg-navy-900 border border-gray-800 rounded-xl p-5 shadow-xl">
+                    <div class="flex items-center gap-2 mb-4 pb-3 border-b border-gray-800">
+                        <i data-lucide="activity" class="w-5 h-5 text-strava"></i>
+                        <h2 class="font-bold text-lg text-white">Aktywność Strava</h2>
+                    </div>
+
+                    <!-- Strava Summary Widget -->
+                    <div class="mb-6 overflow-hidden rounded-lg border border-gray-800 bg-black/40 flex justify-center">
+                        <iframe height='160' width='300' frameborder='0' allowtransparency='true' scrolling='no' src='https://www.strava.com/athletes/146199607/activity-summary/fa77f8b9e64b9637fb77a29b80b9926feb35f597' class="max-w-full"></iframe>
+                    </div>
+
+                    <!-- Strava Latest Rides Widget -->
+                    <div class="overflow-hidden rounded-lg border border-gray-800 bg-black/40 flex justify-center">
+                        <iframe height='454' width='300' frameborder='0' allowtransparency='true' scrolling='no' src='https://www.strava.com/athletes/146199607/latest-rides/fa77f8b9e64b9637fb77a29b80b9926feb35f597' class="max-w-full"></iframe>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="bg-gradient-to-br from-strava/10 to-navy-900 border border-strava/20 rounded-xl p-5">
+                    <div class="flex items-start gap-3">
+                        <i data-lucide="info" class="w-5 h-5 text-strava shrink-0 mt-0.5"></i>
+                        <div>
+                            <h3 class="text-sm font-bold text-white mb-1">Czym są Segmenty?</h3>
+                            <p class="text-xs text-gray-300 leading-relaxed">
+                                Segmenty to wyznaczone odcinki dróg i ścieżek, na których biegacze rywalizują o najlepszy czas.
+                                Wszystkie powyższe pozycje oznaczają pierwsze miejsce (KOM / Crown) w lokalnej klasyfikacji.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MAIN CONTENT: SEGMENTS LIST & CONTROLS (8 Cols on LG) -->
+            <section class="lg:col-span-8 space-y-6">
+                
+                <!-- FILTER & TOOLBAR -->
+                <div class="bg-navy-900 border border-gray-800 rounded-xl p-4 sm:p-5 shadow-xl space-y-4">
+                    
+                    <!-- Search & View Toggle -->
+                    <div class="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+                        <!-- Search input -->
+                        <div class="relative flex-1">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                            <input type="text" id="search-input" placeholder="Szukaj segmentu (np. Zduny, Stadion, Pętla)..." 
+                                   class="w-full bg-navy-950 border border-gray-800 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-strava transition-colors">
+                        </div>
+
+                        <!-- View switch -->
+                        <div class="flex items-center bg-navy-950 p-1 rounded-lg border border-gray-800 shrink-0 self-end sm:self-auto">
+                            <button id="view-cards-btn" class="px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 bg-strava text-white transition-all">
+                                <i data-lucide="grid" class="w-3.5 h-3.5"></i>
+                                <span>Karty</span>
+                            </button>
+                            <button id="view-table-btn" class="px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 text-gray-400 hover:text-white transition-all">
+                                <i data-lucide="list" class="w-3.5 h-3.5"></i>
+                                <span>Tabela</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Filters & Sort -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-gray-800 text-xs">
+                        <!-- Category Filter Buttons -->
+                        <div class="flex flex-wrap gap-1.5" id="category-filters">
+                            <button data-filter="all" class="filter-btn px-3 py-1.5 rounded-md bg-strava text-white font-medium transition-all">Wszystkie (45)</button>
+                            <button data-filter="sprint" class="filter-btn px-3 py-1.5 rounded-md bg-navy-950 hover:bg-gray-800 text-gray-300 font-medium border border-gray-800 transition-all">Sprinty &lt; 1 km</button>
+                            <button data-filter="medium" class="filter-btn px-3 py-1.5 rounded-md bg-navy-950 hover:bg-gray-800 text-gray-300 font-medium border border-gray-800 transition-all">Średnie 1-3 km</button>
+                            <button data-filter="long" class="filter-btn px-3 py-1.5 rounded-md bg-navy-950 hover:bg-gray-800 text-gray-300 font-medium border border-gray-800 transition-all">Długie &gt; 3 km</button>
+                        </div>
+
+                        <!-- Sort Select -->
+                        <div class="flex items-center gap-2">
+                            <span class="text-gray-400 font-medium shrink-0">Sortuj:</span>
+                            <select id="sort-select" class="bg-navy-950 border border-gray-800 text-gray-200 text-xs rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-strava">
+                                <option value="default">Domyślnie (Kolejność)</option>
+                                <option value="dist-asc">Dystans (rosnąco)</option>
+                                <option value="dist-desc">Dystans (malejąco)</option>
+                                <option value="pace-asc">Tempo (najszybsze)</option>
+                                <option value="time-asc">Czas (najkrótszy)</option>
+                                <option value="name-asc">Nazwa (A-Z)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARDS CONTAINER -->
+                <div id="cards-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- JavaScript will dynamically inject cards here -->
+                </div>
+
+                <!-- TABLE CONTAINER (Hidden by default) -->
+                <div id="table-container" class="hidden bg-navy-900 border border-gray-800 rounded-xl overflow-hidden shadow-xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-navy-950 text-xs uppercase text-gray-400 border-b border-gray-800">
+                                <tr>
+                                    <th class="py-3.5 px-4 font-semibold">#</th>
+                                    <th class="py-3.5 px-4 font-semibold">Nazwa Segmentu</th>
+                                    <th class="py-3.5 px-4 font-semibold text-right">Dystans</th>
+                                    <th class="py-3.5 px-4 font-semibold text-right">Czas</th>
+                                    <th class="py-3.5 px-4 font-semibold text-right">Tempo</th>
+                                    <th class="py-3.5 px-4 font-semibold text-center">Ranga</th>
+                                </tr>
+                            </thead>
+                            <tbody id="segments-table-body" class="divide-y divide-gray-800/60 text-gray-200">
+                                <!-- JavaScript will inject table rows here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- EMPTY STATE -->
+                <div id="empty-state" class="hidden bg-navy-900 border border-gray-800 rounded-xl p-12 text-center">
+                    <i data-lucide="search-x" class="w-12 h-12 text-gray-600 mx-auto mb-3"></i>
+                    <h3 class="text-lg font-bold text-white mb-1">Brak wyników</h3>
+                    <p class="text-sm text-gray-400">Nie znaleziono segmentów pasujących do wpisanych kryteriów wyszukiwania.</p>
+                </div>
+
+            </section>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-16 border-t border-gray-800 bg-navy-900/50 py-8 text-center text-xs text-gray-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <i data-lucide="crown" class="w-4 h-4 text-amber-400"></i>
+                <span class="font-bold text-gray-300">Strava KOM Dashboard</span>
+                <span>• Krotoszyn Runner</span>
+            </div>
+            <p>Wszystkie segmenty zweryfikowane na platformie Strava. Dane pobrane z profilu biegowego.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // RAW SEGMENT DATA extracted from provided HTML rows
+        const rawSegments = [
+            { name: "Krotoszyn stadion LO", dist: 0.30, time: "0:44", pace: "2:27" },
+            { name: "Stadion Cieszków", dist: 0.35, time: "0:57", pace: "2:40" },
+            { name: "Prosta KOM - Lokomotywa", dist: 0.38, time: "1:11", pace: "3:04" },
+            { name: "Zduny Prosta Strzelecka", dist: 0.39, time: "1:16", pace: "3:13" },
+            { name: "Ze Stadionu ku Zieleni Zduny", dist: 0.47, time: "1:42", pace: "3:37" },
+            { name: "Aleja Dębowa w kierunku Ostoi", dist: 0.52, time: "1:41", pace: "3:12" },
+            { name: "Pozostałości Zapory Granicznej", dist: 0.60, time: "2:01", pace: "3:21" },
+            { name: "Ostoja-> Grzybowa", dist: 0.61, time: "2:15", pace: "3:39" },
+            { name: "Lekkoduch® Mała Pętla Cross", dist: 0.67, time: "2:23", pace: "3:32" },
+            { name: "Prosta na Wdechu", dist: 0.69, time: "2:36", pace: "3:44" },
+            { name: "Poprzeczna Sprint do Kom", dist: 0.70, time: "2:16", pace: "3:12" },
+            { name: "Jasna Ścieżka od Ronda", dist: 0.72, time: "2:16", pace: "3:07" },
+            { name: "Ostrowska", dist: 0.76, time: "2:29", pace: "3:16" },
+            { name: "Mroźna Prosta", dist: 0.80, time: "3:26", pace: "4:16" },
+            { name: "Leśniczówka Krotoszyn", dist: 0.82, time: "3:50", pace: "4:39" },
+            { name: "Pętla Zagłady", dist: 0.86, time: "3:34", pace: "4:07" },
+            { name: "Kobierno - Nowy Folwark", dist: 0.87, time: "4:09", pace: "4:45" },
+            { name: "Chwaliszewska bez Zadyszki", dist: 1.02, time: "3:46", pace: "3:40" },
+            { name: "Biadaszka to Cieszkow", dist: 1.07, time: "3:29", pace: "3:15" },
+            { name: "Leśne Hopy i Stare Wodociągi", dist: 1.08, time: "4:05", pace: "3:46" },
+            { name: "Zmarznięte Ramiona", dist: 1.09, time: "4:50", pace: "4:25" },
+            { name: "Krotoszyn kros w lesie mała pętla", dist: 1.10, time: "3:50", pace: "3:29" },
+            { name: "Past the Stadium", dist: 1.10, time: "4:51", pace: "4:23" },
+            { name: "Kryształowa Podkowa", dist: 1.16, time: "5:02", pace: "4:19" },
+            { name: "Poprzeczna, Powstancow-Wesola", dist: 1.30, time: "4:51", pace: "3:43" },
+            { name: "Ulica Szybka jak Wiatr Rozdrażewek", dist: 1.32, time: "4:35", pace: "3:27" },
+            { name: "krzyż Postolin - kopalnia", dist: 1.45, time: "5:31", pace: "3:48" },
+            { name: "Lekkoduch ® Singletrack", dist: 1.42, time: "5:37", pace: "3:57" },
+            { name: "Lekkoduch® - Leśna Pętla", dist: 1.43, time: "5:34", pace: "3:52" },
+            { name: "Buczyna Helenopol", dist: 1.52, time: "5:17", pace: "3:28" },
+            { name: "Krotoszyn kros w lesie duża pętla", dist: 1.53, time: "6:06", pace: "3:59" },
+            { name: "Wieża - krzyżówka przy Rezerwacie Miejski Bór", dist: 1.58, time: "5:56", pace: "3:45" },
+            { name: "Gorzupia->Tomnice podbieg", dist: 1.67, time: "6:14", pace: "3:44" },
+            { name: "Podbieg Zduny", dist: 1.84, time: "7:14", pace: "3:56" },
+            { name: "Aleja Niepodleglosci", dist: 1.85, time: "6:49", pace: "3:41" },
+            { name: "Prosta w Sercu Lasu", dist: 2.02, time: "8:58", pace: "4:25" },
+            { name: "krzy Postolin - rzeczka z wiatą", dist: 2.03, time: "8:07", pace: "3:59" },
+            { name: "Cieszkow Straight", dist: 2.16, time: "8:54", pace: "4:07" },
+            { name: "Parcelki-Wróżewy", dist: 2.24, time: "8:10", pace: "3:39" },
+            { name: "Biadaszka Straight", dist: 2.25, time: "8:45", pace: "3:53" },
+            { name: "Osiedle tour", dist: 2.27, time: "8:37", pace: "3:47" },
+            { name: "Podbieg Cieszków", dist: 3.12, time: "12:09", pace: "3:54" },
+            { name: "Lekkoduch® Winter Cross", dist: 5.52, time: "24:27", pace: "4:26" },
+            { name: "Lekkoduch ® Trail Loop", dist: 6.05, time: "28:35", pace: "4:43" },
+            { name: "Bożacin", dist: 10.09, time: "51:54", pace: "5:09" }
+        ];
+
+        // Helper function to convert "MM:SS" to total seconds for sorting/calculating
+        function timeToSeconds(timeStr) {
+            const parts = timeStr.split(':').map(Number);
+            if (parts.length === 2) return parts[0] * 60 + parts[1];
+            if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+            return 0;
+        }
+
+        // Process data with additional attributes
+        const segments = rawSegments.map((item, index) => {
+            const paceSec = timeToSeconds(item.pace);
+            const timeSec = timeToSeconds(item.time);
+            return {
+                id: index + 1,
+                name: item.name,
+                dist: item.dist,
+                time: item.time,
+                pace: item.pace,
+                paceSec: paceSec,
+                timeSec: timeSec
+            };
+        });
+
+        // App State
+        let currentFilter = 'all';
+        let currentSearch = '';
+        let currentSort = 'default';
+        let currentView = 'cards';
+
+        // DOM Elements
+        const cardsContainer = document.getElementById('cards-container');
+        const tableContainer = document.getElementById('table-container');
+        const tableBody = document.getElementById('segments-table-body');
+        const emptyState = document.getElementById('empty-state');
+        const searchInput = document.getElementById('search-input');
+        const sortSelect = document.getElementById('sort-select');
+        const viewCardsBtn = document.getElementById('view-cards-btn');
+        const viewTableBtn = document.getElementById('view-table-btn');
+        const categoryFilters = document.getElementById('category-filters');
+
+        // Initialize Stats Summary
+        function initStats() {
+            const totalCount = segments.length;
+            const totalDist = segments.reduce((sum, s) => sum + s.dist, 0).toFixed(2);
+            
+            // Find fastest pace
+            const sortedByPace = [...segments].sort((a, b) => a.paceSec - b.paceSec);
+            const fastest = sortedByPace[0];
+
+            // Find longest distance
+            const sortedByDist = [...segments].sort((a, b) => b.dist - a.dist);
+            const longest = sortedByDist[0];
+
+            document.getElementById('stat-count').textContent = totalCount;
+            document.getElementById('stat-distance').textContent = `${totalDist} km`;
+            
+            document.getElementById('stat-fastest-pace').textContent = `${fastest.pace}/km`;
+            document.getElementById('stat-fastest-name').textContent = fastest.name;
+
+            document.getElementById('stat-longest-dist').textContent = `${longest.dist.toFixed(2)} km`;
+            document.getElementById('stat-longest-name').textContent = longest.name;
+        }
+
+        // Filter & Sort Logic
+        function getFilteredAndSortedSegments() {
+            return segments.filter(item => {
+                // Search query
+                const matchesSearch = item.name.toLowerCase().includes(currentSearch.toLowerCase());
+                
+                // Category filter
+                let matchesCategory = true;
+                if (currentFilter === 'sprint') matchesCategory = item.dist < 1.0;
+                else if (currentFilter === 'medium') matchesCategory = item.dist >= 1.0 && item.dist <= 3.0;
+                else if (currentFilter === 'long') matchesCategory = item.dist > 3.0;
+
+                return matchesSearch && matchesCategory;
+            }).sort((a, b) => {
+                if (currentSort === 'dist-asc') return a.dist - b.dist;
+                if (currentSort === 'dist-desc') return b.dist - a.dist;
+                if (currentSort === 'pace-asc') return a.paceSec - b.paceSec;
+                if (currentSort === 'time-asc') return a.timeSec - b.timeSec;
+                if (currentSort === 'name-asc') return a.name.localeCompare(b.name);
+                return a.id - b.id; // Default order
+            });
+        }
+
+        // Render Cards View
+        function renderCards(data) {
+            cardsContainer.innerHTML = '';
+            
+            // Find min pace and max dist in current view to highlight
+            const minPaceSec = Math.min(...data.map(d => d.paceSec));
+            const maxDist = Math.max(...data.map(d => d.dist));
+
+            data.forEach(item => {
+                const isFastest = item.paceSec === minPaceSec && data.length > 1;
+                const isLongest = item.dist === maxDist && data.length > 1;
+
+                const card = document.createElement('div');
+                card.className = `bg-navy-900 border ${isFastest ? 'border-emerald-500/50' : 'border-gray-800'} rounded-xl p-4.5 hover:border-strava/50 transition-all duration-200 flex flex-col justify-between group relative overflow-hidden`;
+
+                card.innerHTML = `
+                    ${isFastest ? '<div class="absolute -right-12 top-3 bg-emerald-500 text-black text-[10px] font-extrabold px-10 py-0.5 rotate-45 uppercase">Najszybszy</div>' : ''}
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <span class="inline-flex items-center gap-1 text-xs font-bold text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2 py-0.5 rounded-md">
+                                <i data-lucide="crown" class="w-3 h-3 fill-amber-400"></i> #1 KOM
+                            </span>
+                            <span class="text-xs text-gray-500 font-mono">#${item.id}</span>
+                        </div>
+                        <h3 class="font-bold text-gray-100 group-hover:text-strava transition-colors text-base line-clamp-2 mb-4">
+                            ${item.name}
+                        </h3>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 pt-3 border-t border-gray-800/80 text-center bg-navy-950/50 -mx-4.5 -mb-4.5 p-3 rounded-b-xl">
+                        <div>
+                            <div class="text-[10px] uppercase font-medium text-gray-500">Dystans</div>
+                            <div class="text-sm font-bold ${isLongest ? 'text-blue-400' : 'text-gray-200'}">${item.dist.toFixed(2)} km</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] uppercase font-medium text-gray-500">Czas</div>
+                            <div class="text-sm font-bold text-gray-200">${item.time}</div>
+                        </div>
+                        <div>
+                            <div class="text-[10px] uppercase font-medium text-gray-500">Tempo</div>
+                            <div class="text-sm font-bold ${isFastest ? 'text-emerald-400' : 'text-strava'}">${item.pace}/km</div>
+                        </div>
+                    </div>
+                `;
+                cardsContainer.appendChild(card);
+            });
+        }
+
+        // Render Table View
+        function renderTable(data) {
+            tableBody.innerHTML = '';
+            
+            const minPaceSec = Math.min(...data.map(d => d.paceSec));
+
+            data.forEach((item, index) => {
+                const isFastest = item.paceSec === minPaceSec && data.length > 1;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-navy-800/50 transition-colors';
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-xs font-mono text-gray-500">${item.id}</td>
+                    <td class="py-3 px-4 font-semibold text-white flex items-center gap-2">
+                        <span>${item.name}</span>
+                        ${isFastest ? '<span class="px-1.5 py-0.5 text-[10px] font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded">Najszybsze</span>' : ''}
+                    </td>
+                    <td class="py-3 px-4 text-right font-medium text-gray-300">${item.dist.toFixed(2)} km</td>
+                    <td class="py-3 px-4 text-right font-medium text-gray-300">${item.time} min</td>
+                    <td class="py-3 px-4 text-right font-bold ${isFastest ? 'text-emerald-400' : 'text-strava'}">${item.pace} /km</td>
+                    <td class="py-3 px-4 text-center">
+                        <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-amber-400/10 text-amber-400 text-xs font-bold border border-amber-400/30">
+                            👑
+                        </span>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        // Update UI View
+        function updateUI() {
+            const filteredData = getFilteredAndSortedSegments();
+
+            if (filteredData.length === 0) {
+                cardsContainer.classList.add('hidden');
+                tableContainer.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                if (currentView === 'cards') {
+                    cardsContainer.classList.remove('hidden');
+                    tableContainer.classList.add('hidden');
+                    renderCards(filteredData);
+                } else {
+                    cardsContainer.classList.add('hidden');
+                    tableContainer.classList.remove('hidden');
+                    renderTable(filteredData);
+                }
+            }
+
+            // Re-render lucide icons for newly inserted HTML elements
+            lucide.createIcons();
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            updateUI();
+        });
+
+        sortSelect.addEventListener('change', (e) => {
+            currentSort = e.target.value;
+            updateUI();
+        });
+
+        // Category Filter Buttons
+        categoryFilters.addEventListener('click', (e) => {
+            const btn = e.target.closest('.filter-btn');
+            if (!btn) return;
+
+            // Update active state
+            document.querySelectorAll('.filter-btn').forEach(b => {
+                b.className = 'filter-btn px-3 py-1.5 rounded-md bg-navy-950 hover:bg-gray-800 text-gray-300 font-medium border border-gray-800 transition-all';
+            });
+            btn.className = 'filter-btn px-3 py-1.5 rounded-md bg-strava text-white font-medium transition-all';
+
+            currentFilter = btn.dataset.filter;
+            updateUI();
+        });
+
+        // View Mode Switchers
+        viewCardsBtn.addEventListener('click', () => {
+            currentView = 'cards';
+            viewCardsBtn.className = 'px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 bg-strava text-white transition-all';
+            viewTableBtn.className = 'px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 text-gray-400 hover:text-white transition-all';
+            updateUI();
+        });
+
+        viewTableBtn.addEventListener('click', () => {
+            currentView = 'table';
+            viewTableBtn.className = 'px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 bg-strava text-white transition-all';
+            viewCardsBtn.className = 'px-3 py-1.5 rounded text-xs font-semibold flex items-center gap-1.5 text-gray-400 hover:text-white transition-all';
+            updateUI();
+        });
+
+        // Init on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initStats();
+            updateUI();
+        });
+    </script>
+</body>
+</html>
