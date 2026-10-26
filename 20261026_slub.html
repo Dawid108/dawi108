@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Polski", q:"Kto napisał powieść „Chłopi”?", a:"Władysław Reymont", b:"Bolesław Prus", c:"Stefan Żeromski", d:"Eliza Orzeszkowa"},
+{cat:"Polski", q:"Czyj ślub opisano w powieści „Chłopi”?", a:"Macieja Boryny i Jagny Paczesiówny", b:"Antka Boryny i Jagny Paczesiówny", c:"Macieja Boryny i Hanki Borynowej", d:"Antka Boryny i Hanki Borynowej"},
+{cat:"Polski", q:"Jakie znaczenie miało wesele w Lipcach?", a:"Było wydarzeniem religijnym i społecznym", b:"Było wydarzeniem wyłącznie rodzinnym", c:"Było wydarzeniem wyłącznie religijnym", d:"Było wydarzeniem wyłącznie gospodarczym"},
+{cat:"Polski", q:"Kto uczestniczył w weselu?", a:"Cała wiejska społeczność", b:"Wyłącznie najbliższa rodzina", c:"Tylko najbogatsi gospodarze", d:"Jedynie młodzi i ich rodzice"},
+{cat:"Polski", q:"Co pokazywały obrzędy weselne w Lipcach?", a:"Przywiązanie chłopów do tradycji", b:"Niechęć chłopów do tradycji", c:"Dążenie chłopów do życia w miastach", d:"Odrzucenie wiejskich obyczajów"},
+{cat:"Polski", q:"Na czym polegały swaty?", a:"Swatowie ustalali warunki małżeństwa", b:"Drużbowie organizowali weselne tańce", c:"Kucharki przygotowywały weselne potrawy", d:"Rodzice błogosławili młodych przed ślubem"},
+{cat:"Polski", q:"Kto zgodził się wydać Jagnę za Borynę?", a:"Dominikowa", b:"Hanka", c:"Józka", d:"Jagustynka"},
+{cat:"Polski", q:"Dlaczego Dominikowa zgodziła się na małżeństwo Jagny z Boryną?", a:"Boryna był bogatym gospodarzem", b:"Boryna był młodym parobkiem", c:"Boryna był najbliższym krewnym Jagny", d:"Boryna był najbiedniejszym gospodarzem"},
+{cat:"Polski", q:"Czym częstowano podczas przepijania?", a:"Wódką pito za zdrowie młodych", b:"Mlekiem pito za zdrowie młodych", c:"Sokiem pito za zdrowie młodych", d:"Herbatą pito za zdrowie młodych"},
+{cat:"Polski", q:"Co kobiety chciały zrobić Jagnie przed ślubem?", a:"Obciąć jej warkocz", b:"Ufarbować jej włosy", c:"Upleść jej nowy warkocz", d:"Przykryć jej włosy chustą"},
+{cat:"Polski", q:"Jak Jagna zareagowała na próbę obcięcia włosów?", a:"Odmówiła i pokazała niezależność", b:"Zgodziła się i pokazała posłuszeństwo", c:"Uciekła i zostawiła rodzinę", d:"Poprosiła matkę o zgodę"},
+{cat:"Polski", q:"Co symbolizowała odmowa Jagny?", a:"Jej niezależność", b:"Jej posłuszeństwo", c:"Jej nieśmiałość", d:"Jej przywiązanie do majątku"},
+{cat:"Polski", q:"Jak wyglądał orszak weselny?", a:"Weselnicy szli ze śpiewem i muzyką", b:"Weselnicy szli w ciszy i skupieniu", c:"Weselnicy szli bez muzyki i śpiewu", d:"Weselnicy szli tylko z pochodniami"},
+{cat:"Polski", q:"Po kogo szli weselnicy w orszaku?", a:"Po pana młodego i pannę młodą", b:"Po księdza i miejscowego organistę", c:"Po wójta i najbogatszego gospodarza", d:"Po kucharki i weselnych muzykantów"},
+{cat:"Polski", q:"Kto udzielił młodym błogosławieństwa?", a:"Dominikowa", b:"Jagustynka", c:"Hanka", d:"Józka"},
+{cat:"Polski", q:"Kiedy Dominikowa pobłogosławiła młodych?", a:"Przed wyjściem do kościoła", b:"Po zakończeniu oczepin", c:"Po przenosinach do nowego domu", d:"Przed rozpoczęciem pierwszego tańca"},
+{cat:"Polski", q:"Gdzie Boryna i Jagna zawarli małżeństwo?", a:"W kościele", b:"W chałupie Boryny", c:"W domu Dominikowej", d:"W karczmie wiejskiej"},
+{cat:"Polski", q:"Kto przywitał młodych chlebem i solą?", a:"Dominikowa", b:"Jagustynka", c:"Hanka", d:"Józka"},
+{cat:"Polski", q:"Kiedy młodych przywitano chlebem i solą?", a:"Po powrocie z kościoła", b:"Przed wyjściem do kościoła", c:"Podczas pierwszego tańca", d:"Po zakończeniu oczepin"},
+{cat:"Polski", q:"Czego życzono młodym, witając ich chlebem i solą?", a:"Pomyślności", b:"Sławy", c:"Podróży", d:"Bogactwa bez pracy"},
+{cat:"Polski", q:"Jakim tańcem Jagna i Boryna rozpoczęli zabawę?", a:"Tańcem chodzonym", b:"Krakowiakiem", c:"Polonezem", d:"Mazurkiem"},
+{cat:"Polski", q:"Co robili goście podczas poczęstunku?", a:"Jedli potrawy i śpiewali piosenki", b:"Sprzątali izbę i wynosili meble", c:"Przygotowywali ślub i błogosławieństwo", d:"Przenosili wiano do nowej chałupy"},
+{cat:"Polski", q:"Co zbierały kucharki podczas wesela?", a:"Pieniądze za przygotowane jedzenie", b:"Kwiaty do ozdobienia kościoła", c:"Dary dla pana młodego", d:"Zboże na przyszłoroczne zasiewy"},
+{cat:"Polski", q:"Z czym chodziły kucharki, zbierając pieniądze?", a:"Z ozdobioną warząchwią", b:"Z ozdobionym wiklinowym koszem", c:"Z drewnianą skrzynią na dary", d:"Z haftowaną chustą weselną"},
+{cat:"Polski", q:"Co robiły kucharki podczas zbierania datków?", a:"Śpiewały i prosiły o zapłatę", b:"Tańczyły i rozdawały prezenty", c:"Modliły się i błogosławiły młodych", d:"Grały i zapraszały gości do kościoła"},
+{cat:"Polski", q:"W jaką zabawę weselną bawili się goście?", a:"W „chodzi lis koło drogi”", b:"W „króla i poddanych”", c:"W „chowanego w lesie”", d:"W „wyścigi konne”"},
+{cat:"Polski", q:"W jaką drugą tradycyjną zabawę bawiono się na weselu?", a:"W „przepiórkę”", b:"W „berek”", c:"W „dwa ognie”", d:"W „ciuciubabkę”"},
+{cat:"Polski", q:"Czym były oczepiny?", a:"Obrzędem przejścia panny w rolę żony", b:"Obrzędem wyboru nowego gospodarza", c:"Obrzędem błogosławienia rodziców", d:"Obrzędem rozpoczęcia weselnej uczty"},
+{cat:"Polski", q:"Co założono Jagnie podczas oczepin?", a:"Czepiec", b:"Wianek", c:"Koronę", d:"Kapelusz"},
+{cat:"Polski", q:"Co symbolizował czepiec?", a:"Przejście z panieństwa w małżeństwo", b:"Przejście z dzieciństwa w dorosłość", c:"Przejście z biedy do bogactwa", d:"Przejście z miasta na wieś"},
+{cat:"Polski", q:"Na co zbierano pieniądze podczas oczepin?", a:"Na czepiec", b:"Na nową chałupę", c:"Na weselny poczęstunek", d:"Na podróż młodych"},
+{cat:"Polski", q:"Dokąd przeniosła się Jagna po weselu?", a:"Do chałupy Boryny", b:"Do domu organisty", c:"Do chałupy Antka", d:"Do domu wójta"},
+{cat:"Polski", q:"Kto przyniósł symbole mające zapewnić młodym szczęście?", a:"Matka Jagny", b:"Siostra Boryny", c:"Żona Antka", d:"Weselna kucharka"},
+{cat:"Polski", q:"Co miały zapewnić symbole przyniesione przez matkę Jagny?", a:"Szczęście i dobrobyt", b:"Sławę i wysoką pozycję", c:"Zdrowie i długie podróże", d:"Zwycięstwo i uznanie"},
+{cat:"Polski", q:"Co Reymont pokazał poprzez opis wesela?", a:"Przywiązanie chłopów do tradycji", b:"Niechęć chłopów do wspólnoty", c:"Odejście chłopów od religii", d:"Przewagę życia miejskiego nad wiejskim"},
+{cat:"Polski", q:"Co było ważne dla wiejskiej społeczności przedstawionej w powieści?", a:"Rodzina i wspólnota wiejska", b:"Samotność i niezależność od innych", c:"Podróże i życie poza wsią", d:"Nauka i praca w mieście"},
+{cat:"Polski", q:"Czemu podporządkowywała się jednostka w Lipcach?", a:"Zasadom gromady", b:"Zasadom miejskiego życia", c:"Wyłącznie własnym marzeniom", d:"Przede wszystkim obcym zwyczajom"},
+{cat:"Polski", q:"Co wesele ukazuje w polskiej kulturze?", a:"Bogactwo kultury ludowej", b:"Zanik wszystkich tradycji", c:"Przewagę kultury miejskiej", d:"Brak znaczenia obrzędów"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 10;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
