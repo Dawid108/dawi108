@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Polski", q:"Jakie znaczenie miał Dzień Zaduszny w Lipcach?", a:"Był ważnym świętem religijnym", b:"Był najważniejszym świętem plonów", c:"Był dniem handlu na wiejskim targu", d:"Był świętem rozpoczęcia prac polowych"},
+{cat:"Polski", q:"Co rozbrzmiewało od rana w Lipcach?", a:"Kościelne dzwony", b:"Dzwony z wiejskiej karczmy", c:"Muzyka z chłopskich chałup", d:"Śpiewy z pobliskiego cmentarza"},
+{cat:"Polski", q:"Komu chłopi przekazywali pieniądze na wypominki?", a:"Organiście", b:"Proboszczowi", c:"Kościelnemu Jambrożemu", d:"Żebrakom stojącym przy kościele"},
+{cat:"Polski", q:"Czym były wypominki?", a:"Modlitwami za zmarłych", b:"Darami składanymi dla księdza", c:"Pieśniami śpiewanymi na cmentarzu", d:"Obrzędami związanymi ze żniwami"},
+{cat:"Polski", q:"Co odczytywał ksiądz podczas obchodów Dnia Zadusznego?", a:"Imiona dusz zmarłych", b:"Nazwiska gospodarzy ze wsi", c:"Listę darów przyniesionych przez chłopów", d:"Ogłoszenia dotyczące życia w Lipcach"},
+{cat:"Polski", q:"Co robili mieszkańcy po odczytaniu imion zmarłych?", a:"Wspólnie się za nich modlili", b:"Wspólnie przygotowywali wieczerzę", c:"Wspólnie śpiewali pieśni weselne", d:"Wspólnie rozdawali żywność biednym"},
+{cat:"Polski", q:"Kiedy odprawiano nieszpory w kaplicy cmentarnej?", a:"Po południu", b:"Wczesnym rankiem", c:"Późnym wieczorem", d:"O północy"},
+{cat:"Polski", q:"Gdzie odprawiano nieszpory podczas Dnia Zadusznego?", a:"W kaplicy cmentarnej", b:"W wiejskiej karczmie", c:"W domu najbogatszego gospodarza", d:"W głównym pomieszczeniu kościoła"},
+{cat:"Polski", q:"Co stało przy wejściu na cmentarz?", a:"Beczki przeznaczone na dary", b:"Stoły przeznaczone na modlitwy", c:"Ławki przeznaczone dla gospodarzy", d:"Kosze przeznaczone na kwiaty"},
+{cat:"Polski", q:"Dla kogo przeznaczone były beczki na dary?", a:"Dla proboszcza, organisty, Jambrożego i żebraków", b:"Dla gospodarzy, parobków, dzieci i kobiet", c:"Dla sołtysa, wójta, kowala i karczmarza", d:"Dla księdza, nauczyciela, lekarza i młynarza"},
+{cat:"Polski", q:"Kim był Jambroży, który otrzymywał dary?", a:"Kościelnym", b:"Organistą", c:"Proboszczem", d:"Sołtysem"},
+{cat:"Polski", q:"Jakie produkty przynosili chłopi jako dary?", a:"Chleb, kiełbasę, słoninę, masło i suszone grzyby", b:"Chleb, ziemniaki, mleko, jabłka i świeże ryby", c:"Mąkę, cukier, jajka, kapustę i świeże owoce", d:"Ser, śmietanę, kaszę, orzechy i suszone śliwki"},
+{cat:"Polski", q:"Co ukazywał podział darów na cmentarzu?", a:"Hierarchię społeczną", b:"Równość wszystkich mieszkańców", c:"Podział obowiązków w gospodarstwie", d:"Różnice między porami roku"},
+{cat:"Polski", q:"Do kogo trafiały najlepsze produkty?", a:"Do księdza", b:"Do żebraków", c:"Do parobków", d:"Do najbiedniejszych gospodarzy"},
+{cat:"Polski", q:"Kto otrzymywał gorsze produkty?", a:"Żebracy", b:"Proboszcz", c:"Organista", d:"Kościelny Jambroży"},
+{cat:"Polski", q:"Co robili mieszkańcy wieczorem podczas Dnia Zadusznego?", a:"Modlili się przy grobach bliskich", b:"Bawili się wspólnie w wiejskiej karczmie", c:"Przygotowywali uroczystość weselną", d:"Spotykali się na targu i handlowali"},
+{cat:"Polski", q:"Dlaczego mieszkańcy wracali wieczorem z cmentarza?", a:"Z powodu chłodu", b:"Z powodu nadchodzących żniw", c:"Z powodu rozpoczęcia wesela", d:"Z powodu wezwania do pracy"},
+{cat:"Polski", q:"Co działo się z karczmą podczas Dnia Zadusznego?", a:"Pozostawała zamknięta", b:"Była pełna bawiących się ludzi", c:"Organizowano w niej wspólną modlitwę", d:"Rozdawano w niej dary dla żebraków"},
+{cat:"Polski", q:"Do czego przywiązani byli chłopi z Lipiec?", a:"Do religii, tradycji i pamięci o zmarłych", b:"Do zabawy, handlu i dalekich podróży", c:"Do bogactwa, polityki i miejskich zwyczajów", d:"Do nauki, przemysłu i życia w miastach"},
+{cat:"Polski", q:"Jakie wartości podkreślał opis Dnia Zadusznego?", a:"Religię, tradycję i pamięć o zmarłych", b:"Bogactwo, sławę i rywalizację między ludźmi", c:"Pracowitość, handel i rozwój wiejskiego rzemiosła", d:"Zabawę, odpoczynek i wspólne świętowanie plonów"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 10;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
