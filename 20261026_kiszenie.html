@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Polski", q:"Gdzie odbywa się wspólne kiszenie kapusty?", a:"W chałupie Macieja Boryny", b:"W chałupie Antka Boryny", c:"W domu młynarza z Lipiec", d:"W karczmie we wsi Lipce"},
+{cat:"Polski", q:"W jakiej porze roku mieszkańcy kiszą kapustę?", a:"Jesienią", b:"Zimą", c:"Wiosną", d:"Latem"},
+{cat:"Polski", q:"Kto wspólnie kisi kapustę?", a:"Mieszkańcy Lipiec", b:"Tylko rodzina Borynów", c:"Wyłącznie kobiety z Lipiec", d:"Gospodarze z sąsiednich wsi"},
+{cat:"Polski", q:"Co robią Jagna i Jagustynka podczas pracy?", a:"Obierają główki kapusty", b:"Przygotowują miski i łyżki", c:"Gotują rosół dla gości", d:"Przynoszą beczki do sieni"},
+{cat:"Polski", q:"Co przygotowuje Antek Boryna?", a:"Beczki i szatkownicę", b:"Ławę i drewniane łyżki", c:"Rosół z ziemniakami", d:"Miski dla wszystkich gości"},
+{cat:"Polski", q:"Co robią mieszkańcy podczas wspólnej pracy?", a:"Rozmawiają i wymieniają plotki", b:"Śpiewają wyłącznie pieśni religijne", c:"Uczą dzieci czytać i pisać", d:"Planują wspólną podróż do miasta"},
+{cat:"Polski", q:"Kto przynosi wiadomość o kradzieży konia?", a:"Nastusia", b:"Jagna", c:"Jagustynka", d:"Józia"},
+{cat:"Polski", q:"Komu skradziono konia według przyniesionej wiadomości?", a:"Młynarzowi", b:"Maciejowi Borynie", c:"Antkowi Borynie", d:"Mateuszowi Gołębiowi"},
+{cat:"Polski", q:"Co zauważa Maciej Boryna u Jagny?", a:"Jedwabną chustkę", b:"Nową wełnianą spódnicę", c:"Złoty pierścionek", d:"Srebrny naszyjnik"},
+{cat:"Polski", q:"Kto podarował Jagnie jedwabną chustkę?", a:"Maciej Boryna", b:"Antek Boryna", c:"Mateusz Gołąb", d:"Młynarz z Lipiec"},
+{cat:"Polski", q:"Co chciałby zrobić Maciej Boryna?", a:"Usiąść obok Jagny", b:"Wyjść z chałupy do młyna", c:"Zabrać beczki do stodoły", d:"Porozmawiać z młynarzem"},
+{cat:"Polski", q:"Dlaczego Maciej powstrzymuje się przed usiąściem obok Jagny?", a:"Nie chce wywołać plotek", b:"Nie chce przeszkadzać w pracy", c:"Musi przygotować posiłek", d:"Obawia się gniewu młynarza"},
+{cat:"Polski", q:"Kto przygotowuje ławę dla pracujących?", a:"Witek i Kuba", b:"Antek i Maciej", c:"Jagna i Jagustynka", d:"Nastusia i Józia"},
+{cat:"Polski", q:"Kim jest Józia?", a:"Córką Macieja Boryny", b:"Siostrą Antka Boryny", c:"Córką młynarza z Lipiec", d:"Siostrą Mateusza Gołębia"},
+{cat:"Polski", q:"Co robi Józia podczas spotkania?", a:"Rozstawia miski i łyżki", b:"Obiera kapustę z Jagustynką", c:"Przygotowuje beczki do kiszenia", d:"Przynosi wieści o kradzieży konia"},
+{cat:"Polski", q:"Czym gospodarze częstują gości?", a:"Rosołem z ziemniakami i mięsem", b:"Kaszą z mlekiem i chlebem", c:"Zupą grzybową z kluskami", d:"Pieczonymi jabłkami i serem"},
+{cat:"Polski", q:"Co ukazuje scena wspólnego kiszenia kapusty?", a:"Współpracę, gościnność i plotki", b:"Rywalizację, samotność i bogactwo", c:"Podróże, handel i życie w mieście", d:"Naukę, zabawę i szkolne obowiązki"},
+{cat:"Polski", q:"Jakie znaczenie mają plotki w życiu mieszkańców Lipiec?", a:"Wpływają na relacje między ludźmi", b:"Nie mają żadnego znaczenia dla wsi", c:"Dotyczą wyłącznie pracy na polu", d:"Służą jedynie rozrywce dzieci"},
+{cat:"Polski", q:"Co łączy mieszkańców podczas kiszenia kapusty?", a:"Wspólna praca i tradycja", b:"Wspólne podróże i handel", c:"Nauka i działalność polityczna", d:"Rywalizacja o ziemię i pieniądze"},
+{cat:"Polski", q:"Jaki obraz wiejskiej społeczności przedstawia ta scena?", a:"Ludzi współpracujących i plotkujących", b:"Ludzi unikających wszelkich kontaktów", c:"Ludzi zajętych wyłącznie handlem", d:"Ludzi żyjących bez tradycji i zwyczajów"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 10;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
