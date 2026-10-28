@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking Mistrzostw ZSP2 Krotoszyn</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        chess: {
+                            dark: '#0f172a',
+                            card: '#1e293b',
+                            accent: '#f59e0b',
+                            gold: '#fbbf24',
+                            silver: '#94a3b8',
+                            bronze: '#b45309',
+                            highlight: '#38bdf8'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #475569;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        .tab-btn.active {
+            border-bottom: 3px solid #f59e0b;
+            color: #f59e0b;
+            background-color: rgba(245, 158, 11, 0.1);
+        }
+        .podium-1 { background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(180, 83, 9, 0.1) 100%); border-left: 4px solid #fbbf24; }
+        .podium-2 { background: linear-gradient(135deg, rgba(148, 163, 184, 0.2) 0%, rgba(71, 85, 105, 0.1) 100%); border-left: 4px solid #94a3b8; }
+        .podium-3 { background: linear-gradient(135deg, rgba(180, 83, 9, 0.2) 0%, rgba(120, 53, 15, 0.1) 100%); border-left: 4px solid #d97706; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans">
+
+    <!-- Header / Navbar -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-lg backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="p-2.5 bg-amber-500/10 border border-amber-500/30 rounded-xl text-amber-500">
+                    <i class="fa-solid fa-chess-king text-2xl sm:text-3xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight text-white flex items-center gap-2">
+                        Mistrzostwa ZSP2 Krotoszyn
+                    </h1>
+                    <p class="text-xs sm:text-sm text-slate-400">Oficjalny Ranking Szkolny Szachów</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-2 bg-slate-800 p-1.5 rounded-xl border border-slate-700 w-full sm:w-auto">
+                <button onclick="switchTab('main-ranking')" id="btn-main-ranking" class="tab-btn active flex-1 sm:flex-none px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-trophy"></i>
+                    <span>Ranking Główny</span>
+                </button>
+                <button onclick="switchTab('top10-stats')" id="btn-top10-stats" class="tab-btn flex-1 sm:flex-none px-4 py-2 text-xs sm:text-sm font-semibold text-slate-400 rounded-lg transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Statystyki Top 10</span>
+                </button>
+                <button onclick="switchTab('editions')" id="btn-editions" class="tab-btn flex-1 sm:flex-none px-4 py-2 text-xs sm:text-sm font-semibold text-slate-400 rounded-lg transition-all flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-medal"></i>
+                    <span>Edycje I - III</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-8">
+
+        <!-- Top Stat Cards -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-2xl flex items-center gap-4">
+                <div class="p-3 bg-amber-500/20 text-amber-400 rounded-xl">
+                    <i class="fa-solid fa-users text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">Uczestnicy</p>
+                    <p class="text-xl font-bold text-white" id="stat-total-players">52</p>
+                </div>
+            </div>
+            <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-2xl flex items-center gap-4">
+                <div class="p-3 bg-amber-500/20 text-amber-400 rounded-xl">
+                    <i class="fa-solid fa-crown text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">Lider Rankingu</p>
+                    <p class="text-sm font-bold text-amber-400 truncate max-w-[110px] sm:max-w-none" id="stat-leader">Dawid Gustowski</p>
+                </div>
+            </div>
+            <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-2xl flex items-center gap-4">
+                <div class="p-3 bg-amber-500/20 text-amber-400 rounded-xl">
+                    <i class="fa-solid fa-star text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">Top Szachowy Pkt</p>
+                    <p class="text-xl font-bold text-white">1078</p>
+                </div>
+            </div>
+            <div class="bg-slate-800/80 border border-slate-700/60 p-4 rounded-2xl flex items-center gap-4">
+                <div class="p-3 bg-amber-500/20 text-amber-400 rounded-xl">
+                    <i class="fa-solid fa-flag-checkered text-xl"></i>
+                </div>
+                <div>
+                    <p class="text-xs text-slate-400 font-medium">Rozegrane Turnieje</p>
+                    <p class="text-xl font-bold text-white">3</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 1: TABELA GŁÓWNA RANKINGU -->
+        <section id="view-main-ranking" class="space-y-4">
+            <!-- Table Controls -->
+            <div class="bg-slate-800/60 border border-slate-700/60 p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="relative w-full md:w-80">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="search-input" onkeyup="filterTable()" placeholder="Szukaj zawodnika..." class="w-full bg-slate-900 border border-slate-700 text-white pl-9 pr-4 py-2 rounded-xl text-sm focus:outline-none focus:border-amber-500 transition-colors">
+                </div>
+                <div class="text-xs text-slate-400 text-center md:text-right">
+                    Wskazówka: Kliknij nagłówek kolumny, aby posortować dane.
+                </div>
+            </div>
+
+            <!-- Main Table Container -->
+            <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl overflow-hidden shadow-xl">
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-slate-900/80 text-slate-300 border-b border-slate-700/80 font-semibold uppercase tracking-wider text-[11px]">
+                                <th onclick="sortTable('lp')" class="py-3.5 px-4 cursor-pointer hover:text-amber-400 transition">Lp. <i class="fa-solid fa-sort ml-1 opacity-40"></i></th>
+                                <th onclick="sortTable('name')" class="py-3.5 px-4 cursor-pointer hover:text-amber-400 transition">Nazwisko i Imię <i class="fa-solid fa-sort ml-1 opacity-40"></i></th>
+                                <th onclick="sortTable('ranking')" class="py-3.5 px-4 text-center cursor-pointer hover:text-amber-400 transition bg-amber-500/10 text-amber-400">Ranking Szkolny <i class="fa-solid fa-sort ml-1"></i></th>
+                                <th onclick="sortTable('sumaPkt')" class="py-3.5 px-4 text-center cursor-pointer hover:text-amber-400 transition">SUMA Pkt <i class="fa-solid fa-sort ml-1 opacity-40"></i></th>
+                                <th onclick="sortTable('sumaMsc')" class="py-3.5 px-4 text-center cursor-pointer hover:text-amber-400 transition">SUMA Msc <i class="fa-solid fa-sort ml-1 opacity-40"></i></th>
+                                <th onclick="sortTable('pkt3')" class="py-3.5 px-3 text-center cursor-pointer hover:text-amber-400 transition text-slate-400">PKT 3 <i class="fa-solid fa-sort ml-1 opacity-30"></i></th>
+                                <th onclick="sortTable('pkt2')" class="py-3.5 px-3 text-center cursor-pointer hover:text-amber-400 transition text-slate-400">PKT 2 <i class="fa-solid fa-sort ml-1 opacity-30"></i></th>
+                                <th onclick="sortTable('pkt1')" class="py-3.5 px-3 text-center cursor-pointer hover:text-amber-400 transition text-slate-400">PKT 1 <i class="fa-solid fa-sort ml-1 opacity-30"></i></th>
+                                <th onclick="sortTable('msc3')" class="py-3.5 px-3 text-center cursor-pointer hover:text-amber-400 transition text-slate-400">Msc 3 <i class="fa-solid fa-sort ml-1 opacity-30"></i></th>
+                                <th onclick="sortTable('msc2')" class="py-3.5 px-3 text-center cursor-pointer hover:text-amber-400 transition text-slate-400">Msc 2 <i class="fa-solid fa-sort ml-1 opacity-30"></i></th>
+                                <th onclick="sortTable('msc1')" class="py-3.5 px-3 text-center cursor-pointer hover:text-amber-400 transition text-slate-400">Msc 1 <i class="fa-solid fa-sort ml-1 opacity-30"></i></th>
+                            </tr>
+                        </thead>
+                        <tbody id="main-table-body" class="divide-y divide-slate-700/40">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW 2: TOP 10 STATYSTYKI -->
+        <section id="view-top10-stats" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Top 10 SUMA Pkt -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-3">
+                            <h3 class="text-base font-bold text-amber-400 flex items-center gap-2">
+                                <i class="fa-solid fa-star"></i> Top 10 - Największa Suma Punktów
+                            </h3>
+                            <span class="text-xs bg-amber-500/10 text-amber-400 px-2.5 py-1 rounded-lg border border-amber-500/20">Punkty łączną</span>
+                        </div>
+                        <div class="space-y-2.5" id="top10-suma-pkt"></div>
+                    </div>
+                </div>
+
+                <!-- Top 10 SUMA Msc -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-3">
+                            <h3 class="text-base font-bold text-sky-400 flex items-center gap-2">
+                                <i class="fa-solid fa-award"></i> Top 10 - Największa Suma za Miejsca
+                            </h3>
+                            <span class="text-xs bg-sky-500/10 text-sky-400 px-2.5 py-1 rounded-lg border border-sky-500/20">Punkty Msc</span>
+                        </div>
+                        <div class="space-y-2.5" id="top10-suma-msc"></div>
+                    </div>
+                </div>
+
+                <!-- Top 10 Średnia Punktowa (%) -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-3">
+                            <div class="flex flex-col">
+                                <h3 class="text-base font-bold text-emerald-400 flex items-center gap-2">
+                                    <i class="fa-solid fa-percent"></i> Najlepsza Średnia Punktowa
+                                </h3>
+                                <p class="text-[11px] text-slate-400 mt-0.5">(7 pkt = 100%, min. 1 start)</p>
+                            </div>
+                            <span class="text-xs bg-emerald-500/10 text-emerald-400 px-2.5 py-1 rounded-lg border border-emerald-500/20">Skuteczność %</span>
+                        </div>
+                        <div class="space-y-2.5" id="top10-avg-pkt"></div>
+                    </div>
+                </div>
+
+                <!-- Top 10 Średnia Za Miejsca (%) -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 shadow-lg flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-3">
+                            <div class="flex flex-col">
+                                <h3 class="text-base font-bold text-purple-400 flex items-center gap-2">
+                                    <i class="fa-solid fa-chart-pie"></i> Najlepsza Średnia Za Miejsca
+                                </h3>
+                                <p class="text-[11px] text-slate-400 mt-0.5">(20 pkt = 100%, min. 1 start)</p>
+                            </div>
+                            <span class="text-xs bg-purple-500/10 text-purple-400 px-2.5 py-1 rounded-lg border border-purple-500/20">Efektywność %</span>
+                        </div>
+                        <div class="space-y-2.5" id="top10-avg-msc"></div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- VIEW 3: EDYCJE TURNIEJÓW -->
+        <section id="view-editions" class="hidden space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                <!-- Edycja III -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-3">
+                        <h3 class="text-base font-bold text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-3"></i> III Mistrzostwa
+                        </h3>
+                        <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Ostatni turniej</span>
+                    </div>
+                    <div class="space-y-2.5" id="top10-m3"></div>
+                </div>
+
+                <!-- Edycja II -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-3">
+                        <h3 class="text-base font-bold text-slate-300 flex items-center gap-2">
+                            <i class="fa-solid fa-2"></i> II Mistrzostwa
+                        </h3>
+                        <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Poprzedni</span>
+                    </div>
+                    <div class="space-y-2.5" id="top10-m2"></div>
+                </div>
+
+                <!-- Edycja I -->
+                <div class="bg-slate-800/60 border border-slate-700/60 rounded-2xl p-5 shadow-lg">
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-3">
+                        <h3 class="text-base font-bold text-amber-600 flex items-center gap-2">
+                            <i class="fa-solid fa-1"></i> I Mistrzostwa
+                        </h3>
+                        <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded">Inauguracja</span>
+                    </div>
+                    <div class="space-y-2.5" id="top10-m1"></div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 border-t border-slate-800 py-6 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+            <p>Szkolny Ranking Szachowy — Zespół Szkół Ponadpodstawowych nr 2 w Krotoszynie</p>
+            <p class="mt-1">Wygenerowano dla Systemu Rozgrywek Szachowych ZSP2</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Data and Logic -->
+    <script>
+        // Full dataset extracted directly from the spreadsheet table image
+        const playersData = [
+            { lp: 1, name: "Gustowski, Dawid", ranking: 1078, sumaPkt: 19, sumaMsc: 59, pkt3: 6.5, pkt2: 6, pkt1: 6.5, msc3: 20, msc2: 19, msc1: 20 },
+            { lp: 2, name: "Guzikowski, Franciszek", ranking: 1070, sumaPkt: 16, sumaMsc: 54, pkt3: 5, pkt2: 5.5, pkt1: 5.5, msc3: 17, msc2: 18, msc1: 19 },
+            { lp: 3, name: "Barteczka, Eryk", ranking: 1065, sumaPkt: 14.5, sumaMsc: 50, pkt3: 5.5, pkt2: 4, pkt1: 5, msc3: 18, msc2: 14, msc1: 18 },
+            { lp: 4, name: "Nabzdyk, Bartosz", ranking: 1053, sumaPkt: 13, sumaMsc: 40, pkt3: 4, pkt2: 5, pkt1: 4, msc3: 9, msc2: 16, msc1: 15 },
+            { lp: 5, name: "Bąkowski, Kevin", ranking: 1046, sumaPkt: 12, sumaMsc: 34, pkt3: 4, pkt2: 4, pkt1: 4, msc3: 8, msc2: 13, msc1: 13 },
+            { lp: 6, name: "Broda, Andrzej", ranking: 1045, sumaPkt: 12, sumaMsc: 33, pkt3: 5, pkt2: 3, pkt1: 4, msc3: 15, msc2: 2, msc1: 16 },
+            { lp: 7, name: "Czebatura, Antoni", ranking: 1044, sumaPkt: 11, sumaMsc: 33, pkt3: 4.5, pkt2: 6.5, pkt1: 0, msc3: 13, msc2: 20, msc1: 0 },
+            { lp: 8, name: "Miękus, Michał", ranking: 1041, sumaPkt: 12, sumaMsc: 29, pkt3: 5, pkt2: 3, pkt1: 4, msc3: 14, msc2: 1, msc1: 14 },
+            { lp: 9, name: "Muszyński, Oliwier", ranking: 1041, sumaPkt: 10, sumaMsc: 31, pkt3: 5, pkt2: 5, pkt1: 0, msc3: 16, msc2: 15, msc1: 0 },
+            { lp: 10, name: "Kościelny, Marcin", ranking: 1036, sumaPkt: 8.5, sumaMsc: 27, pkt3: 0, pkt2: 4, pkt1: 4.5, msc3: 0, msc2: 10, msc1: 17 },
+            { lp: 11, name: "Frąckowiak, Jakub", ranking: 1028, sumaPkt: 10, sumaMsc: 18, pkt3: 3.5, pkt2: 3.5, pkt1: 3, msc3: 1, msc2: 6, msc1: 11 },
+            { lp: 12, name: "Szymczak, Igor", ranking: 1025, sumaPkt: 7, sumaMsc: 18, pkt3: 0, pkt2: 4, pkt1: 3, msc3: 0, msc2: 8, msc1: 10 },
+            { lp: 13, name: "Doliński, Krzysztof", ranking: 1025, sumaPkt: 8, sumaMsc: 17, pkt3: 4, pkt2: 4, pkt1: 0, msc3: 5, msc2: 12, msc1: 0 },
+            { lp: 14, name: "Zając, Rafał", ranking: 1025, sumaPkt: 6, sumaMsc: 19, pkt3: 6, pkt2: 0, pkt1: 0, msc3: 19, msc2: 0, msc1: 0 },
+            { lp: 15, name: "Kaczmarek, Miłosz", ranking: 1022, sumaPkt: 5, sumaMsc: 17, pkt3: 0, pkt2: 5, pkt1: 0, msc3: 0, msc2: 17, msc1: 0 },
+            { lp: 16, name: "Gierlik, Oliwia", ranking: 1021, sumaPkt: 9, sumaMsc: 12, pkt3: 4, pkt2: 2, pkt1: 3, msc3: 2, msc2: 1, msc1: 9 },
+            { lp: 17, name: "Kaczmarek, Igor", ranking: 1020, sumaPkt: 8, sumaMsc: 12, pkt3: 4, pkt2: 4, pkt1: 0, msc3: 1, msc2: 11, msc1: 0 },
+            { lp: 18, name: "Wojtkowiak, Jan", ranking: 1017, sumaPkt: 7, sumaMsc: 10, pkt3: 3, pkt2: 4, pkt1: 0, msc3: 1, msc2: 9, msc1: 0 },
+            { lp: 19, name: "Sobkowiak, Jan", ranking: 1017, sumaPkt: 4.5, sumaMsc: 12, pkt3: 4.5, pkt2: 0, pkt1: 0, msc3: 12, msc2: 0, msc1: 0 },
+            { lp: 20, name: "Dwojak, Norbert", ranking: 1016, sumaPkt: 4, sumaMsc: 12, pkt3: 0, pkt2: 0, pkt1: 4, msc3: 0, msc2: 0, msc1: 12 },
+            { lp: 21, name: "Kośmider, Franciszek", ranking: 1016, sumaPkt: 4.5, sumaMsc: 11, pkt3: 4.5, pkt2: 0, pkt1: 0, msc3: 11, msc2: 0, msc1: 0 },
+            { lp: 22, name: "Wajrauch, Stanisław", ranking: 1014, sumaPkt: 5, sumaMsc: 9, pkt3: 0, pkt2: 2, pkt1: 3, msc3: 0, msc2: 1, msc1: 8 },
+            { lp: 23, name: "Wyrwas, Nikodem", ranking: 1014, sumaPkt: 4, sumaMsc: 10, pkt3: 4, pkt2: 0, pkt1: 0, msc3: 10, msc2: 0, msc1: 0 },
+            { lp: 24, name: "Jagodziński, Wojciech", ranking: 1014, sumaPkt: 6.5, sumaMsc: 7, pkt3: 2, pkt2: 2, pkt1: 2.5, msc3: 1, msc2: 1, msc1: 5 },
+            { lp: 25, name: "Mikstacki, Marcel", ranking: 1013, sumaPkt: 5.5, sumaMsc: 7, pkt3: 0, pkt2: 3, pkt1: 2.5, msc3: 0, msc2: 1, msc1: 6 },
+            { lp: 26, name: "Domański, Oliwier", ranking: 1013, sumaPkt: 4.5, sumaMsc: 8, pkt3: 2, pkt2: 0, pkt1: 2.5, msc3: 1, msc2: 0, msc1: 7 },
+            { lp: 27, name: "Muszyński, Marcel", ranking: 1013, sumaPkt: 6.5, sumaMsc: 6, pkt3: 3, pkt2: 3.5, pkt1: 0, msc3: 1, msc2: 5, msc1: 0 },
+            { lp: 28, name: "Czebatura, Olek", ranking: 1011, sumaPkt: 4, sumaMsc: 7, pkt3: 0, pkt2: 4, pkt1: 0, msc3: 0, msc2: 7, msc1: 0 },
+            { lp: 29, name: "Nowacki, Igor", ranking: 1011, sumaPkt: 6, sumaMsc: 5, pkt3: 3, pkt2: 3, pkt1: 0, msc3: 1, msc2: 4, msc1: 0 },
+            { lp: 30, name: "Czwojdrak, Mikołaj", ranking: 1011, sumaPkt: 4, sumaMsc: 7, pkt3: 4, pkt2: 0, pkt1: 0, msc3: 7, msc2: 0, msc1: 0 },
+            { lp: 31, name: "Gałęski, Kamil", ranking: 1010, sumaPkt: 4, sumaMsc: 6, pkt3: 4, pkt2: 0, pkt1: 0, msc3: 6, msc2: 0, msc1: 0 },
+            { lp: 32, name: "Szymanowski, Olivier", ranking: 1008, sumaPkt: 6, sumaMsc: 2, pkt3: 3, pkt2: 3, pkt1: 0, msc3: 1, msc2: 1, msc1: 0 },
+            { lp: 33, name: "Talarczyk, Filip", ranking: 1008, sumaPkt: 4, sumaMsc: 4, pkt3: 4, pkt2: 0, pkt1: 0, msc3: 4, msc2: 0, msc1: 0 },
+            { lp: 34, name: "Ratejrk, Tomasz", ranking: 1008, sumaPkt: 5.5, sumaMsc: 2, pkt3: 2.5, pkt2: 3, pkt1: 0, msc3: 1, msc2: 1, msc1: 0 },
+            { lp: 35, name: "Kril, Oleksandr", ranking: 1007, sumaPkt: 4, sumaMsc: 3, pkt3: 4, pkt2: 0, pkt1: 0, msc3: 3, msc2: 0, msc1: 0 },
+            { lp: 36, name: "Kęsy, Cezary", ranking: 1006, sumaPkt: 3, sumaMsc: 3, pkt3: 0, pkt2: 3, pkt1: 0, msc3: 0, msc2: 3, msc1: 0 },
+            { lp: 37, name: "Bartkowiak, Wiktor", ranking: 1006, sumaPkt: 2, sumaMsc: 4, pkt3: 0, pkt2: 0, pkt1: 2, msc3: 0, msc2: 0, msc1: 4 },
+            { lp: 38, name: "Nowak, Piotr", ranking: 1005, sumaPkt: 3.5, sumaMsc: 1, pkt3: 3.5, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 39, name: "Pluciński, Mateusz", ranking: 1004, sumaPkt: 3, sumaMsc: 1, pkt3: 0, pkt2: 3, pkt1: 0, msc3: 0, msc2: 1, msc1: 0 },
+            { lp: 40, name: "Trawińska, Kamila", ranking: 1004, sumaPkt: 2, sumaMsc: 2, pkt3: 1, pkt2: 1, pkt1: 0, msc3: 1, msc2: 1, msc1: 0 },
+            { lp: 41, name: "Pierunek, Łukasz", ranking: 1004, sumaPkt: 3, sumaMsc: 1, pkt3: 3, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 42, name: "Klimek, Igor", ranking: 1004, sumaPkt: 3, sumaMsc: 1, pkt3: 3, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 43, name: "Pawlicki, Antoni", ranking: 1004, sumaPkt: 3, sumaMsc: 1, pkt3: 3, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 44, name: "Jankowski, Mateusz", ranking: 1004, sumaPkt: 3, sumaMsc: 1, pkt3: 3, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 45, name: "Wiatrak, Nikola", ranking: 1003, sumaPkt: 2, sumaMsc: 1, pkt3: 0, pkt2: 2, pkt1: 0, msc3: 0, msc2: 1, msc1: 0 },
+            { lp: 46, name: "Kaczmarczyk, Jan", ranking: 1003, sumaPkt: 0, sumaMsc: 3, pkt3: 0, pkt2: 0, pkt1: 0, msc3: 0, msc2: 0, msc1: 3 },
+            { lp: 47, name: "Klarzyński, Wiktor", ranking: 1003, sumaPkt: 2, sumaMsc: 1, pkt3: 2, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 48, name: "Nowak, Igor", ranking: 1003, sumaPkt: 2, sumaMsc: 1, pkt3: 2, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 49, name: "Nowicki, Jakub", ranking: 1003, sumaPkt: 2, sumaMsc: 1, pkt3: 2, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 50, name: "Szyszka, Franciszek", ranking: 1003, sumaPkt: 2, sumaMsc: 1, pkt3: 2, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 51, name: "Zajączek, Mateusz", ranking: 1003, sumaPkt: 2, sumaMsc: 1, pkt3: 2, pkt2: 0, pkt1: 0, msc3: 1, msc2: 0, msc1: 0 },
+            { lp: 52, name: "Półrolniczak, Tymoteusz", ranking: 1001, sumaPkt: 0, sumaMsc: 1, pkt3: 0, pkt2: 0, pkt1: 0, msc3: 0, msc2: 0, msc1: 1 }
+        ];
+
+        // Enrich player data with starts count and percentage averages
+        const processedPlayers = playersData.map(p => {
+            // Count active participations (where player earned points or place points)
+            let starts = 0;
+            if (p.pkt1 > 0 || p.msc1 > 0) starts++;
+            if (p.pkt2 > 0 || p.msc2 > 0) starts++;
+            if (p.pkt3 > 0 || p.msc3 > 0) starts++;
+            if (starts === 0) starts = 1; // Prevent division by zero
+
+            const avgPktVal = p.sumaPkt / starts;
+            const avgMscVal = p.sumaMsc / starts;
+
+            // 7 pkt = 100%, 20 msc = 100%
+            const avgPktPct = Math.min(100, (avgPktVal / 7) * 100);
+            const avgMscPct = Math.min(100, (avgMscVal / 20) * 100);
+
+            return {
+                ...p,
+                starts,
+                avgPktVal,
+                avgMscVal,
+                avgPktPct,
+                avgMscPct
+            };
+        });
+
+        let currentSort = { column: 'ranking', direction: 'desc' };
+        let filteredPlayers = [...processedPlayers];
+
+        // Render main ranking table
+        function renderMainTable() {
+            const tbody = document.getElementById('main-table-body');
+            tbody.innerHTML = '';
+
+            filteredPlayers.forEach(player => {
+                let podiumClass = '';
+                let medalBadge = '';
+
+                if (player.lp === 1) {
+                    podiumClass = 'podium-1 font-semibold';
+                    medalBadge = '<i class="fa-solid fa-crown text-amber-400 mr-1.5"></i>';
+                } else if (player.lp === 2) {
+                    podiumClass = 'podium-2 font-semibold';
+                    medalBadge = '<i class="fa-solid fa-medal text-slate-300 mr-1.5"></i>';
+                } else if (player.lp === 3) {
+                    podiumClass = 'podium-3 font-semibold';
+                    medalBadge = '<i class="fa-solid fa-medal text-amber-600 mr-1.5"></i>';
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = `hover:bg-slate-700/50 transition-colors ${podiumClass}`;
+
+                tr.innerHTML = `
+                    <td class="py-3 px-4 text-slate-400 font-mono text-center">${player.lp}</td>
+                    <td class="py-3 px-4 text-white font-medium flex items-center">
+                        ${medalBadge} ${player.name}
+                    </td>
+                    <td class="py-3 px-4 text-center font-bold text-amber-400 bg-amber-500/5">${player.ranking}</td>
+                    <td class="py-3 px-4 text-center font-semibold text-emerald-400">${player.sumaPkt}</td>
+                    <td class="py-3 px-4 text-center font-semibold text-sky-400">${player.sumaMsc}</td>
+                    <td class="py-3 px-3 text-center text-slate-300">${player.pkt3 || '-'}</td>
+                    <td class="py-3 px-3 text-center text-slate-300">${player.pkt2 || '-'}</td>
+                    <td class="py-3 px-3 text-center text-slate-300">${player.pkt1 || '-'}</td>
+                    <td class="py-3 px-3 text-center text-slate-400">${player.msc3 || '-'}</td>
+                    <td class="py-3 px-3 text-center text-slate-400">${player.msc2 || '-'}</td>
+                    <td class="py-3 px-3 text-center text-slate-400">${player.msc1 || '-'}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Sort table handler
+        function sortTable(column) {
+            if (currentSort.column === column) {
+                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSort.column = column;
+                currentSort.direction = (column === 'name' || column === 'lp') ? 'asc' : 'desc';
+            }
+
+            filteredPlayers.sort((a, b) => {
+                let valA = a[column];
+                let valB = b[column];
+
+                if (typeof valA === 'string') {
+                    valA = valA.toLowerCase();
+                    valB = valB.toLowerCase();
+                }
+
+                if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
+                if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            renderMainTable();
+        }
+
+        // Search filter
+        function filterTable() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            filteredPlayers = processedPlayers.filter(p => p.name.toLowerCase().includes(query));
+            renderMainTable();
+        }
+
+        // Helper to render Top 10 list items
+        function renderTop10List(containerId, items, valKey, suffix = '', isPercentage = false, colorClass = 'text-amber-400') {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            items.slice(0, 10).forEach((item, index) => {
+                const rankNum = index + 1;
+                let badgeColor = 'bg-slate-700 text-slate-300';
+                if (rankNum === 1) badgeColor = 'bg-amber-500 text-slate-950 font-bold';
+                else if (rankNum === 2) badgeColor = 'bg-slate-300 text-slate-950 font-bold';
+                else if (rankNum === 3) badgeColor = 'bg-amber-700 text-white font-bold';
+
+                const val = item[valKey];
+                const displayVal = isPercentage ? `${val.toFixed(1)}%` : val;
+
+                const div = document.createElement('div');
+                div.className = 'flex items-center justify-between p-2.5 bg-slate-900/60 rounded-xl border border-slate-700/40 hover:border-slate-600 transition';
+                div.innerHTML = `
+                    <div class="flex items-center gap-3 truncate">
+                        <span class="w-6 h-6 flex items-center justify-center rounded-lg text-xs ${badgeColor}">
+                            ${rankNum}
+                        </span>
+                        <span class="text-sm font-medium text-slate-200 truncate">${item.name}</span>
+                    </div>
+                    <span class="text-sm font-bold ${colorClass} ml-2 font-mono">
+                        ${displayVal}${suffix}
+                    </span>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Render Statistics View
+        function renderStats() {
+            // Top 10 Suma Pkt
+            const sortedBySumaPkt = [...processedPlayers].sort((a, b) => b.sumaPkt - a.sumaPkt || b.ranking - a.ranking);
+            renderTop10List('top10-suma-pkt', sortedBySumaPkt, 'sumaPkt', ' pkt', false, 'text-amber-400');
+
+            // Top 10 Suma Msc
+            const sortedBySumaMsc = [...processedPlayers].sort((a, b) => b.sumaMsc - a.sumaMsc || b.ranking - a.ranking);
+            renderTop10List('top10-suma-msc', sortedBySumaMsc, 'sumaMsc', ' pkt', false, 'text-sky-400');
+
+            // Top 10 Średnia Pkt (%)
+            const sortedByAvgPkt = [...processedPlayers].sort((a, b) => b.avgPktPct - a.avgPktPct || b.sumaPkt - a.sumaPkt);
+            renderTop10List('top10-avg-pkt', sortedByAvgPkt, 'avgPktPct', '', true, 'text-emerald-400');
+
+            // Top 10 Średnia Msc (%)
+            const sortedByAvgMsc = [...processedPlayers].sort((a, b) => b.avgMscPct - a.avgMscPct || b.sumaMsc - a.sumaMsc);
+            renderTop10List('top10-avg-msc', sortedByAvgMsc, 'avgMscPct', '', true, 'text-purple-400');
+        }
+
+        // Render Tournament Editions Top 10
+        function renderEditions() {
+            // Mistrzostwa 3
+            const topM3 = [...processedPlayers].filter(p => p.msc3 > 0).sort((a, b) => b.msc3 - a.msc3 || b.pkt3 - a.pkt3);
+            renderTop10List('top10-m3', topM3, 'msc3', ' pkt Msc', false, 'text-amber-400');
+
+            // Mistrzostwa 2
+            const topM2 = [...processedPlayers].filter(p => p.msc2 > 0).sort((a, b) => b.msc2 - a.msc2 || b.pkt2 - a.pkt2);
+            renderTop10List('top10-m2', topM2, 'msc2', ' pkt Msc', false, 'text-slate-300');
+
+            // Mistrzostwa 1
+            const topM1 = [...processedPlayers].filter(p => p.msc1 > 0).sort((a, b) => b.msc1 - a.msc1 || b.pkt1 - a.pkt1);
+            renderTop10List('top10-m1', topM1, 'msc1', ' pkt Msc', false, 'text-amber-600');
+        }
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            document.getElementById('view-main-ranking').classList.add('hidden');
+            document.getElementById('view-top10-stats').classList.add('hidden');
+            document.getElementById('view-editions').classList.add('hidden');
+
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active', 'text-amber-400'));
+
+            if (tabId === 'main-ranking') {
+                document.getElementById('view-main-ranking').classList.remove('hidden');
+                document.getElementById('btn-main-ranking').classList.add('active');
+            } else if (tabId === 'top10-stats') {
+                document.getElementById('view-top10-stats').classList.remove('hidden');
+                document.getElementById('btn-top10-stats').classList.add('active');
+            } else if (tabId === 'editions') {
+                document.getElementById('view-editions').classList.remove('hidden');
+                document.getElementById('btn-editions').classList.add('active');
+            }
+        }
+
+        // Initialize App
+        window.onload = function() {
+            renderMainTable();
+            renderStats();
+            renderEditions();
+        };
+    </script>
+</body>
+</html>
