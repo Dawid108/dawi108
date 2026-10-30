@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+
+  {cat:"Tottenham", q:"Kiedy założono klub Tottenham Hotspur?", a:"W 1882 roku", b:"W 1905 roku", c:"W 1892 roku", d:"W 1910 roku"},
+  {cat:"Tottenham", q:"Na jakim stadionie Tottenham rozgrywa swoje domowe mecze?", a:"Tottenham Hotspur Stadium", b:"Wembley Stadium", c:"Emirates Stadium", d:"Stamford Bridge"},
+  {cat:"Tottenham", q:"Jaki jest przydomek drużyny Tottenhamu Hotspur?", a:"The Lilywhites", b:"The Gunners", c:"The Blues", d:"The Red Devils"},
+  {cat:"Tottenham", q:"W jakim mieście znajduje się siedziba Tottenhamu Hotspur?", a:"W Londynie", b:"W Manchesterze", c:"W Liverpoolu", d:"W Birmingham"},
+  {cat:"Tottenham", q:"Który klub jest głównym i najbardziej zagorzałym rywalem Tottenhamu?", a:"Arsenal FC", b:"Chelsea FC", c:"West Ham United", d:"Fulham FC"},
+  {cat:"Tottenham", q:"Jak nazywa się słynne derby północnego Londynu?", a:"North London derby", b:"Merseyside derby", c:"Manchester derby", d:"West London derby"},
+  {cat:"Tottenham", q:"Ile razy Tottenham Hotspur zdobył mistrzostwo Anglii w historii?", a:"Dwa razy", b:"Raz", c:"Cztery razy", d:"Trzy razy"},
+  {cat:"Tottenham", q:"W którym roku Tottenham zdobył swój drugi tytuł mistrza Anglii?", a:"W 1961 roku", b:"W 1951 roku", c:"W 1971 roku", d:"W 1981 roku"},
+  {cat:"Tottenham", q:"Kto był kapitanem i legendarnym trenerem Tottenhamu w latach ich największych sukcesów w XX wieku?", a:"Bill Nicholson", b:"Sir Alex Ferguson", c:"Arsène Wenger", d:"Bob Paisley"},
+  {cat:"Tottenham", q:"Który polski bramkarz reprezentował barwy Tottenhamu Hotspur?", a:"Heurelho Gomes", b:"Łukasz Fabiański", c:"Wojciech Szczęsny", d:"Artur Boruc"},
+  {cat:"Tottenham", q:"Który znany napastnik jest najlepszym strzelcem w historii Tottenhamu?", a:"Harry Kane", b:"Jimmy Greaves", c:"Jermain Defoe", d:"Son Heung-min"},
+  {cat:"Tottenham", q:"W którym roku Tottenham dotarł do finału Ligi Mistrzów UEFA?", a:"W 2019 roku", b:"W 2008 roku", c:"W 2012 roku", d:"W 2021 roku"},
+  {cat:"Tottenham", q:"Który zespół pokonał Tottenham w finale Ligi Mistrzów w 2019 roku?", a:"Liverpool FC", b:"Real Madryt", c:"FC Barcelona", d:"Bayern Monachium"},
+  {cat:"Tottenham", q:"Kto był menedżerem Tottenhamu w 2019 roku podczas finału Ligi Mistrzów?", a:"Mauricio Pochettino", b:"José Mourinho", c:"Antonio Conte", d:"Ange Postecoglou"},
+  {cat:"Tottenham", q:"Jakie są tradycyjne barwy domowe klubu Tottenham Hotspur?", a:"Biało-granatowe", b:"Czerwono-białe", c:"Niebiesko-żółte", d:"Biało-czarne"},
+  {cat:"Tottenham", q:"Jaki element graficzny znajduje się w herbie klubu Tottenham?", a:"Kogut stojący na piłce", b:"Lew trzymający koronę", c:"Orzeł z rozłożonymi skrzydłami", d:"Zamek z trzema wieżami"},
+  {cat:"Tottenham", q:"Ile razy Tottenham wywalczył Puchar Anglii (FA Cup)?", a:"Osiem razy", b:"Pięć razy", c:"Dziesięć razy", d:"Trzy razy"},
+  {cat:"Tottenham", q:"Który zawodnik z Korei Południowej jest wieloletnią gwiazdą i kapitanem Tottenhamu?", a:"Son Heung-min", b:"Park Ji-sung", c:"Lee Kang-in", d:"Hwang Hee-chan"},
+  {cat:"Tottenham", q:"Na którym obiekcie Tottenham grał przed przeprowadzką na nowy stadion w 2019 roku?", a:"White Hart Lane", b:"Highbury", c:"Upton Park", d:"Highfield Road"},
+  {cat:"Tottenham", q:"Jak nazywa się oficjalny hymn śpiewany przez kibiców Tottenhamu?", a:"Oh When the Spurs Go Marching In", b:"You'll Never Walk Alone", c:"Blue Moon", d:"Glory Glory Man United"},
+  {cat:"Tottenham", q:"W którym roku Tottenham wygrał Puchar Zdobywców Pucharów, stając się pierwszym Tottenhamm klubem z europejskim trofeum?", a:"W 1963 roku", b:"W 1955 roku", c:"W 1970 roku", d:"W 1982 roku"},
+  {cat:"Tottenham", q:"Kto był pierwszym powojennym mistrzem Anglii z Tottenhamem w 1951 roku?", a:"Arthur Rowe", b:"Bill Nicholson", c:"Keith Burkinshaw", d:"Terry Venables"},
+  {cat:"Tottenham", q:"Który walijski skrzydłowy rozwinął swój wielki talent w Tottenhamie przed transferem do Realu Madryt?", a:"Gareth Bale", b:"Aaron Ramsey", c:"Daniel James", d:"Ben Davies"},
+  {cat:"Tottenham", q:"Który chorwacki pomocnik przez lata dyrygował grą środka pola Tottenhamu?", a:"Luka Modrić", b:"Ivan Rakitić", c:"Mateo Kovacić", d:"Niko Kranjčar"},
+  {cat:"Tottenham", q:"W którym roku otwarto nowoczesny Tottenham Hotspur Stadium?", a:"W 2019 roku", b:"W 2017 roku", c:"W 2020 roku", d:"W 2015 roku"},
+  {cat:"Tottenham", q:"Ile miejsc może pomieścić nowy stadion Tottenhamu?", a:"Około 62 800", b:"Około 50 000", c:"Około 75 000", d:"Około 55 200"},
+  {cat:"Tottenham", q:"Który argentyński napastnik grał w Tottenhamie w latach 2010–2013?", a:"Jermain Defoe", b:"Emmanuel Adebayor", c:"Roberto Soldado", d:"Fernando Llorente"},
+  {cat:"Tottenham", q:"Kto objął funkcję trenera Tottenhamu latem 2023 roku, wprowadzając ofensywny styl gry?", a:"Ange Postecoglou", b:"Nuno Espírito Santo", c:"Ryan Mason", d:"Antonio Conte"},
+  {cat:"Tottenham", q:"Podaj nazwę pierwszego europejskiego pucharu UEFA (dzisiejsza Liga Europy), który Tottenham wygrał w 1972 roku.", a:"Puchar UEFA", b:"Puchar Intertoto", c:"Superpuchar UEFA", d:"Liga Konferencji"},
+  {cat:"Tottenham", q:"Który francuski bramkarz i kapitan przez ponad dekadę chronił dostępu do bramki Tottenhamu?", a:"Hugo Lloris", b:"Fabien Barthez", c:"Alphonse Areola", d:"Steve Mandanda"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 10;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
