@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+
+// 1. WŁADYSŁAW REYMONT – BIOGRAFIA
+
+{cat:"Polski", q:"Kim z zawodu był ojciec Władysława Reymonta?", a:"Wiejskim organistą", b:"Wiejskim nauczycielem", c:"Właścicielem karczmy", d:"Pracownikiem kolejowym"},
+{cat:"Polski", q:"Gdzie urodził się Władysław Reymont?", a:"W Kobielach Wielkich", b:"W Lipcach Reymontowskich", c:"W Warszawie", d:"W Kołaczkowie"},
+{cat:"Polski", q:"Jakie prace wykonywał Reymont w młodości?", a:"Pracował na kolei i jako sprzedawca", b:"Pracował w szkole i jako lekarz", c:"Pracował w kopalni i jako urzędnik", d:"Pracował w fabryce i jako rolnik"},
+{cat:"Polski", q:"W jakim zespole podróżował Reymont przez pewien czas?", a:"Z wędrowną grupą aktorów", b:"Z wędrowną grupą muzyków", c:"Z grupą podróżujących malarzy", d:"Z grupą podróżujących nauczycieli"},
+{cat:"Polski", q:"Co pozwoliło Reymontowi poświęcić się pisarstwu?", a:"Wysokie odszkodowanie po wypadku kolejowym", b:"Duży spadek po zamożnym krewnym", c:"Wygrana w konkursie literackim", d:"Dochody z prowadzenia gospodarstwa"},
+{cat:"Polski", q:"W którym roku Reymont otrzymał Literacką Nagrodę Nobla?", a:"W 1924 roku", b:"W 1918 roku", c:"W 1920 roku", d:"W 1925 roku"},
+{cat:"Polski", q:"Za jaką powieść Reymont otrzymał Nagrodę Nobla?", a:"Za „Chłopów”", b:"Za „Ziemię obiecaną”", c:"Za „Komediantkę”", d:"Za „Fermenty”"},
+{cat:"Polski", q:"Która powieść Reymonta opowiada o środowisku przemysłowej Łodzi?", a:"„Ziemia obiecana”", b:"„Pielgrzymka do Jasnej Góry”", c:"„Komediantka”", d:"„Chłopi”"},
+{cat:"Polski", q:"Który utwór należy do innych znanych dzieł Reymonta?", a:"„Komediantka”", b:"„Lalka”", c:"„Przedwiośnie”", d:"„Ludzie bezdomni”"},
+{cat:"Polski", q:"Jaki charakter ma utwór „Pielgrzymka do Jasnej Góry”?", a:"Reportażowy", b:"Dramatyczny", c:"Fantastyczny", d:"Sensacyjny"},
+
+// 2. GENEZA I REALIZM POWIEŚCI
+
+{cat:"Polski", q:"W jakiej epoce literackiej powstała powieść „Chłopi”?", a:"W Młodej Polsce", b:"W romantyzmie", c:"W pozytywizmie", d:"W oświeceniu"},
+{cat:"Polski", q:"Czym fascynowali się artyści Młodej Polski?", a:"Kulturą ludową i tężyzną fizyczną chłopów", b:"Kulturą dworską i życiem arystokracji", c:"Przemysłem i rozwojem wielkich miast", d:"Wojną i polityką europejską"},
+{cat:"Polski", q:"Jak nazywa się wieś, w której rozgrywa się akcja „Chłopów”?", a:"Lipce", b:"Kołaczkowo", c:"Kobiele Wielkie", d:"Podlesie"},
+{cat:"Polski", q:"W którym okresie historycznym rozgrywa się akcja powieści?", a:"Pod koniec XIX wieku", b:"Na początku XVIII wieku", c:"W połowie XVII wieku", d:"Pod koniec XX wieku"},
+{cat:"Polski", q:"Jaki charakter mają opisy życia mieszkańców Lipiec?", a:"Etnograficzny i szczegółowy", b:"Fantastyczny i nierealistyczny", c:"Historyczny i dokumentalny", d:"Sensacyjny i tajemniczy"},
+{cat:"Polski", q:"Ile mniej więcej trwa akcja „Chłopów”?", a:"Około roku", b:"Około tygodnia", c:"Około miesiąca", d:"Około dziesięciu lat"},
+{cat:"Polski", q:"Od jakiej pory roku rozpoczyna się akcja powieści?", a:"Od jesieni", b:"Od zimy", c:"Od wiosny", d:"Od lata"},
+{cat:"Polski", q:"Od czego zależy rytm życia mieszkańców Lipiec?", a:"Od pór roku i prac polowych", b:"Od podróży i handlu zagranicznego", c:"Od wydarzeń politycznych i wojen", d:"Od pracy w fabrykach i urzędach"},
+
+// 3. CZAS W POWIEŚCI
+
+{cat:"Polski", q:"Ile głównych wymiarów czasu wyróżniamy w „Chłopach”?", a:"Cztery", b:"Dwa", c:"Trzy", d:"Pięć"},
+{cat:"Polski", q:"Czym charakteryzuje się czas cykliczny?", a:"Rytmem przyrody i powtarzalnością pór roku", b:"Ważnymi wydarzeniami z historii kraju", c:"Narodzinami, ślubami i śmiercią", d:"Świętami religijnymi i obrzędami"},
+{cat:"Polski", q:"Jakie wydarzenia wyznaczają czas cykliczny?", a:"Wykopek jesiennych i letnich żniw", b:"Wojen, powstań i ważnych bitew", c:"Narodzin, ślubów i pogrzebów", d:"Zaduszek, Wielkanocy i Bożego Narodzenia"},
+{cat:"Polski", q:"Czym charakteryzuje się czas obrzędowo-liturgiczny?", a:"Jest związany z religią i świętami", b:"Jest związany z pracą i pogodą", c:"Jest związany z życiem jednostki", d:"Jest związany z historią państwa"},
+{cat:"Polski", q:"Które wydarzenie należy do czasu obrzędowo-liturgicznego?", a:"Boże Narodzenie", b:"Letnie żniwa", c:"Narodziny dziecka", d:"Powstanie styczniowe"},
+{cat:"Polski", q:"Czym charakteryzuje się czas egzystencjalny?", a:"Najważniejszymi momentami ludzkiego życia", b:"Powtarzaniem się pór roku", c:"Powtarzaniem świąt kościelnych", d:"Ważnymi wydarzeniami historycznymi"},
+{cat:"Polski", q:"Które wydarzenie należy do czasu egzystencjalnego?", a:"Narodziny, ślub i śmierć", b:"Żniwa, wykopki i sianokosy", c:"Wielkanoc, Zaduszki i Boże Narodzenie", d:"Powstania, wojny i bitwy"},
+{cat:"Polski", q:"Czym charakteryzuje się czas historyczny?", a:"Wydarzeniami z przeszłości kraju i narodu", b:"Powtarzającymi się pracami polowymi", c:"Świętami i obrzędami religijnymi", d:"Najważniejszymi wydarzeniami rodzinnymi"},
+{cat:"Polski", q:"Jakie wydarzenie historyczne wspominają starcy w powieści?", a:"Powstanie styczniowe", b:"Powstanie listopadowe", c:"Wojnę trzydziestoletnią", d:"Wojnę napoleońską"},
+
+// 4. NARRACJA I STYL
+
+{cat:"Polski", q:"Ile głównych rodzajów narracji wyróżniamy w „Chłopach”?", a:"Trzy", b:"Dwa", c:"Cztery", d:"Pięć"},
+{cat:"Polski", q:"Jak inaczej nazywany jest narrator młodopolski?", a:"Narratorem poetą", b:"Narratorem historykiem", c:"Narratorem gawędziarzem", d:"Narratorem kronikarzem"},
+{cat:"Polski", q:"Jakie opisy tworzy narrator młodopolski?", a:"Nastrojowe opisy przyrody", b:"Wyłącznie opisy wydarzeń historycznych", c:"Wyłącznie opisy pracy gospodarzy", d:"Głównie opisy konfliktów rodzinnych"},
+{cat:"Polski", q:"Czym są epitety?", a:"Określeniami podkreślającymi cechy rzeczownika", b:"Wyrażeniami nadającymi rzeczom życie", c:"Wyrażeniami o przenośnym znaczeniu", d:"Powtórzeniami tych samych wyrazów"},
+{cat:"Polski", q:"Który przykład przedstawia epitet?", a:"Szare pola", b:"Pola tańczą na wietrze", c:"Złote morze zbóż", d:"Słońce uśmiecha się do ludzi"},
+{cat:"Polski", q:"Czym jest metafora?", a:"Przenośnym połączeniem wyrazów", b:"Dokładnym opisem wyglądu przedmiotu", c:"Nadaniem przyrodzie ludzkich cech", d:"Powtórzeniem tego samego dźwięku"},
+{cat:"Polski", q:"Który przykład przedstawia metaforę?", a:"Rozleciały się strugi złota", b:"Szare i mokre pola", c:"Wiatr wieje przez pola", d:"Drzewa stoją przy drodze"},
+{cat:"Polski", q:"Czym jest personifikacja?", a:"Nadawaniem cech ludzkich przyrodzie lub rzeczom", b:"Łączeniem różnych bodźców zmysłowych", c:"Przenośnym zestawieniem kilku wyrazów", d:"Dokładnym odtworzeniem wyglądu rzeczy"},
+{cat:"Polski", q:"Jak inaczej nazywany jest narrator wiejski?", a:"Gawędziarzem", b:"Poetą", c:"Historykiem", d:"Kronikarzem"},
+{cat:"Polski", q:"Jakim językiem posługuje się narrator wiejski?", a:"Językiem zbliżonym do gwary", b:"Językiem urzędowym i naukowym", c:"Językiem typowym dla arystokracji", d:"Językiem współczesnej młodzieży"},
+{cat:"Polski", q:"Z czyjej perspektywy patrzy narrator wiejski?", a:"Z perspektywy mieszkańców wsi", b:"Z perspektywy miejskiej inteligencji", c:"Z perspektywy zagranicznych podróżników", d:"Z perspektywy właścicieli fabryk"},
+{cat:"Polski", q:"Jak przedstawia wydarzenia narrator realistyczny?", a:"Obiektywnie i wiernie", b:"Fantastycznie i tajemniczo", c:"Wyłącznie humorystycznie", d:"Przesadnie i symbolicznie"},
+{cat:"Polski", q:"Jaki drastyczny moment przedstawia narrator realistyczny i naturalistyczny?", a:"Samodzielną amputację nogi przez Kubę", b:"Ślub Antka z Jagną", c:"Podróż Hanki do miasta", d:"Zabawę dzieci w gospodarstwie"},
+
+// 5. KIERUNKI ARTYSTYCZNE
+
+{cat:"Polski", q:"Czym charakteryzuje się impresjonizm?", a:"Uchwyceniem ulotnych chwil i wrażeń zmysłowych", b:"Przedstawianiem silnych emocji i dramatyzmu", c:"Pokazywaniem brutalnej walki o przetrwanie", d:"Dokładnym opisywaniem wydarzeń historycznych"},
+{cat:"Polski", q:"Na co zwraca uwagę impresjonizm?", a:"Na światło, barwy, dźwięki i zapachy", b:"Na konflikty, walki i silne emocje", c:"Na cierpienie, biedę i brutalność życia", d:"Na politykę, historię i przemiany społeczne"},
+{cat:"Polski", q:"Czym jest synestezja?", a:"Łączeniem bodźców różnych zmysłów", b:"Nadawaniem przedmiotom ludzkich cech", c:"Łączeniem różnych wydarzeń historycznych", d:"Przedstawianiem silnych uczuć bohaterów"},
+{cat:"Polski", q:"Czym charakteryzuje się ekspresjonizm?", a:"Silnymi emocjami i dramatyzmem", b:"Ulotnymi wrażeniami i grą światła", c:"Dokładnym odtwarzaniem codzienności", d:"Spokojnymi opisami krajobrazów"},
+{cat:"Polski", q:"W jakich sytuacjach widoczny jest ekspresjonizm?", a:"Podczas krwawych bójek i rozpaczy", b:"Podczas spokojnych opisów przyrody", c:"Podczas codziennych prac gospodarskich", d:"Podczas opisów świąt religijnych"},
+{cat:"Polski", q:"Czym charakteryzuje się naturalizm?", a:"Brutalnym ukazywaniem walki o byt", b:"Idealizowaniem życia na wsi", c:"Skupianiem się na pięknie przyrody", d:"Przedstawianiem świata fantastycznego"},
+{cat:"Polski", q:"Jakie tematy przedstawia naturalizm?", a:"Trudne i odrażające aspekty życia", b:"Wyłącznie szczęśliwe życie rodzinne", c:"Wyłącznie piękno i harmonię natury", d:"Przede wszystkim miłość i przyjaźń"},
+
+// 6. ŚWIAT WARTOŚCI CHŁOPÓW
+
+{cat:"Polski", q:"Co stanowi najwyższą wartość dla chłopów z Lipiec?", a:"Ziemia", b:"Pieniądze", c:"Wykształcenie", d:"Podróżowanie"},
+{cat:"Polski", q:"Dlaczego ziemia była tak ważna dla chłopów?", a:"Zapewniała utrzymanie, bogactwo i szacunek", b:"Zapewniała wykształcenie, sławę i władzę", c:"Zapewniała podróże, rozrywkę i odpoczynek", d:"Zapewniała kontakty, przyjaźnie i zabawę"},
+{cat:"Polski", q:"Jaką pozycję we wsi miał właściciel dużej ilości ziemi?", a:"Cieszył się szacunkiem i miał władzę", b:"Był zależny od biedniejszych mieszkańców", c:"Nie miał wpływu na decyzje społeczności", d:"Musiał pracować jako parobek u innych"},
+{cat:"Polski", q:"Między kim występował konflikt o ziemię?", a:"Między Maciejem a Antkiem", b:"Między Hanką a Dominikową", c:"Między Kubą a Mateuszem", d:"Między Jagną a Jagnąstką"},
+{cat:"Polski", q:"Jaką rolę odgrywała praca w życiu chłopów?", a:"Była podstawą utrzymania gospodarstwa", b:"Była jedynie sposobem spędzania wolnego czasu", c:"Była wykonywana tylko w okresie letnim", d:"Była mniej ważna niż zabawy i podróże"},
+{cat:"Polski", q:"Na czym opierała się jedność rodziny chłopskiej?", a:"Na więzach krwi i wspólnej pracy", b:"Na wspólnych podróżach i wykształceniu", c:"Na wspólnych interesach i polityce", d:"Na podobnym wieku i zainteresowaniach"},
+{cat:"Polski", q:"Co mimo silnych więzi rodzinnych powodowało konflikty?", a:"Spory o majątek i ziemię", b:"Spory o podróże zagraniczne", c:"Spory o wykształcenie dzieci", d:"Spory o życie w dużym mieście"},
+{cat:"Polski", q:"Czym charakteryzowała się religijność Lipczan?", a:"Łączyła chrześcijaństwo z dawnymi wierzeniami", b:"Opierała się wyłącznie na wierzeniach pogańskich", c:"Odrzucała wszystkie tradycje i obrzędy", d:"Opierała się wyłącznie na przesądach"},
+{cat:"Polski", q:"Jak nazywa się połączenie różnych wierzeń religijnych?", a:"Synkretyzm", b:"Impresjonizm", c:"Naturalizm", d:"Ekspresjonizm"},
+{cat:"Polski", q:"W co wierzyli mieszkańcy Lipiec podczas Zaduszek?", a:"W powracające dusze zmarłych przodków", b:"W powracające duchy dawnych właścicieli", c:"W pojawiające się dusze przyszłych dzieci", d:"W powracające dusze zagubionych podróżników"},
+
+// 7. SPOŁECZNOŚĆ I GROMADA
+
+{cat:"Polski", q:"Kto jest głównym bohaterem zbiorowym „Chłopów”?", a:"Społeczność wsi Lipce", b:"Rodzina Macieja Boryny", c:"Rodzina Dominikowej", d:"Mieszkańcy pobliskiego miasta"},
+{cat:"Polski", q:"Jak przedstawiona jest społeczność Lipiec?", a:"Jako zróżnicowany, ale wspólny organizm", b:"Jako grupa całkowicie pozbawiona zasad", c:"Jako społeczność żyjąca bez konfliktów", d:"Jako grupa niezależnych od siebie ludzi"},
+{cat:"Polski", q:"Jaką rolę odgrywa rodzina Borynów w społeczności Lipiec?", a:"Jest jedną z najważniejszych rodzin", b:"Jest najbiedniejszą rodziną we wsi", c:"Jest rodziną mieszkającą poza wsią", d:"Jest rodziną niezwiązaną z rolnictwem"},
+{cat:"Polski", q:"Kiedy gromada wykazuje największą solidarność?", a:"Podczas obrony wspólnego interesu", b:"Podczas rozwiązywania prywatnych sporów", c:"Podczas organizowania podróży zagranicznych", d:"Podczas podejmowania decyzji rodzinnych"},
+{cat:"Polski", q:"Przed kim chłopi bronili lasu?", a:"Przed wyrębem organizowanym przez dwór", b:"Przed mieszkańcami pobliskiego miasta", c:"Przed właścicielami wiejskich gospodarstw", d:"Przed grupą podróżujących kupców"},
+{cat:"Polski", q:"Jaka potrafi być gromada wobec osób łamiących jej zasady?", a:"Bezwzględna i surowa", b:"Obojętna i niezainteresowana", c:"Wyrozumiała i pobłażliwa", d:"Zgodna i zawsze pomocna"},
+{cat:"Polski", q:"Dlaczego gromada ukarała Jagnę?", a:"Za romanse i łamanie norm obyczajowych", b:"Za kradzież ziemi i pieniędzy gospodarzy", c:"Za odmowę pracy na wspólnym polu", d:"Za sprzeciw wobec świąt religijnych"},
+{cat:"Polski", q:"W jaki sposób gromada ukarała Jagnę?", a:"Wywiozła ją na wozie z gnojem poza wieś", b:"Zamknęła ją na kilka lat w więzieniu", c:"Wygnała ją do pobliskiego miasta pieszo", d:"Zabrała jej wszystkie pieniądze i ziemię"},
+{cat:"Polski", q:"Kto sprzeciwiał się wygnaniu Jagny?", a:"Mateusz", b:"Antek", c:"Maciej", d:"Kowal"},
+{cat:"Polski", q:"Jaką funkcję pełniła gromada w życiu mieszkańców?", a:"Chroniła wspólnotę i egzekwowała jej zasady", b:"Zajmowała się wyłącznie organizacją świąt", c:"Zarządzała wszystkimi gospodarstwami osobno", d:"Podejmowała decyzje za właścicieli dworu"},
+
+// 8. BOHATEROWIE I ICH LOSY
+
+{cat:"Polski", q:"Kim był Maciej Boryna?", a:"Najbogatszym gospodarzem w Lipcach", b:"Najbiedniejszym parobkiem w Lipcach", c:"Właścicielem fabryki w pobliskim mieście", d:"Nauczycielem pracującym w wiejskiej szkole"},
+{cat:"Polski", q:"Jakimi cechami charakteryzował się Maciej Boryna?", a:"Był dumny, silny i despotyczny", b:"Był nieśmiały, słaby i uległy", c:"Był spokojny, łagodny i nieśmiały", d:"Był biedny, niezaradny i leniwy"},
+{cat:"Polski", q:"Do czego Maciej Boryna był szczególnie przywiązany?", a:"Do swojej ziemi", b:"Do podróży zagranicznych", c:"Do pracy w mieście", d:"Do życia towarzyskiego"},
+{cat:"Polski", q:"Dlaczego Maciej ożenił się z Jagną?", a:"Ze względu na jej urodę i posag", b:"Ze względu na jej wykształcenie i majątek", c:"Ze względu na jej pracę i pozycję", d:"Ze względu na jej rodzinne pochodzenie"},
+{cat:"Polski", q:"Co wywołało konflikt Macieja z Antkiem?", a:"Ziemia oraz romans z Jagną", b:"Praca w gospodarstwie i religia", c:"Wyjazd za granicę i wykształcenie", d:"Spór o pieniądze z mieszkańcami wsi"},
+{cat:"Polski", q:"Kim był Antek Boryna?", a:"Synem Macieja Boryny", b:"Bratem Macieja Boryny", c:"Ojcem Macieja Boryny", d:"Sąsiadem Macieja Boryny"},
+{cat:"Polski", q:"Jakimi cechami charakteryzował się Antek?", a:"Był porywczy i dumny", b:"Był spokojny i nieśmiały", c:"Był uległy i wycofany", d:"Był łagodny i cierpliwy"},
+{cat:"Polski", q:"O co Antek był skonfliktowany z ojcem?", a:"O ziemię i Jagnę", b:"O religię i święta", c:"O pracę i wykształcenie", d:"O podróże i znajomych"},
+{cat:"Polski", q:"Kim była Hanka?", a:"Żoną Antka Boryny", b:"Żoną Macieja Boryny", c:"Matką Macieja Boryny", d:"Siostrą Jagny"},
+{cat:"Polski", q:"Jak zmienia się Hanka w trakcie powieści?", a:"Zyskuje siłę i samodzielność", b:"Staje się coraz bardziej uległa", c:"Traci zainteresowanie rodziną", d:"Porzuca gospodarstwo i dzieci"},
+{cat:"Polski", q:"O co walczyła Hanka?", a:"O prawa dzieci do majątku", b:"O prawo do wyjazdu za granicę", c:"O prawo do przejęcia dworu", d:"O prawo do rezygnacji z pracy"},
+{cat:"Polski", q:"Kim była Jagna?", a:"Piękną dziewczyną o artystycznej duszy", b:"Bogata gospodyni o surowym charakterze", c:"Biedną parobką pracującą u Borynów", d:"Nauczycielką pochodzącą z miasta"},
+{cat:"Polski", q:"Dlaczego Jagna stała się ofiarą społeczności?", a:"Nie pasowała do surowych norm wiejskich", b:"Nie chciała posiadać własnego gospodarstwa", c:"Nie uczestniczyła w żadnych pracach polowych", d:"Nie chciała mieszkać w rodzinnym domu"},
+{cat:"Polski", q:"Kim była Dominikowa?", a:"Matką Jagny", b:"Siostrą Jagny", c:"Żoną Antka", d:"Matką Hanki"},
+{cat:"Polski", q:"Dlaczego Dominikowa wydała Jagnę za Borynę?", a:"Chciała poprawić status materialny rodziny", b:"Chciała zapewnić córce wykształcenie", c:"Chciała wysłać córkę do dużego miasta", d:"Chciała zdobyć stanowisko we wsi"},
+{cat:"Polski", q:"Jakimi cechami charakteryzowała się Dominikowa?", a:"Była sprytna i wyrachowana", b:"Była naiwna i niezaradna", c:"Była spokojna i bezinteresowna", d:"Była nieśmiała i uległa"},
+{cat:"Polski", q:"Kim był Kuba Socha?", a:"Biednym parobkiem u Boryny", b:"Bogatym gospodarzem z Lipiec", c:"Właścicielem wiejskiej karczmy", d:"Synem Macieja Boryny"},
+{cat:"Polski", q:"W jakim wydarzeniu historycznym uczestniczył Kuba?", a:"W powstaniu styczniowym", b:"W powstaniu listopadowym", c:"W powstaniu wielkopolskim", d:"W powstaniu warszawskim"},
+{cat:"Polski", q:"W jaki sposób Kuba został ranny?", a:"Został postrzelony w nogę podczas kłusownictwa", b:"Został uderzony w nogę podczas bójki", c:"Został przygnieciony przez konia w stajni", d:"Został ranny w nogę podczas żniw"},
+{cat:"Polski", q:"Dlaczego Kuba sam amputował sobie nogę?", a:"Bał się lekarzy i wyjazdu do szpitala", b:"Chciał uniknąć pracy w gospodarstwie", c:"Nie chciał otrzymać pomocy od Boryny", d:"Chciał ukryć swój udział w powstaniu"},
+{cat:"Polski", q:"Kiedy zmarł Kuba?", a:"Podczas wesela Boryny i Jagny", b:"Podczas pogrzebu Macieja Boryny", c:"Podczas świąt Bożego Narodzenia", d:"Podczas letnich prac polowych"},
+
+// 9. OBYCZAJE I TRADYCJE
+
+{cat:"Polski", q:"Kiedy odbywało się kiszenie kapusty?", a:"Jesienią", b:"Zimą", c:"Wiosną", d:"Latem"},
+{cat:"Polski", q:"Jaką funkcję społeczną pełniło kiszenie kapusty?", a:"Łączyło sąsiadów i sprzyjało rozmowom", b:"Pozwalało mieszkańcom zarabiać na handlu", c:"Było okazją do podejmowania decyzji politycznych", d:"Służyło wyłącznie przygotowaniu jedzenia"},
+{cat:"Polski", q:"Co towarzyszyło wspólnemu kiszeniu kapusty?", a:"Rozmowy, śpiew i przekazywanie plotek", b:"Modlitwy, wykłady i nauka czytania", c:"Tańce, zawody i konkursy sportowe", d:"Handel, podróże i spotkania urzędowe"},
+{cat:"Polski", q:"Kiedy obchodzony jest Dzień Zaduszny?", a:"2 listopada", b:"1 listopada", c:"11 listopada", d:"25 grudnia"},
+{cat:"Polski", q:"Co robiono w Dzień Zaduszny?", a:"Modlono się za zmarłych i zamawiano wypominki", b:"Organizowano wesela i wspólne zabawy", c:"Rozpoczynano letnie prace polowe", d:"Przygotowywano świąteczne potrawy"},
+{cat:"Polski", q:"Czym są wypominki?", a:"Modlitwą za zmarłych", b:"Modlitwą za nowożeńców", c:"Pieśniami wykonywanymi podczas wesela", d:"Życzeniami składanymi gospodarzom"},
+{cat:"Polski", q:"Kto zajmował się wypominkami w Lipcach?", a:"Organista", b:"Wójt", c:"Sołtys", d:"Gospodarz"},
+{cat:"Polski", q:"W co wierzono w związku z Zaduszkami?", a:"W powracanie dusz zmarłych przodków", b:"W powracanie dusz przyszłych mieszkańców", c:"W pojawianie się dusz zagubionych podróżników", d:"W powracanie dusz dawnych właścicieli dworu"},
+{cat:"Polski", q:"Kto brał udział w weselu Boryny i Jagny?", a:"Mieszkańcy wsi i okolic", b:"Wyłącznie najbliższa rodzina młodych", c:"Wyłącznie bogaci gospodarze z Lipiec", d:"Przede wszystkim mieszkańcy pobliskiego miasta"},
+{cat:"Polski", q:"Czym byli swaci podczas przygotowań do ślubu?", a:"Osobami pośredniczącymi w zawarciu małżeństwa", b:"Osobami prowadzącymi zabawy weselne", c:"Osobami przygotowującymi jedzenie", d:"Osobami udzielającymi ślubu w kościele"},
+{cat:"Polski", q:"Czym były oczepiny?", a:"Obrzędem przejścia panny młodej do grona mężatek", b:"Obrzędem błogosławienia rodziców przed ślubem", c:"Obrzędem powitania gości weselnych", d:"Obrzędem pożegnania rodziny przed podróżą"},
+{cat:"Polski", q:"Co działo się podczas oczepin?", a:"Zdejmowano wianek i zakładano czepiec", b:"Zdejmowano suknię i zakładano fartuch", c:"Zdejmowano buty i zakładano nowe obuwie", d:"Zdejmowano biżuterię i zakładano chustę"},
+{cat:"Polski", q:"Kto udzielał błogosławieństwa przed ślubem?", a:"Rodzice", b:"Sąsiedzi", c:"Muzykanci", d:"Weselni goście"},
+{cat:"Polski", q:"Co charakteryzowało wesele Boryny i Jagny?", a:"Huczne tańce i obfity poczęstunek", b:"Cicha uroczystość i skromny poczęstunek", c:"Krótka ceremonia i brak tradycji", d:"Uroczystość rodzinna bez udziału gości"},
+{cat:"Polski", q:"Jakie wydarzenie opisuje określenie „taniec z koszulą” w Twojej notatce?", a:"Jeden z elementów zabawy weselnej", b:"Jeden z elementów obrzędu pogrzebowego", c:"Jeden z elementów pracy przy kapuście", d:"Jeden z elementów świętowania Zaduszek"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 10;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 10;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
