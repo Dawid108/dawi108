@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Słówka na Angielski</title>
+
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+<div id="game">
+
+    <div id="stats">
+        <div>Życia: <span id="life">9</span></div>
+        <div>Punkty: <span id="score">0</span></div>
+    </div>
+
+    <div class="category" id="category"></div>
+
+    <div class="question" id="question"></div>
+
+    <!-- WPISYWANIE ODPOWIEDZI -->
+    <div id="answers">
+
+        <input
+            type="text"
+            id="answerInput"
+            placeholder="Wpisz słówko po angielsku"
+            autocomplete="off"
+            autocapitalize="none"
+            spellcheck="false"
+        >
+
+        <button
+            id="checkButton"
+            onclick="checkAnswer()"
+        >
+            Sprawdź
+        </button>
+
+    </div>
+
+    <div id="result"></div>
+
+    <div id="counter"></div>
+
+</div>
+
+
+<div id="endScreen" class="hidden">
+
+    <h2 id="endTitle"></h2>
+
+    <p>
+        Twój wynik:
+        <span id="finalScore"></span>
+    </p>
+
+    <p>
+        Twój rekord:
+        <span id="record"></span>
+    </p>
+
+    <p>
+        Suma punktów:
+        <span id="dawid108"></span>
+    </p>
+
+    <button onclick="newGame()">
+        Nowa Gra
+    </button>
+
+</div>
+
+
+<script>
+
+let questions = [
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I eat a lot of snacks every day' (Tom)", a:"Tom said (that) he ate a lot of snacks every day", b:"Tom said (that) he eats a lot of snacks every day", c:"Tom said (that) he had eaten a lot of snacks daily", d:"Tom said (that) he was eating a lot of snacks then"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We don't drink coffee' (the kids)", a:"The kids said (that) they didn't drink coffee", b:"The kids said (that) they don't drink coffee", c:"The kids said (that) they hadn't drunk coffee", d:"The kids said (that) they weren't drinking coffee"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We are reading a newspaper now' (the boys)", a:"The boys said they were reading a newspaper then", b:"The boys said they are reading a newspaper now", c:"The boys said they had read a newspaper then", d:"The boys said they read a newspaper yesterday"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I have already eaten my lunch' (Ann)", a:"Ann said that she had already eaten her lunch", b:"Ann said that she has already eaten her lunch", c:"Ann said that she already ate her lunch then", d:"Ann said that she was already eating lunch"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I slept well last night' (Kate)", a:"Kate said that she had slept well the previous night", b:"Kate said that she slept well last night", c:"Kate said that she has slept well previous night", d:"Kate said that she was sleeping well that night"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I have been studying abroad for 2 years' (you)", a:"You said (that) he had been studying abroad for 2 years", b:"You said (that) he has been studying abroad for 2 years", c:"You said (that) he was studying abroad for 2 years", d:"You said (that) he studied abroad for 2 years"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We were dancing all night' (the kids)", a:"The kids said that they had been dancing all night", b:"The kids said that they were dancing all night", c:"The kids said that they have been dancing all night", d:"The kids said that they danced all night"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I got this lovely watch for my birthday last week' (Emma)", a:"Emma said that she had got that lovely watch for her birthday the previous week", b:"Emma said that she got this lovely watch for her birthday last week", c:"Emma said that she has got that lovely watch for her birthday week before", d:"Emma said that she was getting that lovely watch for her birthday then"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We must do this training today!' (The coach)", a:"The coach said that they had to do that training that day", b:"The coach said that they must do this training today", c:"The coach said that they have to do that training now", d:"The coach said that they could do that training then"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I am revising for a test now' (the student)", a:"The student said that he was revising for a test then", b:"The student said that he is revising for a test now", c:"The student said that he had revised for a test then", d:"The student said that he revised for a test today"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We haven't seen any paintings yet' (the children)", a:"The children said that they hadn't seen any paintings yet", b:"The children said that they haven't seen any paintings yet", c:"The children said that they didn't see any paintings yet", d:"The children said that they weren't seeing paintings yet"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I really adore such little cats' (Monica)", a:"Monica said that she really adored such little cats", b:"Monica said that she really adores such little cats", c:"Monica said that she really had adored such cats", d:"Monica said that she really was adoring such cats"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We will phone the radio station soon' (Brian)", a:"Brian said that they would phone the radio station soon", b:"Brian said that they will phone the radio station soon", c:"Brian said that they can phone the radio station soon", d:"Brian said that they had phoned the radio station"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I didn't see any people there then' (Tom)", a:"Tom said that he hadn't seen any people there then", b:"Tom said that he didn't see any people there then", c:"Tom said that he hasn't seen any people there then", d:"Tom said that he wouldn't see any people there"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We buy a lot of clothes every week' (My friends)", a:"My friends said that they bought a lot of clothes every week", b:"My friends said that they buy a lot of clothes every week", c:"My friends said that they had bought clothes every week", d:"My friends said that they were buying clothes weekly"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I have already posted these parcels' (My dad)", a:"My dad said that he had already posted those parcels", b:"My dad said that he has already posted these parcels", c:"My dad said that he already posted those parcels then", d:"My dad said that he was posting those parcels now"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We bring a lot of food to this shelter every week' (Volunteer)", a:"The volunteer said that they brought a lot of food to that shelter every week", b:"The volunteer said that they bring a lot of food to this shelter every week", c:"The volunteer said that they had brought food to that shelter", d:"The volunteer said that they were bringing food weekly"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We have been waiting in the rain for two hours already' (The girls)", a:"The girls said that they had been waiting in the rain for two hours already", b:"The girls said that they have been waiting in the rain for two hours already", c:"The girls said that they were waiting in the rain for two hours already", d:"The girls said that they waited in the rain for two hours already"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I was completing those exam papers for two hours' (The student)", a:"The student said that he had been completing those exam papers for two hours", b:"The student said that he was completing those exam papers for two hours", c:"The student said that he has been completing these exam papers", d:"The student said that he completed those exam papers for hours"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'The company is recruiting a lot of new people this month' (The manager)", a:"The manager said that the company was recruiting a lot of new people that month", b:"The manager said that the company is recruiting a lot of new people this month", c:"The manager said that the company had recruited a lot of new people", d:"The manager said that the company recruited new people that month"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I forgot to take my lunch box to school yesterday.' (Andrew)", a:"Andrew said that he had forgotten to take his lunch box to school the day before", b:"Andrew said that he forgot to take his lunch box to school yesterday", c:"Andrew said that he has forgotten to take his lunch box the previous day", d:"Andrew said that he was forgetting to take his lunch box to school"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I have never watched such a scarry film.' (Bob)", a:"Bob said that he had never watched such a scarry film", b:"Bob said that he has never watched such a scarry film", c:"Bob said that he never watched such a scarry film", d:"Bob said that he wasn't watching such a scarry film"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We can't send these letters today.' (the secretary)", a:"The secretary said that they couldn't send those letters that day", b:"The secretary said that they can't send these letters today", c:"The secretary said that they couldn't send these letters now", d:"The secretary said that they hadn't sent those letters"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I will contact the airtoprt as soon as possible.' (Tonny)", a:"Tonny said that he would contact the airport as soon as possible", b:"Tonny said that he will contact the airport as soon as possible", c:"Tonny said that he can contact the airport as soon as possible", d:"Tonny said that he had contacted the airport quickly"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I visited this famous art gallery 3 weeks ago.' (Angie)", a:"Angie said that she had visited that famous art gallery 3 weeks before", b:"Angie said that she visited this famous art gallery 3 weeks ago", c:"Angie said that she has visited that art gallery 3 weeks prior", d:"Angie said that she was visiting that art gallery then"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We are sleeping here tonight' (Tom and Lisa)", a:"Tom and Lisa said that they were sleeping there that night", b:"Tom and Lisa said that they are sleeping here tonight", c:"Tom and Lisa said that they had slept there that night", d:"Tom and Lisa said that they slept there tonight"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We will leave this city next Sunday.' (Alice and Megan)", a:"Alice and Megan said that they would leave that city the following Sunday", b:"Alice and Megan said that they will leave this city next Sunday", c:"Alice and Megan said that they can leave that city next Sunday", d:"Alice and Megan said that they had left that city Sunday"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I often go to these clubs' (Sara/Jennifer)", a:"Sara told Jennifer that she often went to those clubs", b:"Sara told Jennifer that she often goes to these clubs", c:"Sara told Jennifer that she had often gone to those clubs", d:"Sara told Jennifer that she was going to those clubs"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'This exercise must be ready today.' (Sally)", a:"Sally said that exercise had to be ready that day", b:"Sally said that exercise must be ready today", c:"Sally said that exercise has to be ready now", d:"Sally said that exercise would be ready then"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I can borrow your smartphone if you want.' (Philip)", a:"Philip said that he could lend me his smartphone if I wanted", b:"Philip said that he can borrow my smartphone if you want", c:"Philip said that he could borrow my phone if I wanted", d:"Philip said that he had lent his smartphone if wanted"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'It may be very hot tomorrow' (Kate)", a:"Kate said that it might be very hot the next day", b:"Kate said that it may be very hot tomorrow", c:"Kate said that it can be very hot following day", d:"Kate said that it had been very hot the next day"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'We are watching a thrilling horror now' (the children)", a:"The children said that they were watching a thrilling horror then", b:"The children said that they are watching a thrilling horror now", c:"The children said that they had watched a thrilling horror", d:"The children said that they watched a thrilling horror"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'I have been here for a long time.' (Lukas)", a:"Lukas said that he had been there for a long time", b:"Lukas said that he has been here for a long time", c:"Lukas said that he was there for a long time", d:"Lukas said that he stayed there for a long time"},
+  {cat:"Angielski", q:"Przekształć zdanie w mowie zależnej: 'My grandma baked my favourite cake yesterday.' (Molly)", a:"Molly said that her grandma had baked her favourite cake the day before", b:"Molly said that her grandma baked my favourite cake yesterday", c:"Molly said that her grandma has baked her favourite cake", d:"Molly said that her grandma was baking her favourite cake"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+let canAnswer = true;
+
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+    canAnswer = true;
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+function speakAnswer(){
+
+    if(!("speechSynthesis" in window)){
+        return;
+    }
+
+    speechSynthesis.cancel();
+
+    let text = current.a;
+
+    let utterance =
+        new SpeechSynthesisUtterance(text);
+
+    utterance.lang = "en-US";
+
+    utterance.rate = 0.85;
+
+    utterance.pitch = 1;
+
+    speechSynthesis.speak(utterance);
+}
+
+
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+    canAnswer = true;
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    let input =
+        document.getElementById("answerInput");
+
+    input.value = "";
+
+    input.disabled = false;
+
+    input.focus();
+
+
+    document
+        .getElementById("checkButton")
+        .disabled = false;
+
+
+    document
+        .getElementById("result")
+        .innerText = "";
+
+
+    document
+        .getElementById("result")
+        .className = "";
+
+
+
+    setTimeout(
+        () => speakAnswer(),
+        300
+    );
+
+}
+
+function checkAnswer(){
+
+    if(!canAnswer){
+        return;
+    }
+
+    let input =
+        document.getElementById("answerInput");
+
+    let userAnswer =
+        input.value.trim();
+
+    if(userAnswer === ""){
+        input.focus();
+        return;
+    }
+
+
+    canAnswer = false;
+
+    input.disabled = true;
+
+    document
+        .getElementById("checkButton")
+        .disabled = true;
+
+
+
+    let user =
+        userAnswer.toLowerCase();
+
+    let correctAnswer =
+        current.a.trim().toLowerCase();
+
+
+    if(user === correctAnswer){
+
+        correctAnswerAction();
+
+    }else{
+
+        wrongAnswerAction();
+
+    }
+
+}
+
+
+function correctAnswerAction(){
+
+    document
+        .getElementById("result")
+        .innerHTML =
+        "✅ <b>Poprawnie!</b>";
+
+    document
+        .getElementById("result")
+        .className =
+        "resultCorrect";
+
+
+    score++;
+
+
+    dawid108 =
+        parseInt(dawid108) + 11;
+
+    localStorage.setItem(
+        "dawid108",
+        dawid108
+    );
+
+
+    angielski =
+        parseInt(angielski) + 11;
+
+    localStorage.setItem(
+        "angielski",
+        angielski
+    );
+
+
+    updateStats();
+
+
+    setTimeout(
+        () => nextQuestion(),
+        1500
+    );
+
+}
+
+
+function wrongAnswerAction(){
+
+    document
+        .getElementById("result")
+        .innerHTML =
+        "❌ <b>Źle!</b><br>" +
+        "Poprawna odpowiedź: <strong>" +
+        current.a +
+        "</strong>";
+
+
+    document
+        .getElementById("result")
+        .className =
+        "resultWrong";
+
+
+    life--;
+
+    updateStats();
+
+
+    setTimeout(
+        () => speakAnswer(),
+        500
+    );
+
+
+    if(life <= 0){
+
+        setTimeout(
+            () => gameOver(),
+            6000
+        );
+
+    }else{
+
+        setTimeout(
+            () => nextQuestion(),
+            5000
+        );
+
+    }
+
+}
+
+
+document
+    .getElementById("answerInput")
+    .addEventListener(
+        "keydown",
+        function(event){
+
+            if(event.key === "Enter"){
+                checkAnswer();
+            }
+
+        }
+    );
+
+
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
