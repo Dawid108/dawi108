@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Polski", q:"Ile rodzajów czasu występuje w powieści „Chłopi”?", a:"Cztery rodzaje czasu", b:"Trzy rodzaje czasu", c:"Pięć rodzajów czasu", d:"Dwa rodzaje czasu"},
+{cat:"Polski", q:"Czym charakteryzuje się czas cykliczny (przyrodniczy)?", a:"Jest związany z rytmem natury i porami roku", b:"Jest związany z wydarzeniami historycznymi", c:"Jest związany z życiem religijnym mieszkańców", d:"Jest związany z narodzinami i śmiercią ludzi"},
+{cat:"Polski", q:"Od czego zależy życie mieszkańców Lipiec?", a:"Od przyrody i rytmu pór roku", b:"Od wydarzeń politycznych i historycznych", c:"Od decyzji właścicieli sąsiednich majątków", d:"Od podróży i handlu z innymi wsiami"},
+{cat:"Polski", q:"Jakie prace wykonują chłopi jesienią?", a:"Zbierają plony i przygotowują zapasy", b:"Szukają nowych pól i budują domy", c:"Rozpoczynają żniwa i sieją zboże", d:"Przygotowują ziemię pod wiosenne siewy"},
+{cat:"Polski", q:"Jakie prace wykonują chłopi latem?", a:"Wykonują żniwa", b:"Przygotowują zapasy na zimę", c:"Przygotowują pola pod zasiew", d:"Obchodzą święta wielkanocne"},
+{cat:"Polski", q:"Czym jest czas obrzędowo-liturgiczny?", a:"Czasem związanym z religią, świętami i tradycjami", b:"Czasem związanym z naturą i pracami polowymi", c:"Czasem związanym z narodzinami i śmiercią", d:"Czasem związanym z wydarzeniami historycznymi"},
+{cat:"Polski", q:"Które święta są przykładami czasu obrzędowo-liturgicznego?", a:"Zaduszki, Boże Narodzenie, Wielkanoc i Boże Ciało", b:"Andrzejki, sylwester, dożynki i Nowy Rok", c:"Wesele, narodziny, śmierć i chrzciny", d:"Żniwa, wykopki, siewy i sianokosy"},
+{cat:"Polski", q:"Co robią mieszkańcy Lipiec podczas Zaduszek?", a:"Modlą się za zmarłych i zamawiają wypominki", b:"Organizują wesele i wspólnie świętują", c:"Przygotowują pola i zbierają plony", d:"Wspólnie przygotowują zapasy na zimę"},
+{cat:"Polski", q:"U kogo mieszkańcy zamawiają wypominki podczas Zaduszek?", a:"U organisty", b:"U księdza proboszcza", c:"U sołtysa", d:"U miejscowego gospodarza"},
+{cat:"Polski", q:"Czym charakteryzuje się czas egzystencjalny?", a:"Wyznaczają go najważniejsze wydarzenia z życia człowieka", b:"Wyznaczają go zmiany pór roku i pogody", c:"Wyznaczają go święta i uroczystości religijne", d:"Wyznaczają go wojny i wydarzenia polityczne"},
+{cat:"Polski", q:"Które wydarzenie jest przykładem czasu egzystencjalnego?", a:"Wesele Macieja Boryny i Jagny", b:"Wspomnienia Kuby o powstaniu styczniowym", c:"Przygotowywanie pól do wiosennych zasiewów", d:"Obchodzenie świąt Bożego Narodzenia"},
+{cat:"Polski", q:"Do jakiego rodzaju czasu zaliczamy narodziny, ślub i śmierć?", a:"Do czasu egzystencjalnego", b:"Do czasu historycznego", c:"Do czasu cyklicznego", d:"Do czasu obrzędowo-liturgicznego"},
+{cat:"Polski", q:"Czym charakteryzuje się czas historyczny?", a:"Odnosi się do wydarzeń z przeszłości", b:"Odnosi się do rytmu przyrody i pór roku", c:"Odnosi się do świąt i tradycji religijnych", d:"Odnosi się do najważniejszych wydarzeń rodzinnych"},
+{cat:"Polski", q:"Jakie wydarzenie historyczne pojawia się we wspomnieniach Kuby?", a:"Udział w powstaniu styczniowym", b:"Udział w powstaniu listopadowym", c:"Udział w wojnie polsko-bolszewickiej", d:"Udział w powstaniu warszawskim"},
+{cat:"Polski", q:"Kim jest Hanka w powieści „Chłopi”?", a:"Żoną Antka i matką jego dzieci", b:"Żoną Macieja i matką Jagny", c:"Córką Macieja i siostrą Antka", d:"Żoną Kuby i matką Witka"},
+{cat:"Polski", q:"Jaka jest Hanka na początku powieści?", a:"Nieśmiała, uległa i podporządkowana", b:"Pewna siebie, stanowcza i niezależna", c:"Sprytna, wyrachowana i przebiegła", d:"Spontaniczna, wrażliwa i artystyczna"},
+{cat:"Polski", q:"Komu Hanka jest początkowo podporządkowana?", a:"Mężowi i teściowi", b:"Jagnie i Dominikowej", c:"Księdzu i organiście", d:"Kubie i Witkowi"},
+{cat:"Polski", q:"Jaką pozycję ma Hanka początkowo w rodzinie Borynów?", a:"Nie ma silnej pozycji w rodzinie", b:"Jest najważniejszą osobą w rodzinie", c:"Jest właścicielką całego gospodarstwa", d:"Decyduje o podziale ziemi i majątku"},
+{cat:"Polski", q:"Dlaczego sytuacja Hanki jest trudna?", a:"Antek romansuje z Jagną, a Maciej nie chce oddać ziemi synowi", b:"Maciej romansuje z Hanką, a Antek wyjeżdża ze wsi", c:"Jagna zabiera jej dzieci, a Dominikowa sprzedaje gospodarstwo", d:"Antek oddaje jej ziemię, a Maciej wyrzuca Jagnę z domu"},
+{cat:"Polski", q:"O co musi walczyć Hanka mimo trudnej sytuacji rodzinnej?", a:"O dobro swoich dzieci", b:"O stanowisko sołtysa we wsi", c:"O małżeństwo z bogatym gospodarzem", d:"O przejęcie majątku Dominikowej"},
+{cat:"Polski", q:"Jak Hanka zmienia się w kolejnych tomach powieści?", a:"Staje się silna, zaradna i samodzielna", b:"Staje się nieśmiała, bierna i zależna", c:"Staje się kapryśna, lekkomyślna i dumna", d:"Staje się wyrachowana, zazdrosna i okrutna"},
+{cat:"Polski", q:"O co potrafi zadbać Hanka po swojej przemianie?", a:"O gospodarstwo i rodzinę", b:"O interesy dworu i majątek księdza", c:"O karczmę i handel z sąsiednimi wsiami", d:"O majątek Dominikowej i posag Jagny"},
+{cat:"Polski", q:"Jaką postawę reprezentuje Hanka pod koniec przemiany?", a:"Jest odpowiedzialną i zaradną gospodynią", b:"Jest nieodpowiedzialną i zależną żoną", c:"Jest beztroską i lekkomyślną dziewczyną", d:"Jest wyrachowaną i sprytną swatką"},
+{cat:"Polski", q:"Co pokazuje historia Hanki?", a:"Trudne doświadczenia mogą prowadzić do dojrzałości i siły", b:"Bogactwo zawsze zapewnia szczęście rodzinne", c:"Miłość jest ważniejsza niż wszystkie obowiązki", d:"Pozycja społeczna zależy wyłącznie od urody"},
+{cat:"Polski", q:"Jaka jest Jagna?", a:"Piękna, młoda, wrażliwa i spontaniczna", b:"Stara, surowa, nieśmiała i podporządkowana", c:"Bogata, despotyczna, uparta i stanowcza", d:"Pracowita, spokojna, zaradna i obowiązkowa"},
+{cat:"Polski", q:"Co wyróżnia Jagnę spośród innych mieszkanek wsi?", a:"Ma artystyczną duszę i nie chce podporządkować się wszystkim zasadom", b:"Jest najbardziej pracowitą gospodynią i zarządza całą wsią", c:"Jest najbogatszą kobietą i posiada największe gospodarstwo", d:"Jest bardzo religijna i zawsze przestrzega wszystkich zasad"},
+{cat:"Polski", q:"Z kim Jagna jest uwikłana w romans?", a:"Z Antkiem Boryną", b:"Z Maciejem Boryną", c:"Z Kubą i Witkiem", d:"Z organistą i księdzem"},
+{cat:"Polski", q:"Czyją żoną zostaje Jagna?", a:"Macieja Boryny", b:"Antka Boryny", c:"Kuby", d:"Witka"},
+{cat:"Polski", q:"Kim jest Dominikowa?", a:"Matką Jagny", b:"Matką Hanki", c:"Żoną Macieja Boryny", d:"Siostrą Antka Boryny"},
+{cat:"Polski", q:"Jakie cechy charakteryzują Dominikową?", a:"Jest sprytna, zaradna i wyrachowana", b:"Jest nieśmiała, uległa i podporządkowana", c:"Jest wrażliwa, spontaniczna i artystyczna", d:"Jest dumna, despotyczna i porywcza"},
+{cat:"Polski", q:"Dlaczego Dominikowa zgadza się na małżeństwo Jagny z Boryną?", a:"Chce poprawić sytuację materialną rodziny", b:"Chce zapewnić Jagnie wykształcenie i podróże", c:"Chce zdobyć stanowisko sołtysa w Lipcach", d:"Chce pomóc Antkowi odzyskać ojcowską ziemię"},
+{cat:"Polski", q:"Kim jest Maciej Boryna w społeczności Lipiec?", a:"Najbogatszym gospodarzem", b:"Najbiedniejszym parobkiem", c:"Miejscowym organistą", d:"Właścicielem miejscowego dworu"},
+{cat:"Polski", q:"Kim jest Maciej Boryna dla Antka?", a:"Ojcem", b:"Bratem", c:"Wujem", d:"Dziadkiem"},
+{cat:"Polski", q:"Jaka jest sytuacja rodzinna Macieja na początku powieści?", a:"Jest wdowcem i ojcem Antka", b:"Jest kawalerem i bratem Antka", c:"Jest żonaty i ojcem Jagny", d:"Jest wdowcem i ojcem Hanki"},
+{cat:"Polski", q:"Jakie cechy charakteru ma Maciej Boryna?", a:"Jest silny, dumny, uparty i stanowczy", b:"Jest nieśmiały, uległy, słaby i spokojny", c:"Jest spontaniczny, wrażliwy, łagodny i beztroski", d:"Jest wyrachowany, tchórzliwy, bierny i niepewny"},
+{cat:"Polski", q:"Co jest najważniejszą wartością dla Macieja Boryny?", a:"Ziemia", b:"Miłość", c:"Podróże", d:"Wykształcenie"},
+{cat:"Polski", q:"Co daje Maciejowi ziemia?", a:"Majątek, niezależność i szacunek mieszkańców", b:"Miłość, przyjaźń i szczęście rodzinne", c:"Wykształcenie, podróże i sławę", d:"Religijność, zdrowie i spokojne życie"},
+{cat:"Polski", q:"Dlaczego Maciej nie chce oddać ziemi Antkowi?", a:"Boi się utraty pozycji i niezależności", b:"Nie chce, aby Antek zamieszkał w Lipcach", c:"Uważa, że Antek nie potrafi pracować w polu", d:"Chce przekazać cały majątek Dominikowej"},
+{cat:"Polski", q:"Z kim Maciej postanawia się ożenić?", a:"Z Jagną", b:"Z Hanką", c:"Z Dominikową", d:"Z żoną organisty"},
+{cat:"Polski", q:"Co powoduje decyzja Macieja o ślubie z Jagną?", a:"Dodatkowo zaostrza konflikt z Antkiem", b:"Kończy wszystkie konflikty w rodzinie", c:"Powoduje zgodę Antka na oddanie ziemi", d:"Doprowadza do pojednania całej rodziny"},
+{cat:"Polski", q:"Co dzieje się podczas jednej z kłótni Macieja i Antka?", a:"Dochodzi między nimi do bójki", b:"Wspólnie dzielą gospodarstwo", c:"Maciej przekazuje Antkowi całą ziemię", d:"Antek zgadza się na ślub ojca z Jagną"},
+{cat:"Polski", q:"Co dzieje się z Maciejem pod koniec powieści?", a:"Zostaje ciężko ranny podczas walki o las", b:"Wyjeżdża z Lipiec i sprzedaje gospodarstwo", c:"Zostaje wyrzucony z własnego domu przez Antka", d:"Zostaje wybrany na miejscowego organistę"},
+{cat:"Polski", q:"Co pokazuje postać Macieja Boryny?", a:"Przywiązanie do ziemi może prowadzić do konfliktów rodzinnych", b:"Bogactwo zawsze zapewnia zgodę i miłość w rodzinie", c:"Religia jest jedyną wartością ważną dla chłopów", d:"Młodość jest ważniejsza niż majątek i doświadczenie"},
+{cat:"Polski", q:"Kim jest Antek Boryna?", a:"Synem Macieja, mężem Hanki i ojcem dzieci", b:"Synem Kuby, mężem Jagny i ojcem dzieci", c:"Bratem Macieja, mężem Dominikowej i ojcem Jagny", d:"Synem organisty, mężem Hanki i bratem Witka"},
+{cat:"Polski", q:"Jakie cechy charakteru ma Antek?", a:"Jest młody, silny, porywczy i dumny", b:"Jest stary, słaby, nieśmiały i uległy", c:"Jest spokojny, cierpliwy, łagodny i posłuszny", d:"Jest sprytny, wyrachowany, przebiegły i tchórzliwy"},
+{cat:"Polski", q:"Czego pragnie Antek?", a:"Własnej ziemi i niezależności od ojca", b:"Pracy na dworze i zależności od ojca", c:"Wyjazdu ze wsi i porzucenia rodziny", d:"Przejęcia karczmy i stanowiska organisty"},
+{cat:"Polski", q:"Jakie są dwa największe problemy Antka?", a:"Konflikt z ojcem o majątek i romans z Jagną", b:"Konflikt z Kubą o pracę i spór z organistą", c:"Konflikt z Dominikową o dom i spór z Witkiem", d:"Konflikt z księdzem o religię i spór o święta"},
+{cat:"Polski", q:"Dlaczego Antek nie potrafi pogodzić się z decyzją ojca?", a:"Maciej nie chce oddać mu ziemi i poślubia Jagnę", b:"Maciej chce przekazać mu całe gospodarstwo", c:"Maciej pozwala mu poślubić Hankę i wyjechać", d:"Maciej oddaje mu ziemię i wyprowadza się z Lipiec"},
+{cat:"Polski", q:"Jak Antek traktuje Hankę i dzieci?", a:"Nie troszczy się o nich wystarczająco z powodu romansu z Jagną", b:"Całkowicie poświęca im czas i rezygnuje z własnych planów", c:"Oddaje im gospodarstwo i przekazuje cały majątek", d:"Zabiera ich do dworu i zapewnia im spokojne życie"},
+{cat:"Polski", q:"Co dzieje się z Antkiem i Hanką po konflikcie z Maciejem?", a:"Zostają wyrzuceni z domu Boryny", b:"Zostają właścicielami całego gospodarstwa", c:"Przeprowadzają się do domu Dominikowej", d:"Wyjeżdżają razem z Jagną do innej wsi"},
+{cat:"Polski", q:"Jaki wniosek wynika z charakterystyki Antka?", a:"Jego porywczość i duma prowadzą do rozpadu relacji rodzinnych", b:"Jego cierpliwość i spokój zapewniają mu niezależność", c:"Jego pracowitość i posłuszeństwo kończą konflikt z ojcem", d:"Jego religijność i łagodność zapewniają zgodę w rodzinie"},
+{cat:"Polski", q:"Dlaczego „Chłopi” są nazywani epopeją chłopską?", a:"Przedstawiają życie całej społeczności wiejskiej", b:"Opisują wyłącznie życie jednej bogatej rodziny", c:"Przedstawiają głównie wydarzenia wojenne i polityczne", d:"Opisują przede wszystkim życie mieszkańców miasta"},
+{cat:"Polski", q:"Kto jest bohaterem zbiorowym powieści „Chłopi”?", a:"Cała społeczność Lipiec", b:"Wyłącznie rodzina Borynów", c:"Wyłącznie rodzina Dominikowej", d:"Wszyscy mieszkańcy miejscowego dworu"},
+{cat:"Polski", q:"Na czym polega szeroki obraz społeczeństwa w „Chłopach”?", a:"Poznajemy różne grupy mieszkańców wsi", b:"Poznajemy wyłącznie najbogatszych gospodarzy", c:"Poznajemy wyłącznie biednych parobków", d:"Poznajemy wyłącznie duchowieństwo i urzędników"},
+{cat:"Polski", q:"Jakie grupy społeczne poznajemy w powieści?", a:"Bogaci gospodarze, biedni parobcy, kobiety, dzieci i starsi", b:"Wyłącznie szlachta, magnaci, królowie i żołnierze", c:"Wyłącznie kupcy, robotnicy, urzędnicy i lekarze", d:"Wyłącznie księża, organiści, nauczyciele i urzędnicy"},
+{cat:"Polski", q:"Na czym polega realizm przedstawienia życia w „Chłopach”?", a:"Autor dokładnie opisuje pracę, zwyczaje, religię i konflikty", b:"Autor przedstawia wyłącznie fantastyczne wydarzenia i legendy", c:"Autor skupia się tylko na miłości i przygodach bohaterów", d:"Autor opisuje głównie wojny, bitwy i wydarzenia polityczne"},
+{cat:"Polski", q:"Które wydarzenia są przykładami ważnych wydarzeń w „Chłopach”?", a:"Wesele Boryny i Jagny, Zaduszki oraz walka o las", b:"Koronacja króla, bitwa pod Grunwaldem i powstanie listopadowe", c:"Narodziny króla, podróż do Ameryki i wojna światowa", d:"Wybory prezydenckie, rewolucja i budowa fabryki"},
+{cat:"Polski", q:"Na czym polega związek człowieka z naturą w „Chłopach”?", a:"Życie mieszkańców zależy od pór roku i prac polowych", b:"Życie mieszkańców zależy od handlu i podróży zagranicznych", c:"Życie mieszkańców zależy od rozwoju przemysłu i techniki", d:"Życie mieszkańców zależy od wydarzeń politycznych"},
+{cat:"Polski", q:"Czym charakteryzuje się styl powieści „Chłopi”?", a:"Jest podniosły i rozbudowany, zawiera szczegółowe opisy", b:"Jest krótki i prosty, pozbawiony opisów przyrody", c:"Jest naukowy i techniczny, zawiera wiele definicji", d:"Jest komediowy i lekki, pozbawiony poważnych wydarzeń"},
+{cat:"Polski", q:"Dlaczego „Chłopi” są epopeją chłopską?", a:"Pokazują tradycje, wartości, konflikty i przemiany polskiej wsi", b:"Pokazują wyłącznie życie jednej rodziny i jej majątek", c:"Pokazują wyłącznie historię powstań i wojen narodowych", d:"Pokazują głównie życie arystokracji i mieszkańców miast"},
+{cat:"Polski", q:"Z ilu tomów składa się powieść „Chłopi”?", a:"Z czterech tomów", b:"Z trzech tomów", c:"Z pięciu tomów", d:"Z dwóch tomów"},
+{cat:"Polski", q:"Jak nazywa się pierwszy tom „Chłopów”?", a:"Jesień", b:"Zima", c:"Wiosna", d:"Lato"},
+{cat:"Polski", q:"Jak nazywa się drugi tom „Chłopów”?", a:"Zima", b:"Jesień", c:"Lato", d:"Wiosna"},
+{cat:"Polski", q:"Jak nazywa się trzeci tom „Chłopów”?", a:"Wiosna", b:"Lato", c:"Jesień", d:"Zima"},
+{cat:"Polski", q:"Jak nazywa się czwarty tom „Chłopów”?", a:"Lato", b:"Wiosna", c:"Zima", d:"Jesień"},
+{cat:"Polski", q:"Dlaczego poszczególne tomy „Chłopów” noszą nazwy pór roku?", a:"Życie mieszkańców jest podporządkowane rytmowi przyrody", b:"Każdy tom opisuje inny etap życia Macieja Boryny", c:"Każdy tom przedstawia inną miejscowość i jej mieszkańców", d:"Każdy tom opisuje inne wydarzenie historyczne"},
+{cat:"Polski", q:"Czym jest praca dla chłopów?", a:"Podstawą życia, źródłem utrzymania i obowiązkiem", b:"Sposobem na rozrywkę, odpoczynkiem i przyjemnością", c:"Dodatkowym zajęciem, które nie ma większego znaczenia", d:"Przeszkodą w życiu religijnym i rodzinnym"},
+{cat:"Polski", q:"Czemu podporządkowana jest codzienność chłopów?", a:"Gospodarstwu i rytmowi pór roku", b:"Podróżom i wydarzeniom politycznym", c:"Handlowi i rozwojowi przemysłu", d:"Rozrywce i spotkaniom towarzyskim"},
+{cat:"Polski", q:"Jakie prace wykonują chłopi w gospodarstwie?", a:"Sieję zboże, koszą trawę, zbierają plony i opiekują się zwierzętami", b:"Budują fabryki, handlują maszynami i prowadzą sklepy", c:"Organizują podróże, prowadzą szkoły i pracują w urzędach", d:"Wytwarzają narzędzia, wydobywają węgiel i budują koleje"},
+{cat:"Polski", q:"Co chłopi przygotowują na zimę?", a:"Zapasy", b:"Nowe pola", c:"Wesela", d:"Narzędzia"},
+{cat:"Polski", q:"Jakie znaczenie ma praca w życiu społecznym chłopów?", a:"Łączy mieszkańców wsi", b:"Oddziela mieszkańców od wspólnoty", c:"Powoduje rezygnację z tradycji", d:"Ogranicza kontakty rodzinne"},
+{cat:"Polski", q:"Jaki przykład wspólnej pracy mieszkańców opisano w notatce?", a:"Wspólne przygotowywanie kapusty w domu Boryny", b:"Wspólne budowanie kościoła w domu organisty", c:"Wspólne zbieranie pieniędzy w domu Dominikowej", d:"Wspólne przygotowywanie wesela w domu Kuby"},
+{cat:"Polski", q:"Co robią mieszkańcy podczas wspólnego przygotowywania kapusty?", a:"Pracują, rozmawiają, śpiewają i przekazują plotki", b:"Modlą się, śpią, odpoczywają i czytają książki", c:"Handlują, podróżują, uczą się i odwiedzają dwór", d:"Kłócą się, wyjeżdżają, odpoczywają i jedzą posiłki"},
+{cat:"Polski", q:"Kto pracuje jako parobcy w gospodarstwie Macieja?", a:"Kuba i Witek", b:"Antek i Maciej", c:"Hanka i Jagna", d:"Dominikowa i organista"},
+{cat:"Polski", q:"Jakie znaczenie ma praca dla tożsamości chłopów?", a:"Jest podstawowym elementem ich tożsamości", b:"Nie ma znaczenia dla ich życia społecznego", c:"Jest jedynie sposobem spędzania wolnego czasu", d:"Jest wyłącznie obowiązkiem narzuconym przez dwór"},
+{cat:"Polski", q:"Czym są Lipce w powieści „Chłopi”?", a:"Fikcyjną wsią wzorowaną na polskiej wsi końca XIX wieku", b:"Prawdziwym miastem wzorowanym na Warszawie", c:"Fikcyjnym dworem wzorowanym na zamku królewskim", d:"Prawdziwą wsią wzorowaną na współczesnej Polsce"},
+{cat:"Polski", q:"Jak nazywana jest wspólnota mieszkańców Lipiec?", a:"Gromadą", b:"Radą", c:"Armią", d:"Rodziną"},
+{cat:"Polski", q:"Kto ma największy szacunek i wpływy w Lipcach?", a:"Najbogatsi gospodarze, tacy jak Maciej Boryna", b:"Najbiedniejsi parobcy, tacy jak Kuba i Witek", c:"Młode dziewczęta, takie jak Jagna i Hanka", d:"Przyjezdni kupcy i pracownicy dworu"},
+{cat:"Polski", q:"Jaka jest sytuacja biedniejszych mieszkańców Lipiec?", a:"Często pracują jako parobcy", b:"Zarządzają największymi gospodarstwami", c:"Posiadają największe majątki we wsi", d:"Decydują o wszystkich sprawach gromady"},
+{cat:"Polski", q:"Jakie tradycje przestrzegane są w Lipcach?", a:"Swaty, wesela, oczepiny i Zaduszki", b:"Turnieje rycerskie, koronacje i bale dworskie", c:"Wybory, festiwale filmowe i targi przemysłowe", d:"Podróże zagraniczne, koncerty i zawody sportowe"},
+{cat:"Polski", q:"Jaką rolę odgrywa religia w życiu mieszkańców Lipiec?", a:"Ważne są kościół, modlitwy i święta", b:"Religia nie ma wpływu na codzienne życie mieszkańców", c:"Mieszkańcy uczestniczą wyłącznie w świeckich uroczystościach", d:"Ważne są tylko zwyczaje związane z pracą na polu"},
+{cat:"Polski", q:"Na czym polega wspólna praca mieszkańców Lipiec?", a:"Mieszkańcy pomagają sobie podczas prac gospodarskich", b:"Każdy mieszkaniec pracuje wyłącznie na własną rękę", c:"Pracę wykonują tylko właściciele największych gospodarstw", d:"Wszystkie prace wykonują wyłącznie pracownicy dworu"},
+{cat:"Polski", q:"Kiedy mieszkańcy Lipiec potrafią wykazać solidarność?", a:"Podczas obrony wspólnych interesów, np. walki o las", b:"Podczas podziału majątku między członków rodziny", c:"Podczas wyboru najbogatszego gospodarza na męża Jagny", d:"Podczas przygotowywania indywidualnych zapasów na zimę"},
+{cat:"Polski", q:"Na czym polega kontrola społeczna w Lipcach?", a:"Gromada ocenia zachowanie mieszkańców i wymaga moralności", b:"Każdy mieszkaniec sam ustala zasady dla całej wsi", c:"Dwór kontroluje wyłącznie pracę wszystkich gospodarzy", d:"Organista decyduje o majątku i małżeństwach mieszkańców"},
+{cat:"Polski", q:"Od czego zależy życie jednostki w Lipcach?", a:"Od opinii całej gromady", b:"Od opinii wyłącznie najbliższej rodziny", c:"Od decyzji przyjezdnych kupców", d:"Od wydarzeń w odległych miastach"},
+{cat:"Polski", q:"Z czym silnie związana jest społeczność Lipiec?", a:"Z ziemią, pracą, religią i tradycją", b:"Z handlem, przemysłem, podróżami i polityką", c:"Z nauką, techniką, sztuką i rozrywką", d:"Z wojskiem, administracją, urzędami i dworem"},
+{cat:"Polski", q:"Gdzie rozgrywa się akcja powieści „Chłopi”?", a:"W fikcyjnej wsi Lipce", b:"W Warszawie", c:"W Krakowie", d:"W prawdziwym mieście Łodzi"},
+{cat:"Polski", q:"Na jaki okres historyczny przypada czas akcji „Chłopów”?", a:"Na koniec XIX wieku", b:"Na początek XVIII wieku", c:"Na połowę XX wieku", d:"Na początek XXI wieku"},
+{cat:"Polski", q:"Ile mniej więcej trwa akcja całej powieści?", a:"Około roku", b:"Około miesiąca", c:"Około pięciu lat", d:"Około dziesięciu lat"},
+{cat:"Polski", q:"Jak podzielona jest akcja całej powieści?", a:"Na cztery pory roku", b:"Na trzy okresy historyczne", c:"Na pięć etapów życia bohaterów", d:"Na dwie części związane z wojną"},
+{cat:"Polski", q:"Od czego zależy życie mieszkańców Lipiec w czasie akcji powieści?", a:"Od cyklu przyrody i prac rolniczych", b:"Od podróży i wydarzeń politycznych", c:"Od rozwoju przemysłu i handlu", d:"Od wydarzeń wojennych i zmian granic"},
+{cat:"Polski", q:"Jakie dodatkowe wydarzenia pojawiają się w czasie akcji powieści?", a:"Święta religijne i wspomnienia wydarzeń historycznych", b:"Wybory parlamentarne i rewolucje przemysłowe", c:"Podróże zagraniczne i odkrycia geograficzne", d:"Koronacje królewskie i bitwy średniowieczne"},
+{cat:"Polski", q:"Jakie wydarzenie historyczne pojawia się we wspomnieniach bohaterów?", a:"Powstanie styczniowe", b:"Powstanie warszawskie", c:"Wiosna Ludów", d:"Potop szwedzki"},
+{cat:"Polski", q:"Co stanowi główną podstawę konfliktów w „Chłopach”?", a:"Ziemia, majątek, pieniądze i pozycja społeczna", b:"Religia, podróże, wykształcenie i polityka", c:"Przyroda, pogoda, święta i tradycje", d:"Sztuka, muzyka, literatura i rozrywka"},
+{cat:"Polski", q:"Dlaczego ziemia jest najważniejszą wartością dla chłopów?", a:"Zapewnia utrzymanie i szacunek we wsi", b:"Zapewnia wykształcenie i możliwość podróżowania", c:"Zapewnia stanowisko w kościele i władzę w dworze", d:"Zapewnia sławę i możliwość wyjazdu za granicę"},
+{cat:"Polski", q:"Między kim występuje najważniejszy konflikt rodzinny?", a:"Między Maciejem Boryną a Antkiem", b:"Między Hanką a Dominikową", c:"Między Kubą a Witkiem", d:"Między Jagną a organistą"},
+{cat:"Polski", q:"O co Antek spiera się z Maciejem?", a:"O ziemię i własne gospodarstwo", b:"O stanowisko organisty i pracę w kościele", c:"O możliwość wyjazdu do innego miasta", d:"O udział w powstaniu styczniowym"},
+{cat:"Polski", q:"Co dodatkowo komplikuje konflikt Macieja i Antka?", a:"Romans Antka z Jagną i decyzja Macieja o ślubie z nią", b:"Małżeństwo Antka z Hanką i wyjazd Kuby ze wsi", c:"Przyjaźń Macieja z Dominikową i wspólna praca", d:"Wspólna walka Antka i Macieja o przejęcie lasu"},
+{cat:"Polski", q:"Co dzieje się podczas bójki Macieja i Antka?", a:"Ojciec i syn wdają się w gwałtowną walkę", b:"Ojciec i syn wspólnie dzielą gospodarstwo", c:"Ojciec przekazuje synowi całą swoją ziemię", d:"Syn przeprasza ojca i rezygnuje z własnych planów"},
+{cat:"Polski", q:"Jak kończy się konflikt Macieja i Antka w domu Boryny?", a:"Wyrzuceniem Antka i Hanki z domu", b:"Przekazaniem Antkowi całego gospodarstwa", c:"Wyjazdem Macieja i Jagny z Lipiec", d:"Pojednaniem i wspólnym podziałem ziemi"},
+{cat:"Polski", q:"Jaki jest pierwszy skutek konfliktu dla Antka i Hanki?", a:"Tracą możliwość mieszkania w domu Macieja", b:"Otrzymują największe gospodarstwo w Lipcach", c:"Zostają właścicielami dworu i okolicznego lasu", d:"Przeprowadzają się do domu Dominikowej"},
+{cat:"Polski", q:"Co dzieje się z rodziną Borynów w wyniku konfliktu?", a:"Rodzina zostaje podzielona", b:"Rodzina staje się bardziej zgodna", c:"Rodzina wspólnie przejmuje dwór", d:"Rodzina wyjeżdża do innej miejscowości"},
+{cat:"Polski", q:"Co traci Antek po konflikcie z ojcem?", a:"Dotychczasowe wsparcie ojca", b:"Możliwość poślubienia Hanki", c:"Prawo do udziału w Zaduszkach", d:"Możliwość pracy w gospodarstwie Kuby"},
+{cat:"Polski", q:"Co pokazuje konflikt Macieja i Antka?", a:"Przywiązanie do ziemi może niszczyć więzi rodzinne", b:"Majątek zawsze zapewnia szczęście i zgodę rodzinną", c:"Miłość do drugiego człowieka jest jedyną wartością chłopów", d:"Praca na gospodarstwie nie ma wpływu na życie rodzinne"},
+{cat:"Polski", q:"Jaka jest najważniejsza wartość dla bohaterów chłopskich według podsumowania?", a:"Ziemia", b:"Sława", c:"Wykształcenie", d:"Podróże"},
+{cat:"Polski", q:"Co jest bohaterem zbiorowym „Chłopów”?", a:"Społeczność Lipiec", b:"Rodzina Macieja Boryny", c:"Rodzina Dominikowej", d:"Mieszkańcy miejscowego dworu"},
+{cat:"Polski", q:"Jakie cztery rodzaje czasu należy zapamiętać z „Chłopów”?", a:"Cykliczny, obrzędowo-liturgiczny, egzystencjalny i historyczny", b:"Przyrodniczy, polityczny, społeczny i ekonomiczny", c:"Historyczny, wojenny, rodzinny i religijny", d:"Egzystencjalny, gospodarczy, miejski i obyczajowy"},
+{cat:"Polski", q:"Jakie są cztery tomy powieści „Chłopi” w odpowiedniej kolejności?", a:"Jesień, Zima, Wiosna, Lato", b:"Zima, Jesień, Lato, Wiosna", c:"Wiosna, Lato, Jesień, Zima", d:"Lato, Wiosna, Zima, Jesień"},
+{cat:"Polski", q:"Jak można krótko scharakteryzować Hankę?", a:"Początkowo uległa, później silna i zaradna", b:"Początkowo silna, później słaba i niezaradna", c:"Początkowo bogata, później biedna i wyrachowana", d:"Początkowo spontaniczna, później artystyczna i niezależna"},
+{cat:"Polski", q:"Jak można krótko scharakteryzować Macieja Borynę?", a:"Bogaty, dumny, uparty i przywiązany do ziemi", b:"Biedny, nieśmiały, uległy i niezależny od ziemi", c:"Młody, spontaniczny, wrażliwy i artystyczny", d:"Spokojny, łagodny, posłuszny i podporządkowany"},
+{cat:"Polski", q:"Jak można krótko scharakteryzować Antka Borynę?", a:"Porywczy, dumny i pragnący niezależności", b:"Nieśmiały, uległy i podporządkowany ojcu", c:"Wyrachowany, spokojny i pozbawiony ambicji", d:"Zaradny, cierpliwy i całkowicie niezależny od ziemi"},
+{cat:"Polski", q:"Co jest dla chłopów jednocześnie źródłem utrzymania i obowiązkiem?", a:"Praca", b:"Religia", c:"Małżeństwo", d:"Tradycja"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let polski =
+    localStorage.getItem("polski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 11;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        polski =
+            parseInt(polski) + 11;
+
+        localStorage.setItem(
+            "polski",
+            polski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
