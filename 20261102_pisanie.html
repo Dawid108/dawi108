@@ -352,7 +352,7 @@ function correctAnswerAction(){
 
     setTimeout(
         () => nextQuestion(),
-        1500
+        5000
     );
 
 }
@@ -390,14 +390,14 @@ function wrongAnswerAction(){
 
         setTimeout(
             () => gameOver(),
-            6000
+            20000
         );
 
     }else{
 
         setTimeout(
             () => nextQuestion(),
-            5000
+            20000
         );
 
     }
