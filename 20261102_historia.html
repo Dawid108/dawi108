@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+{cat:"Historia", q:"Którego dnia oficjalnie ogłoszono odzyskanie niepodległości przez Polskę po I wojnie światowej?", a:"11 listopada 1918 roku", b:"15 sierpnia 1920 roku", c:"3 maja 1791 roku", d:"28 czerwca 1919 roku"},
+{cat:"Historia", q:"Który ośrodek władzy w listopadzie 1918 roku utworzono w Galicji pod przewodnictwem Wincentego Witosa?", a:"Polska Komisja Likwidacyjna", b:"Rada Regencyjna Królestwa", c:"Tymczasowy Rząd Ludowy", d:"Komitet Narodowy Polski"},
+{cat:"Historia", q:"Kto stanął na czele Tymczasowego Rządu Ludowego Republiki Polskiej powołanego w Lublinie?", a:"Ignacy Daszyński", b:"Roman Dmowski", c:"Józef Piłsudski", d:"Ignacy Paderewski"},
+{cat:"Historia", q:"Kto 11 listopada 1918 roku przejął władzę wojskową w Warszawie z rąk Rady Regencyjnej?", a:"Józef Piłsudski", b:"Władysław Sikorski", c:"Józef Haller", d:"Tadeusz Rozwadowski"},
+{cat:"Historia", q:"W którym roku Włochy przystąpiły do I wojny światowej po stronie ententy, co mocno wpłynęło na ich późniejszą sytuację?", a:"W 1915 roku", b:"W 1914 roku", c:"W 1916 roku", d:"W 1917 roku"},
+{cat:"Historia", q:"Jakie niezadowolenie panowało we Włoszech po zakończeniu I wojny światowej pomimo wygranej?", a:"Niezadowolenie z tzw. okaleczonego zwycięstwa i kryzys gospodarczy", b:"Radość z wielkich zysków terytorialnych i szybkiego rozwoju", c:"Zadowolenie z silnej pozycji w Lidze Narodów i stabilnego rządu", d:"Brak jakichkolwiek problemów społecznych i bezrobocia"},
+{cat:"Historia", q:"Kto założył we Włoszech faszystowskie ugrupowanie Fasci di Combattimento (Związki Kombatantów)?", a:"Benito Mussolini", b:"Gabriele D'Annunzio", c:"Vittorio Emanuele Orlando", d:"Giovanni Giolitti"},
+{cat:"Historia", q:"W którym roku Benito Mussolini powołał do życia włoskie Związki Kombatantów?", a:"W 1919 roku", b:"W 1915 roku", c:"W 1922 roku", d:"W 1925 roku"},
+{cat:"Historia", q:"W co przekształciły się włoskie Związki Kombatantów w listopadzie 1921 roku?", a:"W Narodową Partię Faszystowską", b:"W faszystowską milicję narodową", c:"W chadecki ruch robotniczy", d:"W radę narodową syndykatów"},
+{cat:"Historia", q:"Jakie wydarzenie z października 1922 roku umożliwiło faszystom przejęcie władzy we Włoszech?", a:"Marsz na Rzym", b:"Zamach stanu w Mediolanie", c:"Wybory parlamentarne z 1921 r.", d:"Strajk generalny w Neapolu"},
+{cat:"Historia", q:"Jak nazywała się demokratyczna republika ustanowiona w Niemczech po I wojnie światowej?", a:"Republika Weimarska", b:"Rzesza Monachijska", c:"Federacja Berlińska", d:"Związek Pruski"},
+{cat:"Historia", q:"W którym roku podpisano układ w Locarno, który uregulował sytuację międzynarodową Niemiec na zachodzie?", a:"W 1925 roku", b:"W 1919 roku", c:"W 1933 roku", d:"W 1929 roku"},
+{cat:"Historia", q:"Jakie postanowienia traktatu wersalskiego szczególnie mocno ciążyły na sytuacji międzynarodowej Niemiec?", a:"Utrata terytoriów, demilitaryzacja i gigantyczne odszkodowania", b:"Przyznanie Niemcom kolonii w Afryce i nadanie floty handlowej", c:"Przejęcie przez Niemcy kontroli nad gospodarką całej Europy", d:"Brak jakichkolwiek restrykcji wojskowych i terytorialnych"},
+{cat:"Historia", q:"Co zapoczątkowało wielki kryzys gospodarczy w Niemczech pod koniec lat dwudziestych?", a:"Krach na giełdzie w nowojorskiej Wall Street z 1929 roku", b:"Wybuch rewolucji komunistycznej w Berlinie i Hamburgu", c:"Zniszczenie kopalń węgla w Zagłębiu Ruhry przez Francuzów", d:"Decyzja o wstrzymaniu handlu międzynarodowego z Polską"},
+{cat:"Historia", q:"Jakie bojówki partii nazistowskiej NSDAP zostały utworzone w 1921 roku jako oddziały szturmowe (SA)?", a:"Sturmabteilung", b:"Schutzstaffel", c:"Geheime Staatspolizei", d:"Reichswehrabteilung"},
+{cat:"Historia", q:"Kiedy powołano do życia formację ochronną SS (Schutzstaffel) pod dowództwem Heinricha Himmlera?", a:"W 1925 roku", b:"W 1920 roku", c:"W 1933 roku", d:"W 1919 roku"},
+{cat:"Historia", q:"W którym roku Adolf Hitler został mianowany kanclerzem Niemiec, co przypieczętowało przejęcie władzy?", a:"W 1933 roku", b:"W 1929 roku", c:"W 1935 roku", d:"W 1939 roku"},
+{cat:"Historia", q:"Jakie zjawisko kulturowe rozwijało się dynamicznie w okresie dwudziestolecia międzywojennego m.in. w kinie i radiu?", a:"Kultura masowa", b:"Sztuka średniowieczna", c:"Klasycystyczny teatr dworski", d:"Barokowa muzyka kościelna"},
+{cat:"Historia", q:"Która polska organizacja w Poznaniu odgrywała kluczową rolę lokalnego ośrodka władzy w listopadzie 1918 roku?", a:"Naczelna Rada Ludowa", b:"Komisja Rządząca Weimaru", c:"Wojewódzki Komitet Ocalenia", d:"Rada Delegatów Robotniczych"},
+{cat:"Historia", q:"W którym mieście na Śląsku powstał jeden z lokalnych ośrodków polskiej władzy pod nazwą Komitet Narodowy?", a:"W Bytomiu", b:"W Gdańsku", c:"W Szczecinie", d:"We Wrocławiu"},
+{cat:"Historia", q:"Jakie gremium powołano w Warszawie w październiku 1918 roku jako zalążek polskiej państwowości?", a:"Rada Regencyjna", b:"Rada Ministrów Prus", c:"Komitet Obrony Narodowej", d:"Tymczasowa Dyrekcja Kraju"},
+{cat:"Historia", q:"Z jakiego kraju powrócił Józef Piłsudski w listopadzie 1918 roku, by objąć władzę w Warszawie?", a:"Z więzienia w Magdeburgu", b:"Z zesłania na Syberii", c:"Z emigracji w Paryżu", d:"Z frontu w Galicji"},
+{cat:"Historia", q:"Jaki traktat podpisany w czerwcu 1919 roku oficjalnie przyznał Polsce dostęp do morza i ziemie zachodnie?", a:"Traktat wersalski", b:"Traktat w Locarno", c:"Układ w Rapallo", d:"Pakt Briand-Kellogga"},
+{cat:"Historia", q:"Jakie hasło społeczno-gospodarcze głosili włoscy faszyści pod wodzą Benito Mussoliniego po I wojnie światowej?", a:"Silne państwo, korporacjonizm i odnowa narodu", b:"Natychmiastowa nacjonalizacja wszystkich kościołów", c:"Całkowita likwidacja własności prywatnej i armii", d:"Wprowadzenie czystego kapitalizmu liberalnego"},
+{cat:"Historia", q:"Jak nazywał się król Włoch, który powierzył Benito Mussoliniemu urząd premiera po marszu na Rzym?", a:"Wiktor Emanuel III", b:"Umberto I", c:"Karol Albert", d:"Franciszek Józef"},
+{cat:"Historia", q:"Co charakteryzowało sytuację wewnętrzną Republiki Weimarskiej w jej początkowym okresie istnienia?", a:"Niestabilność polityczna, próby zamachów stanu i kryzys walutowy", b:"Wieczny spokój, dobrobyt i całkowity brak konfliktów klasowych", c:"Monarchia absolutna z silną władzą cesarza Wilhelma II", d:"Brak jakichkolwiek problemów gospodarczych i pełne zaufanie do partii"},
+{cat:"Historia", q:"Co oznaczało podpisanie układu w Rapallo w 1922 roku dla sytuacji międzynarodowej Niemiec?", a:"Zbliżenie dyplomatyczne i gospodarcze z bolszewicką Rosją", b:"Całkowite podporządkowanie Niemiec polityce Wielkiej Brytanii", c:"Oficjalne uznanie wschodnich granic Polski przez Berlin", d:"Wstąpienie Niemiec do struktur wojskowych paktu antykominternowskiego"},
+{cat:"Historia", q:"W jaki sposób wielki kryzys gospodarczy wpłynął na poparcie dla partii nazistowskiej NSDAP w Niemczech?", a:"Gwałtownie zwiększył poparcie dzięki obietnicom pracy i silnej władzy", b:"Całkowicie zniszczył jakiekolwiek szanse Hitlera na zdobycie wyborców", c:"Spowodował masowy przepływ wyborców do partii komunistycznej", d:"Nie wywarł żadnego wpływu na preferencje polityczne społeczeństwa"},
+{cat:"Historia", q:"Do czego wykorzystywano bojówki SA i SS w okresie walki politycznej w Republice Weimarskiej?", a:"Do terroryzowania przeciwników politycznych i ochrony wieców", b:"Do pokojowych demonstracji ekologicznych na ulicach Berlina", c:"Do oficjalnego reprezentowania Niemiec w Lidze Narodów", d:"Do prowadzenia legalnych kampanii wyborczych socjaldemokratów"},
+{cat:"Historia", q:"Które wydarzenie w styczniu 1919 roku w Berlinie było przykładem niestabilności politycznej wczesnej Republiki Weimarskiej?", a:"Powstanie spartakusowców", b:"Rewolucja goździkowa", c:"Pucz marszałka Piłsudskiego", d:"Strajk okupacyjny w Zagłębiu Ruhry"},
+{cat:"Historia", q:"Jakie miasto było stolicą Republiki Weimarskiej, gdzie uchwalono jej konstytucję?", a:"Weimar", b:"Berlin", c:"Monachium", d:"Frankfurt"},
+{cat:"Historia", q:"Kto był pierwszym prezydentem Republiki Weimarskiej wybranym w 1919 roku?", a:"Friedrich Ebert", b:"Paul von Hindenburg", c:"Gustav Stresemann", d:"Heinrich Brüning"},
+{cat:"Historia", q:"Kto zastąpił Friedricha Eberta na stanowisku prezydenta Niemiec w 1925 roku?", a:"Paul von Hindenburg", b:"Adolf Hitler", c:"Franz von Papen", d:"Kurt von Schleicher"},
+{cat:"Historia", q:"Jakie znaczenie dla kultury masowej miało powstanie pierwszych nowoczesnych stacji radiowych w dwudziestoleciu międzywojennym?", a:"Umożliwiło masowe dotarcie informacji i rozrywki do milionów obywateli", b:"Ograniczyło przekaz wiadomości wyłącznie do wąskiej elity naukowej", c:"Zupełnie wyparło prasę drukowaną i książki z rynku europejskiego", d:"Służyło wyłącznie celom wojskowym bez udziału ludności cywilnej"},
+{cat:"Historia", q:"Jakie kino stało się symbolem rozwoju kultury masowej i sztuki filmowej w okresie międzywojennym?", a:"Kino dźwiękowe i hollywoodzkie fabryki snów", b:"Tradycyjny teatr cieni bez udziału publiczności", c:"Niememe filmy dokumentalne o tematyce rolniczej", d:"Lokalne występy wędrownych trup kuglarskich"},
+{cat:"Historia", q:"Jakie ugrupowanie polityczne odegrało kluczową rolę w tworzeniu Tymczasowego Rządu Ludowego w Lublinie?", a:"Polska Partia Socjalistyczna", b:"Narodowa Demokracja", c:"Polskie Stronnictwo Ludowe Piast", d:"Chrześcijańska Demokracja"},
+{cat:"Historia", q:"Co stało się z Radą Regencyjną po powrocie Józefa Piłsudskiego do Warszawy w listopadzie 1918 roku?", a:"Przekazała mu pełnię władzy wojskowej i cywilnej, a następnie się rozwiązała", b:"Została siłą obalona przez strajkujących robotników i żołnierzy", c:"Uciekła do Berlina i kontynuowała działalność na emigracji", d:"Przekształciła się w stały parlament odrodzonej Rzeczypospolitej"},
+{cat:"Historia", q:"Który polityk polski na konferencji pokojowej w Paryżu reprezentował interesy odradzającego się państwa?", a:"Roman Dmowski", b:"Stanisław Wojciechowski", c:"Wincenty Witos", d:"Gabriel Narutowicz"},
+{cat:"Historia", q:"Jakie nastroje panowały we włoskim społeczeństwie po I wojnie światowej w kwestii podziału kolonii?", a:"Poczucie oszukania przez aliantów przy podziale zdobyczy terytorialnych", b:"Ogromna satysfakcja z otrzymania bogatych prowizji w Afryce", c:"Brak jakiegokolwiek zainteresowania sprawami międzynarodowymi", d:"Chęć natychmiastowego rozbrojenia kraju i oddania kolonii"},
+{cat:"Historia", q:"W jaki sposób Benito Mussolini zdobywał popularność we Włoszech przed marszem na Rzym?", a:"Wykorzystując antykomunizm, demagogię i obietnice silnej ręki", b:"Poprzez całkowite poparcie dla strajków komunistycznych i radykalizmu", c:"Odrzucając wszelką aktywność publiczną i polityczną w parlamencie", d:"Skupiając się wyłącznie na reformie szkolnictwa wyższego"},
+{cat:"Historia", q:"Jakie wydarzenie w 1923 roku w Monachium było nieudaną próbą przejęcia władzy przez Adolfa Hitlera?", a:"Pucz monachijski", b:"Marsz na Berlin", c:"Powstanie rurkowe", d:"Zamach listopadowy"},
+{cat:"Historia", q:"Jak nazywała się książka napisana przez Adolfa Hitler w więzieniu po nieudanym puczu?", a:"Mein Kampf", b:"Der Staat", c:"Das Kapital", d:"Mein Leben"},
+{cat:"Historia", q:"Które miasto było głównym ośrodkiem rodzącego się ruchu faszystowskiego we Włoszech na początku lat dwudziestych?", a:"Mediolan", b:"Rzym", c:"Florencja", d:"Neapol"},
+{cat:"Historia", q:"Jakie znaczenie miało podpisanie układu w Locarno dla zachodnich granic Niemiec?", a:"Niemcy uznały swoje granice z Francją i Belgią za nienaruszalne", b:"Niemcy odzyskały Alzację i Lotaryngię kosztem Francji", c:"Zlikwidowano strefę zdemilitaryzowaną nad Renem na korzyść Berlina", d:"Wprowadzono unię celną między Niemcami a Wielką Brytanią"},
+{cat:"Historia", q:"Jaki wpływ na kulturę masową dwudziestolecia międzywojennego miały masowe gazety i czasopisma ilustrowane?", a:"Kształtowały opinie publiczną, mody i styl życia milionów czytelników", b:"Były czytane wyłącznie przez wąską grupę ministrów i dyplomatów", c:"Zostały całkowicie wyparte przez nowoczesne media społecznościowe", d:"Nie zawierały żadnych ilustracji ani informacji o świecie"},
+{cat:"Historia", q:"W jaki sposób ukształtowały się lokalne ośrodki władzy w Polsce w listopadzie 1918 roku?", a:"Powstawały spontanicznie z inicjatywy lokalnych komitetów, rad i oddziałów", b:"Zostały narzucone bezpośrednio przez armię niemiecką i rosyjską", c:"Zostały powołane dekretem carskim wydanym w Sankt Petersburgu", d:"Istniały potajemnie i nie podejmowały żadnych jawnych działań"},
+{cat:"Historia", q:"Co było głównym celem powołania formacji SA w ramach NSDAP?", a:"Zapewnienie bezpieczeństwa na wiecach i zwalczanie bojówek przeciwników", b:"Prowadzenie oficjalnych negocjacji dyplomatycznych z państwami ententy", c:"Zarządzanie państwowymi kopalniami i fabrykami zbrojeniowymi", d:"Organizowanie masowych festiwali sportowych i olimpiad narodowych"},
+{cat:"Historia", q:"Jakie były skutki wielkiego kryzysu gospodarczego dla społeczeństwa niemieckiego na przełomie lat 20. i 30.?", a:"Masowe bezrobocie, ubożenie klasy średniej i radykalizacja nastrojów", b:"Gwałtowny wzrost płac i poprawa poziomu życia wszystkich obywateli", c:"Całkowite rozwiązanie problemów socjalnych przez państwo opiekuńcze", d:"Brak jakichkolwiek zmian w sytuacji materialnej rodzin robotniczych"},
+{cat:"Historia", q:"W jaki sposób Józef Piłsudski porozumiał się z okupantami w Warszawie w listopadzie 1918 roku?", a:"Doprowadził do bezkrwawego rozbrojenia wojsk niemieckich i ich odmarszu", b:"Wypowiedział natychmiastową wojnę totalną garnizonowi prusko-niemieckiemu", c:"Podpisał pakt o sojuszu wojskowym z dowództwem armii kajzerowskiej", d:"Zignorował obecność obcych wojsk i skupił się wyłącznie na Krakowie"},
+{cat:"Historia", q:"Które wydarzenie symbolicznie zamknęło okres kształtowania się granic i władzy w odrodzonej Polsce po I wojnie światowej?", a:"Ustąpienie Naczelnika Państwa po wyborach i uchwaleniu konstytucji", b:"Przyjęcie Polski do paktu Północnoatlantyckiego w latach dwudziestych", c:"Zwołanie pierwszego posiedzenia sejmu w średniowiecznym Gnieźnie", d:"Podpisanie unii personalnej z Królestwem Włoch w 1922 roku"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let historia =
+    localStorage.getItem("historia") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 11;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        historia =
+            parseInt(historia) + 11;
+
+        localStorage.setItem(
+            "historia",
+            historia
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
