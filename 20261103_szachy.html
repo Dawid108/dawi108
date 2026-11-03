@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mistrzostwa Powiatu Krotoszyńskiego w Szachach Drużynowych 2026</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-gold: #fbbf24;
+            --accent-silver: #94a3b8;
+            --accent-bronze: #d97706;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --highlight: #38bdf8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        header h1 {
+            color: var(--accent-gold);
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            color: var(--highlight);
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #0f172a;
+            color: var(--highlight);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .badge-1 { background-color: var(--accent-gold); color: #000; font-weight: bold; padding: 4px 8px; border-radius: 4px; }
+        .badge-2 { background-color: var(--accent-silver); color: #000; font-weight: bold; padding: 4px 8px; border-radius: 4px; }
+        .badge-3 { background-color: var(--accent-bronze); color: #fff; font-weight: bold; padding: 4px 8px; border-radius: 4px; }
+        .badge-4 { background-color: #475569; color: #fff; padding: 4px 8px; border-radius: 4px; }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: #0f172a;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background-color: var(--highlight);
+            color: #000;
+            font-weight: bold;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .note {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        .match-card {
+            background: #111827;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            color: var(--accent-gold);
+            margin-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        @media (max-width: 768px) {
+            th, td { padding: 8px 10px; font-size: 0.9rem; }
+            header h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏆 Mistrzostwa Powiatu Krotoszyńskiego</h1>
+    <p>w Szachach Drużynowych Szkoły Ponadpodstawowe</p>
+    <p style="font-size: 0.9rem; margin-top: 5px; color: var(--accent-gold);">📅 3 listopada 2026 r. | 📍 ZSP 2 Krotoszyn</p>
+</header>
+
+<div class="container">
+
+    <!-- TABELA GŁÓWNA DRUŻYNOWA -->
+    <div class="card">
+        <div class="card-title">🥇 Klasyfikacja Końcowa Drużyn</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Msc</th>
+                    <th>Drużyna</th>
+                    <th>Duże Pkt (Mecze)</th>
+                    <th>Małe Pkt (Partie)</th>
+                </tr>
+            </thead>
+            <tbody id="team-standings">
+                <!-- Generowane przez JS -->
+            </tbody>
+        </table>
+        <div class="note">* O 2. miejscu decydował wynik na 1. szachownicy w bezpośrednim pojedynku pomiędzy ZSP 3 a ZSP 1 (remiat w meczu 2:2, wygrana ZSP 3 na szachownicy 1).</div>
+    </div>
+
+    <!-- WYNIKI INDYWIDUALNE NA SZACHOWNICACH -->
+    <div class="card">
+        <div class="card-title">♟️ Klasyfikacja Indywidualna wg Szachownic</div>
+        <div class="tabs" id="board-tabs">
+            <button class="tab-btn active" onclick="showBoard(1)">Szachownica I</button>
+            <button class="tab-btn" onclick="showBoard(2)">Szachownica II</button>
+            <button class="tab-btn" onclick="showBoard(3)">Szachownica III</button>
+            <button class="tab-btn" onclick="showBoard(4)">Szachownica IV (Kobiety)</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Poz.</th>
+                    <th>Zawodnik</th>
+                    <th>Drużyna</th>
+                    <th>Punkty</th>
+                    <th>% Skuteczności</th>
+                </tr>
+            </thead>
+            <tbody id="board-standings">
+                <!-- Generowane przez JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- SKŁADY DRUŻYN -->
+    <div class="card">
+        <div class="card-title">👥 Składy Drużyn i Statystyki Zawodników</div>
+        <div class="grid-2" id="team-rosters">
+            <!-- Generowane przez JS -->
+        </div>
+    </div>
+
+    <!-- HISTORIA RUND -->
+    <div class="card">
+        <div class="card-title">📋 Wyniki Poszczególnych Rund</div>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="showRound(1, this)">Runda 1</button>
+            <button class="tab-btn" onclick="showRound(2, this)">Runda 2</button>
+            <button class="tab-btn" onclick="showRound(3, this)">Runda 3</button>
+        </div>
+        <div id="rounds-container">
+            <!-- Generowane przez JS -->
+        </div>
+    </div>
+
+</div>
+
+<script>
+    // BAZA DANYCH TURNIEJU
+    const teamStandingsData = [
+        { rank: 1, team: "ZSP 2 Krotoszyn", bigPts: 6, smallPts: 10.0, badge: "badge-1" },
+        { rank: 2, team: "ZSP 3 Krotoszyn", bigPts: 3, smallPts: 5.5, badge: "badge-2" },
+        { rank: 3, team: "ZSP 1 Krotoszyn", bigPts: 3, smallPts: 5.5, badge: "badge-3" },
+        { rank: 4, team: "ZSTO Krotoszyn", bigPts: 0, smallPts: 3.0, badge: "badge-4" }
+    ];
+
+    const boardsData = {
+        1: [
+            { name: "Dawid Gustowski", team: "ZSP 2 Krotoszyn", pts: 3.0, games: 3 },
+            { name: "Sebastian Kokot", team: "ZSP 3 Krotoszyn", pts: 2.0, games: 3 },
+            { name: "Maciej Krawczyk", team: "ZSP 1 Krotoszyn", pts: 1.0, games: 3 },
+            { name: "Kamil Marszałek", team: "ZSTO Krotoszyn", pts: 0.0, games: 3 }
+        ],
+        2: [
+            { name: "Rafał Zając", team: "ZSP 2 Krotoszyn", pts: 2.5, games: 3 },
+            { name: "Marcel Gąstwa", team: "ZSP 1 Krotoszyn", pts: 1.5, games: 3 },
+            { name: "Filip Olejniczak", team: "ZSP 3 Krotoszyn", pts: 1.0, games: 3 },
+            { name: "Krzysztof Jagodziński", team: "ZSTO Krotoszyn", pts: 1.0, games: 3 }
+        ],
+        3: [
+            { name: "Piotr Spierczyński", team: "ZSP 1 Krotoszyn", pts: 2.0, games: 3 },
+            { name: "Franciszek Leśniewski", team: "ZSP 3 Krotoszyn", pts: 1.5, games: 3 },
+            { name: "Antoni Czebatura", team: "ZSP 2 Krotoszyn", pts: 1.0, games: 1 },
+            { name: "Franek Guzikowski", team: "ZSP 2 Krotoszyn", pts: 1.0, games: 1 },
+            { name: "Eryk Barteczka", team: "ZSP 2 Krotoszyn", pts: 0.5, games: 1 },
+            { name: "Dorian Jednorek", team: "ZSTO Krotoszyn", pts: 0.0, games: 1 },
+            { name: "Wiktor Figlak", team: "ZSTO Krotoszyn", pts: 0.0, games: 2 }
+        ],
+        4: [
+            { name: "Jessica Zybała", team: "ZSTO Krotoszyn", pts: 2.0, games: 3 },
+            { name: "Oliwia Gierlik", team: "ZSP 2 Krotoszyn", pts: 2.0, games: 3 },
+            { name: "Olga Klepacka", team: "ZSP 1 Krotoszyn", pts: 1.0, games: 3 },
+            { name: "Ksenia Perepelytsya", team: "ZSP 3 Krotoszyn", pts: 1.0, games: 3 }
+        ]
+    };
+
+    const teamRostersData = [
+        {
+            team: "ZSP 2 Krotoszyn (1. Miejsce)",
+            players: [
+                { name: "Dawid Gustowski", score: "3,0 / 3 pkt" },
+                { name: "Rafał Zając", score: "2,5 / 3 pkt" },
+                { name: "Oliwia Gierlik", score: "2,0 / 3 pkt" },
+                { name: "Antoni Czebatura", score: "1,0 / 1 pkt" },
+                { name: "Franek Guzikowski", score: "1,0 / 1 pkt" },
+                { name: "Eryk Barteczka", score: "0,5 / 1 pkt" }
+            ]
+        },
+        {
+            team: "ZSP 3 Krotoszyn (2. Miejsce)",
+            players: [
+                { name: "Sebastian Kokot", score: "2,0 / 3 pkt" },
+                { name: "Franciszek Leśniewski", score: "1,5 / 3 pkt" },
+                { name: "Filip Olejniczak", score: "1,0 / 3 pkt" },
+                { name: "Ksenia Perepelytsya", score: "1,0 / 3 pkt" }
+            ]
+        },
+        {
+            team: "ZSP 1 Krotoszyn (3. Miejsce)",
+            players: [
+                { name: "Piotr Spierczyński", score: "2,0 / 3 pkt" },
+                { name: "Marcel Gąstwa", score: "1,5 / 3 pkt" },
+                { name: "Maciej Krawczyk", score: "1,0 / 3 pkt" },
+                { name: "Olga Klepacka", score: "1,0 / 3 pkt" },
+                { name: "Olinier Więcek-Maniak", score: "0,0 / 1 pkt" }
+            ]
+        },
+        {
+            team: "ZSTO Krotoszyn (4. Miejsce)",
+            players: [
+                { name: "Jessica Zybała", score: "2,0 / 3 pkt" },
+                { name: "Krzysztof Jagodziński", score: "1,0 / 3 pkt" },
+                { name: "Kamil Marszałek", score: "0,0 / 3 pkt" },
+                { name: "Wiktor Figlak", score: "0,0 / 2 pkt" },
+                { name: "Dorian Jednorek", score: "0,0 / 1 pkt" }
+            ]
+        }
+    ];
+
+    const roundsData = {
+        1: [
+            {
+                t1: "ZSP nr 2", t2: "ZSP nr 3", score: "3.5 : 0.5", bigScore: "2 : 0",
+                matches: [
+                    { b: "I", p1: "Dawid Gustowski", res: "1 : 0", p2: "Sebastian Kokot" },
+                    { b: "II", p1: "Rafał Zając", res: "1 : 0", p2: "Filip Olejniczak" },
+                    { b: "III", p1: "Eryk Barteczka", res: "0.5 : 0.5", p2: "Franciszek Leśniewski" },
+                    { b: "IV", p1: "Oliwia Gierlik", res: "1 : 0", p2: "Ksenia Perepelytsya" }
+                ]
+            },
+            {
+                t1: "ZSP nr 1", t2: "ZSTO", score: "3.0 : 1.0", bigScore: "2 : 0",
+                matches: [
+                    { b: "I", p1: "Maciej Krawczyk", res: "1 : 0", p2: "Kamil Marszałek" },
+                    { b: "II", p1: "Marcel Gąstwa", res: "1 : 0", p2: "Krzysztof Jagodziński" },
+                    { b: "III", p1: "Piotr Spierczyński", res: "1 : 0", p2: "Wiktor Figlak" },
+                    { b: "IV", p1: "Olga Klepacka", res: "0 : 1", p2: "Jessica Zybała" }
+                ]
+            }
+        ],
+        2: [
+            {
+                t1: "ZSP nr 2", t2: "ZSP nr 1", score: "3.5 : 0.5", bigScore: "2 : 0",
+                matches: [
+                    { b: "I", p1: "Dawid Gustowski", res: "1 : 0", p2: "Maciej Krawczyk" },
+                    { b: "II", p1: "Rafał Zając", res: "0.5 : 0.5", p2: "Marcel Gąstwa" },
+                    { b: "III", p1: "Antoni Czebatura", res: "1 : 0", p2: "Piotr Spierczyński" },
+                    { b: "IV", p1: "Oliwia Gierlik", res: "1 : 0", p2: "Olga Klepacka" }
+                ]
+            },
+            {
+                t1: "ZSP nr 3", t2: "ZSTO", score: "3.0 : 1.0", bigScore: "2 : 0",
+                matches: [
+                    { b: "I", p1: "Sebastian Kokot", res: "1 : 0", p2: "Kamil Marszałek" },
+                    { b: "II", p1: "Filip Olejniczak", res: "1 : 0", p2: "Krzysztof Jagodziński" },
+                    { b: "III", p1: "Franciszek Leśniewski", res: "1 : 0", p2: "Wiktor Figlak" },
+                    { b: "IV", p1: "Ksenia Perepelytsya", res: "0 : 1", p2: "Jessica Zybała" }
+                ]
+            }
+        ],
+        3: [
+            {
+                t1: "ZSP nr 2", t2: "ZSTO", score: "3.0 : 1.0", bigScore: "2 : 0",
+                matches: [
+                    { b: "I", p1: "Dawid Gustowski", res: "1 : 0", p2: "Kamil Marszałek" },
+                    { b: "II", p1: "Rafał Zając", res: "1 : 0", p2: "Krzysztof Jagodziński" },
+                    { b: "III", p1: "Franek Guzikowski", res: "1 : 0", p2: "Dorian Jednorek" },
+                    { b: "IV", p1: "Oliwia Gierlik", res: "0 : 1", p2: "Jessica Zybała" }
+                ]
+            },
+            {
+                t1: "ZSP nr 3", t2: "ZSP nr 1", score: "2.0 : 2.0", bigScore: "1 : 1",
+                matches: [
+                    { b: "I", p1: "Sebastian Kokot", res: "1 : 0", p2: "Maciej Krawczyk" },
+                    { b: "II", p1: "Filip Olejniczak", res: "0 : 1", p2: "Marcel Gąstwa" },
+                    { b: "III", p1: "Franciszek Leśniewski", res: "1 : 0", p2: "Olinier Więcek-Maniak" },
+                    { b: "IV", p1: "Ksenia Perepelytsya", res: "0 : 1", p2: "Olga Klepacka" }
+                ]
+            }
+        ]
+    };
+
+    // FUNKCJE RENDERUJĄCE
+    function init() {
+        renderTeamStandings();
+        showBoard(1);
+        renderTeamRosters();
+        showRound(1, document.querySelector('#rounds-container').previousElementSibling.querySelector('.tab-btn'));
+    }
+
+    function renderTeamStandings() {
+        const tbody = document.getElementById('team-standings');
+        tbody.innerHTML = teamStandingsData.map(row => `
+            <tr>
+                <td><span class="${row.badge}">${row.rank}</span></td>
+                <td><strong>${row.team}</strong></td>
+                <td><strong>${row.bigPts}</strong></td>
+                <td>${row.smallPts.toFixed(1)}</td>
+            </tr>
+        `).join('');
+    }
+
+    function showBoard(boardNum) {
+        const buttons = document.querySelectorAll('#board-tabs .tab-btn');
+        buttons.forEach((btn, idx) => {
+            btn.classList.toggle('active', idx === boardNum - 1);
+        });
+
+        const tbody = document.getElementById('board-standings');
+        const data = boardsData[boardNum];
+        tbody.innerHTML = data.map((row, idx) => {
+            const pct = Math.round((row.pts / row.games) * 100);
+            return `
+                <tr>
+                    <td>${idx + 1}</td>
+                    <td><strong>${row.name}</strong></td>
+                    <td>${row.team}</td>
+                    <td>${row.pts.toString().replace('.', ',')} / ${row.games}</td>
+                    <td>${pct}%</td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    function renderTeamRosters() {
+        const container = document.getElementById('team-rosters');
+        container.innerHTML = teamRostersData.map(team => `
+            <div style="background: #111827; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
+                <h4 style="color: var(--accent-gold); margin-bottom: 10px;">${team.team}</h4>
+                <ul style="list-style: none;">
+                    ${team.players.map(p => `<li style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #1e293b;">
+                        <span>${p.name}</span>
+                        <span style="color: var(--highlight); font-weight: bold;">${p.score}</span>
+                    </li>`).join('')}
+                </ul>
+            </div>
+        `).join('');
+    }
+
+    function showRound(roundNum, btn) {
+        if(btn) {
+            const buttons = btn.parentElement.querySelectorAll('.tab-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        const container = document.getElementById('rounds-container');
+        const matches = roundsData[roundNum];
+
+        container.innerHTML = matches.map(m => `
+            <div class="match-card">
+                <div class="match-header">
+                    <span>${m.t1} vs ${m.t2}</span>
+                    <span>Wynik meczu: ${m.score} (Duże pkt: ${m.bigScore})</span>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Szach.</th>
+                            <th>Białe</th>
+                            <th>Wynik</th>
+                            <th>Czarne</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${m.matches.map(p => `
+                            <tr>
+                                <td>${p.b}</td>
+                                <td>${p.p1}</td>
+                                <td><strong>${p.res}</strong></td>
+                                <td>${p.p2}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `).join('');
+    }
+
+    // Start po załadowaniu
+    window.onload = init;
+</script>
+
+</body>
+</html>
