@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2¹?",
+    a: "2",
+    b: "4",
+    c: "1",
+    d: "0"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2²?",
+    a: "4",
+    b: "2",
+    c: "8",
+    d: "6"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2³?",
+    a: "8",
+    b: "6",
+    c: "16",
+    d: "4"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2⁴?",
+    a: "16",
+    b: "8",
+    c: "32",
+    d: "12"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2⁵?",
+    a: "32",
+    b: "64",
+    c: "16",
+    d: "25"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2⁶?",
+    a: "64",
+    b: "32",
+    c: "128",
+    d: "36"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2⁷?",
+    a: "128",
+    b: "256",
+    c: "64",
+    d: "100"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2⁸?",
+    a: "256",
+    b: "128",
+    c: "512",
+    d: "200"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2⁹?",
+    a: "512",
+    b: "1024",
+    c: "256",
+    d: "812"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 2¹⁰?",
+    a: "1024",
+    b: "512",
+    c: "2048",
+    d: "1000"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 3¹?",
+    a: "3",
+    b: "9",
+    c: "1",
+    d: "6"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 3²?",
+    a: "9",
+    b: "6",
+    c: "27",
+    d: "12"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 3³?",
+    a: "27",
+    b: "81",
+    c: "9",
+    d: "18"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 3⁴?",
+    a: "81",
+    b: "27",
+    c: "243",
+    d: "72"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 3⁵?",
+    a: "243",
+    b: "729",
+    c: "81",
+    d: "125"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 3⁶?",
+    a: "729",
+    b: "243",
+    c: "6561",
+    d: "343"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 4¹?",
+    a: "4",
+    b: "8",
+    c: "16",
+    d: "2"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 4²?",
+    a: "16",
+    b: "8",
+    c: "64",
+    d: "24"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 4³?",
+    a: "64",
+    b: "16",
+    c: "256",
+    d: "128"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 4⁴?",
+    a: "256",
+    b: "1024",
+    c: "64",
+    d: "512"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 4⁵?",
+    a: "1024",
+    b: "256",
+    c: "4096",
+    d: "2048"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 4⁶?",
+    a: "4096",
+    b: "1024",
+    c: "7776",
+    d: "2048"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 5¹?",
+    a: "5",
+    b: "10",
+    c: "25",
+    d: "1"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 5²?",
+    a: "25",
+    b: "125",
+    c: "10",
+    d: "20"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 5³?",
+    a: "125",
+    b: "25",
+    c: "625",
+    d: "225"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 5⁴?",
+    a: "625",
+    b: "3125",
+    c: "125",
+    d: "500"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 5⁵?",
+    a: "3125",
+    b: "625",
+    c: "15625",
+    d: "2500"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 6¹?",
+    a: "6",
+    b: "12",
+    c: "36",
+    d: "1"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 6²?",
+    a: "36",
+    b: "216",
+    c: "12",
+    d: "24"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 6³?",
+    a: "216",
+    b: "36",
+    c: "1296",
+    d: "256"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 6⁴?",
+    a: "1296",
+    b: "7776",
+    c: "216",
+    d: "1024"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 6⁵?",
+    a: "7776",
+    b: "1296",
+    c: "4096",
+    d: "6561"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 7¹?",
+    a: "7",
+    b: "14",
+    c: "49",
+    d: "1"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 7²?",
+    a: "49",
+    b: "343",
+    c: "14",
+    d: "28"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 7³?",
+    a: "343",
+    b: "49",
+    c: "2401",
+    d: "729"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 7⁴?",
+    a: "2401",
+    b: "343",
+    c: "4096",
+    d: "1296"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 8¹?",
+    a: "8",
+    b: "16",
+    c: "64",
+    d: "1"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 8²?",
+    a: "64",
+    b: "512",
+    c: "16",
+    d: "32"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 8³?",
+    a: "512",
+    b: "64",
+    c: "4096",
+    d: "1024"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 8⁴?",
+    a: "4096",
+    b: "512",
+    c: "6561",
+    d: "2048"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 9¹?",
+    a: "9",
+    b: "18",
+    c: "81",
+    d: "1"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 9²?",
+    a: "81",
+    b: "729",
+    c: "18",
+    d: "36"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 9³?",
+    a: "729",
+    b: "81",
+    c: "6561",
+    d: "343"
+  },
+  {
+    cat: "Matematyka",
+    q: "Jaka jest wartość potęgi 9⁴?",
+    a: "6561",
+    b: "729",
+    c: "4096",
+    d: "2401"
+  }
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let matematyka =
+    localStorage.getItem("matematyka") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 11;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        matematyka =
+            parseInt(matematyka) + 11;
+
+        localStorage.setItem(
+            "matematyka",
+            matematyka
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
