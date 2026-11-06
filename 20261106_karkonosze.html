@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="pl" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyjazd w Karkonosze – Szpindlerowy Młyn</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mountain: {
+                            900: '#0F172A',
+                            800: '#1E293B',
+                            700: '#334155',
+                            accent: '#10B981', // Emerald
+                            gold: '#F59E0B',   // Autumn Gold
+                            rust: '#E11D48',   // Autumn Crimson
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #0b0f19;
+            color: #f1f5f9;
+        }
+        .bg-hero {
+            background: linear-gradient(180deg, rgba(11, 15, 25, 0.4) 0%, rgba(11, 15, 25, 0.95) 100%), 
+                        url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card:hover {
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0f19;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #10B981;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- NAV BAR -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass-card bg-opacity-80 border-b border-slate-800 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="#" class="flex items-center gap-2 font-bold text-lg text-white">
+                <i class="fa-solid fa-mountain-sun text-emerald-400 text-xl"></i>
+                <span>Karkonosze <span class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30">Listopad</span></span>
+            </a>
+            
+            <!-- Mobile Menu Toggle -->
+            <button id="menu-btn" class="md:hidden text-slate-300 hover:text-white focus:outline-none text-xl p-2">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <!-- Desktop Links -->
+            <div class="hidden md:flex gap-6 text-sm font-medium text-slate-300">
+                <a href="#szczyty" class="hover:text-emerald-400 transition-colors">Szczyty</a>
+                <a href="#schroniska" class="hover:text-emerald-400 transition-colors">Schroniska & Atrakcje</a>
+                <a href="#trasy" class="hover:text-emerald-400 transition-colors">Trasy Piesze</a>
+                <a href="#auto" class="hover:text-emerald-400 transition-colors">Trasy Autem</a>
+                <a href="#odznaki" class="hover:text-emerald-400 transition-colors">Odznaki & Mapy</a>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden pt-4 pb-2 px-2 flex flex-col gap-3 border-t border-slate-800 mt-3 text-slate-300">
+            <a href="#szczyty" class="mobile-link py-2 px-3 hover:bg-slate-800 rounded-lg">Szczyty</a>
+            <a href="#schroniska" class="mobile-link py-2 px-3 hover:bg-slate-800 rounded-lg">Schroniska & Atrakcje</a>
+            <a href="#trasy" class="mobile-link py-2 px-3 hover:bg-slate-800 rounded-lg">Trasy Piesze</a>
+            <a href="#auto" class="mobile-link py-2 px-3 hover:bg-slate-800 rounded-lg">Trasy Autem</a>
+            <a href="#odznaki" class="mobile-link py-2 px-3 hover:bg-slate-800 rounded-lg">Odznaki & Mapy</a>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="relative bg-hero min-h-screen flex items-center justify-center pt-24 pb-16 px-4">
+        <div class="max-w-4xl mx-auto text-center space-y-6">
+            <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide uppercase mb-2">
+                <i class="fa-solid fa-compass"></i> Szpindlerowy Młyn & Okolice
+            </div>
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-tight">
+                Listopadowy Wyjazd w <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-amber-300">Karkonosze</span>
+            </h1>
+            <p class="text-lg md:text-xl text-slate-300 max-w-2xl mx-auto font-light leading-relaxed">
+                Przewodnik wyprawowy, lista szczytów do zdobycia z interaktywnym trackerem postępu, propozycje niesamowitych tras pieszych oraz zestawienie odznak górskich.
+            </p>
+            
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto pt-6">
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <div class="text-2xl md:text-3xl font-extrabold text-emerald-400">12</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Szczytów</div>
+                </div>
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <div class="text-2xl md:text-3xl font-extrabold text-amber-400">6</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Tras Pieszych</div>
+                </div>
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <div class="text-2xl md:text-3xl font-extrabold text-rose-400">3</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Schroniska</div>
+                </div>
+                <div class="glass-card p-4 rounded-xl text-center">
+                    <div class="text-2xl md:text-3xl font-extrabold text-teal-400">6</div>
+                    <div class="text-xs text-slate-400 uppercase tracking-wider mt-1">Odznak</div>
+                </div>
+            </div>
+
+            <div class="pt-6 flex flex-wrap justify-center gap-4">
+                <a href="#szczyty" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-semibold px-8 py-3.5 rounded-xl transition-all shadow-lg shadow-emerald-950/50 flex items-center gap-2">
+                    <i class="fa-solid fa-square-check"></i> Tracker Szczytów
+                </a>
+                <a href="#trasy" class="bg-slate-800/80 hover:bg-slate-700 text-white border border-slate-700 font-semibold px-8 py-3.5 rounded-xl transition-all flex items-center gap-2">
+                    <i class="fa-solid fa-map-location-dot"></i> Zobacz Trasy
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="max-w-7xl mx-auto px-4 py-12 space-y-20">
+
+        <!-- SECTION: SZCZYTY (TRACKER) -->
+        <section id="szczyty" class="scroll-mt-24">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fa-solid fa-mountain text-emerald-400"></i> Szczyty do Zdobycia
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-1">Zaznacz zdobyte szczyty. Twój postęp jest automatycznie zapisywany na tym urządzeniu.</p>
+                </div>
+                
+                <!-- Progress Bar Container -->
+                <div class="glass-card p-4 rounded-xl min-w-[280px]">
+                    <div class="flex justify-between items-center text-sm font-semibold mb-2">
+                        <span class="text-slate-300">Twój Postęp:</span>
+                        <span id="progress-text" class="text-emerald-400">0 / 12 (0%)</span>
+                    </div>
+                    <div class="w-full bg-slate-700 h-2.5 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-0 transition-all duration-500"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters & Search -->
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+                <div class="relative flex-grow">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-500"></i>
+                    <input type="text" id="search-peaks" placeholder="Szukaj szczytu..." class="w-full bg-slate-800 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-slate-200 focus:outline-none focus:border-emerald-500 transition-colors">
+                </div>
+                <div class="flex flex-wrap gap-2">
+                    <button class="filter-btn active bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-sm font-medium transition-all" data-badge="all">Wszystkie</button>
+                    <button class="filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium transition-all" data-badge="KK">Korona Karkonoszy</button>
+                    <button class="filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium transition-all" data-badge="SW">Sudecki Włóczykij</button>
+                    <button class="filter-btn bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl text-sm font-medium transition-all" data-badge="KOK">KOK</button>
+                </div>
+            </div>
+
+            <!-- Peaks Grid -->
+            <div id="peaks-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Dynamically Generated via JS -->
+            </div>
+        </section>
+
+        <!-- SECTION: SCHRONISKA I ATRAKCJE -->
+        <section id="schroniska" class="scroll-mt-24">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-white flex items-center justify-center gap-3">
+                    <i class="fa-solid fa-house-chimney-window text-amber-400"></i> Schroniska & Atrakcje
+                </h2>
+                <p class="text-slate-400 text-sm mt-1">Niezbędne punkty na trasie na odpoczynek, ciepłe jedzenie i podziwianie widoków.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Schroniska -->
+                <div class="glass-card p-6 rounded-2xl border-l-4 border-amber-500">
+                    <h3 class="text-xl font-bold text-amber-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-mug-hot"></i> Schroniska na trasie
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3 p-3 bg-slate-800/40 rounded-xl hover:bg-slate-800/80 transition-colors">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold flex-shrink-0">1</span>
+                            <div>
+                                <h4 class="font-semibold text-white">Schronisko PTTK Odrodzenie</h4>
+                                <p class="text-xs text-slate-400 mt-1">Położone na Przełęczy Karkonoskiej (1236 m n.p.m.). Świetny punkt wypadowy i miejsce na ogrzanie.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 p-3 bg-slate-800/40 rounded-xl hover:bg-slate-800/80 transition-colors">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold flex-shrink-0">2</span>
+                            <div>
+                                <h4 class="font-semibold text-white">Schronisko PTTK Samotnia</h4>
+                                <p class="text-xs text-slate-400 mt-1">Jedno z najstarszych i najbardziej urokliwych schronisk w Polsce, tuż nad Małym Stawem.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start gap-3 p-3 bg-slate-800/40 rounded-xl hover:bg-slate-800/80 transition-colors">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold flex-shrink-0">3</span>
+                            <div>
+                                <h4 class="font-semibold text-white">Schronisko Strzecha Akademicka</h4>
+                                <p class="text-xs text-slate-400 mt-1">Drugie co do wielkości schronisko po polskiej stronie, z bogatą historią i pięknymi widokami.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Atrakcje -->
+                <div class="glass-card p-6 rounded-2xl border-l-4 border-rose-500">
+                    <h3 class="text-xl font-bold text-rose-400 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-camera font-bold"></i> Kluczowe Atrakcje
+                    </h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-center gap-3 p-2.5 bg-slate-800/40 rounded-xl">
+                            <i class="fa-solid fa-monument text-rose-400 w-5 text-center"></i>
+                            <span class="text-sm font-medium text-slate-200">Pomnik Ofiar Lawiny w Białym Jarze</span>
+                        </li>
+                        <li class="flex items-center gap-3 p-2.5 bg-slate-800/40 rounded-xl">
+                            <i class="fa-solid fa-water text-cyan-400 w-5 text-center"></i>
+                            <span class="text-sm font-medium text-slate-200">Jezioro Polodowcowe Mały Staw</span>
+                        </li>
+                        <li class="flex items-center gap-3 p-2.5 bg-slate-800/40 rounded-xl">
+                            <i class="fa-solid fa-mountain-sun text-emerald-400 w-5 text-center"></i>
+                            <span class="text-sm font-medium text-slate-200">Grań Kotła Wielkiego Stawu</span>
+                        </li>
+                        <li class="flex items-center gap-3 p-2.5 bg-slate-800/40 rounded-xl">
+                            <i class="fa-solid fa-cubes-stacked text-amber-400 w-5 text-center"></i>
+                            <span class="text-sm font-medium text-slate-200">Formacje skalne: Pielgrzymy</span>
+                        </li>
+                        <li class="flex items-center gap-3 p-2.5 bg-slate-800/40 rounded-xl">
+                            <i class="fa-solid fa-road text-slate-400 w-5 text-center"></i>
+                            <span class="text-sm font-medium text-slate-200">Przełęcz Karkonoska</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: PROPOZYCJE TRAS PIESZYCH -->
+        <section id="trasy" class="scroll-mt-24">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fa-solid fa-person-hiking text-emerald-400"></i> Propozycje Tras Pieszych
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-1">Starannie zaplanowane szlaki z bezpośrednim odnośnikiem do Mapy.cz</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Trasa 1 -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between hover:border-emerald-500/50 transition-all group">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full border border-emerald-500/30">Trasa #1</span>
+                            <span class="text-xs text-slate-400 flex items-center gap-1"><i class="fa-solid fa-clock"></i> 8:13 h</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors mb-4">Główna Grań Karkonoszy ze Szpindlerowego Młyna</h3>
+                        
+                        <div class="grid grid-cols-3 gap-2 bg-slate-800/50 p-3 rounded-xl mb-4 text-center">
+                            <div>
+                                <div class="text-xs text-slate-400">Dystans</div>
+                                <div class="font-bold text-slate-200 text-sm">30,2 km</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Czas</div>
+                                <div class="font-bold text-slate-200 text-sm">8:13 h</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Podejścia</div>
+                                <div class="font-bold text-emerald-400 text-sm">1104 m</div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-slate-800 mb-6">
+                            <strong>Przebieg:</strong> Szpindlerowy Młyn – Medwiedin – Vrbatovo návrší – Harrachovy kameny – Łabski Szczyt – Vysoká pláň – Wielki Szyszak – Śmielec – Czeskie Kamienie – Śląskie Kamienie – Ptasi Kamień – Szpindlerowy Młyn.
+                        </p>
+                    </div>
+
+                    <a href="https://mapy.com/s/nuzejolafu" target="_blank" rel="noopener font-semibold" class="w-full bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/30 py-2.5 rounded-xl font-medium text-center text-sm transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-map"></i> Otwórz w Mapy.cz
+                    </a>
+                </div>
+
+                <!-- Trasa 2 -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between hover:border-emerald-500/50 transition-all group">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <span class="bg-emerald-500/20 text-emerald-400 text-xs font-bold px-3 py-1 rounded-full border border-emerald-500/30">Trasa #2</span>
+                            <span class="text-xs text-slate-400 flex items-center gap-1"><i class="fa-solid fa-clock"></i> 8:54 h</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-emerald-400 transition-colors mb-4">Wyprawa na Śnieżkę & Mały Szyszak</h3>
+                        
+                        <div class="grid grid-cols-3 gap-2 bg-slate-800/50 p-3 rounded-xl mb-4 text-center">
+                            <div>
+                                <div class="text-xs text-slate-400">Dystans</div>
+                                <div class="font-bold text-slate-200 text-sm">30,8 km</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Czas</div>
+                                <div class="font-bold text-slate-200 text-sm">8:54 h</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Podejścia</div>
+                                <div class="font-bold text-emerald-400 text-sm">1252 m</div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-slate-800 mb-6">
+                            <strong>Przebieg:</strong> Szpindlerowy Młyn – Mały Szyszak – Tępy Szczyt – Kopa – Śnieżka (1603 m) – Krakonoš – Szpindlerowy Młyn.
+                        </p>
+                    </div>
+
+                    <a href="https://mapy.com/s/puselocedu" target="_blank" rel="noopener font-semibold" class="w-full bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/30 py-2.5 rounded-xl font-medium text-center text-sm transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-map"></i> Otwórz w Mapy.cz
+                    </a>
+                </div>
+
+                <!-- Trasa 3 -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between hover:border-emerald-500/50 transition-all group">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <span class="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">Trasa #3 (Krótsza)</span>
+                            <span class="text-xs text-slate-400 flex items-center gap-1"><i class="fa-solid fa-clock"></i> 2:20 h</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors mb-4">Pętla na Vrchy i Dvorsky les</h3>
+                        
+                        <div class="grid grid-cols-3 gap-2 bg-slate-800/50 p-3 rounded-xl mb-4 text-center">
+                            <div>
+                                <div class="text-xs text-slate-400">Dystans</div>
+                                <div class="font-bold text-slate-200 text-sm">8,0 km</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Czas</div>
+                                <div class="font-bold text-slate-200 text-sm">2:20 h</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Podejścia</div>
+                                <div class="font-bold text-amber-400 text-sm">388 m</div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-slate-800 mb-6">
+                            <strong>Przebieg:</strong> Trasa prowadząca na szczyty Vrchy (716 m) oraz Dvorsky les (1035 m) - Sudecki Włóczykij. Idealna na krótszy spacer.
+                        </p>
+                    </div>
+
+                    <a href="https://mapy.com/s/jopujojeha" target="_blank" rel="noopener font-semibold" class="w-full bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/30 py-2.5 rounded-xl font-medium text-center text-sm transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-map"></i> Otwórz w Mapy.cz
+                    </a>
+                </div>
+
+                <!-- Trasa 4 -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between hover:border-emerald-500/50 transition-all group">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <span class="bg-amber-500/20 text-amber-400 text-xs font-bold px-3 py-1 rounded-full border border-amber-500/30">Trasa #4 (Szybka)</span>
+                            <span class="text-xs text-slate-400 flex items-center gap-1"><i class="fa-solid fa-clock"></i> 0:57 h</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-amber-400 transition-colors mb-4">Szybkie wejście na Przední Žalý</h3>
+                        
+                        <div class="grid grid-cols-3 gap-2 bg-slate-800/50 p-3 rounded-xl mb-4 text-center">
+                            <div>
+                                <div class="text-xs text-slate-400">Dystans</div>
+                                <div class="font-bold text-slate-200 text-sm">3,2 km</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Czas</div>
+                                <div class="font-bold text-slate-200 text-sm">0:57 h</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Podejścia</div>
+                                <div class="font-bold text-amber-400 text-sm">171 m</div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-slate-800 mb-6">
+                            <strong>Przebieg:</strong> Krótka i przyjemna trasa na szczyt Přední Žalý (1019 m) ze słynną wieżą widokową.
+                        </p>
+                    </div>
+
+                    <a href="https://mapy.com/s/parolajana" target="_blank" rel="noopener font-semibold" class="w-full bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/30 py-2.5 rounded-xl font-medium text-center text-sm transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-map"></i> Otwórz w Mapy.cz
+                    </a>
+                </div>
+
+                <!-- Trasa 5 -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between hover:border-emerald-500/50 transition-all group">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <span class="bg-cyan-500/20 text-cyan-400 text-xs font-bold px-3 py-1 rounded-full border border-cyan-500/30">Trasa #5</span>
+                            <span class="text-xs text-slate-400 flex items-center gap-1"><i class="fa-solid fa-clock"></i> 2:59 h</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors mb-4">Jagodnik i Trójgarb</h3>
+                        
+                        <div class="grid grid-cols-3 gap-2 bg-slate-800/50 p-3 rounded-xl mb-4 text-center">
+                            <div>
+                                <div class="text-xs text-slate-400">Dystans</div>
+                                <div class="font-bold text-slate-200 text-sm">10,7 km</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Czas</div>
+                                <div class="font-bold text-slate-200 text-sm">2:59 h</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Podejścia</div>
+                                <div class="font-bold text-cyan-400 text-sm">446 m</div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-slate-800 mb-6">
+                            <strong>Przebieg:</strong> Malownicza trasa prowadząca przez Jagodnik (619 m) aż na wieżę widokową na Trójgarbie (778 m).
+                        </p>
+                    </div>
+
+                    <a href="https://mapy.com/s/dalopereda" target="_blank" rel="noopener font-semibold" class="w-full bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/30 py-2.5 rounded-xl font-medium text-center text-sm transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-map"></i> Otwórz w Mapy.cz
+                    </a>
+                </div>
+
+                <!-- Trasa 6 -->
+                <div class="glass-card rounded-2xl p-6 flex flex-col justify-between hover:border-emerald-500/50 transition-all group">
+                    <div>
+                        <div class="flex justify-between items-start gap-2 mb-3">
+                            <span class="bg-cyan-500/20 text-cyan-400 text-xs font-bold px-3 py-1 rounded-full border border-cyan-500/30">Trasa #6</span>
+                            <span class="text-xs text-slate-400 flex items-center gap-1"><i class="fa-solid fa-clock"></i> 1:53 h</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-cyan-400 transition-colors mb-4">Spacer na Jagodnik</h3>
+                        
+                        <div class="grid grid-cols-3 gap-2 bg-slate-800/50 p-3 rounded-xl mb-4 text-center">
+                            <div>
+                                <div class="text-xs text-slate-400">Dystans</div>
+                                <div class="font-bold text-slate-200 text-sm">7,5 km</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Czas</div>
+                                <div class="font-bold text-slate-200 text-sm">1:53 h</div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400">Podejścia</div>
+                                <div class="font-bold text-cyan-400 text-sm">231 m</div>
+                            </div>
+                        </div>
+
+                        <p class="text-xs text-slate-300 leading-relaxed bg-slate-900/40 p-3 rounded-xl border border-slate-800 mb-6">
+                            <strong>Przebieg:</strong> Lżejszy wariant trasy skupiony na zdobyciu szczytu Jagodnik (619 m).
+                        </p>
+                    </div>
+
+                    <a href="https://mapy.com/s/bogulaposo" target="_blank" rel="noopener font-semibold" class="w-full bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/30 py-2.5 rounded-xl font-medium text-center text-sm transition-all flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-map"></i> Otwórz w Mapy.cz
+                    </a>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION: TRASY AUTEM -->
+        <section id="auto" class="scroll-mt-24">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+                <div>
+                    <h2 class="text-3xl font-bold text-white flex items-center gap-3">
+                        <i class="fa-solid fa-car text-amber-400"></i> Wycieczki Samochodowe & Dojazd
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-1">Trasy dojazdowe oraz pomysły na wycieczki autami po okolicy z punktami widokowymi.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Auto 1 -->
+                <div class="glass-card rounded-2xl p-6 border-t-4 border-amber-500 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center text-xs text-slate-400 mb-2">
+                            <span><i class="fa-solid fa-route"></i> Dojazd do celu</span>
+                            <span class="font-bold text-amber-400">266 km</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Do Szpindlerowego Młynu</h3>
+                        <div class="text-xs text-slate-400 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-clock"></i> Czas jazdy: ok. 3 godz. 57 min
+                        </div>
+                        <p class="text-xs text-slate-300 bg-slate-900/50 p-3 rounded-xl mb-4 border border-slate-800">
+                            <strong>Punkty po drodze:</strong> Dvorsky les, Brecstejn oraz Pałac Vrchlabí.
+                        </p>
+                    </div>
+                    <a href="https://maps.app.goo.gl/5egAMpnMry8X7WfV7" target="_blank" rel="noopener" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-2.5 rounded-xl text-center text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-location-arrow text-amber-400"></i> Otwórz w Google Maps
+                    </a>
+                </div>
+
+                <!-- Auto 2 -->
+                <div class="glass-card rounded-2xl p-6 border-t-4 border-amber-500 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center text-xs text-slate-400 mb-2">
+                            <span><i class="fa-solid fa-car-side"></i> Krótki dojazd</span>
+                            <span class="font-bold text-amber-400">21 km</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Na Predni Zaly (1019 m)</h3>
+                        <div class="text-xs text-slate-400 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-clock"></i> Czas jazdy: ok. 27 min
+                        </div>
+                        <p class="text-xs text-slate-300 bg-slate-900/50 p-3 rounded-xl mb-4 border border-slate-800">
+                            Szybki dojazd ze Szpindlerowego Młyna pod punkt startowy na szczyt Přední Žalý.
+                        </p>
+                    </div>
+                    <a href="https://maps.app.goo.gl/PekZBVbRKGVzAhM89" target="_blank" rel="noopener" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-2.5 rounded-xl text-center text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-location-arrow text-amber-400"></i> Otwórz w Google Maps
+                    </a>
+                </div>
+
+                <!-- Auto 3 -->
+                <div class="glass-card rounded-2xl p-6 border-t-4 border-amber-500 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center text-xs text-slate-400 mb-2">
+                            <span><i class="fa-solid fa-house-flag"></i> Powrót / Wycieczka</span>
+                            <span class="font-bold text-amber-400">255 km</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-white mb-2">Z Szpindlerowego Młynu</h3>
+                        <div class="text-xs text-slate-400 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-clock"></i> Czas jazdy: ok. 4 godz. 6 min
+                        </div>
+                        <p class="text-xs text-slate-300 bg-slate-900/50 p-3 rounded-xl mb-4 border border-slate-800">
+                            <strong>Punkty na trasie:</strong> Jagodnik oraz Stare Bogaczowice.
+                        </p>
+                    </div>
+                    <a href="https://maps.app.goo.gl/5mKNFkuMQy7NQPdG8" target="_blank" rel="noopener" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 py-2.5 rounded-xl text-center text-sm font-medium transition-colors flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-location-arrow text-amber-400"></i> Otwórz w Google Maps
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: ODZNAKI I MAPY -->
+        <section id="odznaki" class="scroll-mt-24">
+            <div class="grid lg:grid-cols-2 gap-8">
+                
+                <!-- Odznaki -->
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-award text-yellow-400"></i> Odznaki Turystyczne
+                    </h2>
+                    <div class="space-y-3">
+                        <a href="https://odznaki.org/odznaka/karkonoska-odznaka-krajoznawcza/" target="_blank" rel="noopener" class="glass-card p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-all group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-yellow-500/10 text-yellow-400 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-certificate"></i>
+                                </div>
+                                <span class="text-sm font-medium text-slate-200 group-hover:text-yellow-400 transition-colors">Karkonoska Odznaka Krajoznawcza</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-500 group-hover:text-slate-300"></i>
+                        </a>
+
+                        <a href="https://odznaki.org/odznaka/karkonoski-kwartet-karkonoskie-kotly-lodowcowe/" target="_blank" rel="noopener" class="glass-card p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-all group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-snowflake"></i>
+                                </div>
+                                <span class="text-sm font-medium text-slate-200 group-hover:text-blue-400 transition-colors">Karkonoski Kwartet: Kotły Lodowcowe</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-500 group-hover:text-slate-300"></i>
+                        </a>
+
+                        <a href="https://odznaki.org/odznaka/karkonoski-kwartet-karkonoskie-panoramy/" target="_blank" rel="noopener" class="glass-card p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-all group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-binoculars"></i>
+                                </div>
+                                <span class="text-sm font-medium text-slate-200 group-hover:text-emerald-400 transition-colors">Karkonoski Kwartet: Panoramy</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-500 group-hover:text-slate-300"></i>
+                        </a>
+
+                        <a href="https://odznaki.org/odznaka/karkonoski-kwartet-karkonoskie-skalki/" target="_blank" rel="noopener" class="glass-card p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-all group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-mountain"></i>
+                                </div>
+                                <span class="text-sm font-medium text-slate-200 group-hover:text-amber-400 transition-colors">Karkonoski Kwartet: Skałki</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-500 group-hover:text-slate-300"></i>
+                        </a>
+
+                        <a href="https://odznaki.org/odznaka/karkonoski-kwartet-karkonoskie-wodospady/" target="_blank" rel="noopener" class="glass-card p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-all group">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-water"></i>
+                                </div>
+                                <span class="text-sm font-medium text-slate-200 group-hover:text-cyan-400 transition-colors">Karkonoski Kwartet: Wodospady</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-500 group-hover:text-slate-300"></i>
+                        </a>
+
+                        <a href="https://www.koronygor.pl/kk" target="_blank" rel="noopener" class="glass-card p-4 rounded-xl flex items-center justify-between hover:bg-slate-800 transition-all group border-l-4 border-yellow-500">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-lg bg-yellow-500/20 text-yellow-300 flex items-center justify-center font-bold">
+                                    <i class="fa-solid fa-crown"></i>
+                                </div>
+                                <span class="text-sm font-bold text-white group-hover:text-yellow-300 transition-colors">Korona Karkonoszy (Oficjalna strona)</span>
+                            </div>
+                            <i class="fa-solid fa-arrow-up-right-from-square text-xs text-slate-500 group-hover:text-slate-300"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Mapy zbiorcze -->
+                <div>
+                    <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                        <i class="fa-solid fa-map-location-dot text-cyan-400"></i> Mapy Zbiorcze i Interaktywne
+                    </h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        
+                        <a href="https://maps.app.goo.gl/yDRgnxDnvDH8E7Yj9" target="_blank" rel="noopener" class="glass-card p-5 rounded-xl flex flex-col justify-between hover:border-cyan-500/50 transition-all group">
+                            <div>
+                                <i class="fa-solid fa-crown text-yellow-400 text-2xl mb-3"></i>
+                                <h3 class="font-bold text-white group-hover:text-cyan-400 transition-colors">Korona Karkonoszy</h3>
+                                <p class="text-xs text-slate-400 mt-1">Mapa Google ze wszystkimi szczytami Korony.</p>
+                            </div>
+                            <div class="mt-4 text-xs font-semibold text-cyan-400 flex items-center gap-1">
+                                Otwórz mapę <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                        </a>
+
+                        <a href="https://maps.app.goo.gl/1PuwY8RLdKqckJi76" target="_blank" rel="noopener" class="glass-card p-5 rounded-xl flex flex-col justify-between hover:border-cyan-500/50 transition-all group">
+                            <div>
+                                <i class="fa-solid fa-compass text-emerald-400 text-2xl mb-3"></i>
+                                <h3 class="font-bold text-white group-hover:text-cyan-400 transition-colors">Karkonoska Odznaka Krajoznawcza</h3>
+                                <p class="text-xs text-slate-400 mt-1">Mapa punktów i obiektów wymaganych do odznaki.</p>
+                            </div>
+                            <div class="mt-4 text-xs font-semibold text-cyan-400 flex items-center gap-1">
+                                Otwórz mapę <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                        </a>
+
+                        <a href="https://maps.app.goo.gl/dJceLuc4RpokX29W7" target="_blank" rel="noopener" class="glass-card p-5 rounded-xl flex flex-col justify-between hover:border-cyan-500/50 transition-all group">
+                            <div>
+                                <i class="fa-solid fa-layer-group text-purple-400 text-2xl mb-3"></i>
+                                <h3 class="font-bold text-white group-hover:text-cyan-400 transition-colors">Karkonoski Kwartet</h3>
+                                <p class="text-xs text-slate-400 mt-1">Mapa obiektów z podziałem na 4 kategorie kwartetu.</p>
+                            </div>
+                            <div class="mt-4 text-xs font-semibold text-cyan-400 flex items-center gap-1">
+                                Otwórz mapę <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                        </a>
+
+                        <a href="https://maps.app.goo.gl/fU4HC85BSqHCstGZA" target="_blank" rel="noopener" class="glass-card p-5 rounded-xl flex flex-col justify-between hover:border-cyan-500/50 transition-all group">
+                            <div>
+                                <i class="fa-solid fa-hiking text-rose-400 text-2xl mb-3"></i>
+                                <h3 class="font-bold text-white group-hover:text-cyan-400 transition-colors">Sudecki Włóczykij</h3>
+                                <p class="text-xs text-slate-400 mt-1">Mapa punktów wyzwania Sudecki Włóczykij.</p>
+                            </div>
+                            <div class="mt-4 text-xs font-semibold text-cyan-400 flex items-center gap-1">
+                                Otwórz mapę <i class="fa-solid fa-chevron-right text-xs"></i>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 bg-slate-950/80 py-8 text-center text-slate-500 text-sm">
+        <div class="max-w-7xl mx-auto px-4 space-y-3">
+            <div class="flex justify-center items-center gap-2 text-slate-300 font-semibold">
+                <i class="fa-solid fa-mountain-sun text-emerald-400"></i> Karkonosze – Szpindlerowy Młyn
+            </div>
+            <p class="text-xs text-slate-400">Przygotuj się na zmienne warunki pogodowe w listopadzie! Pamiętaj o odpowiednim ubiorze i czołówce.</p>
+            <p class="text-xs text-slate-600">&copy; Wyprawa Karkonoska. Życzymy udanych wędrówek!</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // Dane o szczytach
+        const peaks = [
+            { id: 'p1', name: 'Wielki Szyszak', elev: 1510, badges: ['KK'], badgeNames: ['Korona Karkonoszy'] },
+            { id: 'p2', name: 'Mały Szyszak', elev: 1440, badges: ['KK'], badgeNames: ['Korona Karkonoszy'] },
+            { id: 'p3', name: 'Śmielec', elev: 1424, badges: ['KK'], badgeNames: ['Korona Karkonoszy'] },
+            { id: 'p4', name: 'Słonecznik', elev: 1423, badges: ['KK', 'KOK'], badgeNames: ['Korona Karkonoszy', 'Karkonoska Odznaka Krajoznawcza'] },
+            { id: 'p5', name: 'Harrachovy kameny', elev: 1421, badges: ['SW'], badgeNames: ['Sudecki Włóczykij'] },
+            { id: 'p6', name: 'Czeskie Kamienie', elev: 1417, badges: ['KK', 'KOK'], badgeNames: ['Korona Karkonoszy', 'Karkonoska Odznaka Krajoznawcza'] },
+            { id: 'p7', name: 'Śląskie Kamienie', elev: 1413, badges: ['KK', 'KOK'], badgeNames: ['Korona Karkonoszy', 'Karkonoska Odznaka Krajoznawcza'] },
+            { id: 'p8', name: 'Tępy Szczyt', elev: 1387, badges: ['KK'], badgeNames: ['Korona Karkonoszy'] },
+            { id: 'p9', name: 'Kopa', elev: 1377, badges: ['KK'], badgeNames: ['Korona Karkonoszy'] },
+            { id: 'p10', name: 'Ptasi Kamień', elev: 1216, badges: ['KK'], badgeNames: ['Korona Karkonoszy'] },
+            { id: 'p11', name: 'Dvorsky les', elev: 1035, badges: ['SW'], badgeNames: ['Sudecki Włóczykij'] },
+            { id: 'p12', name: 'Přední Žalý', elev: 1019, badges: ['SW'], badgeNames: ['Sudecki Włóczykij'] },
+        ];
+
+        // Stan zapisanych szczytów z localStorage
+        let completedPeaks = JSON.parse(localStorage.getItem('karkonosze_completed_peaks')) || [];
+
+        // Elementy DOM
+        const peaksGrid = document.getElementById('peaks-grid');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const searchInput = document.getElementById('search-peaks');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const menuBtn = document.getElementById('menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        // Toggle Mobile Menu
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+        });
+
+        // Renderowanie kart szczytów
+        function renderPeaks(filterBadge = 'all', searchQuery = '') {
+            peaksGrid.innerHTML = '';
+
+            const filtered = peaks.filter(peak => {
+                const matchesBadge = filterBadge === 'all' || peak.badges.includes(filterBadge);
+                const matchesSearch = peak.name.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesBadge && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                peaksGrid.innerHTML = `<div class="col-span-full text-center py-8 text-slate-500">Brak szczytów spełniających kryteria.</div>`;
+                return;
+            }
+
+            filtered.forEach(peak => {
+                const isChecked = completedPeaks.includes(peak.id);
+
+                const card = document.createElement('div');
+                card.className = `glass-card p-4 rounded-xl border transition-all flex flex-col justify-between ${
+                    isChecked ? 'border-emerald-500/60 bg-emerald-950/10' : 'border-slate-800'
+                }`;
+
+                // Generuj tagi odznak
+                const badgeTags = peak.badgeNames.map(b => {
+                    let style = "bg-slate-700/50 text-slate-300";
+                    if (b.includes('Korona Karkonoszy')) style = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30";
+                    if (b.includes('Sudecki Włóczykij')) style = "bg-rose-500/20 text-rose-300 border-rose-500/30";
+                    if (b.includes('Krajoznawcza')) style = "bg-amber-500/20 text-amber-300 border-amber-500/30";
+
+                    return `<span class="text-[10px] font-semibold px-2 py-0.5 rounded-md border ${style}">${b}</span>`;
+                }).join(' ');
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-start justify-between gap-2 mb-2">
+                            <h3 class="font-bold text-white text-base ${isChecked ? 'line-through text-slate-400' : ''}">${peak.name}</h3>
+                            <span class="text-xs font-bold text-slate-400 bg-slate-800 px-2 py-1 rounded-md flex-shrink-0">${peak.elev} m</span>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 mb-4">
+                            ${badgeTags}
+                        </div>
+                    </div>
+                    
+                    <label class="flex items-center gap-3 pt-3 border-t border-slate-800/80 cursor-pointer select-none group">
+                        <div class="relative">
+                            <input type="checkbox" data-id="${peak.id}" ${isChecked ? 'checked' : ''} class="peer sr-only">
+                            <div class="w-5 h-5 border-2 border-slate-600 rounded-md peer-checked:bg-emerald-500 peer-checked:border-emerald-500 transition-all flex items-center justify-center">
+                                <i class="fa-solid fa-check text-white text-xs opacity-0 peer-checked:opacity-100 transition-opacity"></i>
+                            </div>
+                        </div>
+                        <span class="text-xs font-semibold ${isChecked ? 'text-emerald-400' : 'text-slate-400 group-hover:text-slate-200'} transition-colors">
+                            ${isChecked ? 'Zdobyty!' : 'Oznacz jako zdobyty'}
+                        </span>
+                    </label>
+                `;
+
+                peaksGrid.appendChild(card);
+            });
+
+            // Dodaj zdarzenia do checkboxów
+            document.querySelectorAll('#peaks-grid input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', (e) => {
+                    const peakId = e.target.getAttribute('data-id');
+                    if (e.target.checked) {
+                        if (!completedPeaks.includes(peakId)) completedPeaks.push(peakId);
+                    } else {
+                        completedPeaks = completedPeaks.filter(id => id !== peakId);
+                    }
+                    localStorage.setItem('karkonosze_completed_peaks', JSON.stringify(completedPeaks));
+                    updateProgress();
+                    renderPeaks(getActiveFilter(), searchInput.value);
+                });
+            });
+        }
+
+        // Aktualizacja paska postępu
+        function updateProgress() {
+            const count = completedPeaks.length;
+            const total = peaks.length;
+            const percentage = Math.round((count / total) * 100);
+
+            progressText.innerText = `${count} / ${total} (${percentage}%)`;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        // Pobierz aktywny filtr
+        function getActiveFilter() {
+            const activeBtn = document.querySelector('.filter-btn.active');
+            return activeBtn ? activeBtn.getAttribute('data-badge') : 'all';
+        }
+
+        // Filtry przycisków
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-emerald-500', 'text-white');
+                    b.classList.add('bg-slate-800', 'text-slate-300');
+                });
+                btn.classList.add('active', 'bg-emerald-500', 'text-white');
+                btn.classList.remove('bg-slate-800', 'text-slate-300');
+
+                renderPeaks(btn.getAttribute('data-badge'), searchInput.value);
+            });
+        });
+
+        // Wyszukiwarka szczytów
+        searchInput.addEventListener('input', (e) => {
+            renderPeaks(getActiveFilter(), e.target.value);
+        });
+
+        // Inicjalizacja przy ładowaniu strony
+        window.onload = () => {
+            renderPeaks();
+            updateProgress();
+        };
+    </script>
+</body>
+</html>
