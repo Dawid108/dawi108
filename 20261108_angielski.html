@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Angielski", q:"władze", a:"authorities", b:"activities", c:"atmosphere", d:"alternatives"},
+  {cat:"Angielski", q:"być w stanie wojny", a:"be at war", b:"be on time", c:"be in debt", d:"be at risk"},
+  {cat:"Angielski", q:"odczuwać ulgę", a:"be relieved", b:"be resolved", c:"be revealed", d:"be released"},
+  {cat:"Angielski", q:"zdradzać", a:"betray", b:"behave", c:"belong", d:"believe"},
+  {cat:"Angielski", q:"bomba", a:"bomb", b:"bend", c:"bone", d:"bind"},
+  {cat:"Angielski", q:"odważny", a:"brave", b:"broad", c:"brand", d:"brown"},
+  {cat:"Angielski", q:"łamać zasady", a:"break the rules", b:"bring the money", c:"build the houses", d:"burn the papers"},
+  {cat:"Angielski", q:"wybuchać (o wojnie, konflikcie)", a:"break out", b:"bring about", c:"blow away", d:"burn down"},
+  {cat:"Angielski", q:"cywil", a:"civilian", b:"criminal", c:"champion", d:"character"},
+  {cat:"Angielski", q:"pokrzepiony, pocieszony", a:"comforted", b:"committed", c:"completed", d:"connected"},
+  {cat:"Angielski", q:"wróg", a:"enemy", b:"empty", c:"energy", d:"engine"},
+  {cat:"Angielski", q:"wybuchać, eksplodować", a:"explode", b:"expand", c:"expect", d:"explore"},
+  {cat:"Angielski", q:"ekstremista / ekstremistka", a:"extremist", b:"exhibition", c:"experience", d:"expression"},
+  {cat:"Angielski", q:"rozdzierający serce, dramatyczny", a:"heartbreaking", b:"headstanding", c:"housekeeping", d:"handwriting"},
+  {cat:"Angielski", q:"ojczyzna", a:"homeland", b:"hardware", c:"headline", d:"handbag"},
+  {cat:"Angielski", q:"niewinny", a:"innocent", b:"important", c:"impatient", d:"imperfect"},
+  {cat:"Angielski", q:"ingerować, przeszkadzać", a:"interfere", b:"interpret", c:"interrupt", d:"introduce"},
+  {cat:"Angielski", q:"konflikt międzynarodowy", a:"international conflict", b:"independent country", c:"intellectual capital", d:"intercontinental circuit"},
+  {cat:"Angielski", q:"pogodzić się, zawierać pokój", a:"make peace", b:"take place", c:"lose price", d:"keep proof"},
+  {cat:"Angielski", q:"nieszczęśliwy, żałosny", a:"miserable", b:"marvelous", c:"mysterious", d:"monotonous"},
+  {cat:"Angielski", q:"naiwny", a:"naive", b:"narrow", c:"nervous", d:"native"},
+  {cat:"Angielski", q:"przezwyciężyć problem", a:"overcome a problem", b:"overlook a product", c:"overtake a process", d:"overwhelm a project"},
+  {cat:"Angielski", q:"spokojny, pokojowy", a:"peaceful", b:"powerful", c:"polite", d:"painful"},
+  {cat:"Angielski", q:"uchodźca", a:"refugee", b:"relative", c:"reporter", d:"resident"},
+  {cat:"Angielski", q:"szanować prawa człowieka", a:"respect human rights", b:"reject higher results", c:"report heavy rain", d:"retain hidden riches"},
+  {cat:"Angielski", q:"bezsensowny", a:"senseless", b:"painless", c:"speechless", d:"spotless"},
+  {cat:"Angielski", q:"osiedlić się, osiąść", a:"settle", b:"search", c:"signal", d:"supply"},
+  {cat:"Angielski", q:"żołnierz", a:"soldier", b:"spider", c:"singer", d:"silver"},
+  {cat:"Angielski", q:"napięcie", a:"tension", b:"passion", c:"mission", d:"session"},
+  {cat:"Angielski", q:"pełen przemocy, gwałtowny", a:"violent", b:"silent", c:"distant", d:"brilliant"},
+  {cat:"Angielski", q:"ochroniarz", a:"bodyguard", b:"backyard", c:"boulevard", d:"blueprint"},
+  {cat:"Angielski", q:"migrant", a:"migrant", b:"merchant", c:"monarch", d:"maximum"},
+  {cat:"Angielski", q:"obóz dla uchodźców", a:"refugee camp", b:"response card", c:"relative cost", d:"rescue crew"},
+  {cat:"Angielski", q:"ratownik", a:"rescue worker", b:"repair writer", c:"remote window", d:"retail walker"},
+  {cat:"Angielski", q:"ruiny", a:"ruins", b:"rules", c:"routes", d:"rounds"},
+  {cat:"Angielski", q:"ubogie części miasta, slumsy", a:"slums", b:"stems", c:"shells", d:"stares"},
+  {cat:"Angielski", q:"namiot", a:"tent", b:"tone", c:"tube", d:"time"},
+  {cat:"Angielski", q:"obywatelstwo", a:"citizenship", b:"championship", c:"partnership", d:"membership"},
+  {cat:"Angielski", q:"edukacja obywatelska", a:"citizenship education", b:"community connection", c:"competitive election", d:"commercial exhibition"},
+  {cat:"Angielski", q:"czyn społeczny", a:"community project", b:"company product", c:"computer program", d:"current problem"},
+  {cat:"Angielski", q:"obowiązkowy", a:"compulsory", b:"continuous", c:"customary", d:"convenient"},
+  {cat:"Angielski", q:"absurdalny, niedorzeczny", a:"ridiculous", b:"mischievous", c:"prestigious", d:"courageous"},
+  {cat:"Angielski", q:"doroczny, coroczny", a:"annual", b:"manual", c:"casual", d:"formal"},
+  {cat:"Angielski", q:"kredyt hipoteczny, hipoteka", a:"mortgage", b:"message", c:"manage", d:"package"},
+  {cat:"Angielski", q:"giełda (papierów wartościowych)", a:"stock market", b:"state museum", c:"store manager", d:"street monster"},
+  {cat:"Angielski", q:"przeznaczyć coś na coś, wziąć coś pod uwagę", a:"allow something for sb/sth", b:"arrange something for sb/sth", c:"attend something for sb/sth", d:"achieve something for sb/sth"},
+  {cat:"Angielski", q:"atakować, napadać, krytykować", a:"attack", b:"appeal", c:"attend", d:"admire"},
+  {cat:"Angielski", q:"zostać obciążonym (opłatą)", a:"be charged for", b:"be blamed for", c:"be thanked for", d:"be judged for"},
+  {cat:"Angielski", q:"kosztować", a:"cost", b:"cast", c:"case", d:"cart"},
+  {cat:"Angielski", q:"przypłacać życiem, pociągać za sobą ofiary", a:"cost lives", b:"lose lines", c:"past times", d:"fast drives"},
+  {cat:"Angielski", q:"obradować w jakiejś sprawie", a:"debate an issue", b:"design an office", c:"deliver an order", d:"detect an error"},
+  {cat:"Angielski", q:"wchodzić", a:"enter", b:"offer", c:"order", d:"upper"},
+  {cat:"Angielski", q:"walczyć, kłócić się", a:"fight", b:"sight", c:"night", d:"right"},
+  {cat:"Angielski", q:"formować rząd", a:"form a government", b:"find a generation", c:"face a grievance", d:"feel a guidance"},
+  {cat:"Angielski", q:"organizować wybory powszechne", a:"hold a general election", b:"hand a global direction", c:"hear a green emotion", d:"help a great evolution"},
+  {cat:"Angielski", q:"informować", a:"inform", b:"insist", c:"invite", d:"intend"},
+  {cat:"Angielski", q:"najeżdżać (tłumnie) jakieś miejsce / kraj", a:"invade a place / a country", b:"inspect a part / a county", c:"include a path / a canopy", d:"install a pose / a clinic"},
+  {cat:"Angielski", q:"zajmować umysł / okupować terytorium", a:"occupy your mind / a territory", b:"oppose your mood / a tendency", c:"obtain your mark / a teamwork", d:"observe your mate / a treasure"},
+  {cat:"Angielski", q:"uchwalać ustawę, ustanawiać prawo", a:"pass a law", b:"pick a lot", c:"play a lag", d:"push a leg"},
+  {cat:"Angielski", q:"proponowana ustawa", a:"proposed legislation", b:"protected limitation", c:"produced liberation", d:"provided location"},
+  {cat:"Angielski", q:"spowodować coś", a:"result in", b:"resist on", c:"reduce up", d:"remove at"},
+  {cat:"Angielski", q:"ubiegać się o urządy przez kadencję", a:"serve a term of office", b:"save a team of officers", c:"send a tale of offers", d:"seek a type of optics"},
+  {cat:"Angielski", q:"ubiegać się o drugą kadencję", a:"stand for re-election", b:"start for re-direction", c:"stay for re-collection", d:"step for re-connection"},
+  {cat:"Angielski", q:"poddawać się", a:"surrender", b:"successor", c:"supporter", d:"suspender"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 11;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 11;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
