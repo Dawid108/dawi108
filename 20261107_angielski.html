@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Szkoła</title>
+    <link rel="icon" href="dawi108.png" type="image/png">
+    <link rel="manifest" href="20251203_manifest.json">
+    <link rel="stylesheet" href="20260323_style.css">
+    <script src="script.js"></script>
+</head>
+
+<body>
+
+    <div id="game">
+
+        <div id="stats">
+            <div>Życia: <span id="life">9</span></div>
+            <div>Punkty: <span id="score">0</span></div>
+        </div>
+
+        <div class="category" id="category"></div>
+
+        <div class="question" id="question"></div>
+
+        <div id="answers"></div>
+
+        <div id="counter"></div>
+
+    </div>
+
+
+    <div id="endScreen" class="hidden">
+
+        <h2 id="endTitle"></h2>
+
+        <p>
+            Twój wynik:
+            <span id="finalScore"></span>
+        </p>
+
+        <p>
+            Twój rekord:
+            <span id="record"></span>
+        </p>
+
+        <p>
+            Suma punktów:
+            <span id="dawid108"></span>
+        </p>
+
+        <button onclick="newGame()">
+            Nowa Gra
+        </button>
+
+    </div>
+
+
+<script>
+
+// PYTANIA
+let questions = [
+  {cat:"Angielski", q:"arystokracja", a:"aristocracy", b:"bureaucracy", c:"democracy", d:"plutocracy"},
+  {cat:"Angielski", q:"gabinet, Rada Ministrów", a:"cabinet", b:"channel", c:"captain", d:"caravan"},
+  {cat:"Angielski", q:"kanclerz", a:"chancellor", b:"charity", c:"character", d:"challenge"},
+  {cat:"Angielski", q:"obywatel, obywatelka", a:"citizen", b:"ceiling", c:"ceramic", d:"certain"},
+  {cat:"Angielski", q:"urzędnik, urzędniczka służby cywilnej", a:"civil servant", b:"chief officer", c:"city council", d:"civil rights"},
+  {cat:"Angielski", q:"koalicja", a:"coalition", b:"condition", c:"colleague", d:"collection"},
+  {cat:"Angielski", q:"Partia Konserwatywna", a:"Conservatives", b:"Constitution", c:"Contributors", d:"Commissioners"},
+  {cat:"Angielski", q:"okręg wyborczy", a:"constituency", b:"conspiracy", c:"consultancy", d:"controversy"},
+  {cat:"Angielski", q:"konstytucja", a:"constitution", b:"institution", c:"substitution", d:"prostitution"},
+  {cat:"Angielski", q:"wybierać", a:"elect", b:"expect", c:"effect", d:"object"},
+  {cat:"Angielski", q:"wybory", a:"election", b:"direction", c:"collection", d:"attention"},
+  {cat:"Angielski", q:"elektorat", a:"electorate", b:"executive", c:"emigrate", d:"enterprise"},
+  {cat:"Angielski", q:"polowanie na lisy", a:"fox-hunting", b:"dog-walking", c:"cat-herding", d:"bird-watching"},
+  {cat:"Angielski", q:"rząd", a:"government", b:"parliament", c:"department", d:"management"},
+  {cat:"Angielski", q:"izby parlamentu", a:"Houses of Parliament", b:"Members of Cabinet", c:"Chambers of Commerce", d:"Offices of Ministers"},
+  {cat:"Angielski", q:"Partia Pracy", a:"Labour", b:"Leader", c:"League", d:"Lobby"},
+  {cat:"Angielski", q:"Partia Liberalnych Demokratów", a:"Liberal Democrats", b:"National Socialists", c:"Federal Republicans", d:"Independent Workers"},
+  {cat:"Angielski", q:"program wyborczy", a:"manifesto", b:"ministry", c:"majority", d:"monarchy"},
+  {cat:"Angielski", q:"poseł/posłanka, członek parlamentu", a:"Member of Parliament", b:"Minister of Education", c:"Manager of Transport", d:"Mayor of Community"},
+  {cat:"Angielski", q:"minister", a:"minister", b:"monitor", c:"militant", d:"modifier"},
+  {cat:"Angielski", q:"mniejszość", a:"minority", b:"majority", c:"maturity", d:"morality"},
+  {cat:"Angielski", q:"monarchia", a:"monarchy", b:"hierarchy", c:"patriarchy", d:"oligarchy"},
+  {cat:"Angielski", q:"wyższy urzędnik", a:"official", b:"original", c:"optional", d:"ordinary"},
+  {cat:"Angielski", q:"opozycja", a:"opposition", b:"occupation", c:"operation", d:"obligation"},
+  {cat:"Angielski", q:"partia polityczna", a:"party", b:"policy", c:"public", d:"pressy"},
+  {cat:"Angielski", q:"polityka (np. gospodarcza, społeczna)", a:"policy", b:"police", c:"public", d:"pocket"},
+  {cat:"Angielski", q:"polityk/polityczka", a:"politician", b:"pedestrian", c:"physician", d:"patrician"},
+  {cat:"Angielski", q:"polityka", a:"politics", b:"polemic", c:"polution", d:"position"},
+  {cat:"Angielski", q:"prezydent/prezydentka", a:"president", b:"principal", c:"proponent", d:"permanent"},
+  {cat:"Angielski", q:"premier", a:"prime minister", b:"chief director", c:"head secretary", d:"lead commander"},
+  {cat:"Angielski", q:"referendum", a:"referendum", b:"pendulum", c:"millennium", d:"compendium"},
+  {cat:"Angielski", q:"reprezentować", a:"represent", b:"recollect", c:"reconnect", d:"reconstruct"},
+  {cat:"Angielski", q:"republika", a:"republic", b:"rebound", c:"recline", d:"rebuttal"},
+  {cat:"Angielski", q:"Partia Republikańska", a:"Republicans", b:"Respondents", c:"Regulations", d:"Representatives"},
+  {cat:"Angielski", q:"rodzina królewska", a:"royal family", b:"noble society", c:"grand dynasty", d:"elite lineage"},
+  {cat:"Angielski", q:"zasady i nakazy", a:"rules and regulations", b:"rights and privileges", c:"roles and relations", d:"routes and resonances"},
+  {cat:"Angielski", q:"ustrój państwa", a:"state system", b:"public sector", c:"social status", d:"civil service"},
+  {cat:"Angielski", q:"podatnik", a:"taxpayer", b:"transporter", c:"translator", d:"trespasser"},
+  {cat:"Angielski", q:"kadencja", a:"term of office", b:"time of service", c:"period of power", d:"span of action"},
+  {cat:"Angielski", q:"głosować, brać udział w wyborach", a:"vote in an election", b:"run in a campaign", c:"join in a meeting", d:"take in a session"},
+  {cat:"Angielski", q:"aprobować, pochwalać coś", a:"approve of sth", b:"appeal to sth", c:"appoint to sth", d:"attempt at sth"},
+  {cat:"Angielski", q:"być wbrew prawu", a:"be against the law", b:"be beyond the line", c:"be above the limit", d:"be behind the time"},
+  {cat:"Angielski", q:"odczuwać pokusę", a:"be tempted", b:"be targeted", c:"be troubled", d:"be tolerated"},
+  {cat:"Angielski", q:"winić kogoś za coś", a:"blame sb for sth", b:"bring sb to sth", c:"board sb for sth", d:"boost sb with sth"},
+  {cat:"Angielski", q:"łamać zasady", a:"break the rules", b:"bend the ropes", c:"beat the rounds", d:"bring the rates"},
+  {cat:"Angielski", q:"wchodzić w życie", a:"come into effect", b:"carry into action", c:"catch in motion", d:"create with impact"},
+  {cat:"Angielski", q:"liczyć na kogoś", a:"count on sb", b:"call out sb", c:"carry on sb", d:"catch up sb"},
+  {cat:"Angielski", q:"dopalacze", a:"designer drugs", b:"dangerous drinks", c:"defective drafts", d:"dynamic diodes"},
+  {cat:"Angielski", q:"grzywna", a:"fine", b:"fame", c:"fuse", d:"fere"},
+  {cat:"Angielski", q:"rozprzestrzeniać się szybko w Internecie", a:"go viral", b:"get brutal", c:"grow fatal", d:"grab formal"},
+  {cat:"Angielski", q:"nadążać za kimś/czymś, dotrzymywać komuś kroku", a:"keep up with sb/sth", b:"kick off with sb/sth", c:"knock down with sb/sth", d:"know well with sb/sth"},
+  {cat:"Angielski", q:"praworządny", a:"law-abiding", b:"life-changing", c:"long-standing", d:"low-spending"},
+  {cat:"Angielski", q:"prowadzić do uzależnienia", a:"lead to addiction", b:"look to admission", c:"leave to affection", d:"limit to attention"},
+  {cat:"Angielski", q:"legalne używki", a:"legal highs", b:"local lights", c:"loyal lives", d:"lucid loaves"},
+  {cat:"Angielski", q:"delegalizować", a:"make illegal", b:"make illogical", c:"make irregular", d:"make impartial"},
+  {cat:"Angielski", q:"ukraść coś, zwędzić", a:"nick sth", b:"note sth", c:"name sth", d:"nurt sth"},
+  {cat:"Angielski", q:"przestępca, sprawca", a:"offender", b:"observer", c:"operator", d:"organiser"},
+  {cat:"Angielski", q:"petycja", a:"petition", b:"position", c:"provision", d:"pollution"},
+  {cat:"Angielski", q:"powstrzymać kogoś przed zrobieniem czegoś", a:"prevent sb from doing sth", b:"protect sb from losing sth", c:"propose sb for taking sth", d:"provide sb with making sth"},
+  {cat:"Angielski", q:"protestować przeciwko czemuś", a:"protest against sth", b:"promote around sth", c:"provide above sth", d:"proceed among sth"},
+  {cat:"Angielski", q:"karać kogoś za coś", a:"punish sb for sth", b:"pursue sb for sth", c:"praise sb for sth", d:"pause sb for sth"},
+  {cat:"Angielski", q:"czysty, nieskażony", a:"pure", b:"pale", c:"plus", d:"post"},
+  {cat:"Angielski", q:"zniechęcać kogoś, odstręczać", a:"put sb off", b:"pass sb out", c:"pick sb up", d:"pull sb on"},
+  {cat:"Angielski", q:"okazjonalne zażywanie narkotyków", a:"recreational drug use", b:"regional debt crisis", c:"rational plan design", d:"radical trend shift"},
+  {cat:"Angielski", q:"prowadzić do czegoś, kończyć się czymś", a:"result in sth", b:"reflect on sth", c:"rely on sth", d:"react to sth"},
+  {cat:"Angielski", q:"fotoradar", a:"speed camera", b:"space capsule", c:"smart system", d:"sharp column"},
+  {cat:"Angielski", q:"martwić się czymś", a:"worry about sth", b:"wonder about sth", c:"whisper about sth", d:"witness about sth"}
+];
+
+let current = 0;
+let life = 9;
+let score = 0;
+let used = [];
+let maxQ = questions.length;
+
+let record =
+    localStorage.getItem("szkola") || 0;
+
+let dawid108 =
+    localStorage.getItem("dawid108") || 0;
+
+let angielski =
+    localStorage.getItem("angielski") || 0;
+
+
+// NOWA GRA
+function newGame(){
+
+    life = 9;
+    score = 0;
+    used = [];
+
+    document
+        .getElementById("endScreen")
+        .classList.add("hidden");
+
+    document
+        .getElementById("game")
+        .classList.remove("hidden");
+
+    updateStats();
+
+    nextQuestion();
+}
+
+
+// AKTUALIZACJA STATYSTYK
+function updateStats(){
+
+    document.getElementById("life").innerText = life;
+
+    document.getElementById("score").innerText = score;
+
+}
+
+
+// NASTĘPNE PYTANIE
+function nextQuestion(){
+
+    if(used.length === maxQ){
+        return win();
+    }
+
+    let id;
+
+    do{
+        id =
+            Math.floor(
+                Math.random() * maxQ
+            );
+    }
+
+    while(used.includes(id));
+
+    used.push(id);
+
+    current = questions[id];
+
+
+    document
+        .getElementById("category")
+        .innerText = current.cat;
+
+    document
+        .getElementById("question")
+        .innerText = current.q;
+
+
+    document
+        .getElementById("counter")
+        .innerText =
+        "Pytanie " +
+        used.length +
+        " / " +
+        maxQ;
+
+
+    // Mieszanie odpowiedzi
+
+    let arr = [
+
+        {
+            txt: current.a,
+            correct: true
+        },
+
+        {
+            txt: current.b,
+            correct: false
+        },
+
+        {
+            txt: current.c,
+            correct: false
+        },
+
+        {
+            txt: current.d,
+            correct: false
+        }
+
+    ];
+
+
+    arr.sort(
+        () => Math.random() - 0.5
+    );
+
+
+    let ansDiv =
+        document.getElementById("answers");
+
+    ansDiv.innerHTML = "";
+
+
+    arr.forEach(a => {
+
+        let btn =
+            document.createElement("div");
+
+        btn.classList.add("btn");
+
+        btn.innerText = a.txt;
+
+        btn.onclick =
+            () => answer(a.correct, btn);
+
+        ansDiv.appendChild(btn);
+
+    });
+
+}
+
+
+// ODPOWIEDŹ
+function answer(correct, btn){
+
+    let buttons =
+        document.querySelectorAll(".btn");
+
+    buttons.forEach(
+        b => b.style.pointerEvents = "none"
+    );
+
+
+    if(correct){
+
+        btn.classList.add("correct");
+
+        score++;
+
+
+        dawid108 =
+            parseInt(dawid108) + 11;
+
+        localStorage.setItem(
+            "dawid108",
+            dawid108
+        );
+
+
+        angielski =
+            parseInt(angielski) + 11;
+
+        localStorage.setItem(
+            "angielski",
+            angielski
+        );
+
+
+        updateStats();
+
+
+        setTimeout(
+            () => nextQuestion(),
+            1500
+        );
+
+
+    }else{
+
+        btn.classList.add("wrong");
+
+
+        // Pokaż poprawną odpowiedź
+
+        buttons.forEach(b => {
+
+            if(
+                b.innerText === current.a
+            ){
+                b.classList.add("correct");
+            }
+
+        });
+
+
+        life--;
+
+        updateStats();
+
+
+        if(life <= 0){
+
+            setTimeout(
+                () => gameOver(),
+                6000
+            );
+
+        }else{
+
+            setTimeout(
+                () => nextQuestion(),
+                5000
+            );
+
+        }
+
+    }
+
+}
+
+
+// WYGRANA
+function win(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Wygrałeś!";
+
+    endScreen();
+
+}
+
+
+// KONIEC GRY
+function gameOver(){
+
+    document
+        .getElementById("game")
+        .classList.add("hidden");
+
+    document
+        .getElementById("endScreen")
+        .classList.remove("hidden");
+
+    document
+        .getElementById("endTitle")
+        .innerText =
+        "Koniec gry";
+
+    endScreen();
+
+}
+
+
+// EKRAN KOŃCOWY
+function endScreen(){
+
+    document
+        .getElementById("finalScore")
+        .innerText = score;
+
+
+    if(score > record){
+
+        record = score;
+
+        localStorage.setItem(
+            "szkola",
+            record
+        );
+
+    }
+
+
+    document
+        .getElementById("record")
+        .innerText = record;
+
+
+    document
+        .getElementById("dawid108")
+        .innerText = dawid108;
+
+}
+
+
+newGame();
+
+</script>
+
+</body>
+</html>
